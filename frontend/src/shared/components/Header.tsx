@@ -89,11 +89,11 @@ export function Header() {
         {/* Main Navbar Row */}
         <div className="flex h-14 sm:h-16 w-full items-center justify-between gap-2 sm:gap-6">
           {/* Left: Native Brand Identity */}
-          <div className="flex shrink-0 items-center gap-3 xl:gap-8 min-w-0">
+          <div className="flex min-w-0 flex-1 items-center gap-3 xl:gap-8">
             <Link
               to={LANDING_PATH}
               aria-label={L(i18n.language, 'Vektor MMA • Início', 'Vektor MMA home', 'Vektor MMA • Accueil')}
-              className="flex items-center gap-2 sm:gap-2.5 transition opacity-95 hover:opacity-100 min-w-0"
+              className="flex shrink-0 items-center gap-2 sm:gap-2.5 transition opacity-95 hover:opacity-100 min-w-0"
             >
               <BrandMark className="h-7 w-7 xs:h-8 xs:w-8 sm:h-9 sm:w-9 shrink-0 drop-shadow-sm" />
               <span className="flex flex-col items-start justify-center leading-tight min-w-0">
@@ -110,8 +110,9 @@ export function Header() {
             {landing || isAbout ? (
               <nav
                 aria-label={L(i18n.language, 'Navegação principal', 'Main navigation', 'Navigation principale')}
-                className="flex items-center h-14 sm:h-16 gap-1 sm:gap-2"
+                className="min-w-0 flex-1 overflow-x-auto no-scrollbar overscroll-x-contain"
               >
+                <div className="flex h-14 min-w-max shrink-0 items-center gap-1 whitespace-nowrap sm:h-16 sm:gap-2">
                 <a
                   href="/#organizations-grid"
                   onClick={(e) => {
@@ -120,7 +121,7 @@ export function Header() {
                       document.getElementById('organizations-grid')?.scrollIntoView({ behavior: 'smooth' })
                     }
                   }}
-                  className="relative h-full flex items-center px-2.5 sm:px-3 text-xs xl:text-[13px] font-bold transition duration-200 whitespace-nowrap text-[var(--text-secondary)] hover:text-[var(--text-primary)] dark:hover:text-white"
+                  className="relative flex h-full shrink-0 items-center px-2.5 text-xs font-bold whitespace-nowrap text-[var(--text-secondary)] transition duration-200 hover:text-[var(--text-primary)] dark:hover:text-white sm:px-3 xl:text-[13px]"
                 >
                   <span>{L(i18n.language, 'Organizações', 'Organizations', 'Organisations')}</span>
                   {landing && !isAbout && pathname === '/' && (
@@ -130,7 +131,7 @@ export function Header() {
                 <NavLink
                   to="/model"
                   className={({ isActive }) =>
-                    `relative h-full flex items-center px-2.5 sm:px-3 text-xs xl:text-[13px] font-bold transition duration-200 whitespace-nowrap ${
+                    `relative flex h-full shrink-0 items-center px-2.5 text-xs font-bold whitespace-nowrap transition duration-200 sm:px-3 xl:text-[13px] ${
                       isActive
                         ? 'text-[var(--text-primary)] dark:text-white'
                         : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] dark:hover:text-white'
@@ -149,7 +150,7 @@ export function Header() {
                 <NavLink
                   to="/track-record"
                   className={({ isActive }) =>
-                    `hidden sm:inline-flex relative h-full flex items-center px-2.5 sm:px-3 text-xs xl:text-[13px] font-bold transition duration-200 whitespace-nowrap ${
+                    `relative hidden h-full shrink-0 items-center px-2.5 text-xs font-bold whitespace-nowrap transition duration-200 sm:inline-flex sm:px-3 xl:text-[13px] ${
                       isActive
                         ? 'text-[var(--text-primary)] dark:text-white'
                         : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] dark:hover:text-white'
@@ -168,7 +169,7 @@ export function Header() {
                 <NavLink
                   to="/about"
                   className={({ isActive }) =>
-                    `relative h-full flex items-center px-2.5 sm:px-3 text-xs xl:text-[13px] font-bold transition duration-200 whitespace-nowrap ${
+                    `relative flex h-full shrink-0 items-center px-2.5 text-xs font-bold whitespace-nowrap transition duration-200 sm:px-3 xl:text-[13px] ${
                       isActive || isAbout
                         ? 'text-[var(--text-primary)] dark:text-white'
                         : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] dark:hover:text-white'
@@ -184,6 +185,7 @@ export function Header() {
                     </>
                   )}
                 </NavLink>
+                </div>
               </nav>
             ) : (
               <nav
@@ -196,7 +198,7 @@ export function Header() {
                     <NavLink
                       key={item.to}
                       to={item.to}
-                      className={`relative h-full flex items-center px-3 xl:px-3.5 text-xs xl:text-[13px] font-bold transition duration-200 whitespace-nowrap ${
+                      className={`relative h-full flex shrink-0 items-center px-3 xl:px-3.5 text-xs xl:text-[13px] font-bold transition duration-200 whitespace-nowrap ${
                         active
                           ? 'text-[var(--text-primary)] dark:text-white'
                           : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] dark:hover:text-white'
@@ -283,7 +285,7 @@ export function Header() {
 
         {/* Mobile Navigation: Seamless integrated sub-bar */}
         {!landing && !isAbout && (
-          <div className="lg:hidden border-t border-[var(--border-subtle)] px-2 py-1 overflow-x-auto no-scrollbar">
+          <div className="lg:hidden min-w-0 border-t border-[var(--border-subtle)] px-2 py-1 overflow-x-auto no-scrollbar overscroll-x-contain">
             <nav
               aria-label={L(i18n.language, 'Navegação móvel', 'Mobile navigation', 'Navigation mobile')}
               className="flex items-center gap-1 w-max"
@@ -298,7 +300,7 @@ export function Header() {
                       color: active ? '#ffffff' : 'var(--text-primary)',
                       backgroundColor: active ? '#C8102E' : undefined,
                     }}
-                    className={`rounded-md px-2.5 py-1 text-xs font-semibold transition whitespace-nowrap hover:bg-black/5 dark:hover:bg-white/10 ${
+                    className={`shrink-0 rounded-md px-2.5 py-1 text-xs font-semibold transition whitespace-nowrap hover:bg-black/5 dark:hover:bg-white/10 ${
                       active ? 'shadow-xs font-bold' : 'text-[var(--text-secondary)]'
                     }`}
                   >
