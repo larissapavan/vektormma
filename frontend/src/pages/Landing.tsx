@@ -434,7 +434,12 @@ export function Landing() {
                         transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
                         className="relative z-10 h-22 sm:h-24 w-auto object-contain select-none pointer-events-none transition-transform duration-300 group-hover:scale-110"
                         style={{
-                          filter: `drop-shadow(0 12px 24px ${card.accentColor}66)`,
+                          filter: [
+                            card.id === 'bellator' ? 'brightness(1.35) contrast(1.2)' : '',
+                            `drop-shadow(0 12px 24px ${card.accentColor}66)`,
+                          ]
+                            .filter(Boolean)
+                            .join(' '),
                         }}
                       />
                       {/* 4. Sombra sutil de levitação no piso do card */}
