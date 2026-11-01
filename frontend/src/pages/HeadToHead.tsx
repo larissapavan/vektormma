@@ -156,8 +156,8 @@ export function HeadToHead() {
           <h1 className="sr-only">{t('headToHead.title')}</h1>
           <p className="sr-only">{t('headToHead.description')}</p>
           <EditorialHeadToHeadSimulator
-          initialFighterA={fighterAName || 'Alex Pereira'}
-          initialFighterB={fighterBName || 'Magomed Ankalaev'}
+          initialFighterA={fighterAName}
+          initialFighterB={fighterBName}
           onSelectFighterA={(name) => chooseFighter('a', name)}
           onSelectFighterB={(name) => chooseFighter('b', name)}
         />

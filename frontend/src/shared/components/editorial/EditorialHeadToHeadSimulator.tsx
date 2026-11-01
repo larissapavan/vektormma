@@ -25,8 +25,8 @@ interface EditorialHeadToHeadSimulatorProps {
 }
 
 export function EditorialHeadToHeadSimulator({
-  initialFighterA = 'Alex Pereira',
-  initialFighterB = 'Magomed Ankalaev',
+  initialFighterA = '',
+  initialFighterB = '',
   onSelectFighterA,
   onSelectFighterB,
 }: EditorialHeadToHeadSimulatorProps) {
@@ -61,12 +61,12 @@ export function EditorialHeadToHeadSimulator({
     [nameB, imageByName, profileB],
   )
 
+  const matchupReady = Boolean(nameA && nameB && nameA.toLowerCase() !== nameB.toLowerCase())
+
   // Auto-run prediction when matchup changes
   useEffect(() => {
-    if (nameA && nameB && nameA.toLowerCase() !== nameB.toLowerCase()) {
-      void runPrediction(nameA, nameB)
-    }
-  }, [nameA, nameB, runPrediction])
+    if (matchupReady) void runPrediction(nameA, nameB)
+  }, [matchupReady, nameA, nameB, runPrediction])
 
   const swapCorners = () => {
     const tempA = nameA
@@ -98,8 +98,10 @@ export function EditorialHeadToHeadSimulator({
   }
 
   // Comparison stats
-  const probA = prediction ? Math.round(prediction.fighter_a_probability * 100) : 50
-  const probB = prediction ? Math.round(prediction.fighter_b_probability * 100) : 50
+  const showPrediction = matchupReady && prediction
+  const probA = showPrediction ? Math.round(prediction.fighter_a_probability * 100) : 50
+  const probB = showPrediction ? Math.round(prediction.fighter_b_probability * 100) : 50
+  const pickFighterLabel = L(i18n.language, 'Escolher lutador', 'Choose a fighter', 'Choisir un combattant', 'Elegir peleador')
 
   const reachDiff = (profileA?.reach_cm ?? 0) - (profileB?.reach_cm ?? 0)
   const ageDiff = (profileA?.age ?? 0) - (profileB?.age ?? 0)
@@ -166,14 +168,16 @@ export function EditorialHeadToHeadSimulator({
                 </p>
               )}
               <h3 className="font-['Anton','Barlow_Condensed',Impact,sans-serif] text-2xl sm:text-3xl xl:text-4xl uppercase leading-[0.9] tracking-[0.02em] text-[var(--text-primary)] dark:text-white group-hover:text-[#E11D48] transition">
-                {nameA}
+                {nameA || pickFighterLabel}
               </h3>
             </div>
             <ChevronDown className="h-4 w-4 text-zinc-500 group-hover:text-white transition" />
           </button>
 
           <p className="font-mono text-xs text-zinc-400">
-            {getDivisionName(profileA?.division, i18n.language) || 'UFC'} • {profileA?.wins ?? 0}{L(i18n.language, 'V', 'W', 'V', 'V')} - {profileA?.losses ?? 0}{L(i18n.language, 'D', 'L', 'D', 'D')}
+            {profileA
+              ? `${getDivisionName(profileA.division, i18n.language) || 'UFC'} • ${profileA.wins}${L(i18n.language, 'V', 'W', 'V', 'V')} - ${profileA.losses}${L(i18n.language, 'D', 'L', 'D', 'D')}`
+              : '—'}
           </p>
 
           {/* Cutout Hero Image */}
@@ -187,7 +191,7 @@ export function EditorialHeadToHeadSimulator({
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center font-black text-5xl text-white/20">
-                {nameA.slice(0, 2).toUpperCase()}
+                {nameA ? nameA.slice(0, 2).toUpperCase() : '?'}
               </div>
             )}
           </div>
@@ -205,25 +209,27 @@ export function EditorialHeadToHeadSimulator({
             <div className="mt-3 flex items-baseline justify-center gap-3">
               <div className="text-right">
                 <span className="font-display font-extrabold text-3xl sm:text-4xl text-[#E11D48] tracking-tight tabular-nums">
-                  <AnimatedCounter value={probA} />%
+                  {showPrediction ? <><AnimatedCounter value={probA} />%</> : '–'}
                 </span>
               </div>
               <span className="text-zinc-600 font-display font-extrabold text-xl">:</span>
               <div className="text-left">
                 <span className="font-display font-extrabold text-3xl sm:text-4xl text-[#2563EB] tracking-tight tabular-nums">
-                  <AnimatedCounter value={probB} />%
+                  {showPrediction ? <><AnimatedCounter value={probB} />%</> : '–'}
                 </span>
               </div>
             </div>
 
             <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-medium">
-              {predicting
+              {!matchupReady
+                ? L(i18n.language, 'ESCOLHA DOIS LUTADORES PARA SIMULAR', 'PICK TWO FIGHTERS TO SIMULATE', 'CHOISISSEZ DEUX COMBATTANTS À SIMULER', 'ELIGE DOS PELEADORES PARA SIMULAR')
+                : predicting
                 ? L(i18n.language, 'CALCULANDO MOTOR SHAP...', 'CALCULATING SHAP ENGINE...', 'CALCUL DU MOTEUR SHAP...', 'CALCULANDO MOTOR SHAP...')
                 : L(i18n.language, '● MOTOR v2.4 // PROBABILIDADE SHAP', '● ENGINE v2.4 // SHAP PROBABILITY', '● MOTEUR v2.4 // PROBABILITÉ SHAP', '● MOTOR v2.4 // PROBABILIDAD SHAP')}
             </p>
 
             {/* Prediction Indicator */}
-            {prediction && (
+            {showPrediction && (
               <div className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/60 px-3 py-1 shadow-md">
                 <Sparkles className="h-3 w-3 text-[#fbbf24]" />
                 <span className="font-mono text-[11px] font-medium tracking-widest uppercase text-white truncate max-w-[140px]">
@@ -265,13 +271,15 @@ export function EditorialHeadToHeadSimulator({
                 </p>
               )}
               <h3 className="font-['Anton','Barlow_Condensed',Impact,sans-serif] text-2xl sm:text-3xl xl:text-4xl uppercase leading-[0.9] tracking-[0.02em] text-[var(--text-primary)] dark:text-white group-hover:text-[#2563EB] transition">
-                {nameB}
+                {nameB || pickFighterLabel}
               </h3>
             </div>
           </button>
 
           <p className="font-mono text-xs text-zinc-400">
-            {getDivisionName(profileB?.division, i18n.language) || 'UFC'} • {profileB?.wins ?? 0}{L(i18n.language, 'V', 'W', 'V', 'V')} - {profileB?.losses ?? 0}{L(i18n.language, 'D', 'L', 'D', 'D')}
+            {profileB
+              ? `${getDivisionName(profileB.division, i18n.language) || 'UFC'} • ${profileB.wins}${L(i18n.language, 'V', 'W', 'V', 'V')} - ${profileB.losses}${L(i18n.language, 'D', 'L', 'D', 'D')}`
+              : '—'}
           </p>
 
           {/* Cutout Hero Image */}
@@ -285,7 +293,7 @@ export function EditorialHeadToHeadSimulator({
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center font-black text-5xl text-white/20">
-                {nameB.slice(0, 2).toUpperCase()}
+                {nameB ? nameB.slice(0, 2).toUpperCase() : '?'}
               </div>
             )}
           </div>
@@ -293,6 +301,7 @@ export function EditorialHeadToHeadSimulator({
       </div>
 
       {/* COMPARATIVE METRIC BARS */}
+      {profileA && profileB && (
       <div className="relative z-10 mt-8 space-y-4 pt-5 border-t border-[var(--border-subtle)] dark:border-white/10">
         <h4 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-zinc-400 text-center">
           {L(i18n.language, 'ANÁLISE COMPARATIVA DE VOLUME E DEFESA', 'COMPARATIVE VOLUME & DEFENSE ANALYSIS', 'ANALYSE COMPARATIVE DES VOLUMES ET DE LA DÉFENSE', 'ANÁLISIS COMPARATIVO DE VOLUMEN Y DEFENSA')}
@@ -361,6 +370,7 @@ export function EditorialHeadToHeadSimulator({
           />
         </div>
       </div>
+      )}
 
       {/* CORNER SELECTION MODAL */}
       <AnimatePresence>
