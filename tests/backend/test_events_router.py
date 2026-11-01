@@ -36,7 +36,7 @@ def test_event_includes_fight_card_with_winner(client):
 
 def test_events_response_is_cacheable(client):
     response = client.get("/events")
-    assert response.headers.get("cache-control") == "public, max-age=300"
+    assert response.headers.get("cache-control") == "public, max-age=300, s-maxage=300"
 
 
 def test_upcoming_events_are_sorted_soonest_first(client):

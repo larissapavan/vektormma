@@ -36,4 +36,4 @@ def test_p4p_has_no_duplicate_champion_row(client):
 
 def test_rankings_response_is_cacheable(client):
     response = client.get("/rankings")
-    assert response.headers.get("cache-control") == "public, max-age=1800"
+    assert response.headers.get("cache-control") == "public, max-age=1800, s-maxage=1800"

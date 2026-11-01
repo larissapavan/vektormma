@@ -17,7 +17,7 @@ def test_fighters_returns_full_catalog(client):
 
 def test_fighters_response_is_cacheable(client):
     response = client.get("/fighters")
-    assert response.headers.get("cache-control") == "public, max-age=300"
+    assert response.headers.get("cache-control") == "public, max-age=300, s-maxage=300"
 
 
 def test_fighters_reports_total_count_header(client):
