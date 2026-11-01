@@ -16,6 +16,7 @@ def calls(monkeypatch):
     monkeypatch.setattr(update_all.scrape_roster_watch, "main", lambda: log.append(("roster", None)))
     monkeypatch.setattr(update_all.scrape_stat_leaders, "main", lambda: log.append(("records", None)))
     monkeypatch.setattr(update_all.scrape_pfl, "main", lambda argv=None: log.append(("pfl", list(argv or []))) or 0)
+    monkeypatch.setattr(update_all.scrape_ufc_career_stats, "main", lambda argv=None: log.append(("career", list(argv or []))) or 0)
     monkeypatch.setattr(update_all.scrape_one, "main", lambda argv=None: log.append(("one", list(argv or []))) or 0)
     monkeypatch.setattr(update_all.scrape_gyms, "main", lambda argv=None: log.append(("gyms", list(argv or []))) or 0)
     monkeypatch.setattr(update_all.log_predictions, "log_upcoming", lambda: log.append(("log", None)) or 0)
@@ -26,7 +27,7 @@ def calls(monkeypatch):
 
 def test_logs_picks_before_espn_and_settles_them_after(calls):
     assert update_all.main([]) == 0
-    assert [name for name, _ in calls] == ["log", "espn", "settle", "stats", "rankings", "photos", "origins", "roster", "records", "pfl", "one", "gyms", "feed"]
+    assert [name for name, _ in calls] == ["log", "espn", "settle", "stats", "rankings", "photos", "origins", "roster", "records", "career", "pfl", "one", "gyms", "feed"]
 
 
 def test_dry_run_only_previews_the_espn_pfl_and_one_steps(calls):
@@ -35,7 +36,7 @@ def test_dry_run_only_previews_the_espn_pfl_and_one_steps(calls):
 
 
 def test_skip_flags_are_respected(calls):
-    update_all.main(["--skip-espn", "--skip-photos", "--skip-origins", "--skip-roster", "--skip-records", "--skip-predictions", "--skip-stats", "--skip-pfl", "--skip-one", "--skip-gyms"])
+    update_all.main(["--skip-espn", "--skip-photos", "--skip-origins", "--skip-roster", "--skip-records", "--skip-predictions", "--skip-stats", "--skip-career-stats", "--skip-pfl", "--skip-one", "--skip-gyms"])
     assert [name for name, _ in calls] == ["rankings"]
 
 
@@ -45,7 +46,7 @@ def test_a_failing_step_does_not_stop_the_others_and_sets_exit_status(monkeypatc
 
     monkeypatch.setattr(update_all.scrape_espn, "main", boom)
     assert update_all.main([]) == 1
-    assert [name for name, _ in calls] == ["log", "settle", "stats", "rankings", "photos", "origins", "roster", "records", "pfl", "one", "gyms", "feed"]
+    assert [name for name, _ in calls] == ["log", "settle", "stats", "rankings", "photos", "origins", "roster", "records", "career", "pfl", "one", "gyms", "feed"]
     assert "FAILED" in capsys.readouterr().out
 
 
@@ -79,6 +80,17 @@ def test_an_one_scraper_that_finds_nothing_fails_the_run(monkeypatch, calls, cap
     monkeypatch.setattr(update_all.scrape_one, "main", lambda argv=None: 1)
     assert update_all.main(["--skip-espn", "--skip-rankings", "--skip-photos", "--skip-origins", "--skip-roster", "--skip-records", "--skip-predictions", "--skip-stats", "--skip-pfl"]) == 1
     assert "ONE (onefc.com): FAILED" in capsys.readouterr().out
+
+
+def test_a_career_stats_run_that_reads_no_page_fails_the_run(monkeypatch, calls, capsys):
+    monkeypatch.setattr(update_all.scrape_ufc_career_stats, "main", lambda argv=None: 1)
+    assert update_all.main(["--skip-espn", "--skip-rankings", "--skip-photos", "--skip-origins", "--skip-roster", "--skip-records", "--skip-predictions", "--skip-stats", "--skip-pfl", "--skip-one"]) == 1
+    assert "UFC career stats: FAILED" in capsys.readouterr().out
+
+
+def test_a_dry_run_skips_the_slow_career_stats_step(calls):
+    update_all.main(["--dry-run"])
+    assert "career" not in [name for name, _ in calls]
 
 
 def test_a_gym_scraper_that_finds_nothing_fails_the_run(monkeypatch, calls, capsys):
