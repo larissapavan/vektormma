@@ -76,8 +76,8 @@ describe('the page that chooses an organization', () => {
     const list = await screen.findByRole('list', { name: 'Organizations' }, WAIT)
     const links = within(list).getAllByRole('link')
     expect(links.map((link) => link.getAttribute('href'))).toEqual(['/home', '/pfl', '/one', '/bellator'])
-    expect(within(list).getAllByText('Win predictions')).toHaveLength(2)  // only the UFC
-    expect(within(list).getByText('Archive')).toBeInTheDocument()  // Bellator
+    expect(within(list).getAllByText('AI Predictions')).toHaveLength(2)  // the UFC and ONE
+    expect(within(list).getByText('Historical Archive')).toBeInTheDocument()  // Bellator
   })
 
   it('has no switcher, section menu or fighter search until an organization is chosen', async () => {
