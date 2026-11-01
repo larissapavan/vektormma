@@ -1,6 +1,8 @@
-"""Prediction endpoints for fighter matchups, division matrices, and upcoming fight picks."""
+"""Prediction endpoints for fighter matchups, division matrices, and upcoming fight picks.
 
-from __future__ import annotations
+Do not add `from __future__ import annotations` here. @limiter.limit wraps each endpoint in a function that lives in
+slowapi's module, and FastAPI looks up string annotations in the module of the function it is given: it cannot find
+`PredictionRequest`, takes `payload` for a query parameter and answers every POST /predict with a 422."""
 
 import logging
 import time
