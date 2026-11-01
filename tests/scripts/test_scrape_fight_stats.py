@@ -1,7 +1,5 @@
 from datetime import date
 
-import pytest
-
 from scripts import scrape_fight_stats as stats
 from scripts.scrape_espn import EspnBout, EspnEvent, EspnFighter
 

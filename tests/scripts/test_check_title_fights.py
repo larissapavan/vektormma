@@ -1,5 +1,4 @@
 import csv
-from datetime import date
 from pathlib import Path
 
 from scripts import check_title_fights

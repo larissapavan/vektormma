@@ -15,8 +15,6 @@ import argparse
 import csv
 import io
 import re
-import sys
-import time
 import unicodedata
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path

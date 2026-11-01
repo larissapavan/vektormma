@@ -17,7 +17,6 @@ import argparse
 import csv
 import sys
 import unicodedata
-from dataclasses import dataclass
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any

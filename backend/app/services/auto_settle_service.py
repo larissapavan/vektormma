@@ -1,15 +1,13 @@
 from __future__ import annotations
 
 import logging
-from datetime import date, datetime
-from pathlib import Path
+from datetime import date
 from typing import Any
 
 import pandas as pd
 
-from backend.app.services.catalog_service import _normalize_name, canonical_name
-from backend.app.services.track_record_service import get_track_record, load_log, save_log
-from scripts.log_predictions import fight_key, log_upcoming, resolve
+from backend.app.services.track_record_service import get_track_record
+from scripts.log_predictions import log_upcoming, resolve
 from src.ufc_predictor.config import RAW_DATA_DIR
 
 logger = logging.getLogger(__name__)
@@ -21,8 +19,6 @@ UPCOMING_EVENTS_PATH = RAW_DATA_DIR / "upcoming_events.csv"
 def sync_and_settle(today: str | None = None) -> dict[str, Any]:
     """Sync latest results, settle pending predictions, log new upcoming fights and recalculate metrics."""
     today = today or date.today().isoformat()
-    log_before = load_log()
-    pending_before = len(log_before[log_before["correct"] == ""])
 
     # 1. Try to settle any pending fights against fight history
     settled = resolve(today=today)

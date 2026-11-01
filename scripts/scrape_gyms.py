@@ -26,7 +26,6 @@ import re
 import sys
 from datetime import date
 from pathlib import Path
-from urllib.parse import urlparse
 
 from bs4 import BeautifulSoup
 
