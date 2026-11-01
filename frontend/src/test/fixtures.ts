@@ -186,7 +186,13 @@ export const pflChampion = orgFighter('Riko Stone', {
   next_fight: { event: 'PFL Future', date: '2030-02-02', opponent: 'Dax Moore' },
   ufc_name: 'Riko Stone',
 })
-export const pflContender = orgFighter('Dax Moore', { ranking: '#1 Lightweight', country_code: 'br', country: 'Brazil', hometown: 'Sao Paulo, Brazil' })
+export const pflContender = orgFighter('Dax Moore', {
+  ranking: '#1 Lightweight',
+  country_code: 'br',
+  country: 'Brazil',
+  hometown: 'Sao Paulo, Brazil',
+  next_fight: { event: 'PFL Future', date: '2030-02-02', opponent: 'Riko Stone' },
+})
 export const pflVeteran = orgFighter('Lena Ortiz', { is_active: false, division: 'Heavyweight', ranking: null })
 
 const orgFight = (extra: Record<string, unknown> = {}) => ({
@@ -237,6 +243,12 @@ const pflFights = [
   { event_name: 'PFL Chicago', date: '2026-04-11', opponent: 'Dax Moore', result: 'win', weight_class: 'Lightweight', method: 'SUB', method_detail: 'Armbar', round: 2, time: '3:10', winner: 'Riko Stone', location: 'Test Arena, Chicago', fight_url: 'https://x/#2', title_fight: null, outcome: 'win' },
 ]
 
+/** Dax Moore never fought in the UFC, so his profile is the organization's own. */
+const daxFights = [
+  { ...pflFights[0], opponent: 'Riko Stone' },
+  { ...pflFights[1], opponent: 'Riko Stone', result: 'loss', winner: 'Riko Stone', outcome: 'loss' },
+]
+
 export const orgRoutes: Record<string, unknown> = {
   '/orgs/pfl/fighters': [pflChampion, pflContender, pflVeteran],
   '/orgs/pfl/events': [
@@ -247,6 +259,7 @@ export const orgRoutes: Record<string, unknown> = {
   '/orgs/pfl/rankings': pflRankings,
   '/orgs/pfl/data-info': { last_updated: '2026-10-17', fighters_count: 3, events_count: 2, fights_count: 2, sources: ['pflmma.com'] },
   '/orgs/pfl/fighters/Riko Stone/fights': pflFights,
+  '/orgs/pfl/fighters/Dax Moore/fights': daxFights,
   // Bellator: an archive, so there is no upcoming card and the fighters are mostly retired.
   '/orgs/bellator/fighters': [pflChampion, pflVeteran],
   '/orgs/bellator/events': [

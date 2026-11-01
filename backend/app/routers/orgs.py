@@ -6,7 +6,7 @@ from backend.app.schemas.data_info import DataInfoResponse
 from backend.app.schemas.fight_history import FightRecord
 from backend.app.schemas.orgs import OrgEvent, OrgFighter, OrgInfo, OrgRankingCategory
 from backend.app.schemas.prediction import UpcomingPick
-from backend.app.services.crossorg_service import ufc_names_for_org
+from backend.app.services.crossorg_service import ufc_names_for_org, ufc_photo
 from backend.app.services.org_service import (
     _name_key,
     get_org,
@@ -55,7 +55,13 @@ def org_fighters(
     response.headers["X-Total-Count"] = str(len(fighters))
     page = fighters[offset : offset + limit] if limit is not None else fighters[offset:]
     ufc_names = ufc_names_for_org(org_id)
-    return [OrgFighter(**fighter, ufc_name=ufc_names.get(_name_key(fighter["name"]))) for fighter in page]
+    result = []
+    for fighter in page:
+        ufc_name = ufc_names.get(_name_key(fighter["name"]))
+        # One person, one photo: a fighter this organization has no photo of takes the one the UFC profile has.
+        image_url = fighter["image_url"] or (ufc_photo(ufc_name) if ufc_name else None)
+        result.append(OrgFighter(**{**fighter, "image_url": image_url}, ufc_name=ufc_name))
+    return result
 
 
 @router.get("/{org_id}/fighters/{name}/fights", response_model=list[FightRecord])

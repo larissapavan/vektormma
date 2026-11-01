@@ -55,6 +55,15 @@ def test_every_link_passes_the_guards(client):
             assert crossorg._linked((ufc["name"], ufc["division"]), fighter["division"])
 
 
+def test_a_linked_fighter_without_a_photo_of_the_organization_uses_the_ufc_one(client):
+    one = {fighter["name"]: fighter for fighter in client.get("/orgs/one/fighters").json()}
+    silva = one["Anderson Silva"]
+    assert silva["ufc_name"] == "Anderson Silva"
+    assert silva["image_url"] == "/fighter-photos/anderson-silva.webp"  # the UFC's file, not one kept for ONE
+    # A fighter who is not linked never borrows a photo.
+    assert not any(fighter["image_url"] and not fighter["ufc_name"] and not fighter["image_url"].startswith("/fighter-photos/one/") for fighter in one.values())
+
+
 @pytest.mark.parametrize(
     ("ufc_division", "org_division", "linked"),
     [

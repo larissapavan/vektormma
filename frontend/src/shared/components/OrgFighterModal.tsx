@@ -2,7 +2,6 @@ import { motion } from 'framer-motion'
 import { ExternalLink, MapPin, Trophy, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { L } from '../../i18n/lang'
@@ -14,6 +13,7 @@ import { normalizeFighterName } from '../hooks/useFighterImages'
 import { useOrgFighterFights, useOrgFighters } from '../hooks/useOrgData'
 import { useUpcomingPicks } from '../hooks/useUpcomingPicks'
 import type { FightRecord } from '../types/api'
+import { FighterProfileModal } from './FighterProfileModal'
 import { FlagIcon } from './FlagIcon'
 import { PhotoCredit } from './PhotoCredit'
 import { SeasonFightsPanel } from './SeasonFightsPanel'
@@ -28,11 +28,29 @@ function parseRecord(text: string | null | undefined) {
 const isTbd = (name: string) => /^(tbd|tba)$/i.test(name.trim()) || /oponente|substituto/i.test(name)
 
 /**
+ * One profile per person. A fighter who also fought in the UFC opens the UFC profile, which holds the whole career and
+ * lists the fights in the other organizations too; the profile of the organization is for those who never fought there.
+ * A name the organization does not have (an opponent picked inside the UFC profile) is the UFC's as well.
+ */
+export function OrgFighterModal(props: {
+  org: OrgConfig
+  name: string
+  onClose: () => void
+  onSelectFighter: (name: string) => void
+}) {
+  const { fighters } = useOrgFighters(props.org.id)
+  const own = fighters.find((fighter) => normalizeFighterName(fighter.name) === normalizeFighterName(props.name))
+  const ufcName = own ? own.ufc_name : fighters.length > 0 ? props.name : null
+  if (ufcName) return <FighterProfileModal name={ufcName} onClose={props.onClose} onSelectFighter={props.onSelectFighter} />
+  return <OrgOnlyFighterModal {...props} />
+}
+
+/**
  * The fighter profile of every organization other than the UFC, laid out like the UFC one: the photo and the titles on
  * the left; the record, the build, how the wins came, the next bout with the model's pick and the striking numbers on
  * the right; the season-by-season timeline along the foot.
  */
-export function OrgFighterModal({
+function OrgOnlyFighterModal({
   org,
   name,
   onClose,
@@ -230,15 +248,6 @@ export function OrgFighterModal({
         transition={{ duration: 0.25, ease: 'easeOut' }}
       >
         <div className="absolute top-3.5 right-3.5 sm:top-6 sm:right-6 z-30 flex items-center gap-2 sm:gap-2.5">
-          {profile?.ufc_name ? (
-            <Link
-              to={`/fighters?fighter=${encodeURIComponent(profile.ufc_name)}`}
-              onClick={onClose}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] hover:bg-white/[0.09] hover:border-white/20 px-3 sm:px-4 py-1.5 sm:py-2 font-mono text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-neutral-300 hover:text-white backdrop-blur-md transition-all"
-            >
-              {L(lang, 'Ver perfil completo no UFC →', 'Also in the UFC: open the UFC profile', 'Voir le profil complet à l\'UFC →', 'Ver el perfil completo en la UFC →')}
-            </Link>
-          ) : null}
           <button
             type="button"
             onClick={onClose}

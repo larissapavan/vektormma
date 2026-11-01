@@ -172,12 +172,12 @@ describe('the PFL pages', () => {
 
   it('opening a fighter shows the record, the build and every fight', async () => {
     renderAt('/pfl/fighters')
-    await userEvent.click(await screen.findByRole('button', { name: /Riko Stone\. View profile/ }, WAIT))
-    const dialog = await screen.findByRole('dialog', { name: /Riko Stone/ }, WAIT)
+    await userEvent.click(await screen.findByRole('button', { name: /Dax Moore\. View profile/ }, WAIT))
+    const dialog = await screen.findByRole('dialog', { name: /Dax Moore/ }, WAIT)
     expect(within(dialog).getByText(/15V - 3D/)).toBeInTheDocument()  // the whole career record
     expect(within(dialog).getByText('175 cm')).toBeInTheDocument()
     expect(within(dialog).getByText('5\'9"')).toBeInTheDocument()
-    expect(within(dialog).getByText(/Champion Lightweight/)).toBeInTheDocument()
+    expect(within(dialog).getByText(/CONTENDER #1/)).toBeInTheDocument()
     expect(within(dialog).getByText(/NEXT BOUT/)).toBeInTheDocument()
 
     // The season timeline opens the bouts of a year, with how each one ended.
@@ -194,18 +194,18 @@ describe('the PFL pages', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
   })
 
-  it('a fighter who also fought in the UFC links to the UFC profile', async () => {
+  it('a fighter who also fought in the UFC opens one profile, the UFC one, instead of the organization own', async () => {
     renderAt('/pfl/fighters')
     await userEvent.click(await screen.findByRole('button', { name: /Riko Stone\. View profile/ }, WAIT))
-    const dialog = await screen.findByRole('dialog', { name: /Riko Stone/ }, WAIT)
-    expect(within(dialog).getByRole('link', { name: /open the UFC profile/i })).toHaveAttribute('href', '/fighters?fighter=Riko%20Stone')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Riko Stone' }, WAIT)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Close performance profile' })).toBeInTheDocument()  // the UFC profile's own window
+    expect(screen.queryByRole('dialog', { name: /PFL fighter profile/ })).not.toBeInTheDocument()
   })
 
-  it('a fighter who never fought in the UFC has no such link', async () => {
+  it('a fighter who never fought in the UFC keeps the organization own profile', async () => {
     renderAt('/pfl/fighters')
     await userEvent.click(await screen.findByRole('button', { name: /Dax Moore\. View profile/ }, WAIT))
-    const dialog = await screen.findByRole('dialog', { name: /Dax Moore/ }, WAIT)
-    expect(within(dialog).queryByRole('link', { name: /open the UFC profile/i })).not.toBeInTheDocument()
+    expect(await screen.findByRole('dialog', { name: /Dax Moore, PFL fighter profile/ }, WAIT)).toBeInTheDocument()
   })
 
   it('a profile can be opened from a link (?fighter=)', async () => {

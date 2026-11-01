@@ -23,7 +23,7 @@ from backend.app.services.org_service import ORGS, _name_key, get_org_fighter_fi
 MAX_DIVISION_GAP = 2
 MEN_ORDER = ["strawweight", "flyweight", "bantamweight", "featherweight", "lightweight", "welterweight", "middleweight", "light heavyweight", "heavyweight"]
 
-_cache: dict = {"catalog": None, "ufc": {}}
+_cache: dict = {"catalog": None, "ufc": {}, "photos": {}}
 
 
 def _womens(division: str | None) -> bool | None:
@@ -47,8 +47,15 @@ def _ufc_index() -> dict[str, tuple[str, str | None]]:
             if record.get("ufc_status") == "never":
                 continue
             seen.setdefault(_name_key(record["name"]), []).append((record["name"], division if isinstance(division, str) else None))
-        _cache.update(catalog=catalog, ufc={key: rows[0] for key, rows in seen.items() if len(rows) == 1})
+        photos = {_name_key(name): image for name, image in zip(catalog["name"], catalog["image_url"]) if isinstance(image, str) and image}
+        _cache.update(catalog=catalog, ufc={key: rows[0] for key, rows in seen.items() if len(rows) == 1}, photos=photos)
     return _cache["ufc"]
+
+
+def ufc_photo(ufc_name: str) -> str | None:
+    """The photo the UFC profile of this person has, to stand in where another organization has none of its own."""
+    _ufc_index()
+    return _cache["photos"].get(_name_key(ufc_name))
 
 
 def _linked(ufc: tuple[str, str | None], org_division: str | None) -> bool:
