@@ -12,8 +12,9 @@ ufc.com page as the rankings, and fighters created from ESPN need their headshot
     5. Roster    scripts.scrape_roster_watch         the UFC roster (roster.watch): status, nationalities, badges, debut and last fight dates
     6. Records   scripts.scrape_stat_leaders         the UFC's career Record Book (statleaders.ufc.com)
     7. PFL       scripts.scrape_pfl                  the Professional Fighters League: events, results, fighters, rankings, photos (pflmma.com)
-    8. Gyms      scripts.scrape_gyms                 the gyms and the fighters who train in them (fighthub-app.com)
-    9. Feed      scripts.build_feed                  the RSS feed of picks and results (frontend/public/feed.xml)
+    8. ONE       scripts.scrape_one                  ONE Championship: announced cards, new events and results of the last weeks (onefc.com)
+    9. Gyms      scripts.scrape_gyms                 the gyms and the fighters who train in them (fighthub-app.com)
+   10. Feed      scripts.build_feed                  the RSS feed of picks and results (frontend/public/feed.xml)
 
 Usage (from the repo root):
     python -m scripts.update_all --dry-run      # ESPN preview only; rankings and photos write files, so they are skipped
@@ -37,8 +38,8 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scripts import (
-    build_feed, download_fighter_photos, log_predictions, scrape_espn, scrape_fight_stats, scrape_fighter_origins, scrape_gyms, scrape_pfl, scrape_rankings,
-    scrape_roster_watch, scrape_stat_leaders, validate_data,
+    build_feed, download_fighter_photos, log_predictions, scrape_espn, scrape_fight_stats, scrape_fighter_origins, scrape_gyms, scrape_one, scrape_pfl,
+    scrape_rankings, scrape_roster_watch, scrape_stat_leaders, validate_data,
 )
 
 # New fighters are a handful per week; the cap keeps a daily run short even if the origins file is ever behind.
@@ -62,6 +63,12 @@ def run_pfl(*, dry_run: bool, photos: bool) -> None:
     status = scrape_pfl.main((["--dry-run"] if dry_run else []) + (["--photos"] if photos and not dry_run else []))
     if status != 0:
         raise RuntimeError("the PFL scraper found nothing; data/raw/pfl was left untouched")
+
+
+def run_one(*, dry_run: bool) -> None:
+    status = scrape_one.main(["--dry-run"] if dry_run else [])
+    if status != 0:
+        raise RuntimeError("the ONE scraper found nothing; data/raw/one was left untouched")
 
 
 def run_gyms(*, dry_run: bool) -> None:
@@ -91,6 +98,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--skip-roster", action="store_true")
     parser.add_argument("--skip-records", action="store_true")
     parser.add_argument("--skip-pfl", action="store_true")
+    parser.add_argument("--skip-one", action="store_true")
     parser.add_argument("--skip-gyms", action="store_true")
     parser.add_argument("--skip-predictions", action="store_true")
     parser.add_argument("--skip-stats", action="store_true", help="skip the per-fight statistics")
@@ -124,6 +132,7 @@ def main(argv: list[str] | None = None) -> int:
         results["Fighter origins"] = results["Former roster"] = results["Record book"] = None
         # The PFL preview reads the site but writes nothing, so unlike the steps above it can run.
         results["PFL (pflmma.com)"] = None if args.skip_pfl else run_step("PFL (pflmma.com)", lambda: run_pfl(dry_run=True, photos=False))
+        results["ONE (onefc.com)"] = None if args.skip_one else run_step("ONE (onefc.com)", lambda: run_one(dry_run=True))
         results["Gyms (FightHub)"] = None if args.skip_gyms else run_step("Gyms (FightHub)", lambda: run_gyms(dry_run=True))
     else:
         recent = (date.today() - timedelta(days=FIGHT_STATS_DAYS)).isoformat()
@@ -148,6 +157,7 @@ def main(argv: list[str] | None = None) -> int:
         results["PFL (pflmma.com)"] = (
             None if args.skip_pfl else run_step("PFL (pflmma.com)", lambda: run_pfl(dry_run=False, photos=not args.skip_photos))
         )
+        results["ONE (onefc.com)"] = None if args.skip_one else run_step("ONE (onefc.com)", lambda: run_one(dry_run=False))
         results["Gyms (FightHub)"] = None if args.skip_gyms else run_step("Gyms (FightHub)", lambda: run_gyms(dry_run=False))
         results["RSS feed"] = None if args.skip_predictions else run_step("RSS feed (picks and results)", build_feed.main)
         results["Validate"] = run_step("Validate refreshed data", require_valid)

@@ -28,11 +28,12 @@ CHECKED = ["events.csv", "fights.csv", "event_cards.csv", "fighters.csv", "ranki
 MIN_ROWS = {"rankings.csv": 100, "fights.csv": 8000, "fighters.csv": 4000, "events.csv": 700, "fight_stats.csv": 10000, "gyms.csv": 800, "gym_fighters.csv": 1400}
 MAX_CONTRADICTORY_SHARE = 0.005  # share of fight_stats.csv rows that may have more landed than attempted (it is 0.11% today)
 MAX_RANK = 15  # the UFC ranks 15 fighters per division (rank 0 is the champion)
-# Organisations other than the UFC keep their three files in data/raw/<org>/ (see scripts/scrape_pfl.py).
-ORG_DIRS = ["pfl", "bellator"]
+# Organisations other than the UFC keep their three files in data/raw/<org>/ (see scripts/scrape_pfl.py and scrape_one.py).
+ORG_DIRS = ["pfl", "one", "bellator"]
 ORG_FILES = ["fights.csv", "fighters.csv", "rankings.csv"]
 ORG_MIN_ROWS = {
     "pfl": {"fights.csv": 1300, "fighters.csv": 900, "rankings.csv": 50},
+    "one": {"fights.csv": 4500, "fighters.csv": 3500, "rankings.csv": 20},
     "bellator": {"fights.csv": 2500, "fighters.csv": 1500, "rankings.csv": 8},  # an archive: the numbers will not change
 }
 STALE_UPCOMING_DAYS = 3  # a card this far past its date should have turned into results by now
@@ -244,7 +245,7 @@ def org_fight_problems(org: str) -> list[str]:
         one, two, winner = row["fighter_1"].strip(), row["fighter_2"].strip(), row["winner"].strip()
         if not (one and two):
             problems.append(f"{label}: a bout is missing a fighter")
-        elif name_key(one) == name_key(two):
+        elif name_key(one) == name_key(two) and name_key(one) != "tbd":  # "TBD vs TBD" is a placeholder bout, not one person twice
             problems.append(f"{label}: {one} is booked against themself")
         if winner and name_key(winner) not in (name_key(one), name_key(two)):
             problems.append(f"{label}: the winner {winner} is not in the bout {one} vs {two}")
