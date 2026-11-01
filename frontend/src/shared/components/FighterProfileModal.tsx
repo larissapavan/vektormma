@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, Sparkles, Trophy, X } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Sparkles, Trophy, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
@@ -16,33 +16,8 @@ import { useUpcomingPicks } from '../hooks/useUpcomingPicks'
 import { getFighterPerformance } from '../services/api'
 import type { FighterPerformance, FightRecord, UpcomingBout } from '../types/api'
 import { PhotoCredit } from './PhotoCredit'
+import { SeasonFightsPanel } from './SeasonFightsPanel'
 import { SeasonTimeline, type TimelineEra } from './SeasonTimeline'
-
-
-function resolveFightDivision(fight: FightRecord, fallbackDivision?: string | null): string | null {
-  if (fight.weight_class && !/catch/i.test(fight.weight_class)) {
-    return fight.weight_class
-  }
-  const text = `${fight.notes || ''} ${fight.event || ''} ${fight.event_name || ''}`
-  const match = text.match(/\b(Women's\s+Featherweight|Women's\s+Bantamweight|Women's\s+Flyweight|Women's\s+Strawweight|Light\s+Heavyweight|Super\s+Lightweight|Featherweight|Bantamweight|Flyweight|Strawweight|Welterweight|Middleweight|Heavyweight|Lightweight|Cruiserweight)\b/i)
-  if (match) {
-    const raw = match[1].toLowerCase()
-    if (raw.includes('super light') || raw === 'lightweight') return 'Lightweight'
-    if (raw.includes('light heavy')) return 'Light Heavyweight'
-    if (raw.includes('women') && raw.includes('feather')) return "Women's Featherweight"
-    if (raw.includes('women') && raw.includes('bantam')) return "Women's Bantamweight"
-    if (raw.includes('women') && raw.includes('fly')) return "Women's Flyweight"
-    if (raw.includes('women') && raw.includes('straw')) return "Women's Strawweight"
-    if (raw.includes('feather')) return 'Featherweight'
-    if (raw.includes('bantam')) return 'Bantamweight'
-    if (raw.includes('fly')) return 'Flyweight'
-    if (raw.includes('straw')) return 'Strawweight'
-    if (raw.includes('welter')) return 'Welterweight'
-    if (raw.includes('middle')) return 'Middleweight'
-    if (raw.includes('heavy') || raw.includes('cruiser')) return 'Heavyweight'
-  }
-  return fallbackDivision || null
-}
 
 export function FighterProfileModal({
   name,
@@ -800,196 +775,15 @@ export function FighterProfileModal({
           </div>
         </div>
 
-        {/* PAINEL EDITORIAL DE COMBATES: Exibido ao clicar em qualquer ano */}
-        <AnimatePresence>
-          {selectedEra && (
-            <motion.div
-              initial={{ opacity: 0, y: 16, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.98 }}
-              transition={{ duration: 0.22, ease: 'easeOut' }}
-              className="absolute bottom-[150px] sm:bottom-[166px] left-2 right-2 sm:left-6 sm:right-6 lg:left-auto lg:right-8 lg:w-[620px] z-40 rounded-2xl border border-white/15 bg-[#0C0D14]/98 p-3 sm:p-5 shadow-[0_25px_70px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col max-h-[calc(100%_-_170px)] sm:max-h-[min(440px,calc(100%_-_186px))]"
-            >
-              {/* Top Bar: Ano, Balanço, Milestones e Navegação */}
-              <div className="flex items-center justify-between border-b border-white/10 pb-2.5 sm:pb-3 mb-2.5 sm:mb-3 shrink-0 gap-2">
-                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                  <div className="flex items-center gap-1 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const idx = timelineEras.findIndex((e) => e.year === selectedEra.year)
-                        if (idx > 0) setSelectedEra(timelineEras[idx - 1])
-                      }}
-                      disabled={timelineEras.findIndex((e) => e.year === selectedEra.year) <= 0}
-                      className="h-7 w-7 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center text-neutral-400 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:pointer-events-none transition cursor-pointer"
-                      title={L(i18n.language, 'Ano anterior', 'Previous year', 'Année précédente', 'Año anterior')}
-                    >
-                      <ChevronLeft className="h-4 w-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const idx = timelineEras.findIndex((e) => e.year === selectedEra.year)
-                        if (idx < timelineEras.length - 1) setSelectedEra(timelineEras[idx + 1])
-                      }}
-                      disabled={timelineEras.findIndex((e) => e.year === selectedEra.year) >= timelineEras.length - 1}
-                      className="h-7 w-7 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center text-neutral-400 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:pointer-events-none transition cursor-pointer"
-                      title={L(i18n.language, 'Próximo ano', 'Next year', 'Année suivante', 'Año siguiente')}
-                    >
-                      <ChevronRight className="h-4 w-4" />
-                    </button>
-                  </div>
-
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                      <span className="font-display font-black text-sm sm:text-lg text-white tracking-tight whitespace-nowrap">
-                        {L(i18n.language, 'TEMPORADA', 'SEASON', 'SAISON', 'TEMPORADA')} {selectedEra.year}
-                      </span>
-                      <span className="font-mono text-[10px] sm:text-xs font-bold text-amber-400 bg-amber-400/10 border border-amber-400/30 px-1.5 sm:px-2 py-0.5 rounded-full shrink-0">
-                        {selectedEra.wins}{L(i18n.language, 'V', 'W', 'V', 'V')} - {selectedEra.losses}{L(i18n.language, 'D', 'L', 'D', 'D')}
-                      </span>
-                    </div>
-                    <p className="font-sans text-[10px] sm:text-[11px] text-neutral-400 truncate mt-0.5">
-                      {selectedEra.fights.length} {selectedEra.fights.length === 1 ? L(i18n.language, 'combate disputado', 'bout fought', 'combat disputé', 'pelea disputada') : L(i18n.language, 'combates disputados', 'bouts fought', 'combats disputés', 'peleas disputadas')}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                  {selectedEra.milestone && (
-                    <div className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 font-mono text-[10px] font-bold text-amber-400 uppercase tracking-wider">
-                      <Trophy className="h-3 w-3" />
-                      <span>{selectedEra.milestone}</span>
-                    </div>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedEra(null)}
-                    className="h-7 w-7 sm:h-8 sm:w-8 rounded-full border border-white/10 bg-white/5 hover:bg-white/15 text-neutral-400 hover:text-white transition flex items-center justify-center cursor-pointer"
-                    title={L(i18n.language, 'Fechar (Esc)', 'Close (Esc)', 'Fermer (Échap)', 'Cerrar (Esc)')}
-                  >
-                    <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Lista Completa de Combates do Ano */}
-              <div className="flex-1 overflow-y-auto no-scrollbar space-y-2 pr-0.5 sm:pr-1">
-                {selectedEra.fights.map((fight, idx) => {
-                  const isWin = fight.result === 'win'
-                  const isLoss = fight.result === 'loss'
-                  const resultLabel = isWin
-                    ? L(i18n.language, 'VITÓRIA', 'WIN', 'VICTOIRE', 'VICTORIA')
-                    : isLoss
-                      ? L(i18n.language, 'DERROTA', 'LOSS', 'DÉFAITE', 'DERROTA')
-                      : (fight.result?.toUpperCase() || 'NC')
-
-                  return (
-                    <div
-                      key={idx}
-                      className="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.06] hover:border-white/15 transition-all duration-200"
-                    >
-                      {/* Left: Organization & Result pill, opponent & event */}
-                      <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                        <div className="flex items-center sm:flex-col gap-1 shrink-0">
-                          <span
-                            className={`px-1.5 py-0.5 rounded font-mono font-bold text-[9px] tracking-wider uppercase ${
-                              fight.is_ufc !== false
-                                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                                : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
-                            }`}
-                          >
-                            {fight.organization || (fight.is_ufc !== false ? 'UFC' : 'MMA')}
-                          </span>
-                          <span
-                            className={`px-2 py-0.5 rounded font-mono font-bold text-[9px] tracking-wider uppercase ${
-                              isWin
-                                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                                : isLoss
-                                  ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                                  : 'bg-neutral-500/20 text-neutral-300 border border-neutral-500/30'
-                            }`}
-                          >
-                            {resultLabel}
-                          </span>
-                        </div>
-
-                        <div className="min-w-0 flex-1">
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              onSelectFighter(fight.opponent)
-                            }}
-                            className="font-display font-bold text-sm sm:text-base text-white hover:text-amber-400 transition truncate text-left cursor-pointer block leading-tight"
-                            title={L(i18n.language, `Ver perfil de ${fight.opponent}`, `View profile of ${fight.opponent}`, `Voir le profil de ${fight.opponent}`, `Ver el perfil de ${fight.opponent}`)}
-                          >
-                            vs. {fight.opponent}
-                          </button>
-                          <p className="font-sans text-[11px] text-neutral-400 truncate mt-0.5">
-                            {fight.event_name} {fight.date ? `• ${fight.date}` : ''}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Right: Method, Round, Time & Badges */}
-                      <div className="flex items-center justify-between sm:flex-col sm:items-end sm:justify-center border-t border-white/[0.06] pt-1.5 sm:border-t-0 sm:pt-0 shrink-0 text-left sm:text-right gap-1 min-w-0">
-                        <p className="font-mono text-[11px] sm:text-xs font-semibold text-neutral-200 truncate">
-                          {translateFightMethod(fight.method, i18n.language) || L(i18n.language, 'Decisão', 'Decision', 'Décision', 'Decisión')}
-                        </p>
-                        <p className="font-mono text-[10px] text-neutral-400 shrink-0">
-                          {fight.round ? L(i18n.language, `${fight.round}º Round`, `Round ${fight.round}`, `Round ${fight.round}`, `Asalto ${fight.round}`) : ''} {fight.time ? `(${fight.time})` : ''}
-                        </p>
-                        {(fight.title_fight || fight.bmf_title || fight.interim_title) && (() => {
-                          const division = resolveFightDivision(fight, profile?.division)
-                          const divPt = division ? getDivisionName(division, 'pt') : ''
-                          const divFr = division ? getDivisionName(division, 'fr') : ''
-                          const divEs = division ? getDivisionName(division, 'es') : ''
-                          const divEn = division ?? ''
-
-                          if (fight.bmf_title) {
-                            return (
-                              <span className="inline-flex items-center gap-1 font-mono text-[9px] font-bold text-amber-400 uppercase mt-0.5 shrink-0">
-                                ✦ {L(i18n.language, 'Cinturão BMF', 'BMF Title Fight', 'Ceinture BMF', 'Pelea por el cinturón BMF')}
-                              </span>
-                            )
-                          }
-
-                          if (fight.interim_title) {
-                            return (
-                              <span className="inline-flex items-center gap-1 font-mono text-[9px] font-bold text-sky-400 uppercase mt-0.5 shrink-0">
-                                ✦ {L(
-                                  i18n.language,
-                                  divPt ? `Cinturão Interino (${divPt})` : 'Cinturão Interino',
-                                  divEn ? `Interim ${divEn} Title` : 'Interim Title Fight',
-                                  divFr ? `Ceinture Intérimaire (${divFr})` : 'Ceinture Intérimaire',
-                                  divEs ? `Cinturón interino (${divEs})` : 'Cinturón interino',
-                                )}
-                              </span>
-                            )
-                          }
-
-                          return (
-                            <span className="inline-flex items-center gap-1 font-mono text-[9px] font-bold text-amber-400 uppercase mt-0.5 shrink-0">
-                              ✦ {L(
-                                i18n.language,
-                                divPt ? `Disputa de Cinturão (${divPt})` : 'Disputa de Cinturão',
-                                divEn ? `${divEn} Title Fight` : 'Title Fight',
-                                divFr ? `Combat pour le Titre (${divFr})` : 'Combat pour le Titre',
-                                divEs ? `Pelea por el título (${divEs})` : 'Pelea por el título',
-                              )}
-                            </span>
-                          )
-                        })()}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <SeasonFightsPanel
+          era={selectedEra}
+          eras={timelineEras}
+          onSelectEra={setSelectedEra}
+          onSelectFighter={onSelectFighter}
+          fallbackDivision={profile?.division}
+          defaultOrganization="UFC"
+          methodLabel={(fight) => translateFightMethod(fight.method, i18n.language)}
+        />
 
         {/* ZONA INFERIOR - RÉGUA CRONOLÓGICA (Horizontal Timeline) */}
         <div className="relative border-t border-white/[0.08] bg-black/60 backdrop-blur-md px-4 sm:px-8 py-2.5 sm:py-3.5 shrink-0 flex flex-col justify-between">

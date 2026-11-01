@@ -174,11 +174,21 @@ describe('the PFL pages', () => {
     renderAt('/pfl/fighters')
     await userEvent.click(await screen.findByRole('button', { name: /Riko Stone\. View profile/ }, WAIT))
     const dialog = await screen.findByRole('dialog', { name: /Riko Stone/ }, WAIT)
-    expect(within(dialog).getByText('15-3-0')).toBeInTheDocument()
-    expect(within(dialog).getByText('5\'9" (175 cm)')).toBeInTheDocument()
-    expect(within(dialog).getByText('Champion')).toBeInTheDocument()
-    expect(await within(dialog).findByText('Submission (Armbar) · R2 · 3:10', undefined, WAIT)).toBeInTheDocument()
-    expect(within(dialog).getByText(/Next fight/)).toBeInTheDocument()
+    expect(within(dialog).getByText(/15V - 3D/)).toBeInTheDocument()  // the whole career record
+    expect(within(dialog).getByText('175 cm')).toBeInTheDocument()
+    expect(within(dialog).getByText('5\'9"')).toBeInTheDocument()
+    expect(within(dialog).getByText(/Champion Lightweight/)).toBeInTheDocument()
+    expect(within(dialog).getByText(/NEXT BOUT/)).toBeInTheDocument()
+
+    // The season timeline opens the bouts of a year, with how each one ended.
+    // jsdom has no scrolling or pointer capture, which the timeline uses to centre a year and to drag.
+    Element.prototype.scrollTo = () => undefined
+    Element.prototype.hasPointerCapture = () => false
+    const seasons = await within(dialog).findAllByRole('listitem', undefined, WAIT)
+    expect(seasons[0]).toHaveTextContent('2026')
+    await userEvent.click(seasons[0])
+    expect(await within(dialog).findByText('Submission', undefined, WAIT)).toBeInTheDocument()
+    expect(within(dialog).getByText('Round 2 (3:10)')).toBeInTheDocument()
 
     await userEvent.click(within(dialog).getByRole('button', { name: 'Close fighter profile' }))
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())

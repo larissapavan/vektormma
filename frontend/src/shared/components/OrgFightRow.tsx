@@ -39,17 +39,7 @@ export function OrgFightRow({
       </div>
 
       <div className="mt-2.5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5">
-        {fight.title_fight ? (
-          <span className="border-2 border-[var(--rule)] bg-[#F2C230] px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#0E0E0E]">
-            {L(
-              i18n.language,
-              `Disputa de Cinturão ${fight.weight_class ? `(${getDivisionName(fight.weight_class, 'pt')})` : ''}`,
-              `${fight.weight_class ? `${fight.weight_class} ` : ''}title fight`,
-              `Combat de titre ${fight.weight_class ? `(${getDivisionName(fight.weight_class, 'fr')})` : ''}`,
-              `Pelea por el título ${fight.weight_class ? `(${getDivisionName(fight.weight_class, 'es')})` : ''}`,
-            )}
-          </span>
-        ) : null}
+        {fight.title_fight ? <OrgTitleBadge weightClass={fight.weight_class} /> : null}
         {fight.weight_class && !fight.title_fight ? (
           <span className="selector-chip text-[11px] text-[var(--text-main)]">{getDivisionName(fight.weight_class, i18n.language)}</span>
         ) : null}
@@ -77,6 +67,22 @@ export function OrgFightRow({
         {summary ?? (fight.winner ? L(i18n.language, 'Resultado oficial registrado', 'Result recorded', 'Résultat officiel enregistré', 'Resultado registrado') : scheduled ? (pick ? null : L(i18n.language, 'Luta programada', 'Scheduled', 'Combat programmé', 'Programada')) : L(i18n.language, 'Sem resultado registrado', 'No result recorded', 'Aucun résultat enregistré', 'Sin resultado registrado'))}
       </p>
     </article>
+  )
+}
+
+/** The gold "title fight" tag of a bout, with the division when the card names one. */
+export function OrgTitleBadge({ weightClass }: { weightClass: string | null | undefined }) {
+  const { i18n } = useTranslation()
+  return (
+    <span className="border-2 border-[var(--rule)] bg-[#F2C230] px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#0E0E0E]">
+      {L(
+        i18n.language,
+        `Disputa de Cinturão ${weightClass ? `(${getDivisionName(weightClass, 'pt')})` : ''}`,
+        `${weightClass ? `${weightClass} ` : ''}title fight`,
+        `Combat de titre ${weightClass ? `(${getDivisionName(weightClass, 'fr')})` : ''}`,
+        `Pelea por el título ${weightClass ? `(${getDivisionName(weightClass, 'es')})` : ''}`,
+      )}
+    </span>
   )
 }
 

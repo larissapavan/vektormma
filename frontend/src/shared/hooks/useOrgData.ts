@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 
 import {
+  getOrgDataInfo,
   getOrgEvents,
   getOrgFighterFights,
   getOrgFighters,
   getOrgRankings,
   getOrgUpcomingEvents,
 } from '../services/api'
-import type { FightRecord, OrgEvent, OrgFighter, OrgRankingCategory } from '../types/api'
+import type { DataInfo, FightRecord, OrgEvent, OrgFighter, OrgRankingCategory } from '../types/api'
 import i18n from '../../i18n'
 import { L } from '../../i18n/lang'
 
@@ -117,6 +118,16 @@ export function useOrgRankings(org: string) {
     NO_RANKINGS,
   )
   return { rankings: data, loading, error }
+}
+
+export function useOrgDataInfo(org: string) {
+  const { data, loading, error } = useOrgResource<DataInfo | null>(
+    `${org}:data-info`,
+    () => getOrgDataInfo(org),
+    L(i18n.language, 'Não foi possível carregar a data da última atualização.', 'Unable to load the last update date.', 'Impossible de charger la date de la dernière mise à jour.', 'No se pudo cargar la fecha de la última actualización.'),
+    null,
+  )
+  return { dataInfo: data, loading, error }
 }
 
 export function useOrgFighterFights(org: string, fighter: string) {

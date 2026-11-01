@@ -17,12 +17,13 @@ import { orgEs, orgPath, type OrgConfig } from '../../shared/data/orgs'
 import { translateHometown } from '../../shared/data/fightLabels'
 import { useGyms } from '../../shared/hooks/useGyms'
 import { useOrg } from '../../shared/hooks/useOrg'
-import { useOrgEvents, useOrgFighters, useOrgRankings, useOrgUpcomingEvents } from '../../shared/hooks/useOrgData'
+import { useOrgDataInfo, useOrgEvents, useOrgFighters, useOrgRankings, useOrgUpcomingEvents } from '../../shared/hooks/useOrgData'
 import { useUpcomingPicks } from '../../shared/hooks/useUpcomingPicks'
 import type { UpcomingPick } from '../../shared/types/api'
 import { useOrgFighterLookup } from '../../shared/hooks/useOrgFighterLookup'
 import type { OrgEvent, OrgFighter } from '../../shared/types/api'
 import { DivisionHistoryCard } from './OrgChampions'
+import { CatalogStrip, FeaturedHero, MainEventCard, PoundForPoundCard, RestOfCardSection, TrendingCard } from './OrgFeaturedSections'
 
 const LATEST_RESULTS = 4
 
@@ -34,12 +35,16 @@ export function OrgHome() {
   const upcoming = useOrgUpcomingEvents(org.id)
   const pickFor = useUpcomingPicks(org.id, org.hasPredictions)
   const { rankings, loading: rankingsLoading } = useOrgRankings(org.id)
+  const { dataInfo } = useOrgDataInfo(org.id)
   const { gyms } = useGyms()
   const lookup = useOrgFighterLookup(org.id)
   const [profileName, setProfileName] = useState<string | null>(null)
   const [selectedDivision, setSelectedDivision] = useState<string>('')
 
   const isArchived = Boolean(org.archived)
+  // An organization with predictions gets the same page as the UFC home: main event with the model's pick, trending, P4P.
+  const featured = org.hasPredictions && !isArchived
+  const p4p = useMemo(() => rankings.find((category) => category.is_p4p) ?? null, [rankings])
   const nextEvent = upcoming.events[0] ?? null
   const latestEvent = past.events[0] ?? null
   const fightCount = useMemo(() => past.events.reduce((sum, event) => sum + event.fight_count, 0), [past.events])
@@ -100,6 +105,15 @@ export function OrgHome() {
 
   return (
     <div className="space-y-6 sm:space-y-8">
+      {featured ? (
+        <FeaturedHero
+          org={org}
+          fightersCount={fighters.length}
+          nextEvent={nextEvent}
+          nextEventLoading={upcoming.loading}
+          lastUpdated={dataInfo?.last_updated ?? null}
+        />
+      ) : (
       <section className="surface-card relative overflow-hidden rounded-[24px] border border-[var(--border-subtle)] p-5 sm:p-7 shadow-xl">
         <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr] xl:items-end">
           <div>
@@ -161,6 +175,19 @@ export function OrgHome() {
           </div>
         </div>
       </section>
+      )}
+
+      {featured ? (
+        <>
+          <CatalogStrip org={org} fights={fightCount} events={past.events.length} active={activeCount} />
+          <MainEventCard org={org} loading={upcoming.loading} event={nextEvent} pickFor={pickFor} onOpenFighter={setProfileName} />
+          <section className="grid gap-4 lg:grid-cols-2">
+            <TrendingCard org={org} event={nextEvent} onOpenFighter={setProfileName} />
+            <PoundForPoundCard org={org} category={p4p} loading={rankingsLoading} onOpenFighter={setProfileName} />
+          </section>
+          <RestOfCardSection org={org} event={nextEvent} pickFor={pickFor} onOpenFighter={setProfileName} />
+        </>
+      ) : null}
 
       {isArchived ? (
         <p role="note" className="surface-card rounded-[20px] px-4 py-4 text-sm leading-6 text-[var(--text-main)]">
@@ -196,7 +223,7 @@ export function OrgHome() {
         </section>
       ) : null}
 
-      {!isArchived && nextEvent ? (
+      {!isArchived && !featured && nextEvent ? (
         <section aria-label={L(i18n.language, 'Próximo evento', 'Next event', 'Prochain événement', 'Próximo evento')} className="space-y-3">
           <SectionHeading
             eyebrow={L(i18n.language, 'Próximo Evento', 'Next card', 'Prochain événement', 'Próxima cartelera')}

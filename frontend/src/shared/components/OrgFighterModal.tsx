@@ -1,16 +1,5 @@
 import { motion } from 'framer-motion'
-import {
-  CalendarDays,
-  Crown,
-  ExternalLink,
-  MapPin,
-  Sparkles,
-  Flame,
-  Shield,
-  Swords,
-  X,
-  Zap,
-} from 'lucide-react'
+import { ExternalLink, MapPin, Trophy, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link } from 'react-router-dom'
@@ -18,61 +7,31 @@ import { useTranslation } from 'react-i18next'
 
 import { L } from '../../i18n/lang'
 import { getDivisionName } from '../data/divisions'
-import {
-  fightSummary,
-  formatDate,
-  formatHeight,
-  formatMethod,
-  formatReach,
-  formatRecord,
-  formatWeight,
-  originLine,
-} from '../data/orgFormat'
+import { formatDate, formatMethod, originLine } from '../data/orgFormat'
 import { orgEs, type OrgConfig } from '../data/orgs'
 import { translateHometown } from '../data/fightLabels'
-import { useOrgFighterFights, useOrgFighters } from '../hooks/useOrgData'
 import { normalizeFighterName } from '../hooks/useFighterImages'
-import type { FightRecord, OrgFighter } from '../types/api'
-import { FighterAvatar } from './FighterAvatar'
+import { useOrgFighterFights, useOrgFighters } from '../hooks/useOrgData'
+import { useUpcomingPicks } from '../hooks/useUpcomingPicks'
+import type { FightRecord } from '../types/api'
 import { FlagIcon } from './FlagIcon'
-import { LoadingSkeleton } from './LoadingSkeleton'
-import { MiniStat } from './MiniStat'
-import { OrgFightLine } from './OrgFightLine'
+import { PhotoCredit } from './PhotoCredit'
+import { SeasonFightsPanel } from './SeasonFightsPanel'
+import { SeasonTimeline, type TimelineEra } from './SeasonTimeline'
 
-type OrgFighterBout = FightRecord
-
-
-function computeSimilarOrgFighters(target: OrgFighter | null, allFighters: OrgFighter[]) {
-  if (!target) return []
-  const targetKey = normalizeFighterName(target.name)
-  const targetTotal = (target.wins ?? 0) + (target.losses ?? 0)
-  const targetWinRate = targetTotal > 0 ? (target.wins ?? 0) / targetTotal : 0.5
-
-  return allFighters
-    .filter((f) => normalizeFighterName(f.name) !== targetKey && (f.wins != null || f.losses != null))
-    .map((candidate) => {
-      let score = 0.55
-      if (target.division && candidate.division === target.division) score += 0.24
-      const candTotal = (candidate.wins ?? 0) + (candidate.losses ?? 0)
-      const candWinRate = candTotal > 0 ? (candidate.wins ?? 0) / candTotal : 0.5
-      score += Math.max(0, 0.12 - Math.abs(targetWinRate - candWinRate) * 0.25)
-
-      if (target.height_cm && candidate.height_cm) {
-        score += Math.max(0, 0.05 - Math.abs(target.height_cm - candidate.height_cm) * 0.004)
-      }
-      if (target.age && candidate.age) {
-        score += Math.max(0, 0.04 - Math.abs(target.age - candidate.age) * 0.005)
-      }
-      if (target.belt && candidate.belt) score += 0.03
-
-      const similarity = Math.max(0.62, Math.min(0.98, score))
-      return { fighter: candidate, similarity }
-    })
-    .sort((a, b) => b.similarity - a.similarity)
-    .slice(0, 5)
+/** "18-4-0" -> wins, losses, draws. */
+function parseRecord(text: string | null | undefined) {
+  const match = text?.match(/(\d+)-(\d+)-(\d+)/)
+  return match ? { wins: Number(match[1]), losses: Number(match[2]), draws: Number(match[3]) } : null
 }
 
-/** UFC-grade fighter profile modal for every organization: career timeline, yearly trends, method breakdown, fight details and similar fighters. */
+const isTbd = (name: string) => /^(tbd|tba)$/i.test(name.trim()) || /oponente|substituto/i.test(name)
+
+/**
+ * The fighter profile of every organization other than the UFC, laid out like the UFC one: the photo and the titles on
+ * the left; the record, the build, how the wins came, the next bout with the model's pick and the striking numbers on
+ * the right; the season-by-season timeline along the foot.
+ */
 export function OrgFighterModal({
   org,
   name,
@@ -85,99 +44,176 @@ export function OrgFighterModal({
   onSelectFighter: (name: string) => void
 }) {
   const { i18n } = useTranslation()
+  const lang = i18n.language
 
   const { fighters } = useOrgFighters(org.id)
   const { fights, loading, error } = useOrgFighterFights(org.id, name)
-  const [selectedBout, setSelectedBout] = useState<OrgFighterBout | null>(null)
+  const pickFor = useUpcomingPicks(org.id, org.hasPredictions)
+  const [selectedEra, setSelectedEra] = useState<TimelineEra | null>(null)
 
   const profile = useMemo(
     () => fighters.find((fighter) => normalizeFighterName(fighter.name) === normalizeFighterName(name)) ?? null,
     [fighters, name],
   )
   const known = useMemo(() => new Set(fighters.map((fighter) => normalizeFighterName(fighter.name))), [fighters])
+  const archived = Boolean(org.archived)
 
   const completedFights = useMemo(
-    () => fights.filter((f) => Boolean(f.result || f.winner || f.method)),
+    () =>
+      fights
+        .filter((fight) => Boolean(fight.result || fight.winner || fight.method))
+        .sort((a, b) => (a.date ?? '').localeCompare(b.date ?? '')),
     [fights],
   )
-
-  const chronologicalFights = useMemo(
-    () => [...completedFights].sort((a, b) => (a.date ?? '').localeCompare(b.date ?? '')),
-    [completedFights],
-  )
-
-
-  const weightClassHistory = useMemo(() => {
-    const list: string[] = []
-    for (const bout of chronologicalFights) {
-      if (bout.weight_class && list[list.length - 1] !== bout.weight_class) {
-        list.push(bout.weight_class)
-      }
-    }
-    if (list.length === 0 && profile?.division) {
-      list.push(profile.division)
-    }
-    return list
-  }, [chronologicalFights, profile])
-
-  const methodBreakdown = useMemo(() => {
-    const counts: Record<string, number> = {}
-    for (const bout of completedFights) {
-      if (bout.result === 'win' && bout.method) {
-        const key = bout.method
-        counts[key] = (counts[key] ?? 0) + 1
-      }
-    }
-    return Object.entries(counts).sort(([, a], [, b]) => b - a)
-  }, [completedFights])
-
-  const yearlyTrends = useMemo(() => {
-    const byYear = new Map<string, { fights: number; wins: number }>()
-    for (const bout of chronologicalFights) {
-      const year = bout.date?.slice(0, 4)
-      if (!year) continue
-      const current = byYear.get(year) ?? { fights: 0, wins: 0 }
-      current.fights += 1
-      if (bout.result === 'win') current.wins += 1
-      byYear.set(year, current)
-    }
-    return Array.from(byYear.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([year, data]) => ({
-        year,
-        fights: data.fights,
-        wins: data.wins,
-        winRate: data.fights > 0 ? Math.round((data.wins / data.fights) * 100) : 0,
-      }))
-  }, [chronologicalFights])
-
-  const similarFighters = useMemo(
-    () => computeSimilarOrgFighters(profile, fighters),
-    [profile, fighters],
-  )
-
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose()
+      if (event.key !== 'Escape') return
+      if (selectedEra) setSelectedEra(null)
+      else onClose()
     }
     window.addEventListener('keydown', onKeyDown)
     return () => {
       document.body.style.overflow = previousOverflow
       window.removeEventListener('keydown', onKeyDown)
     }
-  }, [onClose])
+  }, [onClose, selectedEra])
 
-  const totalWins = profile?.wins ?? completedFights.filter((f) => f.result === 'win').length
-  const totalLosses = profile?.losses ?? completedFights.filter((f) => f.result === 'loss').length
-  const totalDraws = profile?.draws ?? 0
-  const totalCareerFights = totalWins + totalLosses + totalDraws
+  // Titles: the belt held today, and the divisions where a title fight was won before.
+  const isChampion = Boolean(profile?.belt)
+  const isInterim = profile?.title_status === 'interim'
+  const championDivision = profile?.division ?? null
+  const formerTitles = useMemo(() => {
+    const held = new Set<string>()
+    for (const fight of completedFights) {
+      if (fight.result === 'win' && fight.title_fight && fight.weight_class) held.add(fight.weight_class)
+    }
+    if (isChampion && championDivision) held.delete(championDivision)
+    return Array.from(held)
+  }, [completedFights, isChampion, championDivision])
+
+  const signatureLine = useMemo(() => {
+    const parts: string[] = []
+    if (profile?.country) parts.push(translateHometown(profile.country, lang).toUpperCase())
+    else if (profile?.hometown) {
+      const place = translateHometown(profile.hometown.split(',').pop()?.trim(), lang).toUpperCase()
+      if (place) parts.push(place)
+    } else parts.push(org.shortName.toUpperCase())
+
+    parts.push(profile?.division ? getDivisionName(profile.division, lang).toUpperCase() : L(lang, 'PESO LIVRE', 'OPEN WEIGHT', 'POIDS LIBRE', 'PESO ABIERTO'))
+
+    const place = profile?.ranking?.match(/^#(\d+)\s*(.*)$/)
+    if (place) {
+      parts.push(place[2] === 'P4P' ? `P4P #${place[1]}` : `${L(lang, 'DESAFIANTE', 'CONTENDER', 'ASPIRANT', 'ASPIRANTE')} #${place[1]}`)
+    }
+    return parts.join(' • ')
+  }, [profile, lang, org.shortName])
+
+  // The organization's own record: the one the file states, else counted from the bouts we have.
+  const orgRecord = useMemo(() => {
+    const stated = parseRecord(profile?.org_record)
+    if (stated) return stated
+    return {
+      wins: completedFights.filter((fight) => fight.result === 'win').length,
+      losses: completedFights.filter((fight) => fight.result === 'loss').length,
+      draws: 0,
+    }
+  }, [profile, completedFights])
+  const orgTotal = orgRecord.wins + orgRecord.losses + orgRecord.draws
+  const orgWinRate = orgTotal ? Math.round((orgRecord.wins / orgTotal) * 100) : 0
+
+  const proWins = profile?.wins ?? null
+  const proLosses = profile?.losses ?? null
+  const hasProRecord = proWins != null && proLosses != null
+  const proTotal = hasProRecord ? proWins + proLosses + (profile?.draws ?? 0) + (profile?.no_contests ?? 0) : 0
+  const proWinRate = hasProRecord && proTotal ? Math.round((proWins / proTotal) * 100) : 0
+
+  // How the wins came.
+  const dna = useMemo(() => {
+    let subs = 0
+    let kos = 0
+    let decs = 0
+    for (const fight of completedFights) {
+      if (fight.result !== 'win') continue
+      const method = (fight.method ?? '').toUpperCase()
+      if (method.includes('SUB')) subs += 1
+      else if (method.includes('KO') || method.includes('TKO')) kos += 1
+      else decs += 1
+    }
+    const total = subs + kos + decs
+    const subPct = total ? Math.round((subs / total) * 100) : 0
+    const koPct = total ? Math.round((kos / total) * 100) : 0
+    return { subs, kos, decs, total, subPct, koPct, decPct: total ? Math.max(0, 100 - subPct - koPct) : 0 }
+  }, [completedFights])
+  const finishRate = dna.total ? Math.round(((dna.subs + dna.kos) / dna.total) * 100) : 0
+
+  // The next bout and, where the organization has predictions, the model's reading of it.
+  const nextBout = profile?.next_fight ?? null
+  const nextDetails = useMemo(
+    () => (nextBout ? fights.find((fight) => !fight.result && fight.opponent === nextBout.opponent) ?? null : null),
+    [fights, nextBout],
+  )
+  const nextPrediction = useMemo(() => {
+    if (!nextBout || !org.hasPredictions) return null
+    const direct = pickFor(nextBout.event, name, nextBout.opponent)
+    const reverse = direct ? null : pickFor(nextBout.event, nextBout.opponent, name)
+    const pick = direct ?? reverse
+    if (!pick) return null
+    const mine = direct ? pick.fighter_1_probability : 1 - pick.fighter_1_probability
+    const fighterProb = Math.round(mine * 100)
+    return { fighterProb, oppProb: 100 - fighterProb }
+  }, [nextBout, org.hasPredictions, pickFor, name])
+
+  const timelineEras = useMemo<TimelineEra[]>(() => {
+    const byYear = new Map<number, FightRecord[]>()
+    for (const fight of completedFights) {
+      const year = fight.date ? parseInt(fight.date.slice(0, 4), 10) : NaN
+      if (Number.isNaN(year)) continue
+      byYear.set(year, [...(byYear.get(year) ?? []), fight])
+    }
+    const years = Array.from(byYear.keys()).sort((a, b) => a - b)
+    return years.map((year, index) => {
+      const seasonFights = byYear.get(year) ?? []
+      const wins = seasonFights.filter((fight) => fight.result === 'win').length
+      const losses = seasonFights.filter((fight) => fight.result === 'loss').length
+      let milestone: string | undefined
+      if (index === 0) {
+        milestone = L(lang, `Estreia no ${org.shortName}`, `${org.shortName} Debut`, `Début ${org.shortName}`, `Debut en ${orgEs(org)}`)
+      } else if (seasonFights.some((fight) => fight.result === 'win' && fight.title_fight)) {
+        milestone = L(lang, 'Cinturão Conquistado', 'Won the Title', 'Titre conquis', 'Título conquistado')
+      } else if (wins >= 3 && losses === 0) {
+        milestone = L(lang, 'Ano Invicto', 'Unbeaten Year', 'Année sans défaite', 'Año invicto')
+      }
+      return {
+        year,
+        label: `${year}`,
+        milestone,
+        fights: seasonFights,
+        wins,
+        losses,
+        hasTitleFight: seasonFights.some((fight) => fight.title_fight),
+      }
+    })
+  }, [completedFights, lang, org])
+
+  const imageUrl = profile?.image_url ?? null
+  const origin = profile ? originLine(profile, lang) : null
+  const openFighter = (opponent: string) => {
+    if (known.has(normalizeFighterName(opponent))) onSelectFighter(opponent)
+  }
+  const statusLabel = archived
+    ? L(lang, 'ARQUIVO HISTÓRICO // VEKTOR MMA', 'HISTORICAL ARCHIVE // VEKTOR MMA', 'ARCHIVES // VEKTOR MMA', 'ARCHIVO HISTÓRICO // VEKTOR MMA')
+    : profile?.is_active === false
+      ? L(lang, 'ATLETA INATIVO // VEKTOR MMA', 'INACTIVE ATHLETE // VEKTOR MMA', 'ATHLÈTE INACTIF // VEKTOR MMA', 'ATLETA INACTIVO // VEKTOR MMA')
+      : L(lang, 'ATLETA ATIVO // VEKTOR MMA', 'ACTIVE ATHLETE // VEKTOR MMA', 'ATHLÈTE ACTIF // VEKTOR MMA', 'ATLETA ACTIVO // VEKTOR MMA')
+
+  const label = 'font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-semibold'
 
   return createPortal(
     <motion.div
-      className="selector-backdrop fixed inset-0 z-[95] flex items-center justify-center overflow-hidden px-3 py-3 backdrop-blur-sm sm:px-5 sm:py-5"
+      className="fixed inset-0 z-[95] flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/85 backdrop-blur-md"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -187,293 +223,374 @@ export function OrgFighterModal({
     >
       <motion.section
         role="dialog"
-        aria-label={L(i18n.language, `${name}, perfil no ${org.shortName}`, `${name}, ${org.shortName} fighter profile`, `${name}, profil ${org.shortName}`, `${name}, perfil de peleador de ${orgEs(org)}`)}
-        className="surface-card flex h-[min(680px,calc(100vh-1.5rem))] w-full max-w-[580px] flex-col overflow-hidden rounded-[22px] border-[var(--border-subtle)]"
+        aria-label={L(lang, `${name}, perfil no ${org.shortName}`, `${name}, ${org.shortName} fighter profile`, `${name}, profil ${org.shortName}`, `${name}, perfil de peleador de ${orgEs(org)}`)}
+        className="relative flex h-[min(90vh,880px)] w-full max-w-6xl flex-col overflow-hidden rounded-[24px] sm:rounded-[32px] border border-white/[0.08] bg-[#08090C] text-white shadow-[0_0_80px_rgba(0,0,0,0.8)]"
         initial={{ opacity: 0, y: 16, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.25, ease: 'easeOut' }}
       >
-        {/* UFC-Style Modal Header */}
-        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-[var(--line-soft)] px-4 py-3">
-          <div className="flex min-w-0 items-center gap-3">
-            <FighterAvatar
-              name={name}
-              imageUrl={profile?.image_url ?? null}
-              highlight={Boolean(profile?.belt)}
-              className="h-16 w-16 sm:h-20 sm:w-20"
-            />
-            <div className="min-w-0">
-              <p className="broadcast-label text-[11px] text-[var(--text-muted)]">
-                {L(i18n.language, `Perfil de Performance • ${org.shortName}`, `${org.shortName} fighter profile`, `Profil de performance • ${org.shortName}`, `Perfil de rendimiento • ${org.shortName}`)}
-              </p>
-              <h2 className="flex items-center gap-2 text-xl font-bold uppercase tracking-[0.02em] text-[var(--text-main)]">
-                {profile?.country_code ? <FlagIcon code={profile.country_code} country={profile.country} className="h-4 w-6" /> : null}
-                <span className="min-w-0 truncate">{name}</span>
-              </h2>
-              {profile?.nickname ? <p className="text-sm italic text-[var(--text-muted)]">“{profile.nickname}”</p> : null}
-
-              <div className="mt-1.5 flex flex-wrap items-center gap-1">
-                
-                {profile ? <TitleLine fighter={profile} archived={Boolean(org.archived)} /> : null}
-              </div>
-            </div>
-          </div>
+        <div className="absolute top-3.5 right-3.5 sm:top-6 sm:right-6 z-30 flex items-center gap-2 sm:gap-2.5">
+          {profile?.ufc_name ? (
+            <Link
+              to={`/fighters?fighter=${encodeURIComponent(profile.ufc_name)}`}
+              onClick={onClose}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] hover:bg-white/[0.09] hover:border-white/20 px-3 sm:px-4 py-1.5 sm:py-2 font-mono text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-neutral-300 hover:text-white backdrop-blur-md transition-all"
+            >
+              {L(lang, 'Ver perfil completo no UFC →', 'Also in the UFC: open the UFC profile', 'Voir le profil complet à l\'UFC →', 'Ver el perfil completo en la UFC →')}
+            </Link>
+          ) : null}
           <button
             type="button"
             onClick={onClose}
-            className="ghost-action grid h-9 w-9 shrink-0 place-items-center rounded-full"
-            aria-label={L(i18n.language, 'Fechar perfil do lutador', 'Close fighter profile', 'Fermer le profil du combattant', 'Cerrar el perfil del peleador')}
+            className="grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-neutral-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition cursor-pointer"
+            aria-label={L(lang, 'Fechar perfil do lutador', 'Close fighter profile', 'Fermer le profil du combattant', 'Cerrar el perfil del peleador')}
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        {/* Scrollable Profile Body */}
-        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
-          <div className="space-y-3">
-            {/* Top 3 Summary Counter Row (UFC style) */}
-            {totalCareerFights > 0 ? (
-              <div className="grid grid-cols-3 gap-2">
-                <MiniStat label={L(i18n.language, 'Lutas', 'Fights', 'Combats', 'Peleas')} value={`${totalCareerFights}`} />
-                <MiniStat label={L(i18n.language, 'Vitórias', 'Wins', 'Victoires', 'Victorias')} value={`${totalWins}`} />
-                <MiniStat label={L(i18n.language, 'Derrotas', 'Losses', 'Défaites', 'Derrotas')} value={`${totalLosses}`} />
-              </div>
-            ) : null}
-
-            {/* Physical Build, Record & Camp Details */}
-            {profile ? <Details org={org} fighter={profile} /> : null}
-
-            {/* Combat & Striking / Grappling Stats */}
-            {profile ? <FighterCombatStats fighter={profile} /> : null}
-
-            {/* Broadcast-Style Upcoming Fight Card */}
-            {profile?.next_fight ? (
-              <div className="metric-tile relative overflow-hidden rounded-2xl border border-[#C8102E]/35 bg-gradient-to-br from-[#C8102E]/[0.10] via-transparent to-transparent p-3.5">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#C8102E]/40 bg-[#C8102E]/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--accent-red)]">
-                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#C8102E]" />
-                    {L(i18n.language, 'Próxima luta', 'Next fight', 'Prochain combat', 'Próxima pelea')}
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--text-muted)]">
-                    <CalendarDays className="h-3 w-3 text-[var(--accent-red)]" />
-                    {formatDate(profile.next_fight.date, true, i18n.language)}
-                  </span>
-                </div>
-
-                <p className="mt-2 text-xs font-bold uppercase tracking-[0.06em] text-[var(--text-muted)]">
-                  {profile.next_fight.event}
-                </p>
-
-                <div className="mt-2 flex items-center justify-between gap-2 rounded-xl border border-[var(--line-soft)] bg-[var(--surface-3)] px-3 py-2">
-                  <span className="truncate text-sm font-bold text-[var(--text-main)]">{name}</span>
-                  <span className="shrink-0 rounded bg-[#C8102E] px-1.5 py-0.5 font-mono text-[10px] font-extrabold uppercase text-white">
-                    vs {profile.next_fight.opponent} · {formatDate(profile.next_fight.date, true, i18n.language)}
-                  </span>
-                  {known.has(normalizeFighterName(profile.next_fight.opponent)) ? (
-                    <button
-                      type="button"
-                      onClick={() => onSelectFighter(profile.next_fight!.opponent)}
-                      className="truncate text-right text-sm font-bold text-[#F2C230] underline decoration-2 underline-offset-2"
-                    >
-                      {profile.next_fight.opponent}
-                    </button>
-                  ) : (
-                    <span className="truncate text-right text-sm font-bold text-[var(--text-main)]">
-                      {profile.next_fight.opponent}
-                    </span>
-                  )}
-                </div>
-              </div>
-            ) : null}
-
-            {/* Interactive Career Timeline (UFC style) */}
-            {chronologicalFights.length > 0 ? (
-              <OrgCareerTimeline
-                fights={chronologicalFights}
-                selected={selectedBout}
-                onSelect={(bout) =>
-                  setSelectedBout((prev) =>
-                    prev && prev.event_name === bout.event_name && prev.opponent === bout.opponent ? null : bout,
-                  )
-                }
-              />
-            ) : null}
-
-            {/* Selected Fight Detail Panel (UFC style) */}
-            {selectedBout ? (
-              <OrgBoutDetailPanel
-                bout={selectedBout}
-                knownOpponent={known.has(normalizeFighterName(selectedBout.opponent))}
-                onSelectFighter={onSelectFighter}
-                onClose={() => setSelectedBout(null)}
-              />
-            ) : null}
-
-            {/* Yearly Trends Section (UFC style) */}
-            {yearlyTrends.length > 1 ? (
-              <div className="metric-tile rounded-2xl p-3">
-                <p className="broadcast-label text-[11px] text-[var(--text-muted)]">
-                  {L(i18n.language, 'Desempenho por Ano', 'Yearly performance trends', 'Tendances par année', 'Tendencias de rendimiento por año')}
-                </p>
-                <div className="mt-2.5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  {yearlyTrends.slice(-4).map((item) => (
-                    <div key={item.year} className="rounded-xl border border-[var(--line-soft)] bg-[var(--surface-3)] px-2.5 py-2">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="font-mono font-bold text-[var(--text-muted)]">{item.year}</span>
-                        <span className="font-mono font-extrabold text-[var(--text-main)]">{item.winRate}%</span>
-                      </div>
-                      <div className="progress-track mt-1.5 h-1.5 w-full overflow-hidden rounded-full">
-                        <div className="h-full rounded-full bg-[#C8102E]" style={{ width: `${item.winRate}%` }} />
-                      </div>
-                      <p className="mt-1 text-[10px] text-[var(--text-muted)]">
-                        {item.wins}V / {item.fights}{' '}
-                        {item.fights === 1 ? L(i18n.language, 'luta', 'fight', 'combat', 'pelea') : L(i18n.language, 'lutas', 'fights', 'combats', 'peleas')}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-
-            {/* Weight Class History (UFC style) */}
-            {weightClassHistory.length > 0 ? (
-              <div className="metric-tile rounded-2xl p-3">
-                <p className="broadcast-label text-[11px] text-[var(--text-muted)]">
-                  {L(i18n.language, 'Histórico de Categorias', 'Weight class history', 'Historique des catégories', 'Historial de divisiones de peso')}
-                </p>
-                <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-sm font-semibold text-[var(--text-main)]">
-                  {weightClassHistory.map((wc, index) => (
-                    <span key={`${wc}-${index}`} className="inline-flex items-center gap-1.5">
-                      {index > 0 ? <span className="text-[var(--text-muted)]">→</span> : null}
-                      {getDivisionName(wc, i18n.language)}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-
-            {/* Favorite Winning Methods Breakdown (UFC style) */}
-            {methodBreakdown.length > 0 ? (
-              <div className="metric-tile rounded-2xl p-3">
-                <p className="broadcast-label text-[11px] text-[var(--text-muted)]">
-                  {L(i18n.language, 'Métodos de Vitória no Evento', 'Winning methods', 'Méthodes de victoire', 'Métodos de victoria')}
-                </p>
-                <div className="mt-2 space-y-1.5">
-                  {methodBreakdown.map(([method, count]) => {
-                    const winsCount = Math.max(1, completedFights.filter((f) => f.result === 'win').length)
-                    return (
-                      <div key={method} className="flex items-center gap-2">
-                        <span className="w-32 shrink-0 truncate text-xs text-[var(--text-muted)]">
-                          {formatMethod(method, null, i18n.language) ?? method}
-                        </span>
-                        <div className="progress-track h-2 flex-1 overflow-hidden rounded-full">
-                          <div
-                            className="h-full rounded-full bg-[#C8102E]"
-                            style={{ width: `${Math.min(100, (count / winsCount) * 100)}%` }}
-                          />
-                        </div>
-                        <span className="type-num w-5 shrink-0 text-right text-xs font-semibold text-[var(--text-main)]">
-                          {count}
-                        </span>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            ) : null}
-
-            {/* Full Fight History List */}
-            <section aria-label={L(i18n.language, `Lutas no ${org.shortName}`, `${org.shortName} fights`, `Combats ${org.shortName}`, `Peleas en ${orgEs(org)}`)}>
-              <p className="broadcast-label mb-1.5 text-[11px] text-[var(--text-muted)]">
-                {L(i18n.language, `Histórico no ${org.shortName}`, `${org.shortName} fights`, `Historique ${org.shortName}`, `Historial en ${orgEs(org)}`)}
-              </p>
-              {loading ? (
-                <div className="space-y-2">
-                  <LoadingSkeleton className="h-[54px]" />
-                  <LoadingSkeleton className="h-[54px]" />
-                </div>
-              ) : error ? (
-                <p className="rounded-xl border border-[#C8102E]/25 bg-[#C8102E]/8 px-3 py-2 text-sm text-[var(--text-main)]">{error}</p>
-              ) : fights.length === 0 ? (
-                <p className="text-sm text-[var(--text-muted)]">
-                  {L(i18n.language, `Nenhuma luta no ${org.shortName} registrada ainda.`, `No ${org.shortName} fights recorded yet.`, `Aucun combat ${org.shortName} enregistré pour l'instant.`, `Aún no hay peleas registradas en ${orgEs(org)}.`)}
-                </p>
+        <div className="grid grid-cols-1 lg:grid-cols-12 flex-1 min-h-0 overflow-y-auto lg:overflow-hidden lg:grid-rows-[minmax(0,1fr)]">
+          {/* Photo and titles */}
+          <div className="relative min-h-[220px] sm:min-h-[280px] lg:min-h-0 lg:h-full lg:col-span-5 overflow-hidden flex flex-col justify-end p-5 pb-2.5 sm:p-7 sm:pb-4 lg:p-9 select-none">
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+              <div className="absolute top-1/4 left-1/3 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-rose-600/[0.08] blur-3xl pointer-events-none" />
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt={name}
+                  className="w-full h-full object-cover object-top filter grayscale contrast-110 brightness-100 opacity-95 transition-all duration-700 select-none"
+                  style={{ imageRendering: '-webkit-optimize-contrast' }}
+                  loading="eager"
+                  decoding="async"
+                  onError={(event) => {
+                    event.currentTarget.style.display = 'none'
+                  }}
+                />
               ) : (
-                <ul className="space-y-2">
-                  {fights.map((fight, idx) => (
-                    <OrgFightLine
-                      key={`${fight.fight_url ?? idx}-${fight.opponent}`}
-                      fight={fight}
-                      knownOpponent={known.has(normalizeFighterName(fight.opponent))}
-                      onSelect={onSelectFighter}
-                    />
-                  ))}
-                </ul>
+                <div className="w-full h-full flex items-center justify-center font-display font-black text-8xl text-white/[0.05]">
+                  {name.slice(0, 2).toUpperCase()}
+                </div>
               )}
-            </section>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#08090C] via-[#08090C]/50 to-transparent" />
+              <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-transparent via-[#08090C]/25 to-[#08090C]" />
+            </div>
 
-            {/* Similar Fighters Section (UFC style) */}
-            {similarFighters.length > 0 ? (
-              <div className="metric-tile rounded-2xl p-3">
-                <div className="mb-1.5 flex items-center gap-1.5 text-[var(--text-muted)]">
-                  <Sparkles className="h-3.5 w-3.5 text-[#C8102E]" />
-                  <p className="broadcast-label text-[11px]">
-                    {L(i18n.language, 'Lutadores similares', 'Similar fighters', 'Combattants similaires', 'Peleadores similares')}
-                  </p>
-                </div>
-                <div className="grid gap-1.5">
-                  {similarFighters.map(({ fighter: sim, similarity }, index) => (
-                    <button
-                      key={sim.name}
-                      type="button"
-                      onClick={() => onSelectFighter(sim.name)}
-                      className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left transition hover:bg-white/[0.05]"
-                    >
-                      <span className="broadcast-label w-4 shrink-0 text-[11px] text-[#666666]">{index + 1}</span>
-                      <span className="min-w-0 flex-1 truncate text-sm font-semibold text-[var(--text-main)]">{sim.name}</span>
-                      {sim.division ? (
-                        <span className="type-tech hidden shrink-0 text-[11px] uppercase tracking-[0.1em] text-[var(--text-muted)] sm:inline">
-                          {getDivisionName(sim.division, i18n.language)}
-                        </span>
-                      ) : null}
-                      {sim.wins != null && sim.losses != null ? (
-                        <span className="shrink-0 text-xs text-[var(--text-muted)]">
-                          {sim.wins}W–{sim.losses}L
-                        </span>
-                      ) : null}
-                      <span className="shrink-0 rounded-full border border-[#C8102E]/25 bg-[#C8102E]/10 px-2 py-0.5 text-xs font-bold text-[#C8102E]">
-                        {Math.round(similarity * 100)}%
-                      </span>
-                    </button>
-                  ))}
-                </div>
+            <PhotoCredit imageUrl={imageUrl} className="left-2 top-4" />
+
+            <div className="relative z-10 space-y-2.5 pb-1">
+              <div className="inline-flex items-center gap-2">
+                <span className={`h-1.5 w-1.5 rounded-full ${profile?.is_active !== false && !archived ? 'bg-emerald-400 animate-pulse' : 'bg-neutral-500'}`} />
+                <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-semibold">{statusLabel}</span>
               </div>
-            ) : null}
 
-            {/* External & Cross-Org Links */}
-            <div className="flex flex-wrap gap-2 pt-1">
-              {profile?.ufc_name ? (
-                <Link
-                  to={`/fighters?fighter=${encodeURIComponent(profile.ufc_name)}`}
-                  onClick={onClose}
-                  className="ghost-action inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--text-main)]"
-                >
-                  {L(i18n.language, 'Ver perfil completo no UFC →', 'Also in the UFC: open the UFC profile', 'Voir le profil complet à l\'UFC →', 'Ver el perfil completo en la UFC →')}
-                </Link>
-              ) : null}
+              <h1 className="font-display font-black text-3xl sm:text-4xl lg:text-[2.6rem] uppercase tracking-tighter text-white leading-[0.95] drop-shadow-2xl break-words">
+                {name}
+              </h1>
+              {profile?.nickname ? <p className="font-sans text-sm italic text-neutral-300">“{profile.nickname}”</p> : null}
 
-              {profile?.profile_url ? (
-                <a
-                  href={profile.profile_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="ghost-action inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--text-main)]"
-                >
-                  {L(i18n.language, `Perfil oficial no ${org.sourceName}`, `Profile on ${org.sourceName}`, `Profil officiel sur ${org.sourceName}`, `Perfil oficial en ${org.sourceName}`)}
-                  <ExternalLink className="h-3 w-3" />
-                </a>
+              <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                {isChampion ? (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/60 bg-gradient-to-r from-amber-500/25 via-amber-400/15 to-amber-500/10 px-3 py-1 font-mono text-xs font-bold uppercase tracking-wider text-amber-300 shadow-[0_0_16px_rgba(251,191,36,0.25)] backdrop-blur-md">
+                    <Trophy className="h-3.5 w-3.5 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
+                    <span>
+                      {isInterim
+                        ? L(lang, 'Campeão Interino', 'Interim Champion', 'Champion Intérimaire', 'Campeón interino')
+                        : archived
+                          ? L(lang, 'Último Campeão', 'Final Champion', 'Dernier Champion', 'Último campeón')
+                          : L(lang, 'Campeão', 'Champion', 'Champion', 'Campeón')}
+                      {championDivision ? ` ${getDivisionName(championDivision, lang)}` : ''}
+                    </span>
+                  </span>
+                ) : null}
+
+                {formerTitles.map((title) => (
+                  <span
+                    key={`former-${title}`}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-neutral-200 backdrop-blur-sm"
+                  >
+                    ✦ {L(
+                      lang,
+                      `Ex-Campeão ${getDivisionName(title, 'pt')}`,
+                      `Former ${getDivisionName(title, 'en')} Champion`,
+                      `Ancien Champion ${getDivisionName(title, 'fr')}`,
+                      `Excampeón de ${getDivisionName(title, 'es')}`,
+                    )}
+                  </span>
+                ))}
+              </div>
+
+              <p className="flex flex-wrap items-center gap-x-2 font-mono text-xs sm:text-[13px] uppercase tracking-wider text-neutral-400 font-medium">
+                {profile?.country_code ? <FlagIcon code={profile.country_code} country={profile.country} /> : null}
+                <span>{signatureLine}</span>
+              </p>
+              {origin ? (
+                <p className="flex items-center gap-1.5 font-sans text-xs text-neutral-400">
+                  <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  <span>{origin}</span>
+                </p>
               ) : null}
             </div>
           </div>
+
+          {/* Telemetry */}
+          <div className="lg:col-span-7 p-5 pt-2 sm:p-7 sm:pt-4 lg:px-10 lg:py-9 flex flex-col justify-start space-y-5 sm:space-y-6 lg:min-h-0 lg:overflow-y-auto no-scrollbar">
+            {loading ? (
+              <div className="space-y-6 animate-pulse">
+                <div className="h-16 w-32 bg-white/5 rounded-xl" />
+                <div className="h-4 w-full bg-white/5 rounded" />
+                <div className="h-12 w-full bg-white/5 rounded-xl" />
+              </div>
+            ) : error ? (
+              <div className="space-y-2">
+                <p className="font-mono text-xs uppercase tracking-wider text-rose-400 font-semibold">{error}</p>
+                <p className="font-sans text-xs text-neutral-500">
+                  {L(lang, 'Histórico detalhado indisponível no momento.', 'Detailed history unavailable at this time.', 'Historique détaillé indisponible pour le moment.', 'El historial detallado no está disponible por ahora.')}
+                </p>
+              </div>
+            ) : (
+              <>
+                {/* 1. Record: the organization's in large type, the whole career beside it */}
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#E11D48] animate-pulse" />
+                      <p className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-neutral-400 font-bold">
+                        {L(lang, `CARTEL NO ${org.shortName}`, `${org.shortName} RECORD`, `PALMARÈS CHEZ ${org.shortName}`, `RÉCORD EN ${orgEs(org).toUpperCase()}`)}
+                      </p>
+                    </div>
+                    <div className="flex items-baseline gap-3 sm:gap-5 flex-wrap">
+                      <span className="font-display font-black text-3xl sm:text-4xl lg:text-5xl tracking-tighter text-white tabular-nums leading-none">{orgTotal}</span>
+                      <div className="space-y-0.5">
+                        <p className="font-mono text-xs sm:text-sm font-bold uppercase tracking-wider text-white">
+                          {orgRecord.wins} {L(lang, 'VITÓRIAS', 'WINS', 'VICTOIRES', 'VICTORIAS')} • {orgRecord.losses} {L(lang, 'DERROTAS', 'LOSSES', 'DÉFAITES', 'DERROTAS')}
+                          {orgRecord.draws ? ` • ${orgRecord.draws} ${L(lang, 'EMPATES', 'DRAWS', 'NULS', 'EMPATES')}` : ''}
+                        </p>
+                        <p className="font-sans text-[11px] text-neutral-400">
+                          {L(lang, `${orgWinRate}% de aproveitamento no ${org.shortName}`, `${orgWinRate}% ${org.shortName} win rate`, `${orgWinRate}% de victoires chez ${org.shortName}`, `${orgWinRate}% de victorias en ${orgEs(org)}`)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 p-3 rounded-xl border border-white/[0.08] bg-white/[0.02]">
+                    <div>
+                      <p className={label}>{L(lang, 'ALTURA', 'HEIGHT', 'TAILLE', 'ESTATURA')}</p>
+                      <p className="font-mono text-sm font-bold text-white tabular-nums mt-0.5">{profile?.height_cm ? `${Math.round(profile.height_cm)} cm` : '—'}</p>
+                      <p className="font-mono text-[10px] text-neutral-400">
+                        {profile?.height_cm ? `${Math.floor(profile.height_cm / 30.48)}'${Math.round((profile.height_cm % 30.48) / 2.54)}"` : ''}
+                      </p>
+                    </div>
+                    <div>
+                      <p className={label}>{L(lang, 'PESO', 'WEIGHT', 'POIDS', 'PESO')}</p>
+                      <p className="font-mono text-sm font-bold text-white tabular-nums mt-0.5">{profile?.weight_lbs ? `${Math.round(profile.weight_lbs)} lb` : '—'}</p>
+                      <p className="font-mono text-[10px] text-neutral-400">{profile?.weight_lbs ? `${(profile.weight_lbs * 0.45359237).toFixed(1)} kg` : ''}</p>
+                    </div>
+                    <div>
+                      <p className={label}>{L(lang, 'ENVERGADURA', 'REACH', 'ALLONGE', 'ALCANCE')}</p>
+                      <p className="font-mono text-sm font-bold text-white tabular-nums mt-0.5">{profile?.reach_cm ? `${Math.round(profile.reach_cm)} cm` : '—'}</p>
+                      <p className="font-mono text-[10px] text-neutral-400">{profile?.reach_cm ? `${Math.round(profile.reach_cm / 2.54)}"` : ''}</p>
+                    </div>
+                    <div>
+                      <p className={label}>{L(lang, 'IDADE', 'AGE', 'ÂGE', 'EDAD')}</p>
+                      <p className="font-mono text-sm font-bold text-white tabular-nums mt-0.5">
+                        {profile?.age ? `${Math.floor(profile.age)} ${L(lang, 'anos', 'yrs', 'ans', 'años')}` : '—'}
+                      </p>
+                      <p className="font-mono text-[10px] text-neutral-400">
+                        {archived
+                          ? L(lang, `Arquivo ${org.shortName}`, `${org.shortName} archive`, `Archives ${org.shortName}`, `Archivo de ${orgEs(org)}`)
+                          : profile?.is_active
+                            ? L(lang, `Ativo no ${org.shortName}`, `Active ${org.shortName}`, `Actif ${org.shortName}`, `Activo en ${orgEs(org)}`)
+                            : L(lang, `Plantel ${org.shortName}`, `${org.shortName} Roster`, `Effectif ${org.shortName}`, `Plantel de ${orgEs(org)}`)}
+                      </p>
+                    </div>
+                    <div className="col-span-2 sm:col-span-1">
+                      <p className={label}>{L(lang, 'EQUIPE', 'CAMP', 'ÉQUIPE', 'EQUIPO')}</p>
+                      <p className="font-mono text-sm font-bold text-white truncate mt-0.5">{profile?.camp ?? '—'}</p>
+                      <p className="font-mono text-[10px] text-neutral-400 truncate">{profile?.fighting_out_of ?? ''}</p>
+                    </div>
+                  </div>
+
+                  {hasProRecord ? (
+                    <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-xl border border-white/[0.08] bg-white/[0.02]">
+                      <div className="space-y-0.5">
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-amber-400 font-bold">
+                          {L(lang, 'CARTEL PROFISSIONAL COMPLETO', 'COMPLETE PROFESSIONAL RECORD', 'PALMARÈS PROFESSIONNEL COMPLET', 'RÉCORD PROFESIONAL COMPLETO')}
+                        </p>
+                        <p className="font-mono text-xs sm:text-sm font-bold text-neutral-200 tabular-nums">
+                          {proTotal} {L(lang, 'LUTAS', 'BOUTS', 'COMBATS', 'PELEAS')} • {proWins}V - {proLosses}D{profile?.draws ? ` - ${profile.draws}E` : ''}{profile?.no_contests ? ` - ${profile.no_contests}NC` : ''}
+                          <span className="text-neutral-400 font-normal text-xs ml-1.5 font-sans">({proWinRate}% {L(lang, 'geral', 'overall', 'global', 'general')})</span>
+                        </p>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+
+                {/* 2. How the wins came */}
+                {dna.total > 0 ? (
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-semibold">
+                      <span>{L(lang, 'DNA DE RESOLUÇÃO // MÉTODO DE VITÓRIAS', 'FINISH BREAKDOWN // METHOD OF VICTORY', 'MÉTHODES DE VICTOIRE // ADN DU COMBATTANT', 'ADN DE FINALIZACIÓN // MÉTODO DE VICTORIA')}</span>
+                      <span className="text-amber-400 font-bold">{finishRate}% {L(lang, 'FINALIZADOR', 'FINISHER', 'FINISSEUR', 'FINALIZADOR')}</span>
+                    </div>
+                    <div className="h-[3px] w-full rounded-full bg-white/10 flex overflow-hidden">
+                      <div style={{ width: `${dna.subPct}%` }} className="bg-amber-400 transition-all duration-700" />
+                      <div style={{ width: `${dna.koPct}%` }} className="bg-rose-500 transition-all duration-700" />
+                      <div style={{ width: `${dna.decPct}%` }} className="bg-sky-400 transition-all duration-700" />
+                    </div>
+                    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-xs text-neutral-300">
+                      <span className="flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-amber-400" />
+                        <span className="font-bold text-white tabular-nums">{dna.subs}</span> {L(lang, 'FINALIZAÇÕES', 'SUBMISSIONS', 'SOUMISSIONS', 'SUMISIONES')} ({dna.subPct}%)
+                      </span>
+                      <span className="flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-rose-500" />
+                        <span className="font-bold text-white tabular-nums">{dna.kos}</span> {L(lang, 'NOCAUTES', 'KNOCKOUTS', 'KO / TKO', 'NOCAUTS')} ({dna.koPct}%)
+                      </span>
+                      <span className="flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-sky-400" />
+                        <span className="font-bold text-white tabular-nums">{dna.decs}</span> {L(lang, 'DECISÕES', 'DECISIONS', 'DÉCISIONS', 'DECISIONES')} ({dna.decPct}%)
+                      </span>
+                    </div>
+                  </div>
+                ) : null}
+
+                {/* 3. Next bout and the model's reading of it */}
+                {nextBout ? (
+                  <div className="space-y-2.5 pt-1">
+                    {(() => {
+                      const opponentTbd = isTbd(nextBout.opponent)
+                      return (
+                        <>
+                          <div className="flex items-center justify-between gap-3 font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-semibold">
+                            <span className="min-w-0 truncate">{L(lang, 'PRÓXIMO COMBATE', 'NEXT BOUT', 'PROCHAIN COMBAT', 'PRÓXIMA PELEA')} // {nextBout.event}</span>
+                            <span className="shrink-0 text-amber-400 font-bold">
+                              {opponentTbd
+                                ? L(lang, 'BUSCA POR OPONENTE', 'SEEKING OPPONENT', 'RECHERCHE D\'ADVERSAIRE', 'BUSCA RIVAL')
+                                : nextPrediction
+                                  ? L(lang, 'PROGNÓSTICO POR IA', 'AI WIN FORECAST', 'PRONOSTIC IA', 'PRONÓSTICO DE LA IA')
+                                  : formatDate(nextBout.date, true, lang).toUpperCase()}
+                            </span>
+                          </div>
+
+                          <div className="flex items-baseline justify-between font-display font-bold text-base sm:text-lg text-white">
+                            <span className="truncate">
+                              {name}{' '}
+                              {nextPrediction ? <span className="font-mono text-xs text-amber-400 tabular-nums">({nextPrediction.fighterProb}%)</span> : null}
+                            </span>
+                            <span className="px-3 text-neutral-400 font-mono text-xs font-normal">VS</span>
+                            {opponentTbd ? (
+                              <span className="truncate text-right font-mono text-xs sm:text-sm font-bold text-amber-400 uppercase tracking-wider">
+                                ✦ {L(lang, 'Aguardando Adversário (a definir)', 'Awaiting Opponent (TBD)', 'Adversaire à déterminer', 'Esperando rival (por definir)')}
+                              </span>
+                            ) : known.has(normalizeFighterName(nextBout.opponent)) ? (
+                              <button
+                                type="button"
+                                onClick={() => onSelectFighter(nextBout.opponent)}
+                                className="truncate text-right hover:text-sky-400 transition cursor-pointer font-bold"
+                                title={L(lang, `Ver perfil de ${nextBout.opponent}`, `View profile of ${nextBout.opponent}`, `Voir le profil de ${nextBout.opponent}`, `Ver el perfil de ${nextBout.opponent}`)}
+                              >
+                                {nextBout.opponent}{' '}
+                                {nextPrediction ? <span className="font-mono text-xs text-sky-400 tabular-nums">({nextPrediction.oppProb}%)</span> : null}
+                              </button>
+                            ) : (
+                              <span className="truncate text-right font-bold">
+                                {nextBout.opponent}{' '}
+                                {nextPrediction ? <span className="font-mono text-xs text-sky-400 tabular-nums">({nextPrediction.oppProb}%)</span> : null}
+                              </span>
+                            )}
+                          </div>
+
+                          {opponentTbd ? (
+                            <div className="h-[3px] w-full rounded-full bg-amber-400/20 overflow-hidden">
+                              <div className="h-full w-full bg-gradient-to-r from-amber-500/30 via-amber-400 to-amber-500/30 animate-pulse" />
+                            </div>
+                          ) : nextPrediction ? (
+                            <div className="h-[3px] w-full rounded-full bg-white/10 flex overflow-hidden">
+                              <div style={{ width: `${nextPrediction.fighterProb}%` }} className="bg-amber-400 transition-all duration-700" />
+                              <div style={{ width: `${nextPrediction.oppProb}%` }} className="bg-sky-400 transition-all duration-700" />
+                            </div>
+                          ) : null}
+
+                          <div className="flex items-center justify-between font-sans text-[11px] text-neutral-400">
+                            <span>{nextDetails?.weight_class ? getDivisionName(nextDetails.weight_class, lang) : L(lang, 'Card Principal', 'Main Card', 'Carte Principale', 'Cartelera principal')}</span>
+                            <span className="font-mono text-[10px] uppercase text-neutral-400">
+                              {opponentTbd
+                                ? L(lang, '✦ Luta Mantida • Buscando Substituto', '✦ Bout Booked • Seeking Opponent', '✦ Combat Confirmé • En recherche d\'adversaire', '✦ Pelea confirmada • Busca rival')
+                                : nextDetails?.title_fight
+                                  ? L(lang, '✦ Disputa de Cinturão', '✦ Title Fight', '✦ Combat pour le Titre', '✦ Pelea por el título')
+                                  : L(lang, 'Combate Confirmado', 'Confirmed Bout', 'Combat Confirmé', 'Pelea confirmada')}
+                            </span>
+                          </div>
+                        </>
+                      )
+                    })()}
+                  </div>
+                ) : archived ? null : (
+                  <div className="space-y-1.5 pt-1">
+                    <p className="font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-semibold">
+                      {L(lang, 'PRÓXIMO COMBATE // AGUARDANDO CASAMENTO DE LUTA', 'NEXT BOUT // AWAITING FIGHT SCHEDULING', 'PROCHAIN COMBAT // EN ATTENTE D\'ANNONCE', 'PRÓXIMA PELEA // A LA ESPERA DE PROGRAMACIÓN')}
+                    </p>
+                  </div>
+                )}
+
+                {/* 4. Striking numbers */}
+                <div className="grid grid-cols-3 gap-6 pt-3 border-t border-white/[0.06]">
+                  <Metric value={profile?.sig_strikes_landed_per_min != null ? profile.sig_strikes_landed_per_min.toFixed(2) : '—'} label={L(lang, 'Golpes / Min (SLpM)', 'Strikes / Min (SLpM)', 'Coups / Min (SLpM)', 'Golpes / min (SLpM)')} />
+                  <Metric value={profile?.striking_defense != null ? `${Math.round(profile.striking_defense * 100)}%` : '—'} label={L(lang, 'Defesa de Golpes', 'Striking Defense', 'Défense Frappes', 'Defensa de golpes')} />
+                  <Metric value={profile?.takedown_defense != null ? `${Math.round(profile.takedown_defense * 100)}%` : '—'} label={L(lang, 'Defesa de Quedas', 'Takedown Defense', 'Défense au sol', 'Defensa de derribos')} />
+                </div>
+
+                {profile?.profile_url ? (
+                  <a
+                    href={profile.profile_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex w-fit items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-widest text-neutral-300 underline decoration-white/30 underline-offset-4 hover:text-white"
+                  >
+                    {L(lang, `Perfil oficial no ${org.sourceName}`, `Profile on ${org.sourceName}`, `Profil officiel sur ${org.sourceName}`, `Perfil oficial en ${org.sourceName}`)}
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                ) : null}
+              </>
+            )}
+          </div>
+        </div>
+
+        <SeasonFightsPanel
+          era={selectedEra}
+          eras={timelineEras}
+          onSelectEra={setSelectedEra}
+          onSelectFighter={openFighter}
+          fallbackDivision={profile?.division}
+          defaultOrganization={org.shortName}
+          methodLabel={(fight) => formatMethod(fight.method, null, lang)}
+        />
+
+        {/* Season timeline */}
+        <div className="relative border-t border-white/[0.08] bg-black/60 backdrop-blur-md px-4 sm:px-8 py-2.5 sm:py-3.5 shrink-0 flex flex-col justify-between">
+          <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-2 font-semibold">
+            <span>{L(lang, 'RÉGUA CRONOLÓGICA // HISTÓRICO DE TEMPORADAS', 'TIMELINE // SEASONAL CAREER HISTORY', 'CHRONOLOGIE // HISTORIQUE DE CARRIÈRE', 'LÍNEA DE TIEMPO // HISTORIAL DE TEMPORADAS')}</span>
+            <span className="hidden sm:inline text-amber-400/90 font-medium">
+              {selectedEra
+                ? `✦ ${L(lang, 'TEMPORADA', 'SEASON', 'SAISON', 'TEMPORADA')} ${selectedEra.year} ${L(lang, 'SELECIONADA • CLIQUE PARA ALTERNAR OU FECHAR', 'SELECTED • CLICK TO TOGGLE OR CLOSE', 'SÉLECTIONNÉE • CLIQUER POUR FERMER', 'SELECCIONADA • CLIC PARA ALTERNAR O CERRAR')}`
+                : L(lang, 'CLIQUE NO ANO PARA EXIBIR AS LUTAS ⇄', 'CLICK A YEAR TO VIEW BOUTS ⇄', 'CLIQUEZ SUR UNE ANNÉE POUR VOIR LES COMBATS ⇄', 'HAZ CLIC EN UN AÑO PARA VER LAS PELEAS ⇄')}
+            </span>
+          </div>
+
+          {timelineEras.length === 0 ? (
+            <p className="font-sans text-xs text-neutral-400 py-2">
+              {loading
+                ? L(lang, 'Carregando histórico…', 'Loading history…', 'Chargement de l\'historique…', 'Cargando historial…')
+                : L(lang, `Nenhuma luta no ${org.shortName} registrada ainda.`, `No ${org.shortName} fights recorded yet.`, `Aucun combat ${org.shortName} enregistré pour l'instant.`, `Aún no hay peleas registradas en ${orgEs(org)}.`)}
+            </p>
+          ) : (
+            <SeasonTimeline
+              eras={timelineEras}
+              selectedYear={selectedEra?.year ?? null}
+              lang={lang}
+              onSelect={(era) => setSelectedEra((previous) => (previous?.year === era.year ? null : era))}
+            />
+          )}
         </div>
       </motion.section>
     </motion.div>,
@@ -481,445 +598,11 @@ export function OrgFighterModal({
   )
 }
 
-function OrgCareerTimeline({
-  fights,
-  selected,
-  onSelect,
-}: {
-  fights: OrgFighterBout[]
-  selected: OrgFighterBout | null
-  onSelect: (bout: OrgFighterBout) => void
-}) {
-  const { i18n } = useTranslation()
-
-  const entries = fights.reduce<{
-    items: Array<{ fight: OrgFighterBout; year: string | null; showYear: boolean }>
-    lastYear: string
-  }>(
-    (acc, fight) => {
-      const year = fight.date ? fight.date.slice(0, 4) : null
-      const showYear = year !== null && year !== acc.lastYear
-      return {
-        items: [...acc.items, { fight, year, showYear }],
-        lastYear: showYear ? (year as string) : acc.lastYear,
-      }
-    },
-    { items: [], lastYear: '' },
-  ).items
-
+function Metric({ value, label }: { value: string; label: string }) {
   return (
-    <div className="metric-tile rounded-2xl p-3">
-      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">
-        {L(i18n.language, 'Linha do tempo da carreira', 'Career timeline', 'Chronologie de carrière', 'Trayectoria de la carrera')}{' '}
-        <span className="normal-case tracking-normal opacity-80">
-          · {L(i18n.language, 'toque em uma luta para detalhes', 'tap a fight for details', 'touchez un combat pour les détails', 'toca una pelea para ver los detalles')}
-        </span>
-      </p>
-      <div className="pill-scroll mt-3 overflow-x-auto pb-1">
-        <div className="relative flex min-w-max items-end gap-3 px-1">
-          <div className="pointer-events-none absolute inset-x-1 top-[26px] h-px bg-white/12" />
-          {entries.map(({ fight, year, showYear }, index) => {
-            const isWin = fight.result === 'win'
-            const isLoss = fight.result === 'loss'
-            const isSelected =
-              selected !== null && selected.event_name === fight.event_name && selected.opponent === fight.opponent
-
-            return (
-              <div key={index} className="relative z-10 flex shrink-0 flex-col items-center gap-1">
-                <span className="h-3 whitespace-nowrap text-[11px] font-semibold text-[#666666]">{showYear ? year : ''}</span>
-                <button
-                  type="button"
-                  onClick={() => onSelect(fight)}
-                  aria-pressed={isSelected}
-                  title={`${fight.opponent}, ${fight.date ?? ''}`}
-                  className={`grid h-6 w-6 cursor-pointer place-items-center rounded-full border text-[11px] font-bold transition hover:scale-110 ${
-                    isSelected ? 'ring-2 ring-[var(--rule)] ring-offset-2 ring-offset-[var(--card-bg)]' : ''
-                  } ${
-                    isWin
-                      ? 'border-[#C8102E] bg-[#C8102E] text-white'
-                      : isLoss
-                        ? 'border-[var(--rule)] bg-[var(--surface-3)] text-[var(--text-main)]'
-                        : 'border-[var(--line-soft)] bg-[var(--surface-3)] text-[var(--text-muted)]'
-                  }`}
-                >
-                  {isWin ? 'W' : isLoss ? 'L' : '–'}
-                </button>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function OrgBoutDetailPanel({
-  bout,
-  knownOpponent,
-  onSelectFighter,
-  onClose,
-}: {
-  bout: OrgFighterBout
-  knownOpponent: boolean
-  onSelectFighter: (name: string) => void
-  onClose: () => void
-}) {
-  const { i18n } = useTranslation()
-  const isWin = bout.result === 'win'
-  const isLoss = bout.result === 'loss'
-  const summary = fightSummary(bout, i18n.language)
-
-  return (
-    <div className="metric-tile rounded-2xl border border-[#F2C230]/40 bg-[var(--surface-3)] p-3.5">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span
-              className={`px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider ${
-                isWin ? 'bg-[#C8102E] text-white' : isLoss ? 'bg-[var(--rule)] text-[var(--card-bg)]' : 'bg-[var(--card-bg)] text-[var(--text-muted)]'
-              }`}
-            >
-              {isWin
-                ? L(i18n.language, 'Vitória', 'Win', 'Victoire', 'Victoria')
-                : isLoss
-                  ? L(i18n.language, 'Derrota', 'Loss', 'Défaite', 'Derrota')
-                  : L(i18n.language, 'Sem resultado', 'No Contest / Draw', 'Sans résultat', 'Sin resultado / empate')}
-            </span>
-            {bout.title_fight ? (
-              <span className="inline-flex items-center gap-1 bg-[#F2C230] px-2 py-0.5 text-[10px] font-extrabold uppercase text-[#0E0E0E]">
-                <Crown className="h-3 w-3" /> {L(i18n.language, 'Disputa de Cinturão', 'Title Fight', 'Combat de Titre', 'Pelea por el título')}
-              </span>
-            ) : null}
-            {bout.weight_class ? (
-              <span className="text-xs font-semibold text-[var(--text-muted)]">
-                {getDivisionName(bout.weight_class, i18n.language)}
-              </span>
-            ) : null}
-          </div>
-
-          <p className="mt-1.5 text-sm font-bold text-[var(--text-main)]">
-            vs{' '}
-            {knownOpponent ? (
-              <button
-                type="button"
-                onClick={() => onSelectFighter(bout.opponent)}
-                className="underline decoration-2 underline-offset-2 hover:text-[#F2C230]"
-              >
-                {bout.opponent}
-              </button>
-            ) : (
-              bout.opponent
-            )}
-          </p>
-          {summary ? <p className="mt-0.5 text-xs font-semibold text-[var(--text-main)]">{summary}</p> : null}
-          <p className="mt-0.5 text-xs text-[var(--text-muted)]">
-            {bout.event_name}
-            {bout.date ? ` · ${formatDate(bout.date, true, i18n.language)}` : ''}
-            {bout.location ? ` · ${translateHometown(bout.location, i18n.language)}` : ''}
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className="ghost-action grid h-7 w-7 shrink-0 place-items-center rounded-full"
-          aria-label={L(i18n.language, 'Fechar detalhes da luta', 'Close fight details', 'Fermer les détails', 'Cerrar los detalles de la pelea')}
-        >
-          <X className="h-3.5 w-3.5" />
-        </button>
-      </div>
-    </div>
-  )
-}
-
-
-function FighterCombatStats({ fighter }: { fighter: OrgFighter }) {
-  const { i18n } = useTranslation()
-  const hasStriking =
-    fighter.sig_strikes_landed_per_min != null ||
-    fighter.sig_str_acc != null ||
-    fighter.striking_defense != null
-  const hasGrappling =
-    fighter.takedown_avg_per_15min != null ||
-    fighter.takedown_acc != null ||
-    fighter.takedown_defense != null ||
-    fighter.submission_avg_per_15min != null
-  const hasFinishes =
-    fighter.finish_rate != null ||
-    fighter.ko_rate != null ||
-    fighter.sub_rate != null ||
-    (fighter.win_streak != null && fighter.win_streak > 0)
-
-  if (!hasStriking && !hasGrappling && !hasFinishes) return null
-
-  const formatPct = (val?: number | null) => (val != null ? `${Math.round(val * 100)}%` : '—')
-  const formatNum = (val?: number | null) => (val != null ? val.toFixed(2) : '—')
-
-  return (
-    <div className="metric-tile space-y-3 rounded-2xl border border-[var(--line-soft)] bg-[var(--surface-3)] p-3.5">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="grid h-7 w-7 place-items-center rounded-lg bg-[var(--accent-red)]/15 text-[var(--accent-red)]">
-            <Swords className="h-4 w-4" />
-          </div>
-          <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-main)]">
-              {L(i18n.language, 'Métricas de Combate & Golpes', 'Combat & Striking Metrics', 'Métriques de combat & frappes', 'Métricas de combate y golpeo')}
-            </h4>
-            <p className="text-[10px] text-[var(--text-muted)]">
-              {L(i18n.language, 'Volume de trocação, precisão, defesa e luta no chão', 'Striking volume, accuracy, defense and grappling', 'Volume de frappe, précision, défense et lutte', 'Volumen de golpeo, precisión, defensa y lucha en el suelo')}
-            </p>
-          </div>
-        </div>
-        {fighter.win_streak != null && fighter.win_streak > 1 ? (
-          <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
-            <Flame className="h-3 w-3" />
-            {fighter.win_streak} {L(i18n.language, 'vitórias seguidas', 'win streak', 'victoires consécutives', 'victorias seguidas')}
-          </span>
-        ) : null}
-      </div>
-
-      {/* Quick summary cards: Finish rate, KO rate, Sub rate */}
-      {hasFinishes ? (
-        <div className="grid grid-cols-3 gap-2">
-          <div className="rounded-xl border border-[var(--line-soft)] bg-[var(--surface-1)] p-2 text-center">
-            <span className="block text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
-              {L(i18n.language, 'Via Rápida', 'Finish Rate', 'Avant la limite', 'Tasa de finalización')}
-            </span>
-            <span className="font-mono text-base font-extrabold text-[var(--text-main)]">
-              {formatPct(fighter.finish_rate)}
-            </span>
-          </div>
-          <div className="rounded-xl border border-[var(--line-soft)] bg-[var(--surface-1)] p-2 text-center">
-            <span className="block text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
-              {L(i18n.language, 'Nocautes (KO)', 'KO / TKO', 'K.-O.', 'KO / TKO')}
-            </span>
-            <span className="font-mono text-base font-extrabold text-[#C8102E]">
-              {formatPct(fighter.ko_rate)}
-            </span>
-          </div>
-          <div className="rounded-xl border border-[var(--line-soft)] bg-[var(--surface-1)] p-2 text-center">
-            <span className="block text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
-              {L(i18n.language, 'Finalizações', 'Submissions', 'Soumissions', 'Sumisiones')}
-            </span>
-            <span className="font-mono text-base font-extrabold text-[#38BDF8]">
-              {formatPct(fighter.sub_rate)}
-            </span>
-          </div>
-        </div>
-      ) : null}
-
-      {/* Striking Section */}
-      {hasStriking ? (
-        <div className="space-y-2.5 rounded-xl border border-[var(--line-soft)] bg-[var(--surface-1)] p-3">
-          <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-[var(--text-main)]">
-            <div className="flex items-center gap-1.5 text-[var(--accent-red)]">
-              <Zap className="h-3.5 w-3.5" />
-              <span>{L(i18n.language, 'Trocação & Golpes Traumáticos', 'Striking Statistics', 'Statistiques de frappe', 'Estadísticas de golpeo')}</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2.5 text-xs">
-            <div>
-              <div className="mb-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-                <span>{L(i18n.language, 'Golpes Conectados / min', 'Strikes Landed / min', 'Coups réussis / min', 'Golpes conectados / min')}</span>
-                <span className="font-mono font-bold text-[var(--text-main)]">{formatNum(fighter.sig_strikes_landed_per_min)}</span>
-              </div>
-              <div className="progress-track h-1.5 w-full overflow-hidden rounded-full">
-                <div
-                  className="h-full rounded-full bg-[var(--accent-red)]"
-                  style={{ width: `${Math.min(100, ((fighter.sig_strikes_landed_per_min ?? 0) / 10) * 100)}%` }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-                <span>{L(i18n.language, 'Precisão de Golpes', 'Striking Accuracy', 'Précision de frappe', 'Precisión de golpes')}</span>
-                <span className="font-mono font-bold text-[var(--text-main)]">{formatPct(fighter.sig_str_acc)}</span>
-              </div>
-              <div className="progress-track h-1.5 w-full overflow-hidden rounded-full">
-                <div
-                  className="h-full rounded-full bg-emerald-500"
-                  style={{ width: `${Math.min(100, (fighter.sig_str_acc ?? 0) * 100)}%` }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-                <span>{L(i18n.language, 'Golpes Absorvidos / min', 'Strikes Absorbed / min', 'Coups absorbés / min', 'Golpes recibidos / min')}</span>
-                <span className="font-mono font-bold text-[var(--text-main)]">{formatNum(fighter.sig_strikes_absorbed_per_min)}</span>
-              </div>
-              <div className="progress-track h-1.5 w-full overflow-hidden rounded-full">
-                <div
-                  className="h-full rounded-full bg-amber-500"
-                  style={{ width: `${Math.min(100, ((fighter.sig_strikes_absorbed_per_min ?? 0) / 8) * 100)}%` }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-                <span>{L(i18n.language, 'Defesa de Golpes', 'Striking Defense', 'Défense de frappe', 'Defensa de golpes')}</span>
-                <span className="font-mono font-bold text-[var(--text-main)]">{formatPct(fighter.striking_defense)}</span>
-              </div>
-              <div className="progress-track h-1.5 w-full overflow-hidden rounded-full">
-                <div
-                  className="h-full rounded-full bg-blue-500"
-                  style={{ width: `${Math.min(100, (fighter.striking_defense ?? 0) * 100)}%` }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
-
-      {/* Grappling Section */}
-      {hasGrappling ? (
-        <div className="space-y-2.5 rounded-xl border border-[var(--line-soft)] bg-[var(--surface-1)] p-3">
-          <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-[var(--text-main)]">
-            <div className="flex items-center gap-1.5 text-[#38BDF8]">
-              <Shield className="h-3.5 w-3.5" />
-              <span>{L(i18n.language, 'Luta no Chão & Quedas', 'Grappling & Takedowns', 'Lutte & sol', 'Lucha en el suelo y derribos')}</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2.5 text-xs">
-            <div>
-              <div className="mb-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-                <span>{L(i18n.language, 'Média Quedas / 15m', 'Takedowns / 15m', 'Amenées / 15m', 'Derribos / 15 min')}</span>
-                <span className="font-mono font-bold text-[var(--text-main)]">{formatNum(fighter.takedown_avg_per_15min)}</span>
-              </div>
-              <div className="progress-track h-1.5 w-full overflow-hidden rounded-full">
-                <div
-                  className="h-full rounded-full bg-[#38BDF8]"
-                  style={{ width: `${Math.min(100, ((fighter.takedown_avg_per_15min ?? 0) / 6) * 100)}%` }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-                <span>{L(i18n.language, 'Precisão de Quedas', 'Takedown Accuracy', 'Précision amenées', 'Precisión de derribos')}</span>
-                <span className="font-mono font-bold text-[var(--text-main)]">{formatPct(fighter.takedown_acc)}</span>
-              </div>
-              <div className="progress-track h-1.5 w-full overflow-hidden rounded-full">
-                <div
-                  className="h-full rounded-full bg-emerald-500"
-                  style={{ width: `${Math.min(100, (fighter.takedown_acc ?? 0) * 100)}%` }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-                <span>{L(i18n.language, 'Defesa de Quedas', 'Takedown Defense', 'Défense amenées', 'Defensa de derribos')}</span>
-                <span className="font-mono font-bold text-[var(--text-main)]">{formatPct(fighter.takedown_defense)}</span>
-              </div>
-              <div className="progress-track h-1.5 w-full overflow-hidden rounded-full">
-                <div
-                  className="h-full rounded-full bg-blue-500"
-                  style={{ width: `${Math.min(100, (fighter.takedown_defense ?? 0) * 100)}%` }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-                <span>{L(i18n.language, 'Finalizações / 15m', 'Sub. Avg / 15m', 'Tentat. soumission / 15m', 'Sumisiones prom. / 15 min')}</span>
-                <span className="font-mono font-bold text-[var(--text-main)]">{formatNum(fighter.submission_avg_per_15min)}</span>
-              </div>
-              <div className="progress-track h-1.5 w-full overflow-hidden rounded-full">
-                <div
-                  className="h-full rounded-full bg-purple-500"
-                  style={{ width: `${Math.min(100, ((fighter.submission_avg_per_15min ?? 0) / 4) * 100)}%` }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
-    </div>
-  )
-}
-
-function TitleLine({ fighter, archived = false }: { fighter: OrgFighter; archived?: boolean }) {
-  const { i18n } = useTranslation()
-  if (!fighter.ranking && !fighter.belt) return null
-  const interim = fighter.title_status === 'interim'
-  return (
-    <>
-      {fighter.belt ? (
-        <span
-          className={`border-2 border-[var(--rule)] px-1.5 py-px text-[11px] font-bold uppercase leading-4 tracking-[0.08em] ${
-            interim ? 'bg-[#1F4E9C] text-white' : 'bg-[#F2C230] text-[#0E0E0E]'
-          }`}
-        >
-          {interim
-            ? L(i18n.language, 'Campeão Interino', 'Interim champion', 'Champion intérimaire', 'Campeón interino')
-            : archived
-              ? L(i18n.language, 'Último Campeão', 'Final champion', 'Dernier champion', 'Último campeón')
-              : L(i18n.language, 'Campeão', 'Champion', 'Champion', 'Campeón')}
-        </span>
-      ) : null}
-      {fighter.ranking ? (
-        <span className="border-2 border-[var(--rule)] bg-[var(--surface-3)] px-1.5 py-px text-[11px] font-bold uppercase leading-4 tracking-[0.08em] text-[var(--text-main)]">
-          {fighter.ranking}
-        </span>
-      ) : null}
-    </>
-  )
-}
-
-function Details({ org, fighter }: { org: OrgConfig; fighter: OrgFighter }) {
-  const { i18n } = useTranslation()
-  const origin = originLine(fighter, i18n.language)
-  const age = fighter.age == null ? null : `${Math.round(fighter.age)}`
-  const isArchived = Boolean(org.archived)
-  const stats: [string, string | null][] = [
-    [L(i18n.language, 'Cartel Pro', 'Record', 'Palmarès pro', 'Récord'), formatRecord(fighter)],
-    [L(i18n.language, `No ${org.shortName}`, ` ${org.shortName}`, `Chez ${org.shortName}`, `En ${orgEs(org)}`), fighter.org_record],
-    [L(i18n.language, 'Categoria', 'Division', 'Catégorie', 'División'), fighter.division ? getDivisionName(fighter.division, i18n.language) : null],
-    [L(i18n.language, 'Idade', 'Age', 'Âge', 'Edad'), age ? L(i18n.language, `${age} anos`, `${age} years`, `${age} ans`, `${age} años`) : null],
-    [L(i18n.language, 'Altura', 'Height', 'Taille', 'Estatura'), formatHeight(fighter.height_cm, i18n.language)],
-    [L(i18n.language, 'Envergadura', 'Reach', 'Allonge', 'Alcance'), formatReach(fighter.reach_cm, i18n.language)],
-    [L(i18n.language, 'Peso', 'Weight', 'Poids', 'Peso'), formatWeight(fighter.weight_lbs, i18n.language)],
-    ...(isArchived
-      ? []
-      : ([
-          [
-            L(i18n.language, 'Status', 'Status', 'Statut', 'Estado'),
-            fighter.is_active ? L(i18n.language, 'Ativo', 'Active', 'Actif', 'Activo') : L(i18n.language, 'Inativo', 'Not fighting', 'Inactif', 'Sin pelear'),
-          ],
-        ] as [string, string | null][])),
-  ]
-  return (
-    <div className="space-y-2.5">
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {stats
-          .filter((stat): stat is [string, string] => Boolean(stat[1]))
-          .map(([label, value]) => (
-            <MiniStat key={label} label={label} value={value} />
-          ))}
-      </div>
-      {origin || fighter.camp ? (
-        <ul className="space-y-1 text-xs leading-5 text-[var(--text-muted)]">
-          {origin ? (
-            <li className="flex items-start gap-1.5">
-              <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-              <span>{origin}</span>
-            </li>
-          ) : null}
-          {fighter.camp ? (
-            <li className="flex items-center gap-1.5">
-              <Swords className="h-3.5 w-3.5 shrink-0 text-[var(--accent-red)]" aria-hidden="true" />
-              <span>
-                <span className="font-semibold text-[var(--text-main)]">{L(i18n.language, 'Equipe:', 'Camp:', 'Équipe :', 'Equipo:')}</span> {fighter.camp}
-              </span>
-            </li>
-          ) : null}
-        </ul>
-      ) : null}
+    <div>
+      <p className="font-display font-bold text-xl sm:text-2xl text-white tabular-nums">{value}</p>
+      <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-medium">{label}</p>
     </div>
   )
 }
