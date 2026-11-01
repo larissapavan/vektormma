@@ -105,7 +105,8 @@ export function MatchupRadarChart({
         <LoadingSkeleton className="mt-3 h-[280px] rounded-2xl sm:h-[320px]" label={L(i18n.language, 'Carregando comparativo...', 'Loading style comparison', 'Chargement de la comparaison...', 'Cargando la comparación de estilos')} />
       ) : (
         <div className="mt-1 h-[300px] sm:h-[340px]">
-          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+          {/* initialDimension is only what the first render uses before the container is measured; without it Recharts warns "width(-1) and height(-1)" */}
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} initialDimension={{ width: 320, height: 300 }}>
             <RadarChart data={data} cx="50%" cy="50%" outerRadius="68%">
               <PolarGrid stroke="rgba(120,110,90,0.45)" />
               <PolarAngleAxis dataKey="axis" tick={AxisTick} />

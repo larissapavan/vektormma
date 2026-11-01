@@ -68,7 +68,8 @@ export function Model() {
                 description={L(i18n.language, 'Testado contra modelos lineares simples para garantir que a abordagem traz ganho preditivo real.', "As reported in the model's file, it was tested against simpler models, and gradient boosting had the best accuracy and log loss.", 'Comme indiqué dans le fichier du modèle, il a été comparé à des modèles plus simples, et le gradient boosting obtenait la meilleure précision et la plus faible perte logarithmique.', 'Según consta en el archivo del modelo, se probó contra modelos más simples, y el gradient boosting obtuvo la mejor precisión y la menor pérdida logarítmica.')}
               />
               <div className="mt-3 h-[210px] min-w-0 sm:h-[250px]">
-                <ResponsiveContainer width="100%" height="100%" minWidth={280}>
+                {/* initialDimension is only what the first render uses before the container is measured; without it Recharts warns "width(-1) and height(-1)" */}
+                <ResponsiveContainer width="100%" height="100%" minWidth={280} initialDimension={{ width: 320, height: 210 }}>
                   <BarChart data={baselineChart}>
                     <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
                     <XAxis dataKey="name" tick={{ fill: '#999999', fontSize: 12 }} axisLine={false} tickLine={false} />
@@ -95,7 +96,7 @@ export function Model() {
                 description={L(i18n.language, 'Diferenças de idade, envergadura, histórico e taxas de golpes e quedas.', 'Mostly the difference between the two fighters: age, reach, record, striking and takedown accuracy.', 'Surtout l’écart entre les deux combattants : âge, allonge, palmarès, précision des coups et des amenées au sol.', 'Sobre todo la diferencia entre los dos peleadores: edad, alcance, récord, precisión de golpes y de derribos.')}
               />
               <div className="mt-3 h-[210px] min-w-0 sm:h-[250px]">
-                <ResponsiveContainer width="100%" height="100%" minWidth={280}>
+                <ResponsiveContainer width="100%" height="100%" minWidth={280} initialDimension={{ width: 320, height: 210 }}>
                   <BarChart data={featurePreview} layout="vertical">
                     <CartesianGrid stroke="rgba(255,255,255,0.06)" horizontal={false} />
                     <XAxis type="number" hide />

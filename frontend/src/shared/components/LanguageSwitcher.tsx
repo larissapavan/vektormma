@@ -64,7 +64,7 @@ export function LanguageSwitcher({ className = '' }: LanguageSwitcherProps) {
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
-        <Globe className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[var(--text-muted)]" />
+        <Globe className="hidden xs:block h-3 w-3 sm:h-3.5 sm:w-3.5 text-[var(--text-muted)]" />
         <span className="font-semibold text-[11px] sm:text-xs">{activeItem.code}</span>
         <ChevronDown
           className={`h-2.5 w-2.5 sm:h-3 sm:w-3 text-[var(--text-muted)] transition-transform duration-200 ${isOpen && !isJSDOM ? 'rotate-180' : ''}`}
