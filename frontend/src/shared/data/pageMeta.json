@@ -160,6 +160,22 @@
       "/about-model": {
         "title": "Sobre o Modelo de IA",
         "description": "Projeto completo de IA aplicada: fluxo de dados, modelo preditivo e API."
+      },
+      "/guide": {
+        "title": "Como ler as previsões",
+        "description": "O que significa a probabilidade de vitória, o que o modelo analisa, quanto ele acerta e o que ele não sabe."
+      },
+      "/contact": {
+        "title": "Contato",
+        "description": "Corrija um dado, envie uma sugestão ou fale sobre privacidade e direitos autorais com o Vektor MMA."
+      },
+      "/privacy": {
+        "title": "Política de Privacidade",
+        "description": "Quais informações o Vektor MMA recebe, como funcionam os anúncios do Google AdSense e quais são os seus direitos."
+      },
+      "/terms": {
+        "title": "Termos de Uso",
+        "description": "As regras do site: previsões não são conselho de apostas, origem dos dados, direitos autorais e uso aceitável."
       }
     },
     "en": {
@@ -294,6 +310,22 @@
       "/about-model": {
         "title": "About the model",
         "description": "A full-stack applied AI project: data pipeline, model and API."
+      },
+      "/guide": {
+        "title": "How to read the predictions",
+        "description": "What a win probability means, what the model looks at, how often it is right and what it does not know."
+      },
+      "/contact": {
+        "title": "Contact",
+        "description": "Correct a piece of data, send a suggestion, or get in touch about privacy and copyright with Vektor MMA."
+      },
+      "/privacy": {
+        "title": "Privacy Policy",
+        "description": "What information Vektor MMA receives, how Google AdSense ads work and what your rights are."
+      },
+      "/terms": {
+        "title": "Terms of Use",
+        "description": "The rules of the site: predictions are not betting advice, where the data comes from, copyright and acceptable use."
       }
     },
     "fr": {
@@ -428,6 +460,22 @@
       "/about-model": {
         "title": "À propos du modèle",
         "description": "Un projet complet d'IA appliquée : chaîne de données, modèle et API."
+      },
+      "/guide": {
+        "title": "Comment lire les prévisions",
+        "description": "Ce que signifie une probabilité de victoire, ce que regarde le modèle, son taux de réussite et ce qu’il ne sait pas."
+      },
+      "/contact": {
+        "title": "Contact",
+        "description": "Corrigez une donnée, envoyez une suggestion ou écrivez à Vektor MMA au sujet de la confidentialité et du droit d’auteur."
+      },
+      "/privacy": {
+        "title": "Politique de confidentialité",
+        "description": "Quelles informations Vektor MMA reçoit, comment fonctionnent les annonces Google AdSense et quels sont vos droits."
+      },
+      "/terms": {
+        "title": "Conditions d’utilisation",
+        "description": "Les règles du site : les prévisions ne sont pas un conseil de pari, origine des données, droit d’auteur et utilisation acceptable."
       }
     },
     "es": {
@@ -562,6 +610,22 @@
       "/about-model": {
         "title": "Acerca del modelo",
         "description": "Un proyecto completo de IA aplicada: flujo de datos, modelo y API."
+      },
+      "/guide": {
+        "title": "Cómo leer los pronósticos",
+        "description": "Qué significa la probabilidad de victoria, qué mira el modelo, cuánto acierta y qué no sabe."
+      },
+      "/contact": {
+        "title": "Contacto",
+        "description": "Corrige un dato, envía una sugerencia o escribe a Vektor MMA sobre privacidad y derechos de autor."
+      },
+      "/privacy": {
+        "title": "Política de privacidad",
+        "description": "Qué información recibe Vektor MMA, cómo funcionan los anuncios de Google AdSense y cuáles son tus derechos."
+      },
+      "/terms": {
+        "title": "Términos de uso",
+        "description": "Las reglas del sitio: los pronósticos no son consejo de apuestas, origen de los datos, derechos de autor y uso aceptable."
       }
     }
   }

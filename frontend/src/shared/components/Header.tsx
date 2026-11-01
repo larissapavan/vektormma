@@ -1,9 +1,11 @@
 import { FolderGit2, Maximize2, Moon, Sun } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { L } from '../../i18n/lang'
 import { isLandingPath, LANDING_PATH, orgPath, type OrgConfig } from '../data/orgs'
+import { isInfoOnlyPath } from '../data/staticPages'
 import { useModelInfo } from '../hooks/useModelInfo'
 import { useOrg } from '../hooks/useOrg'
 import { useTheme } from '../context/ThemeContext'
@@ -53,6 +55,31 @@ function isItemActive(item: NavItem, pathname: string) {
 }
 
 /**
+ * The phone sub-bar scrolls sideways. It opens with the current page's tab in view, and while more tabs are hidden to the
+ * right the bar fades out at that edge, so a cut-off tab reads as "more this way" and not as a truncated label.
+ */
+function useScrollingTabs(pathname: string) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [moreOnRight, setMoreOnRight] = useState(false)
+
+  useEffect(() => {
+    const bar = ref.current
+    if (!bar) return
+    const update = () => setMoreOnRight(bar.scrollLeft + bar.clientWidth < bar.scrollWidth - 2)
+    bar.querySelector('[aria-current="page"]')?.scrollIntoView?.({ inline: 'center', block: 'nearest' })
+    update()
+    bar.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update)
+    return () => {
+      bar.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
+    }
+  }, [pathname])
+
+  return [ref, moreOnRight] as const
+}
+
+/**
  * Modern, Minimalist SaaS Combat Sports Analytics Navbar (Clean Single-Bar Layout).
  */
 export function Header() {
@@ -62,8 +89,11 @@ export function Header() {
   const org = useOrg()
   const landing = isLandingPath(pathname)
   const isAbout = pathname === '/about' || pathname.startsWith('/about/') || pathname === '/data' || pathname === '/model' || pathname === '/track-record'
-  const navItems = landing || isAbout ? [] : navItemsFor(org)
+  // The privacy, terms, contact and guide pages have the same bare menu as About, but "About" is not their current page.
+  const bare = isAbout || isInfoOnlyPath(pathname)
+  const navItems = landing || bare ? [] : navItemsFor(org)
   const { isLight, toggleTheme } = useTheme()
+  const [tabsRef, moreTabsOnRight] = useScrollingTabs(pathname)
 
   const apiLabel = loading
     ? t('header.apiWaking', 'Waking up')
@@ -87,13 +117,14 @@ export function Header() {
     <header className="w-full shrink-0">
       <div className="relative w-full text-[var(--text-primary)]">
         {/* Main Navbar Row */}
-        <div className="flex h-14 sm:h-16 w-full items-center justify-between gap-2 sm:gap-6">
-          {/* Left: Native Brand Identity */}
+        <div className="flex h-14 sm:h-16 w-full items-center justify-between gap-1 xs:gap-2 sm:gap-6">
+          {/* Left: Native Brand Identity. Under 480px the toolbar on the right drops its globe icon and divider and the
+              gaps tighten, so the whole wordmark fits next to it on a 320px phone instead of ending under the org button. */}
           <div className="flex min-w-0 flex-1 items-center gap-3 xl:gap-8">
             <Link
               to={LANDING_PATH}
               aria-label={L(i18n.language, 'Vektor MMA • Início', 'Vektor MMA home', 'Vektor MMA • Accueil', 'Vektor MMA • Inicio')}
-              className="flex shrink-0 items-center gap-2 sm:gap-2.5 transition opacity-95 hover:opacity-100 min-w-0"
+              className="flex shrink-0 items-center gap-1.5 xs:gap-2 sm:gap-2.5 transition opacity-95 hover:opacity-100 min-w-0"
             >
               <BrandMark className="h-7 w-7 xs:h-8 xs:w-8 sm:h-9 sm:w-9 shrink-0 drop-shadow-sm" />
               <span className="flex flex-col items-start justify-center leading-tight min-w-0">
@@ -107,7 +138,7 @@ export function Header() {
             </Link>
 
             {/* Center-Left: Desktop Navigation com Indicador Neon Ancorado na Borda */}
-            {landing || isAbout ? (
+            {landing || bare ? (
               <nav
                 aria-label={L(i18n.language, 'Navegação principal', 'Main navigation', 'Navigation principale', 'Navegación principal')}
                 className="min-w-0 flex-1 overflow-x-auto no-scrollbar overscroll-x-contain"
@@ -124,7 +155,7 @@ export function Header() {
                   className="relative flex h-full shrink-0 items-center px-2.5 text-xs font-bold whitespace-nowrap text-[var(--text-secondary)] transition duration-200 hover:text-[var(--text-primary)] dark:hover:text-white sm:px-3 xl:text-[13px]"
                 >
                   <span>{L(i18n.language, 'Organizações', 'Organizations', 'Organisations', 'Organizaciones')}</span>
-                  {landing && !isAbout && pathname === '/' && (
+                  {landing && !bare && pathname === '/' && (
                     <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#FF2E54] rounded-full shadow-[0_0_12px_#FF2E54,0_0_4px_#FF2E54]" />
                   )}
                 </a>
@@ -217,9 +248,9 @@ export function Header() {
 
           {/* Right: Modern SaaS Utility Toolbar */}
           <div className="flex shrink-0 items-center gap-1 sm:gap-3">
-            {!landing && !isAbout && <OrgSwitcher className="shrink-0" />}
+            {!landing && !bare && <OrgSwitcher className="shrink-0" />}
 
-            {!landing && !isAbout && <FighterSearch />}
+            {!landing && !bare && <FighterSearch />}
 
             {/* Minimalist LIVE Telemetry Status Pill */}
             <div
@@ -238,7 +269,7 @@ export function Header() {
             <LanguageSwitcher />
 
             {/* Minimalist Secondary Control Icons (Theme, Fullscreen & Social/GitHub) */}
-            <div className="inline-flex items-center gap-0.5 sm:gap-1 border-l border-[var(--border-subtle)] dark:border-white/10 pl-1.5 sm:pl-2.5">
+            <div className="inline-flex items-center gap-0.5 sm:gap-1 border-l border-[var(--border-subtle)] dark:border-white/10 pl-1.5 sm:pl-2.5 max-xs:border-l-0 max-xs:pl-0">
               <button
                 type="button"
                 onClick={toggleTheme}
@@ -284,8 +315,12 @@ export function Header() {
         </div>
 
         {/* Mobile Navigation: Seamless integrated sub-bar */}
-        {!landing && !isAbout && (
-          <div className="lg:hidden min-w-0 border-t border-[var(--border-subtle)] px-2 py-1 overflow-x-auto no-scrollbar overscroll-x-contain">
+        {!landing && !bare && (
+          <div
+            ref={tabsRef}
+            style={moreTabsOnRight ? { maskImage: 'linear-gradient(to right, #000 calc(100% - 28px), transparent)', WebkitMaskImage: 'linear-gradient(to right, #000 calc(100% - 28px), transparent)' } : undefined}
+            className="lg:hidden min-w-0 border-t border-[var(--border-subtle)] px-2 py-1 overflow-x-auto no-scrollbar overscroll-x-contain"
+          >
             <nav
               aria-label={L(i18n.language, 'Navegação móvel', 'Mobile navigation', 'Navigation mobile', 'Navegación móvil')}
               className="flex items-center gap-1 w-max"
@@ -296,6 +331,7 @@ export function Header() {
                   <NavLink
                     key={item.to}
                     to={item.to}
+                    aria-current={active ? 'page' : undefined}
                     style={{
                       color: active ? '#ffffff' : 'var(--text-primary)',
                       backgroundColor: active ? '#C8102E' : undefined,

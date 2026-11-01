@@ -9,6 +9,8 @@ import { ScrollToTop } from '../shared/components/ScrollToTop'
 import { PageMeta } from '../shared/components/PageMeta'
 import { SocialLinks } from '../shared/components/SocialLinks'
 import { isLandingPath, orgEs } from '../shared/data/orgs'
+import { isStaticPath } from '../shared/data/staticPages'
+import { SiteLinks } from '../shared/components/SiteLinks'
 import { useOrg } from '../shared/hooks/useOrg'
 import { ServerLoadingState } from '../shared/components/ServerLoadingState'
 import { getOrgDataInfo, waitForHealth } from '../shared/services/api'
@@ -27,14 +29,17 @@ export function MainLayout({ children }: { children: ReactNode }) {
   const [orgDataDate, setOrgDataDate] = useState<{ org: string; date: string | null } | null>(null)
   const [apiState, setApiState] = useState<'pending' | 'slow' | 'ready' | 'down'>('pending')
   const org = useOrg()
-  const landing = isLandingPath(useLocation().pathname)
+  const { pathname } = useLocation()
+  const landing = isLandingPath(pathname)
+  // The landing screen and the text pages need nothing from the API, so they open at once.
+  const opensAtOnce = landing || isStaticPath(pathname)
   // The loading screen holds the page open after the API answers only if the visitor saw it while waiting,
   // so a mid-game round can finish and show its score; otherwise the app opens at once.
   const [loadingSeen, setLoadingSeen] = useState(false)
   const [loadingDone, setLoadingDone] = useState(false)
   const waiting = apiState === 'pending' || apiState === 'slow'
-  if (waiting && !landing && !loadingSeen) setLoadingSeen(true)
-  const showLoading = !landing && (waiting || (apiState === 'ready' && loadingSeen && !loadingDone))
+  if (waiting && !opensAtOnce && !loadingSeen) setLoadingSeen(true)
+  const showLoading = !opensAtOnce && (waiting || (apiState === 'ready' && loadingSeen && !loadingDone))
 
   // Each organization has its own accent color (see index.css); the attribute is what the stylesheet reads.
   useEffect(() => {
@@ -90,7 +95,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
       <div className="mx-auto flex w-full max-w-[min(100%,2560px)] flex-1 flex-col px-[clamp(0.75rem,1.4vw,2rem)]">
         <ScrollToTop />
         <PageMeta />
-        {apiState === 'down' ? (
+        {apiState === 'down' && !opensAtOnce ? (
           <p role="status" className="mt-3 border border-[var(--border-subtle)] bg-[#C8102E] px-3 py-2 text-sm font-semibold text-white rounded-lg">
             {t('common.serverDown', 'The server is not answering right now. Give it a minute and reload the page.')}
           </p>
@@ -144,6 +149,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
                     })}
                   </Link>
                 </p>
+                <SiteLinks className="mt-2.5 text-xs" />
               </div>
 
               <div className="flex items-center gap-1 sm:gap-2 self-start sm:self-center border-t border-[var(--border-subtle)]/40 pt-2 sm:border-t-0 sm:pt-0">

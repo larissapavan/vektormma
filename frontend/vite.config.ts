@@ -6,12 +6,19 @@ import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-import { routeHtml, sitemapXml, type RouteText, type SiteInfo } from './src/seo/htmlMeta'
+import { bodyHtml, routeHtml, sitemapXml, type BodyLink, type RouteText, type SiteInfo } from './src/seo/htmlMeta'
+import { CONTACT_EMAIL, infoPage, INFO_PATHS, type InfoPageId } from './src/shared/data/legal'
 
 interface PageMetaFile {
   site: SiteInfo
+  defaultDescription: { pt: string }
   pages: { pt: Record<string, RouteText> }
 }
+
+// Where the static copies of the pages link to, so a crawler that stops at the HTML can still walk the site.
+const NAV_PATHS = ['/predictor', '/head-to-head', '/fighters', '/events', '/rankings', '/champions', '/pfl', '/one', '/bellator', '/guide', '/about', '/contact', '/privacy', '/terms']
+
+const INFO_BY_PATH = Object.fromEntries(Object.entries(INFO_PATHS).map(([id, path]) => [path, id as InfoPageId]))
 
 /**
  * After the build, writes one copy of index.html per route with that route's own title, description, share tags and
@@ -34,12 +41,21 @@ function seoPages(): Plugin {
       const data = JSON.parse(readFileSync(resolve(root, 'src/shared/data/pageMeta.json'), 'utf8')) as PageMetaFile
       const paths = Object.keys(data.pages.pt)
 
+      const nav: BodyLink[] = NAV_PATHS.filter((path) => data.pages.pt[path]).map((path) => ({ label: data.pages.pt[path].title, href: path }))
+      // The text pages carry their whole text; the others carry their heading and description.
+      const email = process.env.VITE_CONTACT_EMAIL?.trim() || CONTACT_EMAIL
+      const bodyOf = (path: string, text: RouteText) => {
+        const info = INFO_BY_PATH[path]
+        return info ? bodyHtml(infoPage(info, 'pt', email), nav) : bodyHtml({ title: text.title, intro: text.description }, nav)
+      }
+
       for (const path of paths) {
         const file = join(distDir, path, 'index.html')
         mkdirSync(dirname(file), { recursive: true })
-        writeFileSync(file, routeHtml(template, data.site, path, data.pages.pt[path]))
+        writeFileSync(file, routeHtml(template, data.site, path, data.pages.pt[path], bodyOf(path, data.pages.pt[path])))
       }
-      writeFileSync(join(distDir, 'index.html'), routeHtml(template, data.site, '/', null))
+      const home = bodyHtml({ title: data.site.name, intro: data.defaultDescription.pt }, nav)
+      writeFileSync(join(distDir, 'index.html'), routeHtml(template, data.site, '/', null, home))
       writeFileSync(join(distDir, 'sitemap.xml'), sitemapXml(data.site.url, ['/', ...paths]))
     },
   }

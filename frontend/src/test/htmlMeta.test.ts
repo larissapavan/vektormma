@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { absoluteUrl, pageTitle, routeHtml, sitemapXml } from '../seo/htmlMeta'
+import { absoluteUrl, bodyHtml, pageTitle, routeHtml, sitemapXml } from '../seo/htmlMeta'
 
 const site = { name: 'Vektor MMA', url: 'https://www.vektormma.com' }
 
@@ -75,5 +75,35 @@ describe('pageTitle and sitemapXml', () => {
     expect(xml).toContain('<loc>https://www.vektormma.com/pfl/events</loc>')
     expect(xml.match(/<url>/g)).toHaveLength(3)
     expect(xml).not.toContain('fight-intelligence')
+  })
+})
+
+describe('the text inside the empty root', () => {
+  const nav = [{ label: 'Privacidade', href: '/privacy' }]
+
+  it('puts the heading, the sections and the links of the site where a crawler reads the HTML', () => {
+    const body = bodyHtml(
+      { title: 'Contato', intro: 'Escreva.', sections: [{ heading: 'Onde', paragraphs: ['Um <b>texto</b>.'], bullets: ['Um'], links: [{ label: 'GitHub', href: 'https://github.com/x' }] }] },
+      nav,
+    )
+    expect(body).toContain('<h1>Contato</h1>')
+    expect(body).toContain('<h2>Onde</h2>')
+    expect(body).toContain('Um &lt;b&gt;texto&lt;/b&gt;.')
+    expect(body).toContain('<a href="https://github.com/x">GitHub</a>')
+    expect(body).toContain('<a href="/privacy">Privacidade</a>')
+  })
+
+  it('goes inside <div id="root"> and leaves the rest of the template alone', () => {
+    const html = routeHtml(template, site, '/contact', { title: 'Contato', description: 'D.' }, bodyHtml({ title: 'Contato', intro: 'Escreva.' }, nav))
+    expect(html).toContain('<div id="root"><main')
+    expect(html).toContain('<h1>Contato</h1>')
+  })
+
+  it('keeps the empty root when no body is given', () => {
+    expect(routeHtml(template, site, '/x', { title: 'X', description: 'D.' })).toContain('<div id="root"></div>')
+  })
+
+  it('stops the build when the empty root is not in the template', () => {
+    expect(() => routeHtml(template.replace('<div id="root"></div>', ''), site, '/x', null, 'x')).toThrow(/root/)
   })
 })

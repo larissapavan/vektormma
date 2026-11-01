@@ -7,6 +7,7 @@ import { L } from '../i18n/lang'
 import { ORGS, orgPath, type OrgId } from '../shared/data/orgs'
 import { AnimatedCounter } from '../shared/components/editorial/AnimatedCounter'
 import { SocialLinks } from '../shared/components/SocialLinks'
+import { SiteLinks } from '../shared/components/SiteLinks'
 import { MMAGlove } from '../shared/components/MMAGlove'
 import { FeaturedMatchup } from '../shared/components/FeaturedMatchup'
 import { useDataInfo } from '../shared/hooks/useDataInfo'
@@ -595,6 +596,7 @@ export function Landing() {
                 )}
               </Link>
             </div>
+            <SiteLinks className="mt-1.5 text-[11px] text-[var(--text-muted)] dark:text-neutral-400" />
           </div>
         </footer>
       </div>

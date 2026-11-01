@@ -21,6 +21,10 @@ const Champions = lazy(() => import('./pages/Champions').then((module) => ({ def
 const HeadToHead = lazy(() => import('./pages/HeadToHead').then((module) => ({ default: module.HeadToHead })))
 const Model = lazy(() => import('./pages/Model').then((module) => ({ default: module.Model })))
 const About = lazy(() => import('./pages/About').then((module) => ({ default: module.About })))
+const Privacy = lazy(() => import('./pages/InfoPage').then((module) => ({ default: module.Privacy })))
+const Terms = lazy(() => import('./pages/InfoPage').then((module) => ({ default: module.Terms })))
+const Contact = lazy(() => import('./pages/InfoPage').then((module) => ({ default: module.Contact })))
+const Guide = lazy(() => import('./pages/InfoPage').then((module) => ({ default: module.Guide })))
 const AboutModel = lazy(() => import('./pages/AboutModel').then((module) => ({ default: module.AboutModel })))
 const DataIntelligence = lazy(() =>
   import('./pages/DataIntelligence').then((module) => ({ default: module.DataIntelligence })),
@@ -91,6 +95,10 @@ function App() {
                 <Route path="/track-record" element={<TrackRecord />} />
               </Route>
               <Route path="/about-model" element={<AboutModel />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/guide" element={<Guide />} />
               {GENERIC_ORGS.map((org) => (
                 <Route key={org.id} path={org.basePath}>
                   <Route index element={<OrgHome />} />
