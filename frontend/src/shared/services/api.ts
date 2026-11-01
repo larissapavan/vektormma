@@ -1,7 +1,6 @@
 import axios from 'axios'
 import type {
   DivisionMatrix,
-  EloRankingEntry,
   SyncTrackRecordResponse,
   OtherOrganization,
   ChampionsResponse,
@@ -25,7 +24,6 @@ import type {
   OrgRankingCategory,
   PredictionResponse,
   RankingCategory,
-  SimilarFighter,
 } from '../types/api'
 
 const apiBaseURL = import.meta.env.DEV
@@ -116,13 +114,6 @@ export const getOtherOrganizations = async (fighterName: string) => {
   return response.data
 }
 
-export const getSimilarFighters = async (fighterName: string, limit = 5) => {
-  const response = await api.get<SimilarFighter[]>(`/fighters/${encodeURIComponent(fighterName)}/similar`, {
-    params: { limit },
-  })
-  return response.data
-}
-
 export const getModelInfo = async () => {
   const response = await api.get<ModelInfo>('/model-info')
   return response.data
@@ -206,33 +197,6 @@ export const getGyms = async () => {
 
 export const getGym = async (slug: string) => {
   const response = await api.get<GymDetail>(`/gyms/${encodeURIComponent(slug)}`)
-  return response.data
-}
-
-export const getEloRankings = async (division?: string, activeOnly: boolean = true, limit = 50) => {
-  const response = await api.get<EloRankingEntry[]>('/rankings/elo', {
-    params: { division, active_only: activeOnly, limit },
-  })
-  return response.data
-}
-
-export const getFighterElo = async (name: string) => {
-  const response = await api.get<{
-    name: string
-    elo: number
-    peak_elo: number
-    ufc_fights: number
-    p4p_rank: number | null
-    all_time_rank: number | null
-    history: Array<{
-      date: string
-      event: string
-      opponent: string
-      result: string
-      elo_after: number
-      elo_change: number
-    }>
-  }>(`/fighters/${encodeURIComponent(name)}/elo`)
   return response.data
 }
 

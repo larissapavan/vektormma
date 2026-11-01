@@ -2,11 +2,9 @@ import { useTranslation } from 'react-i18next'
 
 import { L } from '../../i18n/lang'
 import { BADGES, CHAMPION_SEALS, getBadgeLabel } from '../data/badges'
-import { DIVISION_NAMES_PT, getDivisionName } from '../data/divisions'
+import { getDivisionName } from '../data/divisions'
 import type { FighterProfile } from '../types/api'
 import { FlagIcon } from './FlagIcon'
-
-export { DIVISION_NAMES_PT }
 
 type FighterBadgesProps = {
   badges: string[] | undefined
@@ -43,63 +41,6 @@ export function FighterBadges({ badges, variant = 'short', className = '' }: Fig
           </li>
         )
       })}
-    </ul>
-  )
-}
-
-/** "Current Lightweight Champion" seals. Profile only; gold. */
-export function CurrentChampionSeals({ titles, className = '' }: { titles: string[] | undefined; className?: string }) {
-  const { i18n } = useTranslation()
-
-  if (!titles?.length) return null
-  return (
-    <ul className={`flex flex-wrap items-center gap-1 ${className}`} aria-label={L(i18n.language, 'Cinturões atuais', 'Current championships', 'Ceintures actuelles')}>
-      {titles.map((title) => (
-        <li
-          key={title}
-          className="border-2 border-[var(--rule)] bg-[#F2C230] px-1.5 py-px text-[11px] font-bold uppercase leading-4 tracking-[0.08em] text-[#0E0E0E]"
-        >
-          {L(i18n.language, `Campeão Atual (${getDivisionName(title, 'pt')})`, `Current ${title} Champion`, `Champion actuel (${getDivisionName(title, 'fr')})`)}
-        </li>
-      ))}
-    </ul>
-  )
-}
-
-/** "Former Lightweight Champion" seals. Profile only; red. */
-export function FormerChampionSeals({ titles, className = '' }: { titles: string[] | undefined; className?: string }) {
-  const { i18n } = useTranslation()
-
-  if (!titles?.length) return null
-  return (
-    <ul className={`flex flex-wrap items-center gap-1 ${className}`} aria-label={L(i18n.language, 'Cinturões anteriores', 'Former championships', 'Anciennes ceintures')}>
-      {titles.map((title) => (
-        <li
-          key={title}
-          className="border-2 border-[var(--rule)] bg-[#C8102E] px-1.5 py-px text-[11px] font-bold uppercase leading-4 tracking-[0.08em] text-white"
-        >
-          {L(i18n.language, `Ex-Campeão (${getDivisionName(title, 'pt')})`, `Former ${title} Champion`, `Ancien champion (${getDivisionName(title, 'fr')})`)}
-        </li>
-      ))}
-    </ul>
-  )
-}
-
-/** "Interim Lightweight Champion" seals for anyone who has held an interim belt. Profile only; blue, like title defenses. */
-export function InterimChampionSeals({ titles, className = '' }: { titles: string[] | undefined; className?: string }) {
-  const { i18n } = useTranslation()
-
-  if (!titles?.length) return null
-  return (
-    <ul className={`flex flex-wrap items-center gap-1 ${className}`} aria-label={L(i18n.language, 'Cinturões interinos', 'Interim championships', 'Ceintures intérimaires')}>
-      {titles.map((title) => (
-        <li
-          key={title}
-          className="border-2 border-[var(--rule)] bg-[#1F4E9C] px-1.5 py-px text-[11px] font-bold uppercase leading-4 tracking-[0.08em] text-white"
-        >
-          {L(i18n.language, `Campeão Interino (${getDivisionName(title, 'pt')})`, `Interim ${title} Champion`, `Champion intérimaire (${getDivisionName(title, 'fr')})`)}
-        </li>
-      ))}
     </ul>
   )
 }
