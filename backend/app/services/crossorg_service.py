@@ -71,10 +71,6 @@ def ufc_names_for_org(org_id: str) -> dict[str, str]:
     return links
 
 
-def ufc_name_of(org_id: str, org_name: str) -> str | None:
-    return ufc_names_for_org(org_id).get(_name_key(org_name))
-
-
 def other_organizations(ufc_name: str) -> list[dict]:
     """The fights this UFC fighter had in every other organization: [{org_id, short_name, name, fighter_name, org_record, fights}]."""
     index = _ufc_index()

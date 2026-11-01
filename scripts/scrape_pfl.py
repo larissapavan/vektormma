@@ -280,10 +280,6 @@ def parse_number(text: str) -> float | None:
     return float(found.group(1)) if found else None
 
 
-def pair_key(name_a: str, name_b: str) -> frozenset[str]:
-    return frozenset((name_key(name_a), name_key(name_b)))
-
-
 # --------------------------------------------------------------------------- events
 
 
