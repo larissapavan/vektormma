@@ -27,3 +27,11 @@ project_zip/
 
 # The pre-fight candidate model: `python -m src.ufc_predictor.train_prefight` rebuilds it in seconds
 models/candidate/
+
+# Editor and OS leftovers, Vite caches, and the throwaway files local tooling writes
+.DS_Store
+Thumbs.db
+.vite/
+*.bak
+*.tmp
+.claude/*-patches/
