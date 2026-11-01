@@ -10,6 +10,48 @@ const FENCE_TOP = 28
 const POST_LEFT = 44
 const POST_RIGHT = WIDTH - 44
 
+// ---- Tunables: tweak the feel of the game here ----------------------------------------------
+/** The game logic advances in fixed steps, so timings are the same on 60, 120 and 144 Hz screens. */
+const FRAME_MS = 1000 / 60
+/** Time to react to a call at score 0 (the windup before the blow). */
+const BASE_WINDUP_MS = 730
+/** The windup never gets shorter than this, so the game stays playable. */
+const MIN_WINDUP_MS = 380
+/** Every DIFFICULTY_STEP_POINTS points the windup shrinks by DIFFICULTY_STEP_SHRINK of its base. */
+const DIFFICULTY_STEP_POINTS = 5
+const DIFFICULTY_STEP_SHRINK = 0.05
+/** Rest between two exchanges, shrinking with the same curve. */
+const BASE_PAUSE_MS = 630
+const MIN_PAUSE_MS = 400
+/** The blow itself: a correct answer still counts until it lands. */
+const STRIKE_MS = 267
+/** Extra rest after losing a bout, before the next one starts from zero. */
+const RESTART_PAUSE_MS = 450
+/** Every COMBO_STREAK_STEP hits in a row raise the score multiplier by one, up to COMBO_MAX_MULTIPLIER. */
+const COMBO_STREAK_STEP = 3
+const COMBO_MAX_MULTIPLIER = 5
+/** No answer for this long means the visitor is not playing, so the loading screen can close at once. */
+const IDLE_AFTER_MS = 6000
+// -----------------------------------------------------------------------------------------------
+
+/** Points a hit is worth after `streak` hits in a row: x1, then x2 from 3 hits, x3 from 6, and so on. */
+const comboMultiplier = (streak: number) =>
+  Math.min(COMBO_MAX_MULTIPLIER, 1 + Math.floor(streak / COMBO_STREAK_STEP))
+
+const frames = (ms: number) => Math.round(ms / FRAME_MS)
+const STRIKE_FRAMES = frames(STRIKE_MS)
+
+/** 1 at score 0, falling by DIFFICULTY_STEP_SHRINK every DIFFICULTY_STEP_POINTS points. */
+function difficultyFactor(score: number): number {
+  return Math.max(0, 1 - Math.floor(score / DIFFICULTY_STEP_POINTS) * DIFFICULTY_STEP_SHRINK)
+}
+const windupFramesFor = (score: number) => frames(Math.max(MIN_WINDUP_MS, BASE_WINDUP_MS * difficultyFactor(score)))
+const pauseFramesFor = (score: number) => frames(Math.max(MIN_PAUSE_MS, BASE_PAUSE_MS * difficultyFactor(score)))
+
+/** The reaction bar turns from yellow to orange to red as the window closes. */
+const BAR_WARN_AT = 0.5
+const BAR_DANGER_AT = 0.25
+
 type Phase = 'idle' | 'windup' | 'strike'
 type Strike = 'punch' | 'kick'
 
@@ -34,6 +76,8 @@ type Popup = {
 
 type Bout = {
   score: number
+  /** Best score reached during this visit, for the summary (a loss resets `score`). */
+  bestRun: number
   hiScore: number
   streak: number
   playerArm: number
@@ -46,7 +90,18 @@ type Bout = {
   attack: Strike
   timer: number
   phaseTotal: number
+  /** Whole reaction window, windup plus strike, in frames. */
+  windowTotal: number
+  /** When the visitor last answered (performance.now), 0 if never. */
+  lastInputAt: number
+  /** The API is ready: finish the current round and stop calling new ones. */
+  finishing: boolean
+  /** The round is over and the summary is up; answers no longer count. */
+  finished: boolean
+  /** A wrong answer was given: the counter is coming and cannot be parried any more. */
+  lost: boolean
   flash: number
+  flashColor: string
   shake: number
   frame: number
   playerHold: number
@@ -55,6 +110,7 @@ type Bout = {
 }
 
 type BoutLabels = {
+  restart: string
   punch: string
   kick: string
   counter: string
@@ -65,9 +121,10 @@ type BoutLabels = {
 
 const HI_SCORE_KEY = 'ufc-predictor:bout-hi-score'
 
+// localStorage keeps the best score across visits; it can throw in private mode or with blocked site data.
 function readHiScore(): number {
   try {
-    const val = Number(window.sessionStorage.getItem(HI_SCORE_KEY) || '0')
+    const val = Number(window.localStorage.getItem(HI_SCORE_KEY) || '0')
     return Number.isFinite(val) && val > 0 ? val : 0
   } catch {
     return 0
@@ -76,9 +133,9 @@ function readHiScore(): number {
 
 function saveHiScore(score: number) {
   try {
-    window.sessionStorage.setItem(HI_SCORE_KEY, String(score))
+    window.localStorage.setItem(HI_SCORE_KEY, String(score))
   } catch {
-    // ignore storage errors
+    // storage unavailable: the HI just lasts until the page closes
   }
 }
 
@@ -495,6 +552,20 @@ function drawOctagonStage(ctx: CanvasRenderingContext2D, frame: number) {
   ctx.fill()
 }
 
+/** Fraction (1 to 0) of the reaction window still open: from the callout until the blow lands. */
+function reactionLeft(bout: Bout): number {
+  const total = Math.max(1, bout.windowTotal)
+  if (bout.phase === 'windup') return Math.min(1, (bout.timer + STRIKE_FRAMES) / total)
+  if (bout.phase === 'strike') return Math.max(0, Math.min(1, bout.timer / total))
+  return 0
+}
+
+function reactionColor(left: number): string {
+  if (left > BAR_WARN_AT) return '#F2C230'
+  if (left > BAR_DANGER_AT) return '#E8821E'
+  return '#C8102E'
+}
+
 function drawHud(ctx: CanvasRenderingContext2D, bout: Bout, labels: BoutLabels) {
   // Top bar strip
   ctx.fillStyle = 'rgba(14, 14, 14, 0.86)'
@@ -510,8 +581,9 @@ function drawHud(ctx: CanvasRenderingContext2D, bout: Bout, labels: BoutLabels) 
   ctx.fillStyle = '#EDE6D6'
   ctx.fillText(labels.you, 20, 15.5)
 
-  if (bout.streak >= 2) {
-    const streakText = `x${bout.streak}`
+  const multiplier = comboMultiplier(bout.streak)
+  if (multiplier > 1) {
+    const streakText = `x${multiplier}`
     ctx.fillStyle = '#F2C230'
     ctx.fillRect(62, 4.5, 28, 15)
     ctx.fillStyle = '#0E0E0E'
@@ -543,11 +615,8 @@ function drawHud(ctx: CanvasRenderingContext2D, bout: Bout, labels: BoutLabels) 
     const pillX = WIDTH / 2 - pillW / 2
     const pillY = 30
 
-    // Progress ratio remaining in the window
-    const progress =
-      bout.phase === 'windup'
-        ? Math.max(0, bout.timer / Math.max(1, bout.phaseTotal))
-        : 0.15
+    // Share of the reaction window still open
+    const progress = reactionLeft(bout)
 
     ctx.fillStyle = isPunch ? '#C8102E' : '#F2C230'
     ctx.fillRect(pillX, pillY, pillW, 20)
@@ -559,11 +628,11 @@ function drawHud(ctx: CanvasRenderingContext2D, bout: Bout, labels: BoutLabels) 
     ctx.textAlign = 'center'
     ctx.fillText(text, WIDTH / 2, pillY + 14)
 
-    // Timing bar underneath
+    // Reaction bar underneath: drains while the window is open and shifts colour near the end
     ctx.fillStyle = 'rgba(14, 14, 14, 0.85)'
-    ctx.fillRect(pillX, pillY + 21, pillW, 3)
-    ctx.fillStyle = '#FFFFFF'
-    ctx.fillRect(pillX, pillY + 21, pillW * progress, 3)
+    ctx.fillRect(pillX, pillY + 21, pillW, 4)
+    ctx.fillStyle = reactionColor(progress)
+    ctx.fillRect(pillX, pillY + 21, pillW * progress, 4)
   }
 }
 
@@ -635,10 +704,20 @@ function drawBout(ctx: CanvasRenderingContext2D, bout: Bout, labels: BoutLabels)
 
   ctx.restore()
 
+  // Impact flash: gold when the blow is parried, red when it lands on the player
+  if (bout.flash > 0) {
+    ctx.save()
+    ctx.globalAlpha = Math.min(0.3, (bout.flash / 16) * 0.3)
+    ctx.fillStyle = bout.flashColor
+    ctx.fillRect(0, 0, WIDTH, HEIGHT)
+    ctx.restore()
+  }
+
   drawHud(ctx, bout, labels)
 }
 
 function resetExchange(bout: Bout, pause: number) {
+  bout.lost = false
   bout.phase = 'idle'
   bout.timer = pause
   bout.phaseTotal = pause
@@ -646,7 +725,21 @@ function resetExchange(bout: Bout, pause: number) {
   bout.enemyKick = 0
 }
 
-function step(bout: Bout) {
+/** The blow landed on the player: the bout is lost and a new one starts from zero (the HI stays). */
+function endRun(bout: Bout, labels: BoutLabels) {
+  bout.playerRecoil = 14
+  bout.streak = 0
+  bout.score = 0
+  bout.shake = 6
+  bout.flash = 18
+  bout.flashColor = '#C8102E'
+  spawnImpact(bout, 236, GROUND - 44, '#C8102E', 12)
+  spawnPopup(bout, 224, GROUND - 64, labels.miss, '#C8102E')
+  spawnPopup(bout, WIDTH / 2, GROUND - 92, labels.restart, '#EDE6D6')
+  resetExchange(bout, pauseFramesFor(0) + frames(RESTART_PAUSE_MS))
+}
+
+function step(bout: Bout, labels: BoutLabels) {
   bout.frame += 1
   if (bout.playerHold > 0) bout.playerHold -= 1
   else {
@@ -677,15 +770,15 @@ function step(bout: Bout) {
     if (pop.life <= 0) bout.popups.splice(i, 1)
   }
 
-  // Slightly faster pace as score grows (Chrome Dino style), capped so it stays fair
-  const speedBonus = Math.min(14, Math.floor(bout.score * 0.8))
-
-  if (bout.phase === 'idle' && bout.timer <= 0) {
+  if (bout.phase === 'idle' && bout.timer <= 0 && bout.finishing) {
+    bout.finished = true
+  } else if (bout.phase === 'idle' && bout.timer <= 0) {
     bout.phase = 'windup'
     bout.attack = Math.random() < 0.5 ? 'punch' : 'kick'
-    const windupFrames = Math.max(30, 44 - speedBonus)
+    const windupFrames = windupFramesFor(bout.score)
     bout.timer = windupFrames
     bout.phaseTotal = windupFrames
+    bout.windowTotal = windupFrames + STRIKE_FRAMES
     bout.enemyArm = 0
     bout.enemyKick = 0
   } else if (bout.phase === 'windup') {
@@ -694,42 +787,40 @@ function step(bout: Bout) {
     else bout.enemyKick = -16 * charge
     if (bout.timer <= 0) {
       bout.phase = 'strike'
-      bout.timer = 16
-      bout.phaseTotal = 16
+      bout.timer = STRIKE_FRAMES
+      bout.phaseTotal = STRIKE_FRAMES
       if (bout.attack === 'punch') bout.enemyArm = 28
       else bout.enemyKick = 30
     }
   } else if (bout.phase === 'strike') {
     if (bout.attack === 'punch') bout.enemyArm = Math.max(0, bout.enemyArm - 1.5)
     else bout.enemyKick = Math.max(12, bout.enemyKick - 1.6)
-    if (bout.timer <= 0) {
-      bout.playerRecoil = 12
-      bout.streak = 0
-      bout.shake = 4
-      spawnImpact(bout, 236, GROUND - 44, '#C8102E', 8)
-      resetExchange(bout, Math.max(22, 32 - Math.floor(speedBonus / 2)))
-    }
+    if (bout.timer <= 0) endRun(bout, labels)
   }
 }
 
 function land(bout: Bout, kind: Strike, labels: BoutLabels) {
+  if (bout.finished) return
+  bout.lastInputAt = performance.now()
   if (bout.playerArm > 5 || bout.playerKick > 5) return
   bout.playerHold = 8
   if (kind === 'punch') bout.playerArm = 28
   else bout.playerKick = 30
   if (bout.phase === 'idle') return
 
-  const speedBonus = Math.min(14, Math.floor(bout.score * 0.8))
-
-  if (bout.attack === kind) {
-    bout.score += 1
+  if (bout.attack === kind && !bout.lost) {
+    const before = comboMultiplier(bout.streak)
+    bout.score += before
+    if (bout.score > bout.bestRun) bout.bestRun = bout.score
     bout.streak += 1
+    const after = comboMultiplier(bout.streak)
     if (bout.score > bout.hiScore) {
       bout.hiScore = bout.score
       saveHiScore(bout.hiScore)
     }
     bout.enemyRecoil = 15
     bout.flash = 16
+    bout.flashColor = '#F2C230'
     bout.shake = 5
     const hitY = kind === 'punch' ? GROUND - 50 : GROUND - 36
     spawnImpact(bout, 298, hitY, '#F2C230', 14)
@@ -737,27 +828,39 @@ function land(bout: Bout, kind: Strike, labels: BoutLabels) {
       bout,
       270,
       GROUND - 64,
-      bout.streak >= 3 ? `${labels.counter} x${bout.streak}` : '+1',
+      after > before ? `${labels.counter} x${after}` : `+${before}`,
       '#F2C230',
     )
-    resetExchange(bout, Math.max(24, 38 - Math.floor(speedBonus / 2)))
+    resetExchange(bout, pauseFramesFor(bout.score))
     return
   }
 
-  bout.playerRecoil = 12
-  bout.streak = 0
-  bout.shake = 4
-  spawnImpact(bout, 236, GROUND - 44, '#C8102E', 8)
-  spawnPopup(bout, 224, GROUND - 64, labels.miss, '#C8102E')
-  resetExchange(bout, 32)
+  // Wrong answer: the opponent drops the wait and counters at once; the blow that follows ends the bout.
+  bout.lost = true
+  if (bout.phase === 'windup') {
+    bout.phase = 'strike'
+    bout.timer = STRIKE_FRAMES
+    bout.phaseTotal = STRIKE_FRAMES
+    if (bout.attack === 'punch') bout.enemyArm = 28
+    else bout.enemyKick = 30
+  }
+}
+
+interface LoadingBoutProps {
+  /** The API answered: close out the current round, then offer to continue. */
+  apiReady?: boolean
+  /** Called when the loading screen can go away (at once if nobody is playing). */
+  onDone?: () => void
 }
 
 /** A compact Chrome-Dino-style octagon reflex mini-game that plays while the server wakes up. */
-export function LoadingBout() {
+export function LoadingBout({ apiReady = false, onDone }: LoadingBoutProps) {
   const { t, i18n } = useTranslation()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const boutRef = useRef<Bout | null>(null)
   const [activeKey, setActiveKey] = useState<Strike | null>(null)
+  const [summary, setSummary] = useState<{ score: number; hi: number } | null>(null)
+  const onDoneRef = useRef(onDone)
 
   const punchLabel = t('common.boutPunch')
   const kickLabel = t('common.boutKick')
@@ -765,8 +868,10 @@ export function LoadingBout() {
   const missLabel = L(i18n.language, 'ERROU', 'MISS', 'RATÉ')
   const youLabel = L(i18n.language, 'VOCÊ', 'YOU', 'VOUS')
   const cpuLabel = 'CPU'
+  const restartLabel = L(i18n.language, 'NOVA LUTA', 'NEW BOUT', 'NOUVEAU COMBAT')
 
   const labelsRef = useRef<BoutLabels>({
+    restart: restartLabel,
     punch: punchLabel,
     kick: kickLabel,
     counter: counterLabel,
@@ -777,6 +882,7 @@ export function LoadingBout() {
 
   useEffect(() => {
     labelsRef.current = {
+      restart: restartLabel,
       punch: punchLabel,
       kick: kickLabel,
       counter: counterLabel,
@@ -784,7 +890,11 @@ export function LoadingBout() {
       you: youLabel,
       cpu: cpuLabel,
     }
-  }, [punchLabel, kickLabel, counterLabel, missLabel, youLabel, cpuLabel])
+  }, [restartLabel, punchLabel, kickLabel, counterLabel, missLabel, youLabel, cpuLabel])
+
+  useEffect(() => {
+    onDoneRef.current = onDone
+  }, [onDone])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -796,6 +906,7 @@ export function LoadingBout() {
     ctx.imageSmoothingEnabled = true
     const bout: Bout = {
       score: 0,
+      bestRun: 0,
       hiScore: readHiScore(),
       streak: 0,
       playerArm: 0,
@@ -808,7 +919,13 @@ export function LoadingBout() {
       attack: 'punch',
       timer: 26,
       phaseTotal: 26,
+      windowTotal: 1,
+      lastInputAt: 0,
+      finishing: false,
+      finished: false,
+      lost: false,
       flash: 0,
+      flashColor: '#F2C230',
       shake: 0,
       frame: 0,
       playerHold: 0,
@@ -848,13 +965,28 @@ export function LoadingBout() {
     window.addEventListener('keydown', onKey)
     canvas.addEventListener('pointerdown', onPointer)
 
-    const loop = () => {
+    let summarised = false
+    let last = performance.now()
+    let accumulated = 0
+    const loop = (now: number) => {
       if (!alive) return
-      if (!reduced) step(bout)
+      if (!reduced) {
+        // Fixed-step logic; a long gap (hidden tab) is capped instead of replayed.
+        accumulated += Math.min(100, now - last)
+        while (accumulated >= FRAME_MS) {
+          step(bout, labelsRef.current)
+          accumulated -= FRAME_MS
+        }
+      }
+      last = now
       drawBout(ctx, bout, labelsRef.current)
+      if (bout.finished && !summarised) {
+        summarised = true
+        setSummary({ score: bout.bestRun, hi: bout.hiScore })
+      }
       if (!reduced) requestAnimationFrame(loop)
     }
-    loop()
+    loop(last)
 
     return () => {
       alive = false
@@ -864,6 +996,22 @@ export function LoadingBout() {
       canvas.removeEventListener('pointerdown', onPointer)
     }
   }, [])
+
+  // The API is ready: if someone is mid-game let the round finish, otherwise move on right away.
+  useEffect(() => {
+    if (!apiReady) return
+    const bout = boutRef.current
+    const playing =
+      bout &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+      bout.lastInputAt > 0 &&
+      performance.now() - bout.lastInputAt < IDLE_AFTER_MS
+    if (!bout || !playing) {
+      onDoneRef.current?.()
+      return
+    }
+    bout.finishing = true
+  }, [apiReady])
 
   const strike = (kind: Strike) => {
     const bout = boutRef.current
@@ -884,6 +1032,27 @@ export function LoadingBout() {
         />
       </div>
 
+      {summary ? (
+        <div className="mt-3 flex flex-col gap-3 border-2 border-[var(--rule)] bg-[var(--bg-surface-subtle)] p-3 shadow-[3px_3px_0_var(--hard)] sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.04em] text-[var(--text-main)] sm:text-base">
+              {t('common.boutReady')}
+            </p>
+            <p className="mt-1 font-mono text-xs text-[var(--text-muted)]">
+              {t('common.boutFinalScore')}{' '}
+              <span className="font-bold text-[var(--text-main)]">{String(summary.score).padStart(5, '0')}</span>
+              {' · '}HI {String(summary.hi).padStart(5, '0')}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => onDone?.()}
+            className="inline-flex min-h-11 items-center justify-center border-2 border-[var(--rule)] bg-[#F2C230] px-6 py-2.5 text-sm font-bold uppercase tracking-wider text-[#0E0E0E] shadow-[3px_3px_0_var(--hard)] transition select-none cursor-pointer hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0_var(--hard)] sm:shrink-0"
+          >
+            {t('common.boutContinue')}
+          </button>
+        </div>
+      ) : (
       <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="grid grid-cols-2 gap-2 sm:flex sm:shrink-0 sm:gap-2">
           <button
@@ -931,6 +1100,7 @@ export function LoadingBout() {
           {t('common.boutHint')}
         </p>
       </div>
+      )}
     </div>
   )
 }

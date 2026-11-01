@@ -1,12 +1,28 @@
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LoadingBout } from './LoadingBout'
 
+/** After this long since the page opened, say plainly that the server is cold-starting. */
+const SLOW_NOTICE_MS = 15000
+
 export function ServerLoadingState({
   waking = false,
+  ready = false,
+  onContinue,
 }: {
   waking?: boolean
+  /** The API answered: the mini-game wraps up its round, then calls onContinue. */
+  ready?: boolean
+  onContinue?: () => void
 }) {
   const { t } = useTranslation()
+  const [slowNotice, setSlowNotice] = useState(false)
+
+  // Counted from the page load, so the notice does not restart when this screen remounts.
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSlowNotice(true), Math.max(0, SLOW_NOTICE_MS - performance.now()))
+    return () => window.clearTimeout(timer)
+  }, [])
 
   return (
     <section
@@ -25,14 +41,19 @@ export function ServerLoadingState({
             <p className="text-sm font-bold uppercase tracking-[0.04em] text-[var(--text-main)] sm:text-base">
               {t('common.pageLoading')}
             </p>
-            {waking ? (
+            {waking && !ready ? (
               <p className="mt-1 text-xs leading-5 text-[var(--text-muted)] sm:text-sm">
                 {t('common.serverWaking')}
               </p>
             ) : null}
+            {waking && !ready && slowNotice ? (
+              <p className="mt-1 text-[11px] leading-4 text-[var(--text-muted)] sm:text-xs">
+                {t('common.serverColdStart')}
+              </p>
+            ) : null}
           </div>
         </div>
-        <LoadingBout />
+        <LoadingBout apiReady={ready} onDone={onContinue} />
       </div>
     </section>
   )

@@ -7,6 +7,7 @@ import { L } from '../i18n/lang'
 import { ORGS, orgPath, type OrgId } from '../shared/data/orgs'
 import { AnimatedCounter } from '../shared/components/editorial/AnimatedCounter'
 import { SocialLinks } from '../shared/components/SocialLinks'
+import { MMAGlove } from '../shared/components/MMAGlove'
 
 interface OrgMetric {
   labelPt: string
@@ -33,7 +34,7 @@ interface OrgCardInfo {
   fullNameFr?: string
   accentColor: string
   hoverBorder: string
-  gloveImage: string
+  glove: { src: string; glow: string; duration: string; delay: string }
   statusBadge: OrgStatusBadge
   metrics: [OrgMetric, OrgMetric]
 }
@@ -46,7 +47,7 @@ const ORG_CARDS: OrgCardInfo[] = [
     fullName: 'Ultimate Fighting Championship',
     accentColor: '#E11D48',
     hoverBorder: 'border-[#E11D48]/35 hover:border-[#E11D48] hover:shadow-[0_0_30px_rgba(225,29,72,0.28),inset_0_0_15px_rgba(225,29,72,0.08)]',
-    gloveImage: '/mma-glove-ufc.png',
+    glove: { src: '/mma-glove-ufc.webp', glow: '#E11D48', duration: '5.2s', delay: '0s' },
     statusBadge: {
       labelPt: 'Previsões IA',
       labelEn: 'AI Predictions',
@@ -65,7 +66,7 @@ const ORG_CARDS: OrgCardInfo[] = [
     fullName: 'Professional Fighters League',
     accentColor: '#2563EB',
     hoverBorder: 'border-[#2563EB]/35 hover:border-[#2563EB] hover:shadow-[0_0_30px_rgba(37,99,235,0.28),inset_0_0_15px_rgba(37,99,235,0.08)]',
-    gloveImage: '/mma-glove-pfl.png',
+    glove: { src: '/mma-glove-pfl.webp', glow: '#2563EB', duration: '4.6s', delay: '-1.4s' },
     statusBadge: {
       labelPt: 'Liga & Torneio',
       labelEn: 'Tournament',
@@ -84,7 +85,7 @@ const ORG_CARDS: OrgCardInfo[] = [
     fullName: 'ONE Championship',
     accentColor: '#F59E0B',
     hoverBorder: 'border-[#F59E0B]/35 hover:border-[#F59E0B] hover:shadow-[0_0_30px_rgba(245,158,11,0.28),inset_0_0_15px_rgba(245,158,11,0.08)]',
-    gloveImage: '/mma-glove-one.png',
+    glove: { src: '/mma-glove-one.webp', glow: '#F59E0B', duration: '5.8s', delay: '-2.7s' },
     statusBadge: {
       labelPt: 'Previsões IA',
       labelEn: 'AI Predictions',
@@ -105,7 +106,7 @@ const ORG_CARDS: OrgCardInfo[] = [
     fullNameFr: 'Bellator MMA',
     accentColor: '#10B981',
     hoverBorder: 'border-[#10B981]/35 hover:border-[#10B981] hover:shadow-[0_0_30px_rgba(16,185,129,0.28),inset_0_0_15px_rgba(16,185,129,0.08)]',
-    gloveImage: '/mma-glove-bellator.png',
+    glove: { src: '/mma-glove-bellator.webp', glow: '#10B981', duration: '4.9s', delay: '-0.8s' },
     statusBadge: {
       labelPt: 'Arquivo Histórico',
       labelEn: 'Historical Archive',
@@ -412,43 +413,36 @@ export function Landing() {
                       </p>
                     </div>
 
-                    {/* Luva 3D da Organização com Iluminação Volumétrica Suave */}
-                    <div className="relative my-4 sm:my-5 h-26 sm:h-30 w-full flex items-center justify-center">
-                      {/* 1. Aura volumétrica ampla difusa */}
+                    {/* Luva decorativa iluminada, flutuando; o halo e a sombra acompanham o movimento */}
+                    <div
+                      aria-hidden="true"
+                      className="relative my-3 sm:my-4 h-40 sm:h-44 w-full flex items-center justify-center overflow-hidden"
+                      style={
+                        {
+                          '--glove-duration': card.glove.duration,
+                          '--glove-delay': card.glove.delay,
+                        } as React.CSSProperties
+                      }
+                    >
+                      <div className="glove-halo-wrap absolute inset-0 opacity-70 dark:opacity-85 pointer-events-none">
+                        <div
+                          className="glove-halo absolute inset-0"
+                          style={{
+                            background: `radial-gradient(closest-side, ${card.glove.glow}66 0%, ${card.glove.glow}1f 55%, transparent 100%)`,
+                          }}
+                        />
+                      </div>
                       <div
-                        className="absolute inset-0 rounded-2xl opacity-20 group-hover:opacity-45 transition-opacity duration-500 blur-2xl pointer-events-none"
+                        className="glove-shadow absolute bottom-3 h-2.5 w-24 rounded-full pointer-events-none"
                         style={{
-                          background: `radial-gradient(circle, ${card.accentColor} 0%, transparent 70%)`,
+                          background: `radial-gradient(closest-side, ${card.glove.glow}aa, transparent)`,
                         }}
                       />
-                      {/* 2. Núcleo volumétrico suave concentrado */}
-                      <div
-                        className="absolute h-16 w-16 rounded-full blur-xl opacity-25 group-hover:opacity-55 transition-opacity duration-500 pointer-events-none"
-                        style={{ backgroundColor: card.accentColor }}
-                      />
-                      {/* 3. Luva 3D Flutuante */}
-                      <motion.img
-                        src={card.gloveImage}
-                        alt={`${card.shortName} 3D Glove`}
-                        animate={{ y: [-3, 3, -3], rotate: [-1, 1, -1] }}
-                        transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-                        className="relative z-10 h-22 sm:h-24 w-auto object-contain select-none pointer-events-none transition-transform duration-300 group-hover:scale-110"
-                        style={{
-                          filter: [
-                            card.id === 'bellator' ? 'brightness(1.35) contrast(1.2)' : '',
-                            `drop-shadow(0 12px 24px ${card.accentColor}66)`,
-                          ]
-                            .filter(Boolean)
-                            .join(' '),
-                        }}
-                      />
-                      {/* 4. Sombra sutil de levitação no piso do card */}
-                      <motion.div
-                        animate={{ scale: [0.9, 1.1, 0.9], opacity: [0.2, 0.4, 0.2] }}
-                        transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-                        className="absolute -bottom-1 h-3 w-20 rounded-full blur-md pointer-events-none"
-                        style={{ backgroundColor: card.accentColor }}
-                      />
+                      <div className="glove-lift relative z-10">
+                        <div className="glove-float">
+                          <MMAGlove src={card.glove.src} glow={card.glove.glow} className="h-26 sm:h-28 w-auto" />
+                        </div>
+                      </div>
                     </div>
                   </div>
 

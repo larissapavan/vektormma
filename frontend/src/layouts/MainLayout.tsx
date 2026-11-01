@@ -28,6 +28,13 @@ export function MainLayout({ children }: { children: ReactNode }) {
   const [apiState, setApiState] = useState<'pending' | 'slow' | 'ready' | 'down'>('pending')
   const org = useOrg()
   const landing = isLandingPath(useLocation().pathname)
+  // The loading screen holds the page open after the API answers only if the visitor saw it while waiting,
+  // so a mid-game round can finish and show its score; otherwise the app opens at once.
+  const [loadingSeen, setLoadingSeen] = useState(false)
+  const [loadingDone, setLoadingDone] = useState(false)
+  const waiting = apiState === 'pending' || apiState === 'slow'
+  if (waiting && !landing && !loadingSeen) setLoadingSeen(true)
+  const showLoading = !landing && (waiting || (apiState === 'ready' && loadingSeen && !loadingDone))
 
   // Each organization has its own accent color (see index.css); the attribute is what the stylesheet reads.
   useEffect(() => {
@@ -100,8 +107,12 @@ export function MainLayout({ children }: { children: ReactNode }) {
           transition={{ duration: 0.3 }}
         >
           {/* The chooser needs no data, so it opens at once while the API wakes up in the background. */}
-          {(apiState === 'pending' || apiState === 'slow') && !landing ? (
-            <ServerLoadingState waking={apiState === 'slow'} />
+          {showLoading ? (
+            <ServerLoadingState
+              waking={apiState === 'slow'}
+              ready={apiState === 'ready'}
+              onContinue={() => setLoadingDone(true)}
+            />
           ) : (
             children
           )}
