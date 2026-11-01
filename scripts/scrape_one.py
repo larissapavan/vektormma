@@ -315,12 +315,21 @@ def _pair_matches(bout: dict, row: dict) -> int:
 def _apply_result(row: dict, bout: dict, report: dict) -> None:
     if not bout["winner"] or row.get("winner"):
         return
-    names = dict(bout["fighters"])
-    winner_slug = bout["winner"]
-    side = next(
-        (key for key in ("fighter_1", "fighter_2") if is_same_person(names.get(winner_slug, ""), winner_slug, row[key], row[f"{key}_url"])),
-        None,
-    )
+    fighters = bout["fighters"]
+    winner_index = next((index for index, (slug, _) in enumerate(fighters) if slug == bout["winner"]), None)
+    if winner_index is None:
+        return
+
+    def side_of(index: int) -> str | None:
+        slug, name = fighters[index]
+        return next((key for key in ("fighter_1", "fighter_2") if is_same_person(name, slug, row[key], row[f"{key}_url"])), None)
+
+    side = side_of(winner_index)
+    if side is None:
+        # The winner's spelling differs too much ('Khunsuk T1 Fight Academy' / 'Khunsuk T1.FightAcademy'), but the
+        # opponent is known: the bout was paired on it, so the winner is the other corner.
+        opponent_side = side_of(1 - winner_index)
+        side = {"fighter_1": "fighter_2", "fighter_2": "fighter_1"}.get(opponent_side or "")
     if side is None:
         return
     row["winner"] = row[side]

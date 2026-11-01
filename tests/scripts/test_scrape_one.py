@@ -268,6 +268,14 @@ def test_results_are_filled_in_but_what_the_file_already_has_is_not_overwritten(
     assert report["results"] == 1
 
 
+def test_a_winner_spelled_very_differently_is_found_through_his_opponent():
+    rows = [stored_row(fighter_1="Khunsuk T1.FightAcademy", fighter_2="YodUdon K.Tongtalingchan")]
+    event = parse(bouts=[("Atomweight Muay Thai", "Khunsuk T1 Fight Academy", "YodUdon K Tongtalingchan", {"winner": "Khunsuk T1 Fight Academy", "result": ("Knockout (R2)", "KO (R2)")})])
+    result, report = merged(rows, event)
+    assert (result[0]["winner"], result[0]["fighter_1"], result[0]["method"], result[0]["round"]) == ("Khunsuk T1.FightAcademy", "Khunsuk T1.FightAcademy", "KO/TKO", "2")
+    assert report["results"] == 1 and not report["added"]
+
+
 def test_results_can_be_switched_off():
     rows = [stored_row(fighter_1="Shamil Erdogan", fighter_2="Paul Elliott")]
     event = parse(bouts=[("Heavyweight MMA", "Shamil Erdogan", "Paul Elliott", {"winner": "Shamil Erdogan", "result": ("Submission (R2)", "SUB (R2)")})])
