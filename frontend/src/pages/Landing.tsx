@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ArrowDown, ArrowRight, Sparkles } from 'lucide-react'
+import { ArrowDown, ArrowRight, Sparkles, Swords } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
@@ -8,6 +8,9 @@ import { ORGS, orgPath, type OrgId } from '../shared/data/orgs'
 import { AnimatedCounter } from '../shared/components/editorial/AnimatedCounter'
 import { SocialLinks } from '../shared/components/SocialLinks'
 import { MMAGlove } from '../shared/components/MMAGlove'
+import { FeaturedMatchup } from '../shared/components/FeaturedMatchup'
+import { useDataInfo } from '../shared/hooks/useDataInfo'
+import { useModelInfo } from '../shared/hooks/useModelInfo'
 
 interface OrgMetric {
   labelPt: string
@@ -129,8 +132,18 @@ const ORG_CARDS: OrgCardInfo[] = [
   },
 ]
 
+// Shown until the API answers (or if it never does): the last figures checked by hand.
+const FALLBACK_FIGHTS = 8985
+const FALLBACK_FIGHTERS = 2796
+const FALLBACK_FEATURES = 46
+
 export function Landing() {
   const { i18n } = useTranslation()
+  const { dataInfo } = useDataInfo()
+  const { modelInfo } = useModelInfo()
+  const fightsCount = dataInfo?.fights_count ?? FALLBACK_FIGHTS
+  const fightersCount = dataInfo?.fighters_count ?? FALLBACK_FIGHTERS
+  const featureCount = modelInfo?.feature_count ?? FALLBACK_FEATURES
 
   return (
     <div className="w-full bg-[var(--bg-app)] text-[var(--text-primary)] dark:bg-[#0B0C10] dark:text-white selection:bg-[#E11D48] selection:text-white relative scroll-smooth flex flex-col justify-between">
@@ -188,6 +201,16 @@ export function Landing() {
 
               {/* Botões de Ação: Scroll Suave para a Grade e Sobre o Projeto */}
               <div className="pt-2 flex flex-wrap items-center gap-3">
+                <Link
+                  to="/head-to-head"
+                  className="group inline-flex items-center gap-3 rounded-full bg-[#FF2E54] text-white hover:bg-[#E11D48] px-5 py-2.5 font-mono text-xs uppercase tracking-widest transition-all duration-300 shadow-md"
+                >
+                  <Swords className="h-4 w-4" aria-hidden="true" />
+                  <span>
+                    {L(i18n.language, 'COMPARAR LUTADORES', 'COMPARE FIGHTERS', 'COMPARER LES COMBATTANTS', 'COMPARAR PELEADORES')}
+                  </span>
+                </Link>
+
                 <a
                   href="#organizations-grid"
                   className="group inline-flex items-center gap-3 rounded-full border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:bg-[#0E0E0E] hover:text-white dark:border-white/20 dark:bg-white/5 dark:text-white dark:hover:bg-white dark:hover:text-black px-5 py-2.5 font-mono text-xs uppercase tracking-widest transition-all duration-300 shadow-md cursor-pointer"
@@ -221,6 +244,8 @@ export function Landing() {
                   <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
               </div>
+
+              <FeaturedMatchup />
             </motion.div>
 
             {/* Lado Direito: Cinturão de Campeonato Flutuante */}
@@ -278,7 +303,7 @@ export function Landing() {
             <div className="pt-4 lg:pt-0 lg:px-6 first:pl-0 text-left">
               <div className="flex items-baseline gap-1">
                 <span className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--text-primary)] dark:text-white tracking-tight tabular-nums">
-                  <AnimatedCounter value={8973} />
+                  <AnimatedCounter value={fightsCount} />
                 </span>
                 <span className="text-[#E11D48] font-display font-extrabold text-2xl sm:text-3xl">+</span>
               </div>
@@ -291,7 +316,7 @@ export function Landing() {
             <div className="pt-4 lg:pt-0 lg:px-6 text-left">
               <div className="flex items-baseline gap-1">
                 <span className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--text-primary)] dark:text-white tracking-tight tabular-nums">
-                  <AnimatedCounter value={2794} />
+                  <AnimatedCounter value={fightersCount} />
                 </span>
                 <span className="text-[#2563EB] font-display font-extrabold text-2xl sm:text-3xl">+</span>
               </div>
@@ -304,7 +329,7 @@ export function Landing() {
             <div className="pt-4 lg:pt-0 lg:px-6 text-left">
               <div className="flex items-baseline gap-1">
                 <span className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--text-primary)] dark:text-white tracking-tight tabular-nums">
-                  <AnimatedCounter value={46} />
+                  <AnimatedCounter value={featureCount} />
                 </span>
               </div>
               <p className="mt-1 font-sans text-xs uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400 font-medium">

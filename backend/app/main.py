@@ -26,6 +26,7 @@ from backend.app.routers.rankings import router as rankings_router
 from backend.app.routers.record_book import router as record_book_router
 from backend.app.routers.track_record import router as track_record_router
 from backend.app.services.prediction_service import PredictionService
+from backend.app.utils.edge_cache import edge_cache_headers
 
 logging.basicConfig(
     level=os.getenv("LOG_LEVEL", "INFO"),
@@ -95,6 +96,15 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["X-Total-Count"],
 )
+
+
+@app.middleware("http")
+async def add_edge_cache_headers(request: Request, call_next):
+    response = await call_next(request)
+    if request.method == "GET" and response.status_code == 200 and "Cache-Control" in response.headers:
+        for name, value in edge_cache_headers(response.headers["Cache-Control"]).items():
+            response.headers[name] = value
+    return response
 
 
 @app.middleware("http")

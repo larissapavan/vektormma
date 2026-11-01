@@ -50,4 +50,4 @@ def test_a_card_with_one_fight_left_is_still_picks_and_the_newest_comes_first():
 
 def test_an_empty_log_is_a_valid_empty_feed():
     channel, items = feed_items([])
-    assert items == [] and channel.findtext("title").startswith("Fight Intelligence")
+    assert items == [] and channel.findtext("title").startswith("Vektor MMA")
