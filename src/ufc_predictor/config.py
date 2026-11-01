@@ -11,6 +11,9 @@ RAW_DATA_PATH = RAW_DATA_DIR / "ufc_fights.csv"
 KAGGLE_UFC_DATA_PATH = RAW_DATA_DIR / "UFC.csv"
 PROCESSED_DATA_PATH = PROCESSED_DATA_DIR / "modeling_dataset.csv"
 MODEL_PATH = MODEL_DIR / "ufc_winner_model.joblib"
+# The pre-fight model, written by `python -m src.ufc_predictor.train_prefight --promote`. The API loads it instead of
+# MODEL_PATH only when the environment variable PREDICTION_MODEL is "prefight"; MODEL_PATH stays the default.
+PREFIGHT_MODEL_PATH = MODEL_DIR / "ufc_prefight_model.joblib"
 REPORT_PATH = REPORT_DIR / "training_report.txt"
 
 EXTERNAL_KAGGLE_FILES = {

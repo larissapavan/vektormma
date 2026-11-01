@@ -26,6 +26,7 @@ from backend.app.routers.rankings import router as rankings_router
 from backend.app.routers.record_book import router as record_book_router
 from backend.app.routers.track_record import router as track_record_router
 from backend.app.services.prediction_service import PredictionService
+from backend.app.services.prefight_service import build_prediction_service
 from backend.app.utils.edge_cache import edge_cache_headers
 
 logging.basicConfig(
@@ -57,7 +58,7 @@ prediction_service: PredictionService | None = None
 async def lifespan(_: FastAPI):
     global prediction_service
     try:
-        service = PredictionService()
+        service = build_prediction_service()
         set_prediction_service(service)
         prediction_service = service
         logger.info("Prediction service initialized with %d features.", len(service.feature_columns))

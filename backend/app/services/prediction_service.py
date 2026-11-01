@@ -60,6 +60,32 @@ def pretty_feature_name(feature_name: str) -> str:
         "blue_sig_str_acc": "Fighter B striking accuracy",
         "red_takedown_acc": "Fighter A takedown accuracy",
         "blue_takedown_acc": "Fighter B takedown accuracy",
+        # the pre-fight model's columns (src/ufc_predictor/prefight.py)
+        "ufc_fights_diff": "UFC fights difference",
+        "ufc_wins_diff": "UFC wins difference",
+        "ufc_losses_diff": "UFC losses difference",
+        "streak_diff": "Win streak difference",
+        "days_off_diff": "Time off difference",
+        "finish_rate_diff": "Finish rate difference",
+        "ko_losses_diff": "Knockout losses difference",
+        "elo_diff": "Rating (Elo) difference",
+        "form_diff": "Recent form difference",
+        "sig_acc_diff": "Striking accuracy gap",
+        "sig_def_diff": "Striking defense gap",
+        "sig_per_min_diff": "Strikes landed per minute gap",
+        "sig_absorbed_per_min_diff": "Strikes absorbed per minute gap",
+        "td_acc_diff": "Takedown accuracy gap",
+        "td_def_diff": "Takedown defense gap",
+        "td_per_15_diff": "Takedowns per 15 minutes gap",
+        "kd_per_15_diff": "Knockdowns per 15 minutes gap",
+        "control_share_diff": "Control time gap",
+        "sub_per_15_diff": "Submission attempts per 15 minutes gap",
+        "scheduled_rounds": "Scheduled rounds",
+        "title_fight": "Title fight",
+        "weight_lbs": "Weight class",
+        "womens": "Women's division",
+        "age_sum": "Combined age",
+        "fights_sum": "Combined UFC experience",
     }
     if feature_name in labels:
         return labels[feature_name]
@@ -157,7 +183,8 @@ class PredictionService:
         )
         return align_feature_columns(inference_df, self.feature_columns)
 
-    def _both_orders(self, fighter_a: dict, fighter_b: dict) -> tuple[pd.DataFrame, pd.DataFrame]:
+    def _both_orders(self, fighter_a: dict, fighter_b: dict, context: dict | None = None) -> tuple[pd.DataFrame, pd.DataFrame]:
+        """`context` (weight_class, title_fight, num_rounds) is what the fight itself adds; only the pre-fight model uses it."""
         return self._features_for(fighter_a, fighter_b), self._features_for(fighter_b, fighter_a)
 
     def _symmetric_probability(self, x_ab: pd.DataFrame, x_ba: pd.DataFrame) -> float:
@@ -169,11 +196,11 @@ class PredictionService:
         probabilities = self.model.predict_proba(pd.concat([x_ab, x_ba], ignore_index=True))[:, 1]
         return (float(probabilities[0]) + 1.0 - float(probabilities[1])) / 2.0
 
-    def predict_pick(self, fighter_a_name: str, fighter_b_name: str) -> dict:
+    def predict_pick(self, fighter_a_name: str, fighter_b_name: str, context: dict | None = None) -> dict:
         """Just the pick and its probability (no SHAP), for lists that show many fights at once."""
         fighter_a = get_fighter_profile(fighter_a_name)
         fighter_b = get_fighter_profile(fighter_b_name)
-        fighter_a_probability = self._symmetric_probability(*self._both_orders(fighter_a, fighter_b))
+        fighter_a_probability = self._symmetric_probability(*self._both_orders(fighter_a, fighter_b, context))
         winner_is_a = _first_wins(fighter_a_probability, fighter_a["name"], fighter_b["name"])
         return {
             "predicted_winner": fighter_a["name"] if winner_is_a else fighter_b["name"],
@@ -197,7 +224,7 @@ class PredictionService:
         matrix: list[list[float | None]] = [[None] * size for _ in range(size)]
         for i in range(size):
             for j in range(i + 1, size):
-                p = self._symmetric_probability(*self._both_orders(profiles[i][1], profiles[j][1]))
+                p = self._symmetric_probability(*self._both_orders(profiles[i][1], profiles[j][1], {"weight_class": category}))
                 matrix[i][j], matrix[j][i] = p, 1.0 - p
         rows = []
         for i, (entry, profile) in enumerate(profiles):

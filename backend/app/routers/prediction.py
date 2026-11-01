@@ -41,7 +41,15 @@ def _predict_all_upcoming(service: PredictionService) -> list[UpcomingPick]:
             if str(fighter_1).strip().upper() in ("TBD", "TBA") or str(fighter_2).strip().upper() in ("TBD", "TBA"):
                 continue
             try:
-                result = service.predict_pick(fighter_1, fighter_2)
+                result = service.predict_pick(
+                    fighter_1,
+                    fighter_2,
+                    {
+                        "weight_class": fight.get("weight_class"),
+                        "title_fight": fight.get("title_fight"),
+                        "num_rounds": fight.get("num_rounds"),
+                    },
+                )
             except KeyError:
                 # Debutant or fighter with no historical catalog profile yet
                 continue

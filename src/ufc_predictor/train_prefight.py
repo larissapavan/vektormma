@@ -8,6 +8,10 @@ fight as it looked before the bell, and writes:
     models/candidate/ufc_prefight_model.joblib    the candidate model; the deployed model is not touched
     docs/prefight-model-report.md                 data, split, results and calibration
 
+With --promote it also writes models/ufc_prefight_model.joblib, the file the API serves when the environment variable
+PREDICTION_MODEL is "prefight" (backend/app/services/prefight_service.py). Without that variable the API keeps serving
+models/ufc_winner_model.joblib.
+
 How the data is cut. Fights are split by date, never by row position or at random:
     train        the oldest 65% of the fights (cut on a day, so one event is never split)
     calibration  the next 15%: picks the model settings and fits the one calibration number
@@ -36,8 +40,8 @@ from sklearn.metrics import accuracy_score, brier_score_loss, log_loss, roc_auc_
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-from .config import BASE_DIR, MODEL_DIR
-from .prefight import FEATURE_COLUMNS, build_from_repository, mirror
+from .config import BASE_DIR, MODEL_DIR, PREFIGHT_MODEL_PATH
+from .prefight import FEATURE_COLUMNS, build_from_repository, calibrate, logit, mirror  # noqa: F401 (re-exported)
 
 SEED = 42
 TRAIN_END_QUANTILE = 0.65
@@ -107,17 +111,6 @@ def symmetric_probability(model: Pipeline, frame: pd.DataFrame) -> np.ndarray:
     forward = model.predict_proba(frame[FEATURE_COLUMNS])[:, 1]
     backward = model.predict_proba(mirror(frame.assign(y=0))[FEATURE_COLUMNS])[:, 1]
     return (forward + 1.0 - backward) / 2.0
-
-
-def logit(p: np.ndarray) -> np.ndarray:
-    p = np.clip(p, 1e-6, 1 - 1e-6)
-    return np.log(p / (1 - p))
-
-
-def calibrate(p: np.ndarray, temperature: float) -> np.ndarray:
-    """Stretch (temperature > 1) or soften (< 1) the confidence. One number and no intercept, so 0.5 stays 0.5 and
-    calibrate(1 - p) = 1 - calibrate(p): the answer still does not depend on the order of the fighters."""
-    return 1.0 / (1.0 + np.exp(-temperature * logit(p)))
 
 
 def fit_temperature(p: np.ndarray, y: np.ndarray) -> float:
@@ -196,6 +189,26 @@ def run(data: pd.DataFrame) -> Result:
     return Result(split, model, best, temperature, results, selection, confidence_table(calibrated, y_test), calibrated)
 
 
+BASELINE_LABELS = {
+    "dummy_prior": "Always 50/50",
+    "logistic_regression": "Logistic regression",
+    "random_forest": "Random forest",
+}
+
+
+def evaluation_summary(result: Result) -> dict:
+    """The honest test, in the shape the API sends to the site as `recent_evaluation`: the test block, scored once."""
+    test = result.split.test
+    summary = dict(result.test_metrics["hist_gradient_boosting_calibrated"])
+    summary.update(
+        fights=int(len(test)), start=str(test["date"].min().date()), end=str(test["date"].max().date()),
+        baselines=[{"label": BASELINE_LABELS[name], "accuracy": result.test_metrics[name]["accuracy"]} for name in BASELINE_LABELS],
+        calibration=[{"label": row.band, "fights": int(row.fights), "average_confidence": float(row.average_confidence),
+                      "accuracy": float(row.hit_rate)} for row in result.bands.itertuples()],
+    )
+    return summary
+
+
 def save_candidate(result: Result, data: pd.DataFrame, path: Path = CANDIDATE_PATH) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump({
@@ -205,6 +218,7 @@ def save_candidate(result: Result, data: pd.DataFrame, path: Path = CANDIDATE_PA
         "baseline_metrics": {k: v for k, v in result.test_metrics.items() if not k.startswith("hist_gradient_boosting")},
         "shap_background": result.split.train[FEATURE_COLUMNS].sample(min(80, len(result.split.train)), random_state=SEED),
         "calibration": {"method": "temperature", "temperature": result.temperature},
+        "evaluation": evaluation_summary(result),
         "settings": result.settings,
         "trained_on_fights_before": str(result.split.train_end.date()),
         "version": "prefight-1",
@@ -262,6 +276,10 @@ def render_report(result: Result, data: pd.DataFrame, fights_total: int) -> str:
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--no-write", action="store_true", help="train and print the report, write no files")
+    parser.add_argument(
+        "--promote", action="store_true",
+        help=f"also write the model to {PREFIGHT_MODEL_PATH.name}, the file the API serves when PREDICTION_MODEL=prefight",
+    )
     args = parser.parse_args(argv)
 
     data, fights, _ = build_from_repository()
@@ -271,9 +289,13 @@ def main(argv: list[str] | None = None) -> None:
     if args.no_write:
         return
     save_candidate(result, data)
+    written = {"candidate": str(CANDIDATE_PATH), "report": str(REPORT_PATH)}
+    if args.promote:
+        save_candidate(result, data, PREFIGHT_MODEL_PATH)
+        written["promoted"] = str(PREFIGHT_MODEL_PATH)
     REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
     REPORT_PATH.write_text(report + "\n", encoding="utf-8")
-    print(json.dumps({"candidate": str(CANDIDATE_PATH), "report": str(REPORT_PATH)}))
+    print(json.dumps(written))
 
 
 if __name__ == "__main__":

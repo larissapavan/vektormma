@@ -329,6 +329,20 @@ def mirror(frame: pd.DataFrame) -> pd.DataFrame:
     return flipped
 
 
+# --------------------------------------------------------------------------- calibration (shared by the trainer and the API)
+
+
+def logit(p: np.ndarray) -> np.ndarray:
+    p = np.clip(p, 1e-6, 1 - 1e-6)
+    return np.log(p / (1 - p))
+
+
+def calibrate(p: np.ndarray, temperature: float) -> np.ndarray:
+    """Stretch (temperature > 1) or soften (< 1) the confidence. One number and no intercept, so 0.5 stays 0.5 and
+    calibrate(1 - p) = 1 - calibrate(p): the answer still does not depend on the order of the fighters."""
+    return 1.0 / (1.0 + np.exp(-temperature * logit(p)))
+
+
 # --------------------------------------------------------------------------- the whole history
 
 

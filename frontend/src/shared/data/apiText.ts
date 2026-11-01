@@ -49,6 +49,40 @@ const FIXED: Record<string, Entry> = {
     fr: 'Ceci est un projet personnel d’apprentissage, pas un conseil de pari.',
     es: 'Este es un proyecto personal de aprendizaje, no un consejo de apuestas.',
   },
+  // The pre-fight model (PREDICTION_MODEL=prefight): backend/app/utils/constants.py
+  'Each fight is described by what was known on the morning of the fight: only earlier fights count, never its own result or anything after it.': {
+    pt: 'Cada luta é descrita pelo que se sabia na manhã do evento: só contam as lutas anteriores, nunca o resultado dela nem nada que veio depois.',
+    fr: 'Chaque combat est décrit par ce que l’on savait le matin même : seuls comptent les combats précédents, jamais son propre résultat ni rien de ce qui a suivi.',
+    es: 'Cada pelea se describe con lo que se sabía la mañana del evento: solo cuentan las peleas anteriores, nunca su propio resultado ni nada posterior.',
+  },
+  'It was tested on the newest fights, all later than every fight it trained on, and its confidence was calibrated on a separate block in between.': {
+    pt: 'Foi testado nas lutas mais recentes, todas posteriores a qualquer luta do treino, e a confiança dele foi calibrada em um bloco separado, no meio do caminho.',
+    fr: 'Il a été testé sur les combats les plus récents, tous postérieurs à ceux de son entraînement, et sa confiance a été calibrée sur un bloc distinct, entre les deux.',
+    es: 'Se probó con las peleas más recientes, todas posteriores a las del entrenamiento, y su confianza se calibró con un bloque aparte, intermedio.',
+  },
+  'Every probability is the average of both fighter orders, so it does not change with who is listed first.': {
+    pt: 'Toda probabilidade é a média das duas ordens dos lutadores, então não muda conforme quem aparece primeiro.',
+    fr: 'Chaque probabilité est la moyenne des deux ordres de combattants : elle ne change pas selon qui est cité en premier.',
+    es: 'Cada probabilidad es el promedio de los dos órdenes de peleadores, así que no cambia según quién aparece primero.',
+  },
+  'Only past UFC fights are counted. A fighter\'s record in other organizations is not in the model, so a debutant is read from age, height and reach alone.': {
+    pt: 'Só contam lutas passadas no UFC. O cartel do lutador em outros eventos não entra no modelo, então um estreante é lido apenas por idade, altura e envergadura.',
+    fr: 'Seuls les combats passés à l’UFC comptent. Le palmarès d’un combattant dans d’autres organisations n’entre pas dans le modèle : un débutant est donc lu à partir de son âge, sa taille et son allonge seulement.',
+    es: 'Solo cuentan las peleas pasadas en la UFC. El récord de un peleador en otras organizaciones no entra en el modelo, así que un debutante se lee solo por edad, estatura y alcance.',
+  },
+  'Striking and takedown history only exists for fights with published statistics; where it is missing, the model fills in typical values.': {
+    pt: 'O histórico de golpes e quedas só existe para lutas com estatísticas publicadas; onde falta, o modelo usa valores típicos.',
+    fr: 'L’historique de frappes et d’amenées au sol n’existe que pour les combats dont les statistiques sont publiées ; là où il manque, le modèle utilise des valeurs typiques.',
+    es: 'El historial de golpes y derribos solo existe para las peleas con estadísticas publicadas; donde falta, el modelo usa valores típicos.',
+  },
+  'Fights are hard to call: a pick is an estimate, and upsets are common.': {
+    pt: 'Lutas são difíceis de prever: um palpite é uma estimativa, e zebras são comuns.',
+    fr: 'Les combats sont difficiles à prévoir : un pronostic n’est qu’une estimation, et les surprises sont fréquentes.',
+    es: 'Las peleas son difíciles de pronosticar: un pronóstico es una estimación y las sorpresas son comunes.',
+  },
+  'Always 50/50': { pt: 'Sempre 50/50', fr: 'Toujours 50/50', es: 'Siempre 50/50' },
+  'Logistic regression': { pt: 'Regressão logística', fr: 'Régression logistique', es: 'Regresión logística' },
+  'Random forest': { pt: 'Floresta aleatória', fr: 'Forêt aléatoire', es: 'Bosque aleatorio' },
 }
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -56,6 +90,11 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 /** "1,753" (as the API writes it) in the number format of the language. */
 function number(text: string, language: string) {
   return Number(text.replaceAll(',', '')).toLocaleString(localeTag(language))
+}
+
+/** "62.7" (as the API writes it) with the decimal mark of the language. */
+function decimal(text: string, language: string) {
+  return Number(text).toLocaleString(localeTag(language), { minimumFractionDigits: 1, maximumFractionDigits: 1 })
 }
 
 /** "June 2023" in the language on screen. */
@@ -77,6 +116,14 @@ type Template = {
 }
 
 const TEMPLATES: Template[] = [
+  {
+    pattern: /^Measured once on ([\d,]+) fights \((\w+ \d{4}) to (\w+ \d{4})\), all later than the fights it trained on, each fighter described as of the morning of the fight\. It picked the winner ([\d.]+)% of the time; its confidence was calibrated on a separate block of earlier fights\.$/,
+    text: {
+      pt: (m, l) => `Medido uma única vez em ${number(m[1], l)} lutas (${monthYear(m[2], l)} a ${monthYear(m[3], l)}), todas posteriores às do treino, com cada lutador descrito como estava na manhã da luta. Ele acertou o vencedor em ${decimal(m[4], l)}% das vezes; a confiança dele foi calibrada em um bloco separado de lutas anteriores.`,
+      fr: (m, l) => `Mesuré une seule fois sur ${number(m[1], l)} combats (${monthYear(m[2], l)} à ${monthYear(m[3], l)}), tous postérieurs à ceux de l’entraînement, chaque combattant étant décrit tel qu’il était le matin du combat. Il a trouvé le vainqueur ${decimal(m[4], l)} % du temps ; sa confiance a été calibrée sur un bloc distinct de combats antérieurs.`,
+      es: (m, l) => `Medido una sola vez en ${number(m[1], l)} peleas (${monthYear(m[2], l)} a ${monthYear(m[3], l)}), todas posteriores a las del entrenamiento, con cada peleador descrito como estaba la mañana de la pelea. Acertó el ganador el ${decimal(m[4], l)} % de las veces; su confianza se calibró con un bloque aparte de peleas anteriores.`,
+    },
+  },
   {
     pattern: /^Measured on ([\d,]+) recent fights \((\w+ \d{4}) to (\w+ \d{4})\), given each fighter's age and record as of the fight\. The model's own file reports ([\d.]+)% accuracy, from when it was trained on data that is not in this repository; that could not be reproduced\. The picks it rated (\d+)% or more were right (\d+)% of the time\. Read its probabilities as rough\.$/,
     text: {
@@ -127,6 +174,7 @@ export function localizeApiText(text: string | null | undefined, language: strin
 
 const BASELINE_NAMES: Record<string, Entry & { en: string }> = {
   dummy_most_frequent: { en: 'most frequent class', pt: 'classe mais frequente', fr: 'classe majoritaire', es: 'clase más frecuente' },
+  dummy_prior: { en: 'always 50/50', pt: 'sempre 50/50', fr: 'toujours 50/50', es: 'siempre 50/50' },
   logistic_regression: { en: 'logistic regression', pt: 'regressão logística', fr: 'régression logistique', es: 'regresión logística' },
   random_forest: { en: 'random forest', pt: 'floresta aleatória', fr: 'forêt aléatoire', es: 'bosque aleatorio' },
 }

@@ -13,3 +13,7 @@ services:
         value: 3.12.7
       - key: FRONTEND_ORIGINS
         sync: false
+      # "current" serves models/ufc_winner_model.joblib; "prefight" serves models/ufc_prefight_model.joblib
+      # (and falls back to the current one if that file cannot be loaded). Change it in the dashboard to switch.
+      - key: PREDICTION_MODEL
+        value: current
