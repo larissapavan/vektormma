@@ -9,12 +9,12 @@ const RED = '#C8102E'
 const BLUE = '#2F5FA8'
 
 const AXES = [
-  { key: 'strikingOutput', label: 'Striking Output', labelPt: 'Volume de Golpes', labelFr: 'Volume de frappes' },
-  { key: 'strikingDefense', label: 'Striking Defense', labelPt: 'Defesa de Golpes', labelFr: 'Défense de frappes' },
-  { key: 'tdOffense', label: 'Takedown Offense', labelPt: 'Quedas Aplicadas', labelFr: 'Amenées au sol' },
-  { key: 'tdDefense', label: 'Takedown Defense', labelPt: 'Defesa de Quedas', labelFr: 'Défense aux amenées' },
-  { key: 'finishRate', label: 'Finish Rate', labelPt: 'Poder de Nocaute/Sub', labelFr: 'KO et soumissions' },
-  { key: 'recentForm', label: 'Recent Form', labelPt: 'Momento Recente', labelFr: 'Forme récente' },
+  { key: 'strikingOutput', label: 'Striking Output', labelPt: 'Volume de Golpes', labelFr: 'Volume de frappes', labelEs: 'Volumen de golpes' },
+  { key: 'strikingDefense', label: 'Striking Defense', labelPt: 'Defesa de Golpes', labelFr: 'Défense de frappes', labelEs: 'Defensa de golpes' },
+  { key: 'tdOffense', label: 'Takedown Offense', labelPt: 'Quedas Aplicadas', labelFr: 'Amenées au sol', labelEs: 'Derribos aplicados' },
+  { key: 'tdDefense', label: 'Takedown Defense', labelPt: 'Defesa de Quedas', labelFr: 'Défense aux amenées', labelEs: 'Defensa de derribos' },
+  { key: 'finishRate', label: 'Finish Rate', labelPt: 'Poder de Nocaute/Sub', labelFr: 'KO et soumissions', labelEs: 'Poder de KO/sumisión' },
+  { key: 'recentForm', label: 'Recent Form', labelPt: 'Momento Recente', labelFr: 'Forme récente', labelEs: 'Momento reciente' },
 ] as const
 
 type AxisKey = (typeof AXES)[number]['key']
@@ -92,17 +92,17 @@ export function MatchupRadarChart({
   const scoreA = scoresFor(fighterA, performanceA)
   const scoreB = scoresFor(fighterB, performanceB)
   const data = AXES.map((axis) => ({
-    axis: L(i18n.language, axis.labelPt, axis.label, axis.labelFr),
+    axis: L(i18n.language, axis.labelPt, axis.label, axis.labelFr, axis.labelEs),
     red: Math.round(scoreA[axis.key]),
     blue: Math.round(scoreB[axis.key]),
   }))
 
   return (
     <article className="surface-card rounded-[20px] p-3 sm:p-4">
-      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Comparativo de Estilos', 'Style comparison', 'Comparaison de styles')}</p>
-      <h2 className="mt-0.5 text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{L(i18n.language, 'Radar de Habilidades', 'Radar', 'Radar')}</h2>
+      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Comparativo de Estilos', 'Style comparison', 'Comparaison de styles', 'Comparación de estilos')}</p>
+      <h2 className="mt-0.5 text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{L(i18n.language, 'Radar de Habilidades', 'Radar', 'Radar', 'Radar')}</h2>
       {loading ? (
-        <LoadingSkeleton className="mt-3 h-[280px] rounded-2xl sm:h-[320px]" label={L(i18n.language, 'Carregando comparativo...', 'Loading style comparison', 'Chargement de la comparaison...')} />
+        <LoadingSkeleton className="mt-3 h-[280px] rounded-2xl sm:h-[320px]" label={L(i18n.language, 'Carregando comparativo...', 'Loading style comparison', 'Chargement de la comparaison...', 'Cargando la comparación de estilos')} />
       ) : (
         <div className="mt-1 h-[300px] sm:h-[340px]">
           <ResponsiveContainer width="100%" height="100%" minWidth={0}>
@@ -127,6 +127,7 @@ export function MatchupRadarChart({
           'Volume de golpes e média de quedas calibrados nas escalas do UFC (0 a 100) para comparação direta entre os atletas.',
           'Output and takedown offense are scaled to typical UFC ranges so both corners sit on the same 0–100 axes.',
           'Le volume de frappes et la moyenne d\'amenées au sol sont calibrés sur les échelles de l\'UFC (0 à 100) pour comparer directement les athlètes.',
+          'El volumen de golpes y los derribos se escalan a los rangos habituales de la UFC (0 a 100) para que ambas esquinas queden en los mismos ejes.',
         )}
       </p>
     </article>

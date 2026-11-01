@@ -87,7 +87,7 @@ export function Home() {
       >
         <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3 py-1 text-xs font-semibold tracking-wide text-[var(--text-muted)] backdrop-blur-sm">
           <span className="h-2 w-2 rounded-full bg-[var(--accent-red)] animate-pulse" />
-          <span>UFC Intelligence • Machine Learning & Analytics</span>
+          <span>{L(i18n.language, 'Inteligência UFC • Aprendizado de máquina e análises', 'UFC Intelligence • Machine Learning & Analytics', 'Intelligence UFC • Apprentissage automatique et analyses', 'Inteligencia UFC • Aprendizaje automático y análisis')}</span>
         </div>
 
         <h1 className="mt-3 text-3xl font-black uppercase leading-tight tracking-tight text-[var(--text-main)] sm:text-5xl">
@@ -98,7 +98,8 @@ export function Home() {
             i18n.language,
             'O que vem a seguir no UFC: a próxima luta principal, o palpite da IA, o momento dos lutadores e os líderes do ranking peso por peso.',
             "What's next in the UFC: the upcoming main event, the model's pick for it, how the fighters are trending and the top of the pound-for-pound ranking, all from the same data the model uses.",
-            "La suite à l'UFC : le prochain combat principal, le choix du modèle, la forme des lutteurs et le haut du classement toutes catégories, à partir des mêmes données que le modèle.",
+            "La suite à l'UFC : le prochain combat principal, le choix du modèle, la forme des combattants et le haut du classement livre pour livre, à partir des mêmes données que le modèle.",
+            'Lo que viene en la UFC: la próxima pelea estelar, el pronóstico del modelo, cómo vienen los peleadores y la cima del ranking libra por libra, todo con los mismos datos que usa el modelo.',
           )}
         </p>
 
@@ -107,30 +108,30 @@ export function Home() {
             to="/predictor"
             className="primary-action inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-white shadow-md hover:shadow-lg transition-all max-xs:w-full"
           >
-            {L(i18n.language, 'Simular uma Luta', 'Predict a fight', 'Pronostiquer un combat')}
+            {L(i18n.language, 'Simular uma Luta', 'Predict a fight', 'Pronostiquer un combat', 'Pronosticar una pelea')}
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
             to="/events"
             className="ghost-action theme-text inline-flex items-center justify-center rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] transition-all hover:bg-[var(--bg-surface-hover)] max-xs:w-full"
           >
-            {L(i18n.language, 'Ver Card Completo', 'See the full card', 'Voir la carte complète')}
+            {L(i18n.language, 'Ver Card Completo', 'See the full card', 'Voir la carte complète', 'Ver la cartelera completa')}
           </Link>
         </div>
 
         <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
           <MiniStat
-            label={L(i18n.language, 'Lutadores no banco', 'Fighters tracked', 'Lutteurs suivis')}
+            label={L(i18n.language, 'Lutadores no banco', 'Fighters tracked', 'Combattants suivis', 'Peleadores registrados')}
             value={health?.fighters_loaded ? health.fighters_loaded.toLocaleString(localeTag(i18n.language)) : '—'}
             icon={Swords}
           />
           <MiniStat
-            label={L(i18n.language, 'Próximo evento', 'Next event', 'Prochain événement')}
-            value={eventsLoading ? L(i18n.language, 'Carregando...', 'Loading...', 'Chargement...') : nextEvent ? formatShortDate(nextEvent.date, i18n.language) : '—'}
+            label={L(i18n.language, 'Próximo evento', 'Next event', 'Prochain événement', 'Próximo evento')}
+            value={eventsLoading ? L(i18n.language, 'Carregando...', 'Loading...', 'Chargement...', 'Cargando...') : nextEvent ? formatShortDate(nextEvent.date, i18n.language) : '—'}
             icon={CalendarDays}
           />
           <MiniStat
-            label={L(i18n.language, 'Dados até', 'Data through', 'Données jusqu’au')}
+            label={L(i18n.language, 'Dados até', 'Data through', 'Données jusqu’au', 'Datos hasta')}
             value={dataInfo?.last_updated ? formatShortDate(dataInfo.last_updated, i18n.language) : '—'}
             icon={Award}
           />
@@ -199,7 +200,7 @@ function formatShortDate(date: string | null, lang: string = 'pt-BR') {
 }
 
 function formatFullDate(date: string | null, lang: string = 'pt-BR') {
-  if (!date) return L(lang, 'Data a confirmar', 'Date TBA', 'Date à confirmer')
+  if (!date) return L(lang, 'Data a confirmar', 'Date TBA', 'Date à confirmer', 'Fecha por confirmar')
   return new Date(`${date}T00:00:00`).toLocaleDateString(localeTag(lang), { month: 'long', day: 'numeric', year: 'numeric' })
 }
 
@@ -229,7 +230,7 @@ function MainEventCard({
     return (
       <div className="surface-card rounded-[20px] p-4 text-center">
         <p className="text-sm leading-6 text-[var(--text-muted)]">
-          {error ?? L(i18n.language, 'Nenhum evento do UFC agendado no momento.', 'No upcoming UFC events are scheduled right now.', 'Aucun événement UFC n’est programmé pour le moment.')}
+          {error ?? L(i18n.language, 'Nenhum evento do UFC agendado no momento.', 'No upcoming UFC events are scheduled right now.', 'Aucun événement UFC n’est programmé pour le moment.', 'No hay eventos de la UFC programados por ahora.')}
         </p>
       </div>
     )
@@ -243,7 +244,7 @@ function MainEventCard({
           <h2 className="mt-1 text-2xl font-black uppercase leading-tight tracking-[0.03em] text-[var(--text-main)] sm:text-4xl">{nextEvent.name}</h2>
           <p className="mt-2 flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
             <CalendarDays className="h-3.5 w-3.5" />
-            {formatFullDate(nextEvent.date, i18n.language)} • {nextEvent.fight_count} {L(i18n.language, 'lutas', 'fights', 'combats')}
+            {formatFullDate(nextEvent.date, i18n.language)} • {nextEvent.fight_count} {L(i18n.language, 'lutas', 'fights', 'combats', 'peleas')}
           </p>
         </div>
       </div>
@@ -405,7 +406,7 @@ function TrendRow({
           {trend.streak > 0 ? (
             <span className="text-[var(--accent-red)]">↑ {trend.streak} {t('home.winStreak', 'fight win streak')}</span>
           ) : (
-            <span>{L(i18n.language, 'Vindo de derrota', 'Coming off a loss', 'Sort d’une défaite')}</span>
+            <span>{L(i18n.language, 'Vindo de derrota', 'Coming off a loss', 'Sort d’une défaite', 'Viene de una derrota')}</span>
           )}
           {trend.finishRate != null ? ` • ${Math.round(trend.finishRate * 100)}% ${t('home.finishRate', 'finish rate')}` : ''}
         </p>
@@ -416,7 +417,7 @@ function TrendRow({
 
   // Only fighters we have a profile for open one; anyone else stays a plain row.
   return profile ? (
-    <button type="button" onClick={() => onOpenProfile(profile.name)} aria-label={L(i18n.language, `${name}. Ver perfil`, `${name}. View profile`, `${name}. Voir le profil`)} className={`${box} ${CLICKABLE_ROW}`}>
+    <button type="button" onClick={() => onOpenProfile(profile.name)} aria-label={L(i18n.language, `${name}. Ver perfil`, `${name}. View profile`, `${name}. Voir le profil`, `${name}. Ver perfil`)} className={`${box} ${CLICKABLE_ROW}`}>
       {content}
     </button>
   ) : (
@@ -446,7 +447,7 @@ function RankingsCard({
           <p className="broadcast-label text-[11px]">{t('home.poundForPound', 'Pound-for-pound')}</p>
         </div>
         <Link to="/rankings" className="type-tech inline-flex min-h-10 items-center text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--accent-red)]">
-          {L(i18n.language, 'Ver todos', 'View all', 'Tout voir')}
+          {L(i18n.language, 'Ver todos', 'View all', 'Tout voir', 'Ver todos')}
         </Link>
       </div>
 
@@ -480,7 +481,7 @@ function RankingsCard({
                 key={entry.rank}
                 type="button"
                 onClick={() => onOpenProfile(profile.name)}
-                aria-label={L(i18n.language, `${entry.fighter}, posição ${entry.rank}. Ver perfil`, `${entry.fighter}, rank ${entry.rank}. View profile`, `${entry.fighter}, rang ${entry.rank}. Voir le profil`)}
+                aria-label={L(i18n.language, `${entry.fighter}, posição ${entry.rank}. Ver perfil`, `${entry.fighter}, rank ${entry.rank}. View profile`, `${entry.fighter}, rang ${entry.rank}. Voir le profil`, `${entry.fighter}, puesto ${entry.rank}. Ver perfil`)}
                 className={`${box} ${CLICKABLE_ROW}`}
               >
                 {content}
@@ -493,7 +494,7 @@ function RankingsCard({
           })}
         </div>
       ) : (
-        <p className="mt-2.5 text-xs text-[var(--text-muted)]">{L(i18n.language, 'Rankings indisponíveis no momento.', 'Rankings unavailable right now.', 'Classements indisponibles pour le moment.')}</p>
+        <p className="mt-2.5 text-xs text-[var(--text-muted)]">{L(i18n.language, 'Rankings indisponíveis no momento.', 'Rankings unavailable right now.', 'Classements indisponibles pour le moment.', 'El ranking no está disponible por ahora.')}</p>
       )}
     </article>
   )
@@ -519,29 +520,29 @@ function TrackRecordStrip({
 }) {
   const { i18n } = useTranslation()
   const accuracy = resolved && resolved > 0 && liveAccuracy != null ? liveAccuracy : testAccuracy
-  const accuracyNote = resolved && resolved > 0 && liveAccuracy != null ? L(i18n.language, 'palpites ao vivo', 'live picks', 'pronostics en direct') : testNote
+  const accuracyNote = resolved && resolved > 0 && liveAccuracy != null ? L(i18n.language, 'palpites ao vivo', 'live picks', 'pronostics en direct', 'pronósticos en vivo') : testNote
 
   return (
     <section className="surface-card flex flex-wrap items-center justify-between gap-3 rounded-[20px] px-3 py-3 sm:px-4">
       <div className="flex min-w-0 flex-wrap items-center gap-x-6 gap-y-2">
         <div>
-          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Taxa de Acerto da IA', 'Model accuracy', 'Précision du modèle')}</p>
+          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Taxa de Acerto da IA', 'Model accuracy', 'Précision du modèle', 'Precisión del modelo')}</p>
           <p className="data-value text-xl font-bold text-[var(--text-main)]">{percentLabel(accuracy)}</p>
           <p className="text-[11px] text-[var(--text-muted)]">{accuracyNote}</p>
         </div>
         <div>
-          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Lutas Analisadas', 'Fights analyzed', 'Combats analysés')}</p>
+          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Lutas Analisadas', 'Fights analyzed', 'Combats analysés', 'Peleas analizadas')}</p>
           <p className="data-value text-xl font-bold text-[var(--text-main)]">
             {fightsAnalyzed ? fightsAnalyzed.toLocaleString(localeTag(i18n.language)) : '—'}
           </p>
-          <p className="text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'histórico oficial do UFC', 'career bouts on file', 'combats de carrière au dossier')}</p>
+          <p className="text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'histórico oficial do UFC', 'career bouts on file', 'combats de carrière au dossier', 'peleas de carrera registradas')}</p>
         </div>
       </div>
       <Link
         to="/track-record"
         className="inline-flex min-h-10 items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#C8102E] transition hover:text-white"
       >
-        {L(i18n.language, 'Histórico Completo', 'Track record', 'Bilan du modèle')}
+        {L(i18n.language, 'Histórico Completo', 'Track record', 'Bilan du modèle', 'Historial de aciertos')}
         <ArrowRight className="h-3.5 w-3.5" />
       </Link>
     </section>

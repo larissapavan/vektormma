@@ -46,6 +46,7 @@ export function OrgFightRow({
               `Disputa de Cinturão ${fight.weight_class ? `(${getDivisionName(fight.weight_class, 'pt')})` : ''}`,
               `${fight.weight_class ? `${fight.weight_class} ` : ''}title fight`,
               `Combat de titre ${fight.weight_class ? `(${getDivisionName(fight.weight_class, 'fr')})` : ''}`,
+              `Pelea por el título ${fight.weight_class ? `(${getDivisionName(fight.weight_class, 'es')})` : ''}`,
             )}
           </span>
         ) : null}
@@ -60,7 +61,7 @@ export function OrgFightRow({
           <div className="inline-flex items-center gap-1.5 rounded-full border border-[#F2C230]/40 bg-[#F2C230]/10 px-3 py-1 text-xs">
             <Sparkles className="h-3 w-3 text-[#F2C230]" />
             <span className="font-bold uppercase tracking-wider text-[#F2C230]">
-              {L(i18n.language, 'Predição:', 'AI Pick:', 'Pronostic :')}
+              {L(i18n.language, 'Predição:', 'AI Pick:', 'Pronostic :', 'Pronóstico:')}
             </span>
             <span className="font-extrabold text-[var(--text-main)]">
               {pick.predicted_winner}
@@ -73,7 +74,7 @@ export function OrgFightRow({
       ) : null}
 
       <p className="mt-2 text-center text-[11px] leading-4 text-[var(--text-muted)] sm:text-xs">
-        {summary ?? (fight.winner ? L(i18n.language, 'Resultado oficial registrado', 'Result recorded', 'Résultat officiel enregistré') : scheduled ? (pick ? null : L(i18n.language, 'Luta programada', 'Scheduled', 'Combat programmé')) : L(i18n.language, 'Sem resultado registrado', 'No result recorded', 'Aucun resultado enregistré'))}
+        {summary ?? (fight.winner ? L(i18n.language, 'Resultado oficial registrado', 'Result recorded', 'Résultat officiel enregistré', 'Resultado registrado') : scheduled ? (pick ? null : L(i18n.language, 'Luta programada', 'Scheduled', 'Combat programmé', 'Programada')) : L(i18n.language, 'Sem resultado registrado', 'No result recorded', 'Aucun résultat enregistré', 'Sin resultado registrado'))}
       </p>
     </article>
   )

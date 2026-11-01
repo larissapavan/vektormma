@@ -216,3 +216,23 @@ describe('French localization (fr-FR)', () => {
     expect(screen.getByText(/Projet personnel indépendant, sans affiliation avec l’UFC/i)).toBeInTheDocument()
   })
 })
+
+describe('Spanish localization (es-419)', () => {
+  it('switches the interface to Spanish from the language switcher', async () => {
+    renderAt('/home')
+    await screen.findAllByText('Alpha One', undefined, { timeout: 10000 })
+
+    const esButtons = screen.getAllByRole('button', { name: 'ES' })
+    await userEvent.click(esButtons[0])
+
+    expect(await screen.findByText(/Pronosticar una pelea/i)).toBeInTheDocument()
+    expect(screen.getByText(/Ver la cartelera completa/i)).toBeInTheDocument()
+    expect(screen.getByText(/Proyecto personal independiente, sin afiliación con la UFC/i)).toBeInTheDocument()
+    expect(document.documentElement.lang).toBe('es-419')
+  })
+
+  it('names the edge of the favorite in Spanish', () => {
+    expect(edgeLabel(0.5, 'es-419')).toBe('Pelea pareja')
+    expect(edgeLabel(0.9, 'es-419')).toBe('Amplio favoritismo')
+  })
+})

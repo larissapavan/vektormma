@@ -1,3 +1,5 @@
+import { uiLang, type UiLang } from '../../i18n/lang'
+
 export const DIVISION_NAMES_PT: Record<string, string> = {
   Flyweight: 'Peso Mosca',
   Bantamweight: 'Peso Galo',
@@ -44,25 +46,61 @@ export const DIVISION_NAMES_FR: Record<string, string> = {
   'Open Class / Unclassified': 'Poids libre / autres',
 }
 
+export const DIVISION_NAMES_ES: Record<string, string> = {
+  Flyweight: 'Peso Mosca',
+  Bantamweight: 'Peso Gallo',
+  Featherweight: 'Peso Pluma',
+  Lightweight: 'Peso Ligero',
+  Welterweight: 'Peso Wélter',
+  Middleweight: 'Peso Medio',
+  'Super Middleweight': 'Peso Supermedio',
+  'Light Heavyweight': 'Peso Semipesado',
+  Cruiserweight: 'Peso Crucero',
+  Heavyweight: 'Peso Pesado',
+  "Women's Strawweight": 'Peso Paja Femenino',
+  "Women's Flyweight": 'Peso Mosca Femenino',
+  "Women's Bantamweight": 'Peso Gallo Femenino',
+  "Women's Featherweight": 'Peso Pluma Femenino',
+  "Women's Lightweight": 'Peso Ligero Femenino',
+  "Women's Atomweight": 'Peso Átomo Femenino',
+  'Catch Weight': 'Peso Pactado',
+  Catchweight: 'Peso Pactado',
+  'Open Class': 'Peso Abierto',
+  'Open Class / Unclassified': 'Peso Abierto / Otros',
+}
+
+const DIVISION_NAMES: Record<UiLang, Record<string, string> | null> = {
+  pt: DIVISION_NAMES_PT,
+  fr: DIVISION_NAMES_FR,
+  es: DIVISION_NAMES_ES,
+  en: null,
+}
+
 export function getDivisionName(division: string | null | undefined, language: string | boolean = false): string {
   if (!division) return ''
   const trimmed = division.trim()
+  const names = DIVISION_NAMES[uiLang(language)]
+  if (!names) return trimmed
   const lower = trimmed.toLowerCase()
-  const lang = typeof language === 'string' ? language : language ? 'pt' : 'en'
+  const key = Object.keys(names).find((k) => k.toLowerCase() === lower)
+  return key ? names[key] : trimmed
+}
 
-  if (lang.startsWith('pt') || lang === 'pt') {
-    const key = Object.keys(DIVISION_NAMES_PT).find((k) => k.toLowerCase() === lower)
-    if (key) return DIVISION_NAMES_PT[key]
-    return trimmed
-  }
+const POUND_FOR_POUND: Record<Exclude<UiLang, 'en'>, { men: string; women: string; any: string }> = {
+  pt: { men: 'Peso por Peso Masculino', women: 'Peso por Peso Feminino', any: 'Peso por Peso' },
+  fr: { men: 'Livre pour livre masculin', women: 'Livre pour livre féminin', any: 'Livre pour livre' },
+  es: { men: 'Libra por Libra Masculino', women: 'Libra por Libra Femenino', any: 'Libra por Libra' },
+}
 
-  if (lang.startsWith('fr')) {
-    const key = Object.keys(DIVISION_NAMES_FR).find((k) => k.toLowerCase() === lower)
-    if (key) return DIVISION_NAMES_FR[key]
-    return trimmed
-  }
-
-  return trimmed
+/** "Men's Pound-for-Pound" in the active language (the ranking categories come from the API in English). */
+export function poundForPoundLabel(category: string, language: string | boolean = false): string {
+  const lang = uiLang(language)
+  if (lang === 'en') return category.replace('Pound-for-Pound ', '')
+  const names = POUND_FOR_POUND[lang]
+  return category
+    .replace("Men's Pound-for-Pound", names.men)
+    .replace("Women's Pound-for-Pound", names.women)
+    .replace('Pound-for-Pound', names.any)
 }
 
 /** Official weight limits (lb) and the order the UFC lists its divisions in, lightest first, men then women. */

@@ -20,7 +20,7 @@
     "apiLive": "Ao Vivo",
     "apiOffline": "Desconectado",
     "apiWaking": "Iniciando",
-    "apiLiveTitle": "API live e modelo pronto",
+    "apiLiveTitle": "API no ar e modelo carregado",
     "apiOfflineTitle": "API offline",
     "apiWakingTitle": "Iniciando servidor API...",
     "searchPlaceholder": "Buscar lutador...",
@@ -36,16 +36,18 @@
     "pt": "PT",
     "en": "EN",
     "fr": "FR",
+    "es": "ES",
     "ptLong": "Português",
     "enLong": "Inglês",
-    "frLong": "Francês"
+    "frLong": "Francês",
+    "esLong": "Espanhol"
   },
   "landing": {
     "eyebrow": "Vektor MMA",
     "title": "Escolha uma Organização",
-    "description": "Estatísticas, rankings e resultados oficiais. Previsões de vitória com machine learning.",
+    "description": "Estatísticas, rankings e resultados oficiais. Previsões de vitória com aprendizado de máquina.",
     "footerNotice": "Troque de organização a qualquer momento no topo. Projeto independente, sem afiliação oficial.",
-    "winPredictions": "Predições de vitória",
+    "winPredictions": "Previsões de vitória",
     "archive": "Arquivo histórico",
     "enter": "Entrar na {{name}}",
     "open": "Acessar {{name}}",
@@ -66,10 +68,10 @@
     }
   },
   "footer": {
-    "tagline": "Vektor MMA • Telemetria e predições em esportes de combate",
+    "tagline": "Vektor MMA • Telemetria e previsões em esportes de combate",
     "dataUpTo": "Dados até {{date}}",
     "disclaimer": "Projeto independente, sem afiliação com {{org}}",
-    "rssFeed": "Feed RSS: picks e resultados"
+    "rssFeed": "Feed RSS: palpites e resultados"
   },
   "common": {
     "loading": "Carregando...",
@@ -135,7 +137,7 @@
     "winningChance": "Probabilidade de Vitória",
     "whyPick": "Fatores Determinantes (SHAP)",
     "explanation": "Explicabilidade do Modelo",
-    "predictionError": "Falha na predição. Verifique a conexão com o servidor e tente novamente."
+    "predictionError": "Falha na previsão. Verifique a conexão com o servidor e tente novamente."
   },
   "fighters": {
     "title": "Lutadores",
@@ -170,14 +172,14 @@
     "noEventsFound": "Nenhum evento encontrado.",
     "noEventsSub": "Ajuste os filtros de busca.",
     "pick": "Palpite",
-    "modelCall": "Model Call",
+    "modelCall": "Palpite do modelo",
     "fights": "lutas",
     "bouts": "combates",
     "simulateCard": "Simulador de Resultados (Você vs IA)",
     "simulatorTitle": "Simulador de Eventos — Você vs IA",
     "agreement": "Taxa de Concordância",
     "shareWhatsApp": "Compartilhar no WhatsApp",
-    "copySummary": "Copiar Picks"
+    "copySummary": "Copiar palpites"
   },
   "rankings": {
     "eyebrow": "Rankings Oficiais",
@@ -185,11 +187,11 @@
     "description": "Rankings oficiais com taxas de vitória e histórico recente.",
     "categoryRanking": "Divisões",
     "p4p": "P4P (Peso por Peso)",
-    "eloRating": "Rating Elo",
-    "eloSubtitle": "Rating de habilidade dinâmico calculado luta a luta no histórico oficial.",
+    "eloRating": "Pontuação Elo",
+    "eloSubtitle": "Pontuação dinâmica de habilidade, calculada luta a luta no histórico oficial.",
     "allTime": "Histórico Geral",
     "activeOnly": "Plantel Ativo",
-    "elo": "Rating Elo",
+    "elo": "Pontuação Elo",
     "peakElo": "Pico de Elo",
     "allDivisions": "Todas as Divisões",
     "division": "Divisão",
@@ -217,7 +219,7 @@
     "blurbs": {
       "Fights": "Recordes de vitórias, nocautes, finalizações, sequências invictas e disputas de cinturão ao longo da carreira.",
       "Time": "Tempo total de luta no octógono e controle no solo ou na grade.",
-      "Striking": "Volume de golpes significativos conectados, precisão cirúrgica, esquiva e knockdowns.",
+      "Striking": "Volume de golpes significativos conectados, precisão, defesa e knockdowns.",
       "Grappling": "Quedas aplicadas, defesas de queda e tentativas de finalização."
     }
   },
@@ -239,26 +241,26 @@
   "trackRecord": {
     "eyebrow": "Desempenho do Modelo",
     "title": "Acurácia e Histórico",
-    "description": "Cada pick é salvo antes da luta e auditado com resultados oficiais. Sem ajustes retroativos.",
-    "picksLogged": "Picks registrados",
+    "description": "Cada palpite é salvo antes da luta e auditado com resultados oficiais. Sem ajustes retroativos.",
+    "picksLogged": "Palpites registrados",
     "settled": "Finalizados",
     "waiting": "Aguardando",
-    "liveAccuracy": "Acurácia live",
+    "liveAccuracy": "Acurácia ao vivo",
     "recentFights": "Lutas recentes",
-    "reported": "Teste reportado",
+    "reported": "Teste informado",
     "waitingTitle": "Aguardando resultados",
     "howMeasured": "Como Funciona",
     "recentResults": "Resultados Recentes",
     "biggestMisses": "Maiores Erros",
-    "biggestMissesNote": "Picks de maior confiança que erraram.",
-    "syncButton": "Sync Resultados",
+    "biggestMissesNote": "Palpites de maior confiança que erraram.",
+    "syncButton": "Sincronizar resultados",
     "syncing": "Sincronizando...",
-    "syncSuccess": "Sync concluído: {{settled}} finalizados, {{logged}} registrados.",
+    "syncSuccess": "Sincronização concluída: {{settled}} finalizados, {{logged}} registrados.",
     "syncError": "Erro ao sincronizar resultados com o servidor."
   },
   "headToHead": {
     "eyebrow": "Confronto Direto",
-    "title": "Histórico Head-to-Head",
+    "title": "Histórico de Confrontos Diretos",
     "description": "Escolha dois atletas para ver duelos anteriores, vencedores, método e round.",
     "fighterA": "Lutador A",
     "fighterB": "Lutador B",
@@ -288,12 +290,12 @@
   "dataIntelligence": {
     "eyebrow": "Engenharia de Dados & Telemetria",
     "title": "Dos Dados Brutos à Inteligência de Combate",
-    "description": "Como os dados oficiais do UFC, PFL, ONE Championship e o acervo histórico do MMA são coletados, tratados e transformados em variáveis preditivas para o modelo de machine learning.",
+    "description": "Como os dados oficiais do UFC, PFL, ONE Championship e o acervo histórico do MMA são coletados, tratados e transformados em variáveis preditivas para o modelo de aprendizado de máquina.",
     "lastUpdate": "Última atualização da base",
     "fighters": "Atletas Catalogados",
     "events": "Eventos Monitorados",
     "fights": "Combates Processados",
-    "pipelineTitle": "Arquitetura do Pipeline de Dados",
+    "pipelineTitle": "Arquitetura do Fluxo de Dados",
     "pipelineDesc": "Toda previsão parte de estatísticas reais coletadas luta a luta, normalizadas entre múltiplas organizações e convertidas em 46 variáveis técnicas para o modelo preditivo."
   },
   "model": {
@@ -301,7 +303,7 @@
     "title": "Como Funciona o Modelo Preditivo",
     "description": "A arquitetura do algoritmo, calibração estatística, comparação com métodos simplificados e o peso de cada variável na decisão.",
     "modelCard": "Ficha Técnica do Modelo",
-    "featuresCount": "Variáveis Técnicas (Features)",
+    "featuresCount": "Variáveis Técnicas",
     "testAccuracy": "Acurácia no Conjunto de Teste",
     "rocAuc": "ROC AUC (Discriminação)",
     "baselines": "Comparação com Métodos Tradicionais",
@@ -310,7 +312,7 @@
   "matchup": {
     "eyebrow": "Análise de Combate",
     "title": "Análise de Confronto",
-    "description": "Trocação, grappling e biometria dos dois atletas, mais os fatores determinantes do modelo.",
+    "description": "Trocação, luta no chão e biometria dos dois atletas, mais os fatores determinantes do modelo.",
     "analyze": "Analisar Combate",
     "analyzing": "Analisando...",
     "radar": "Perfil Radar",
@@ -328,7 +330,7 @@
     "favoriteMethods": "Formas de Vitória (KO, Finalização, Decisão)",
     "close": "Fechar perfil",
     "noUfcFights": "Este atleta ainda não possui lutas registradas no UFC.",
-    "eloRating": "Rating Elo",
+    "eloRating": "Pontuação Elo",
     "peakElo": "Pico Histórico",
     "p4pRank": "Posição no Ranking Elo"
   }

@@ -3,7 +3,8 @@ import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeftRight, ArrowRight, CalendarDays, LoaderCircle, Share2, Sparkles, Swords, Trophy, Users } from 'lucide-react'
 
-import { L, localeTag, uiLang } from '../i18n/lang'
+import { L, localeTag } from '../i18n/lang'
+import { formatMethod as formatMethodLabel } from '../shared/data/orgFormat'
 import { getDivisionName } from '../shared/data/divisions'
 import { FighterProfileModal } from '../shared/components/FighterProfileModal'
 import { FighterSelect } from '../shared/components/FighterSelect'
@@ -12,33 +13,6 @@ import { EditorialHeadToHeadSimulator } from '../shared/components/editorial/Edi
 import { useFighters } from '../shared/hooks/useFighters'
 import { getHeadToHead, getOpponents } from '../shared/services/api'
 import type { FightRecord, HeadToHeadResponse, Opponent } from '../shared/types/api'
-
-const METHOD_LABELS_EN: Record<string, string> = {
-  'U-DEC': 'Unanimous Decision',
-  'S-DEC': 'Split Decision',
-  'M-DEC': 'Majority Decision',
-  'KO/TKO': 'Knockout',
-  SUB: 'Submission',
-  DQ: 'Disqualification',
-}
-
-const METHOD_LABELS_PT: Record<string, string> = {
-  'U-DEC': 'Decisão Unânime',
-  'S-DEC': 'Decisão Dividida',
-  'M-DEC': 'Decisão Majoritária',
-  'KO/TKO': 'Nocaute (KO/TKO)',
-  SUB: 'Finalização',
-  DQ: 'Desqualificação',
-}
-
-const METHOD_LABELS_FR: Record<string, string> = {
-  'U-DEC': 'Décision unanime',
-  'S-DEC': 'Décision partagée',
-  'M-DEC': 'Décision majoritaire',
-  'KO/TKO': 'KO/TKO',
-  SUB: 'Soumission',
-  DQ: 'Disqualification',
-}
 
 function useOpponents(fighterName: string): Opponent[] {
   const [loaded, setLoaded] = useState<{ name: string; opponents: Opponent[] } | null>(null)
@@ -128,6 +102,7 @@ export function HeadToHead() {
           'Não foi possível carregar o histórico de confrontos. Verifique se o servidor está disponível.',
           'Unable to load head-to-head history. Check whether the backend is available.',
           'Impossible de charger l’historique des confrontations. Vérifiez si le serveur est disponible.',
+          'No se pudo cargar el historial cara a cara. Comprueba que el servidor esté disponible.',
         ),
       )
       setResult(null)
@@ -147,7 +122,7 @@ export function HeadToHead() {
       {/* Editorial vs Classic Mode Switcher */}
       <div className="surface-card flex items-center justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] dark:border-white/10 dark:bg-[#0c0d12]/90 px-4 py-3 shadow-sm text-[var(--text-primary)] dark:text-zinc-300">
         <span className="font-['Anton','Barlow_Condensed',Impact,sans-serif] text-sm uppercase tracking-widest text-zinc-300">
-          {L(i18n.language, 'Modo de Confronto', 'Matchup Mode', 'Mode de confrontation')}
+          {L(i18n.language, 'Modo de Confronto', 'Matchup Mode', 'Mode de confrontation', 'Modo de enfrentamiento')}
         </span>
         <div className="inline-flex rounded-xl bg-[var(--bg-surface-subtle)] dark:bg-black/40 p-1 border border-[var(--border-subtle)] dark:border-white/10">
           <button
@@ -160,7 +135,7 @@ export function HeadToHead() {
             }`}
           >
             <Sparkles className="h-3.5 w-3.5" />
-            Tale of the Tape ✨
+            {L(i18n.language, 'Raio-X ✨', 'Tale of the Tape ✨', 'Fiche comparative ✨', 'Comparativa ✨')}
           </button>
           <button
             type="button"
@@ -171,7 +146,7 @@ export function HeadToHead() {
                 : 'text-zinc-400 hover:text-white'
             }`}
           >
-            {L(i18n.language, 'Histórico Completo', 'Full History', 'Historique complet')}
+            {L(i18n.language, 'Histórico Completo', 'Full History', 'Historique complet', 'Historial completo')}
           </button>
         </div>
       </div>
@@ -214,8 +189,8 @@ export function HeadToHead() {
               type="button"
               onClick={swapCorners}
               disabled={!fighterAName && !fighterBName}
-              title={L(i18n.language, 'Inverter lutadores', 'Swap fighters', 'Inverser les lutteurs')}
-              aria-label={L(i18n.language, 'Inverter lutadores', 'Swap fighters', 'Inverser les lutteurs')}
+              title={L(i18n.language, 'Inverter lutadores', 'Swap fighters', 'Inverser les combattants', 'Intercambiar peleadores')}
+              aria-label={L(i18n.language, 'Inverter lutadores', 'Swap fighters', 'Inverser les combattants', 'Intercambiar peleadores')}
               className={`type-display group relative inline-flex items-center justify-center rounded-full border border-[#C8102E]/25 bg-[#C8102E]/10 px-3 py-1.5 text-xl font-bold uppercase text-[#C8102E] transition ${
                 fighterAName || fighterBName ? 'cursor-pointer hover:bg-[#C8102E] hover:text-white' : 'cursor-default'
               }`}
@@ -295,7 +270,7 @@ function HeadToHeadResultView({ result, onOpenProfile }: { result: HeadToHeadRes
     <div className="space-y-3">
       <section className="surface-card rounded-[20px] p-4 text-center">
         <p className="broadcast-label text-[11px] text-[var(--text-muted)]">
-          {L(i18n.language, `${result.meetings.length} ${result.meetings.length === 1 ? 'confronto' : 'confrontos'}`, `${result.meetings.length} ${result.meetings.length === 1 ? 'meeting' : 'meetings'}`, `${result.meetings.length} ${result.meetings.length === 1 ? 'affrontement' : 'affrontements'}`)}
+          {L(i18n.language, `${result.meetings.length} ${result.meetings.length === 1 ? 'confronto' : 'confrontos'}`, `${result.meetings.length} ${result.meetings.length === 1 ? 'meeting' : 'meetings'}`, `${result.meetings.length} ${result.meetings.length === 1 ? 'affrontement' : 'affrontements'}`, `${result.meetings.length} ${result.meetings.length === 1 ? 'enfrentamiento' : 'enfrentamientos'}`)}
         </p>
         <div className="mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
           <button
@@ -339,7 +314,7 @@ function NetworkPathCard({ result, onOpenProfile }: { result: HeadToHeadResponse
       <div className="flex items-center gap-2 text-[#C8102E]">
         <Share2 className="h-4 w-4" />
         <p className="broadcast-label text-[11px]">
-          {L(i18n.language, `Conexão pela rede de lutas • ${degrees} grau${degrees === 1 ? '' : 's'} de separação`, `Bout network path • ${degrees} degree${degrees === 1 ? '' : 's'} of separation`, `Réseau de combats • ${degrees} degré${degrees === 1 ? '' : 's'} de séparation`)}
+          {L(i18n.language, `Conexão pela rede de lutas • ${degrees} grau${degrees === 1 ? '' : 's'} de separação`, `Bout network path • ${degrees} degree${degrees === 1 ? '' : 's'} of separation`, `Réseau de combats • ${degrees} degré${degrees === 1 ? '' : 's'} de séparation`, `Ruta en la red de peleas • ${degrees} ${degrees === 1 ? 'grado' : 'grados'} de separación`)}
         </p>
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-1.5">
@@ -371,7 +346,7 @@ function CommonOpponentsCard({ result }: { result: HeadToHeadResponse }) {
     <article className="surface-card rounded-[20px] p-3 sm:p-4">
       <div className="flex items-center gap-2 text-[#C8102E]">
         <Users className="h-4 w-4" />
-        <p className="broadcast-label text-[11px]">{L(i18n.language, `Adversários em comum (${result.common_opponents.length})`, `Common opponents (${result.common_opponents.length})`, `Adversaires communs (${result.common_opponents.length})`)}</p>
+        <p className="broadcast-label text-[11px]">{L(i18n.language, `Adversários em comum (${result.common_opponents.length})`, `Common opponents (${result.common_opponents.length})`, `Adversaires communs (${result.common_opponents.length})`, `Rivales en común (${result.common_opponents.length})`)}</p>
       </div>
       <div className="mt-2.5 grid grid-cols-[1fr_auto_auto] items-center gap-x-2.5 gap-y-1.5">
         <span />
@@ -397,14 +372,14 @@ function ResultChip({ result }: { result: 'win' | 'loss' | null }) {
   if (result === 'win') {
     return (
       <span className="type-tech justify-self-end rounded-full border border-[#C8102E]/25 bg-[#C8102E]/10 px-2 py-0.5 text-[11px] font-bold uppercase text-[#C8102E]">
-        {L(i18n.language, 'Vitória', 'Win', 'Victoire')}
+        {L(i18n.language, 'Vitória', 'Win', 'Victoire', 'Victoria')}
       </span>
     )
   }
   if (result === 'loss') {
     return (
       <span className="type-tech justify-self-end rounded-full border border-[var(--border-subtle)] px-2 py-0.5 text-[11px] font-bold uppercase text-[var(--text-muted)]">
-        {L(i18n.language, 'Derrota', 'Loss', 'Défaite')}
+        {L(i18n.language, 'Derrota', 'Loss', 'Défaite', 'Derrota')}
       </span>
     )
   }
@@ -439,10 +414,10 @@ function MeetingRow({ meeting, fighterA, fighterB }: { meeting: FightRecord; fig
         {winnerName ? (
           <span className="inline-flex items-center gap-1.5 font-semibold text-[var(--text-main)]">
             <Trophy className="h-4 w-4 text-[#C8102E]" />
-            {winnerName} {L(i18n.language, 'venceu', 'won', 'a gagné')}
+            {winnerName} {L(i18n.language, 'venceu', 'won', 'a gagné', 'ganó')}
           </span>
         ) : (
-          <span className="theme-muted">{L(i18n.language, 'Sem resultado oficial', 'No official result', 'Pas de résultat officiel')}</span>
+          <span className="theme-muted">{L(i18n.language, 'Sem resultado oficial', 'No official result', 'Pas de résultat officiel', 'Sin resultado oficial')}</span>
         )}
         {meeting.weight_class ? <span className="selector-chip">{getDivisionName(meeting.weight_class, i18n.language)}</span> : null}
       </div>
@@ -459,9 +434,5 @@ function formatDate(date: string, lang: string = 'en-US'): string {
 }
 
 function formatMethod(meeting: FightRecord, language: string | boolean = false): string {
-  if (!meeting.method) return L(language, 'Resultado a definir', 'Result pending', 'Résultat en attente')
-  const lang = uiLang(language)
-  const labels = lang === 'pt' ? METHOD_LABELS_PT : lang === 'fr' ? METHOD_LABELS_FR : METHOD_LABELS_EN
-  const label = labels[meeting.method] ?? meeting.method
-  return meeting.method_detail ? `${label} (${meeting.method_detail})` : label
+  return formatMethodLabel(meeting.method, meeting.method_detail, language) ?? L(language, 'Resultado a definir', 'Result pending', 'Résultat en attente', 'Resultado pendiente')
 }

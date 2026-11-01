@@ -1,0 +1,139 @@
+import { localeTag, uiLang, type UiLang } from '../../i18n/lang'
+
+/**
+ * Sentences the API sends in English (the model's notes and limits, the baselines it is compared with), put in the
+ * language on screen. A sentence that is not recognized comes back unchanged, so a new API text still shows up.
+ */
+
+type Entry = Record<Exclude<UiLang, 'en'>, string>
+
+const FIXED: Record<string, Entry> = {
+  'Pick at random': { pt: 'Escolher ao acaso', fr: 'Choisir au hasard', es: 'Elegir al azar' },
+  'Pick the fighter with more UFC wins': {
+    pt: 'Escolher o lutador com mais vitórias no UFC',
+    fr: 'Choisir le combattant avec le plus de victoires à l’UFC',
+    es: 'Elegir al peleador con más victorias en la UFC',
+  },
+  'Pick the fighter with the better rating (Elo)': {
+    pt: 'Escolher o lutador com a melhor pontuação (Elo)',
+    fr: 'Choisir le combattant avec la meilleure cote (Elo)',
+    es: 'Elegir al peleador con la mejor puntuación (Elo)',
+  },
+  'It was tested on fights that came after the ones it trained on, as a real prediction would be.': {
+    pt: 'Foi testado em lutas posteriores às que usou no treino, como seria uma previsão de verdade.',
+    fr: 'Il a été testé sur des combats postérieurs à ceux de son entraînement, comme le serait une vraie prévision.',
+    es: 'Se probó con peleas posteriores a las que usó para entrenar, como ocurriría con un pronóstico real.',
+  },
+  'Most inputs are differences between the two fighters, such as win rate, reach, age and striking accuracy.': {
+    pt: 'A maioria das entradas são diferenças entre os dois lutadores, como taxa de vitória, envergadura, idade e precisão de golpes.',
+    fr: 'La plupart des entrées sont des écarts entre les deux combattants, comme le taux de victoire, l’allonge, l’âge et la précision de frappe.',
+    es: 'La mayoría de los datos de entrada son diferencias entre los dos peleadores, como el porcentaje de victorias, el alcance, la edad y la precisión de golpeo.',
+  },
+  'SHAP shows which stats pushed each prediction toward one fighter or the other.': {
+    pt: 'O SHAP mostra quais estatísticas empurraram cada previsão para um lutador ou para o outro.',
+    fr: 'SHAP montre quelles statistiques ont fait pencher chaque prévision vers un combattant ou l’autre.',
+    es: 'SHAP muestra qué estadísticas inclinaron cada pronóstico hacia uno u otro peleador.',
+  },
+  'Predictions are estimates based on past fights and each fighter\'s career stats.': {
+    pt: 'As previsões são estimativas baseadas em lutas passadas e nas estatísticas de carreira de cada lutador.',
+    fr: 'Les prévisions sont des estimations fondées sur les combats passés et les statistiques de carrière de chaque combattant.',
+    es: 'Los pronósticos son estimaciones basadas en peleas pasadas y en las estadísticas de carrera de cada peleador.',
+  },
+  'The model uses each fighter\'s current career numbers, not their numbers at the time of past fights.': {
+    pt: 'O modelo usa os números atuais de carreira de cada lutador, não os números da época das lutas passadas.',
+    fr: 'Le modèle utilise les chiffres de carrière actuels de chaque combattant, pas ceux de l’époque des combats passés.',
+    es: 'El modelo usa las cifras actuales de carrera de cada peleador, no las que tenía en el momento de las peleas pasadas.',
+  },
+  'This is a personal project for learning, not betting advice.': {
+    pt: 'Este é um projeto pessoal de estudo, não um conselho de apostas.',
+    fr: 'Ceci est un projet personnel d’apprentissage, pas un conseil de pari.',
+    es: 'Este es un proyecto personal de aprendizaje, no un consejo de apuestas.',
+  },
+}
+
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+/** "1,753" (as the API writes it) in the number format of the language. */
+function number(text: string, language: string) {
+  return Number(text.replaceAll(',', '')).toLocaleString(localeTag(language))
+}
+
+/** "June 2023" in the language on screen. */
+function monthYear(text: string, language: string) {
+  const [month, year] = text.split(' ')
+  const index = MONTHS.indexOf(month)
+  if (index === -1) return text
+  return new Date(Date.UTC(Number(year), index, 1)).toLocaleDateString(localeTag(language), { month: 'long', year: 'numeric', timeZone: 'UTC' })
+}
+
+/** "2026-10-20" in the language on screen. */
+function longDate(iso: string, language: string) {
+  return new Date(`${iso}T00:00:00`).toLocaleDateString(localeTag(language), { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
+type Template = {
+  pattern: RegExp
+  text: Record<Exclude<UiLang, 'en'>, (m: RegExpMatchArray, language: string) => string>
+}
+
+const TEMPLATES: Template[] = [
+  {
+    pattern: /^Measured on ([\d,]+) recent fights \((\w+ \d{4}) to (\w+ \d{4})\), given each fighter's age and record as of the fight\. The model's own file reports ([\d.]+)% accuracy, from when it was trained on data that is not in this repository; that could not be reproduced\. The picks it rated (\d+)% or more were right (\d+)% of the time\. Read its probabilities as rough\.$/,
+    text: {
+      pt: (m, l) => `Medido em ${number(m[1], l)} lutas recentes (${monthYear(m[2], l)} a ${monthYear(m[3], l)}), com a idade e o cartel de cada lutador na data da luta. O arquivo do próprio modelo informa ${m[4]}% de acurácia, de quando foi treinado com dados que não estão neste repositório; isso não pôde ser reproduzido. Os palpites que ele classificou com ${m[5]}% ou mais acertaram ${m[6]}% das vezes. Leia as probabilidades dele como aproximadas.`,
+      fr: (m, l) => `Mesuré sur ${number(m[1], l)} combats récents (${monthYear(m[2], l)} à ${monthYear(m[3], l)}), avec l’âge et le palmarès de chaque combattant à la date du combat. Le fichier du modèle annonce ${m[4]} % de précision, à l’époque où il a été entraîné sur des données absentes de ce dépôt ; cela n’a pas pu être reproduit. Les pronostics qu’il notait ${m[5]} % ou plus étaient justes ${m[6]} % du temps. Lisez ses probabilités comme approximatives.`,
+      es: (m, l) => `Medido en ${number(m[1], l)} peleas recientes (${monthYear(m[2], l)} a ${monthYear(m[3], l)}), con la edad y el récord de cada peleador en la fecha de la pelea. El archivo del propio modelo informa un ${m[4]} % de precisión, de cuando se entrenó con datos que no están en este repositorio; eso no se pudo reproducir. Los pronósticos que calificó con ${m[5]} % o más acertaron el ${m[6]} % de las veces. Interpreta sus probabilidades como aproximadas.`,
+    },
+  },
+  {
+    pattern: /^The test accuracy it reports \(([\d.]+)%\) could not be reproduced: on ([\d,]+) recent fights it got (\d+)% right\.$/,
+    text: {
+      pt: (m, l) => `A acurácia de teste que ele informa (${m[1]}%) não pôde ser reproduzida: em ${number(m[2], l)} lutas recentes ele acertou ${m[3]}%.`,
+      fr: (m, l) => `La précision au test qu’il annonce (${m[1]} %) n’a pas pu être reproduite : sur ${number(m[2], l)} combats récents, il a eu ${m[3]} % de bonnes réponses.`,
+      es: (m, l) => `La precisión de prueba que informa (${m[1]} %) no se pudo reproducir: en ${number(m[2], l)} peleas recientes acertó el ${m[3]} %.`,
+    },
+  },
+  {
+    pattern: /^Its probabilities are overconfident: picks it rated (\d+)% or more were right about (\d+)% of the time\.$/,
+    text: {
+      pt: (m) => `As probabilidades dele são exageradas: os palpites que ele classificou com ${m[1]}% ou mais acertaram cerca de ${m[2]}% das vezes.`,
+      fr: (m) => `Ses probabilités sont trop confiantes : les pronostics qu’il notait ${m[1]} % ou plus étaient justes environ ${m[2]} % du temps.`,
+      es: (m) => `Sus probabilidades son demasiado confiadas: los pronósticos que calificó con ${m[1]} % o más acertaron cerca del ${m[2]} % de las veces.`,
+    },
+  },
+  {
+    pattern: /^(\d+) of these picks were saved before (\d{4}-\d{2}-\d{2}), by an earlier version of the model that gave a different answer depending on which fighter was listed first\. They are kept exactly as they were shown\. Picks saved from that day on use the corrected version\.$/,
+    text: {
+      pt: (m, l) => `${m[1]} destes palpites foram salvos antes de ${longDate(m[2], l)}, por uma versão anterior do modelo que dava respostas diferentes conforme o lutador listado primeiro. Eles foram mantidos exatamente como foram exibidos. Os palpites salvos a partir desse dia usam a versão corrigida.`,
+      fr: (m, l) => `${m[1]} de ces pronostics ont été enregistrés avant le ${longDate(m[2], l)}, par une version antérieure du modèle qui donnait une réponse différente selon le combattant cité en premier. Ils sont conservés exactement tels qu’ils ont été affichés. Les pronostics enregistrés à partir de ce jour utilisent la version corrigée.`,
+      es: (m, l) => `${m[1]} de estos pronósticos se guardaron antes del ${longDate(m[2], l)}, con una versión anterior del modelo que daba una respuesta distinta según qué peleador aparecía primero. Se conservan exactamente como se mostraron. Los pronósticos guardados desde ese día usan la versión corregida.`,
+    },
+  },
+]
+
+/** An English sentence from the API, in the language on screen. */
+export function localizeApiText(text: string | null | undefined, language: string | boolean = false): string {
+  if (!text) return ''
+  const lang = uiLang(language)
+  if (lang === 'en') return text
+  const fixed = FIXED[text]
+  if (fixed) return fixed[lang]
+  for (const template of TEMPLATES) {
+    const match = text.match(template.pattern)
+    if (match) return template.text[lang](match, typeof language === 'string' ? language : '')
+  }
+  return text
+}
+
+const BASELINE_NAMES: Record<string, Entry & { en: string }> = {
+  dummy_most_frequent: { en: 'most frequent class', pt: 'classe mais frequente', fr: 'classe majoritaire', es: 'clase más frecuente' },
+  logistic_regression: { en: 'logistic regression', pt: 'regressão logística', fr: 'régression logistique', es: 'regresión logística' },
+  random_forest: { en: 'random forest', pt: 'floresta aleatória', fr: 'forêt aléatoire', es: 'bosque aleatorio' },
+}
+
+/** The name of a baseline model ("dummy_most_frequent") in the language on screen. */
+export function baselineName(key: string, language: string | boolean = false): string {
+  const names = BASELINE_NAMES[key]
+  if (!names) return key.replaceAll('_', ' ')
+  return names[uiLang(language)]
+}

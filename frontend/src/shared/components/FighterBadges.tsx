@@ -20,7 +20,7 @@ export function FighterBadges({ badges, variant = 'short', className = '' }: Fig
   if (known.length === 0) return null
 
   return (
-    <ul className={`flex flex-wrap items-center gap-1 ${className}`} aria-label={L(i18n.language, 'Selos do lutador', 'Fighter badges', 'Badges du combattant')}>
+    <ul className={`flex flex-wrap items-center gap-1 ${className}`} aria-label={L(i18n.language, 'Selos do lutador', 'Fighter badges', 'Badges du combattant', 'Insignias del peleador')}>
       {known.map((key) => {
         const info = BADGES[key]
         const label = getBadgeLabel(key, i18n.language)
@@ -92,6 +92,7 @@ export function TitleFightBadge({ fight, className = '' }: TitleFightBadgeProps)
   const division = fight.weight_class && !/catch/i.test(fight.weight_class) ? fight.weight_class : null
   const divPt = division ? getDivisionName(division, 'pt') : ''
   const divFr = division ? getDivisionName(division, 'fr') : ''
+  const divEs = division ? getDivisionName(division, 'es') : ''
   const base = `border-2 border-[var(--rule)] px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.12em] ${className}`
 
   if (fight.interim_title) {
@@ -104,6 +105,7 @@ export function TitleFightBadge({ fight, className = '' }: TitleFightBadgeProps)
       divFr
         ? (fight.interim_title_win ? `Ceinture intérimaire • ${divFr}` : `Combat pour la ceinture intérimaire • ${divFr}`)
         : (fight.interim_title_win ? 'Conquête de la ceinture intérimaire' : 'Combat pour la ceinture intérimaire'),
+      divEs ? (fight.interim_title_win ? `Cinturón interino • ${divEs}` : `Pelea por el cinturón interino • ${divEs}`) : (fight.interim_title_win ? 'Conquista del cinturón interino' : 'Pelea por el cinturón interino'),
     )
 
     return (
@@ -115,7 +117,7 @@ export function TitleFightBadge({ fight, className = '' }: TitleFightBadgeProps)
   if (fight.bmf_title) {
     return (
       <span className={`${base} bg-[#C9CDD3] text-[#0E0E0E]`}>
-        {L(i18n.language, 'Disputa de Cinturão BMF', 'BMF title fight', 'Combat de titre BMF')}
+        {L(i18n.language, 'Disputa de Cinturão BMF', 'BMF title fight', 'Combat de titre BMF', 'Pelea por el cinturón BMF')}
       </span>
     )
   }
@@ -126,6 +128,7 @@ export function TitleFightBadge({ fight, className = '' }: TitleFightBadgeProps)
     divPt ? `Disputa de Cinturão • ${divPt}` : 'Disputa de Cinturão',
     division ? `${division} title fight` : 'Title fight',
     divFr ? `Combat de titre • ${divFr}` : 'Combat de titre',
+    divEs ? `Pelea por el título • ${divEs}` : 'Pelea por el título',
   )
 
   return <span className={`${base} bg-[#F2C230] text-[#0E0E0E]`}>{label}</span>

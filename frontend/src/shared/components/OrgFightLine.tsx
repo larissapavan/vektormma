@@ -13,14 +13,14 @@ export function OrgFightLine({ fight, knownOpponent, onSelect }: { fight: FightR
   const upcoming = fight.result === null && !fight.method
   const summary = fightSummary(fight, i18n.language)
   const label = win
-    ? L(i18n.language, 'Vitória', 'Win', 'Victoire')
+    ? L(i18n.language, 'Vitória', 'Win', 'Victoire', 'Victoria')
     : loss
-      ? L(i18n.language, 'Derrota', 'Loss', 'Défaite')
+      ? L(i18n.language, 'Derrota', 'Loss', 'Défaite', 'Derrota')
       : upcoming
-        ? L(i18n.language, 'Prevista', 'Upcoming', 'À venir')
+        ? L(i18n.language, 'Prevista', 'Upcoming', 'À venir', 'Próxima')
         : fight.outcome === 'draw'
-          ? L(i18n.language, 'Empate', 'Draw', 'Nul')
-          : L(i18n.language, 'Sem resultado', 'No result', 'Sans résultat')
+          ? L(i18n.language, 'Empate', 'Draw', 'Nul', 'Empate')
+          : L(i18n.language, 'Sem resultado', 'No result', 'Sans résultat', 'Sin resultado')
 
   return (
     <li className="metric-tile flex items-center gap-3 rounded-xl px-3 py-2">
@@ -30,7 +30,7 @@ export function OrgFightLine({ fight, knownOpponent, onSelect }: { fight: FightR
           win ? 'border-[var(--rule)] bg-[var(--accent-red)] text-white' : loss ? 'border-[var(--rule)] bg-[var(--surface-3)] text-[var(--text-main)]' : 'border-[var(--line-soft)] text-[var(--text-muted)]'
         }`}
       >
-        <span aria-hidden="true">{win ? L(i18n.language, 'V', 'W', 'V') : loss ? L(i18n.language, 'D', 'L', 'D') : upcoming ? '·' : '–'}</span>
+        <span aria-hidden="true">{win ? L(i18n.language, 'V', 'W', 'V', 'V') : loss ? L(i18n.language, 'D', 'L', 'D', 'D') : upcoming ? '·' : '–'}</span>
         <span className="sr-only">{label}</span>
       </span>
       <div className="min-w-0 flex-1">
@@ -40,7 +40,7 @@ export function OrgFightLine({ fight, knownOpponent, onSelect }: { fight: FightR
             <button
               type="button"
               onClick={() => onSelect(fight.opponent)}
-              aria-label={L(i18n.language, `${fight.opponent}. Ver perfil`, `${fight.opponent}. View profile`, `${fight.opponent}. Voir le profil`)}
+              aria-label={L(i18n.language, `${fight.opponent}. Ver perfil`, `${fight.opponent}. View profile`, `${fight.opponent}. Voir le profil`, `${fight.opponent}. Ver perfil`)}
               className="font-semibold underline decoration-2 underline-offset-2 hover:bg-[#F2C230] hover:text-[#0E0E0E]"
             >
               {fight.opponent}
@@ -50,7 +50,7 @@ export function OrgFightLine({ fight, knownOpponent, onSelect }: { fight: FightR
           )}
           {fight.title_fight ? (
             <span className="ml-1.5 bg-[#F2C230] px-1 text-[10px] font-bold uppercase text-[#0E0E0E]">
-              {L(i18n.language, 'Cinturão', 'Title', 'Titre')}
+              {L(i18n.language, 'Cinturão', 'Title', 'Titre', 'Título')}
             </span>
           ) : null}
         </p>

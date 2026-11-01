@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ArrowDown, ArrowUp, Crown, Sparkles, Trophy } from 'lucide-react'
 
-import { L, localeTag, uiLang } from '../i18n/lang'
+import { L, localeTag } from '../i18n/lang'
 import { DivisionMatrixCard } from '../shared/components/DivisionMatrixCard'
 import { FighterAvatar } from '../shared/components/FighterAvatar'
 import { FighterBadges, FlagList } from '../shared/components/FighterBadges'
@@ -10,7 +10,7 @@ import { badgesForRankings } from '../shared/data/badges'
 import { FighterProfileModal } from '../shared/components/FighterProfileModal'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { SectionHeading } from '../shared/components/SectionHeading'
-import { getDivisionName } from '../shared/data/divisions'
+import { getDivisionName, poundForPoundLabel } from '../shared/data/divisions'
 import { getFighterImageUrl, normalizeFighterName, useFighterImages } from '../shared/hooks/useFighterImages'
 import { useFighters } from '../shared/hooks/useFighters'
 import { useRankings } from '../shared/hooks/useRankings'
@@ -154,18 +154,7 @@ function P4pView({
     <div className="space-y-4">
       <div className="surface-card flex flex-wrap gap-2 rounded-[18px] border-[var(--border-subtle)] p-3">
         {categories.map((category) => {
-          const lang = uiLang(i18n.language)
-          const label = lang === 'pt'
-            ? category.category
-                .replace("Men's Pound-for-Pound", 'Peso por Peso Masculino')
-                .replace("Women's Pound-for-Pound", 'Peso por Peso Feminino')
-                .replace('Pound-for-Pound', 'Peso por Peso')
-            : lang === 'fr'
-              ? category.category
-                  .replace("Men's Pound-for-Pound", 'Toutes catégories hommes')
-                  .replace("Women's Pound-for-Pound", 'Toutes catégories femmes')
-                  .replace('Pound-for-Pound', 'Toutes catégories')
-              : category.category.replace('Pound-for-Pound ', '')
+          const label = poundForPoundLabel(category.category, i18n.language)
           return (
             <button
               key={category.category}
@@ -207,13 +196,13 @@ function RankingList({ entries }: { entries: RankingEntry[] }) {
   const contenders = entries.filter((entry) => entry.rank > 0)
 
   return (
-    <section aria-label={L(i18n.language, 'Atletas ranqueados', 'Ranked athletes', 'Athlètes classés')} className="space-y-2.5">
+    <section aria-label={L(i18n.language, 'Atletas ranqueados', 'Ranked athletes', 'Combattants classés', 'Peleadores clasificados')} className="space-y-2.5">
       <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-1 pb-2">
         <h2 className="broadcast-label text-xs text-[var(--text-main)]">
-          {L(i18n.language, 'Lutadores Ranqueados', 'Ranked athletes', 'Lutteurs classés')}
+          {L(i18n.language, 'Lutadores Ranqueados', 'Ranked athletes', 'Combattants classés', 'Peleadores clasificados')}
         </h2>
         <span className="text-xs text-[var(--text-secondary)]">
-          {contenders.length + (champion ? 1 : 0)} {L(i18n.language, 'atletas', 'listed', 'listés')}
+          {contenders.length + (champion ? 1 : 0)} {L(i18n.language, 'atletas', 'listed', 'listés', 'registrados')}
         </span>
       </div>
       <div className="grid gap-2.5">
@@ -237,7 +226,7 @@ function RankingList({ entries }: { entries: RankingEntry[] }) {
       ))}
       {!champion && contenders.length === 0 ? (
         <div className="surface-card rounded-[18px] px-4 py-6 text-center text-sm text-[var(--text-muted)]">
-          {L(i18n.language, 'Nenhum atleta ranqueado nesta categoria.', 'No ranked athletes in this category.', 'Aucun athlète classé dans cette catégorie.')}
+          {L(i18n.language, 'Nenhum atleta ranqueado nesta categoria.', 'No ranked athletes in this category.', 'Aucun combattant classé dans cette catégorie.', 'No hay peleadores clasificados en esta división.')}
         </div>
       ) : null}
       </div>
@@ -293,8 +282,8 @@ function RankingRow({
               <Trophy className="h-3.5 w-3.5" /> {t('rankings.champion')}
             </span>
           ) : null}
-          {entry.win_rate !== null ? <span>{L(i18n.language, 'Taxa de vitória', 'Win rate', 'Taux de victoire')}: {(entry.win_rate * 100).toFixed(1)}%</span> : null}
-          {entry.last_fight ? <span>{L(i18n.language, 'Última luta', 'Last fight', 'Dernier combat')}: {formatDate(entry.last_fight, i18n.language)}</span> : null}
+          {entry.win_rate !== null ? <span>{L(i18n.language, 'Taxa de vitória', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias')}: {(entry.win_rate * 100).toFixed(1)}%</span> : null}
+          {entry.last_fight ? <span>{L(i18n.language, 'Última luta', 'Last fight', 'Dernier combat', 'Última pelea')}: {formatDate(entry.last_fight, i18n.language)}</span> : null}
         </div>
       </div>
 
@@ -314,6 +303,7 @@ function RankingRow({
           `${entry.fighter}, ${entry.rank === 0 ? 'campeão' : `${entry.rank}º lugar`}. Ver perfil`,
           `${entry.fighter}, rank ${entry.rank || 'champion'}. View profile`,
           `${entry.fighter}, ${entry.rank === 0 ? 'champion' : `rang ${entry.rank}`}. Voir le profil`,
+          `${entry.fighter}, ${entry.rank === 0 ? 'campeón' : `puesto ${entry.rank}`}. Ver perfil`,
         )
       }
       className={`${base} cursor-pointer text-left transition hover:!bg-[#F2C230]/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F2C230]`}

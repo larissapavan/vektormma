@@ -118,11 +118,14 @@ Discover teams, gyms and fighter affiliations from different parts of the MMA wo
 
 ### Multilingual Experience
 
-Vektor MMA is available in three languages:
+Vektor MMA is available in four languages:
 
 - Portuguese (Brazil)
 - English
 - French
+- Spanish (Latin America)
+
+Each language is written out in full with the terms MMA coverage uses in that language, not translated word for word: only fighter names, event and organization names, and a few terms with no real equivalent are shared. The glue is `frontend/src/i18n/lang.ts`: `L(language, pt, en, fr, es)` needs all four texts, so a missing translation is a compile error.
 
 ---
 

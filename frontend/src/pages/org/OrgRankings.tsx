@@ -7,8 +7,9 @@ import { FlagIcon } from '../../shared/components/FlagIcon'
 import { LoadingSkeleton } from '../../shared/components/LoadingSkeleton'
 import { OrgFighterModal } from '../../shared/components/OrgFighterModal'
 import { SectionHeading } from '../../shared/components/SectionHeading'
-import { L, uiLang } from '../../i18n/lang'
-import { getDivisionName } from '../../shared/data/divisions'
+import { L } from '../../i18n/lang'
+import { orgEs } from '../../shared/data/orgs'
+import { getDivisionName, poundForPoundLabel } from '../../shared/data/divisions'
 import { formatDate } from '../../shared/data/orgFormat'
 import { useOrg } from '../../shared/hooks/useOrg'
 import { useOrgFighterLookup } from '../../shared/hooks/useOrgFighterLookup'
@@ -36,22 +37,23 @@ export function OrgRankings() {
       <section className="page-hero rounded-[20px] px-3 py-3 sm:px-4 sm:py-4">
         <SectionHeading
           level={1}
-          eyebrow={L(i18n.language, `Rankings oficiais do ${org.shortName}`, `Official ${org.shortName} rankings`, `Classements officiels ${org.shortName}`)}
-          title={L(i18n.language, 'Rankings por categoria e peso por peso', 'Divisional & pound-for-pound rankings', 'Classements par catégorie et livre pour livre')}
+          eyebrow={L(i18n.language, `Rankings oficiais do ${org.shortName}`, `Official ${org.shortName} rankings`, `Classements officiels ${org.shortName}`, `Ranking oficial de ${orgEs(org)}`)}
+          title={L(i18n.language, 'Rankings por categoria e peso por peso', 'Divisional & pound-for-pound rankings', 'Classements par catégorie et livre pour livre', 'Ranking por división y libra por libra')}
           description={L(
             i18n.language,
             `Rankings oficiais do ${org.sourceName}, com aproveitamento e data da última luta extraídos da base de dados.`,
             `The official ${org.sourceName} rankings, with each fighter's win rate and last fight added from our data.`,
             `Classements officiels de ${org.sourceName}, avec le taux de victoire et la date du dernier combat tirés de notre base.`,
+            `El ranking oficial de ${org.sourceName}, con el porcentaje de victorias y la fecha de la última pelea de cada peleador, añadidos desde nuestros datos.`,
           )}
         />
         {p4p.length ? (
           <div className="mt-4 inline-flex max-w-full overflow-x-auto chip-scroll rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] p-1">
             <TabButton active={tab === 'division'} onClick={() => setTab('division')}>
-              {L(i18n.language, 'Por Categoria', 'Category Ranking', 'Par catégorie')}
+              {L(i18n.language, 'Por Categoria', 'Category Ranking', 'Par catégorie', 'Por división')}
             </TabButton>
             <TabButton active={tab === 'p4p'} onClick={() => setTab('p4p')}>
-              {L(i18n.language, 'Peso por Peso', 'Pound-for-Pound', 'Livre pour livre')}
+              {L(i18n.language, 'Peso por Peso', 'Pound-for-Pound', 'Livre pour livre', 'Libra por libra')}
             </TabButton>
           </div>
         ) : null}
@@ -67,14 +69,14 @@ export function OrgRankings() {
         </section>
       ) : !active ? (
         <div className="surface-card rounded-[20px] px-4 py-7 text-center text-sm text-[var(--text-muted)]">
-          {L(i18n.language, 'Rankings ainda não disponíveis.', 'Rankings are not available yet.', 'Les classements ne sont pas encore disponibles.')}
+          {L(i18n.language, 'Rankings ainda não disponíveis.', 'Rankings are not available yet.', 'Les classements ne sont pas encore disponibles.', 'El ranking aún no está disponible.')}
         </div>
       ) : (
         <div className="space-y-4">
           {tab === 'division' ? (
             <div className="surface-card rounded-[18px] p-3.5">
               <label htmlFor="ranking-division" className="broadcast-label mb-2 block text-xs text-[var(--text-main)]">
-                {L(i18n.language, 'Categoria', 'Division', 'Catégorie')}
+                {L(i18n.language, 'Categoria', 'Division', 'Catégorie', 'División')}
               </label>
               <select
                 id="ranking-division"
@@ -92,18 +94,7 @@ export function OrgRankings() {
           ) : (
             <div className="surface-card flex flex-wrap gap-2 rounded-[18px] p-3">
               {p4p.map((category) => {
-                const lang = uiLang(i18n.language)
-                const label = lang === 'pt'
-                  ? category.category
-                      .replace('Men\'s Pound-for-Pound', 'Peso por Peso Masculino')
-                      .replace('Women\'s Pound-for-Pound', 'Peso por Peso Feminino')
-                      .replace('Pound-for-Pound', 'Peso por Peso')
-                  : lang === 'fr'
-                    ? category.category
-                        .replace('Men\'s Pound-for-Pound', 'Livre pour livre masculin')
-                        .replace('Women\'s Pound-for-Pound', 'Livre pour livre féminin')
-                        .replace('Pound-for-Pound', 'Livre pour livre')
-                    : category.category.replace('Pound-for-Pound ', '')
+                const label = poundForPoundLabel(category.category, i18n.language)
                 return (
                   <span key={category.category} className="ghost-action inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.12em]">
                     <Sparkles className="h-3.5 w-3.5 text-[var(--accent-red)]" />
@@ -156,11 +147,11 @@ function RankingList({
   const vacant = vacantLabel && !titleHolders.some((entry) => entry.status === 'champion')
 
   return (
-    <section aria-label={L(i18n.language, 'Atletas ranqueados', 'Ranked athletes', 'Athlètes classés')} className="space-y-2.5">
+    <section aria-label={L(i18n.language, 'Atletas ranqueados', 'Ranked athletes', 'Combattants classés', 'Peleadores clasificados')} className="space-y-2.5">
       <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-1 pb-2">
-        <h2 className="broadcast-label text-xs text-[var(--text-main)]">{L(i18n.language, 'Atletas ranqueados', 'Ranked athletes', 'Athlètes classés')}</h2>
+        <h2 className="broadcast-label text-xs text-[var(--text-main)]">{L(i18n.language, 'Atletas ranqueados', 'Ranked athletes', 'Combattants classés', 'Peleadores clasificados')}</h2>
         <span className="text-xs text-[var(--text-muted)]">
-          {contenders.length + titleHolders.length} {L(i18n.language, 'listados', 'listed', 'listés')}
+          {contenders.length + titleHolders.length} {L(i18n.language, 'listados', 'listed', 'listés', 'registrados')}
         </span>
       </div>
       <div className="grid gap-2.5">
@@ -169,7 +160,7 @@ function RankingList({
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--accent-red)] text-white">
               <Crown className="h-4 w-4" />
             </span>
-            <p className="text-base font-semibold text-[var(--text-main)]">{L(i18n.language, 'Cinturão vago', 'Championship vacant', 'Ceinture vacante')}</p>
+            <p className="text-base font-semibold text-[var(--text-main)]">{L(i18n.language, 'Cinturão vago', 'Championship vacant', 'Ceinture vacante', 'Campeonato vacante')}</p>
           </article>
         ) : null}
         {titleHolders.map((entry) => (
@@ -180,7 +171,7 @@ function RankingList({
         ))}
         {!titleHolders.length && !contenders.length ? (
           <div className="surface-card rounded-[18px] px-4 py-6 text-center text-sm text-[var(--text-muted)]">
-            {L(i18n.language, 'Nenhum atleta ranqueado nesta categoria.', 'No ranked athletes in this category.', 'Aucun athlète classé dans cette catégorie.')}
+            {L(i18n.language, 'Nenhum atleta ranqueado nesta categoria.', 'No ranked athletes in this category.', 'Aucun combattant classé dans cette catégorie.', 'No hay peleadores clasificados en esta división.')}
           </div>
         ) : null}
       </div>
@@ -205,8 +196,8 @@ function RankingRow({
 
   const holderLabel = holder
     ? interim
-      ? L(i18n.language, 'Campeão Interino', 'Interim champion', 'Champion intérimaire')
-      : L(i18n.language, 'Campeão', 'Champion', 'Champion')
+      ? L(i18n.language, 'Campeão Interino', 'Interim champion', 'Champion intérimaire', 'Campeón interino')
+      : L(i18n.language, 'Campeão', 'Champion', 'Champion', 'Campeón')
     : null
 
   const content = (
@@ -234,13 +225,13 @@ function RankingRow({
           ) : null}
           {entry.win_rate !== null ? (
             <span>
-              {L(i18n.language, 'Aproveitamento: ', 'Win rate: ', 'Taux de victoire : ')}
+              {L(i18n.language, 'Aproveitamento: ', 'Win rate: ', 'Taux de victoire : ', 'Porcentaje de victorias: ')}
               {(entry.win_rate * 100).toFixed(1)}%
             </span>
           ) : null}
           {entry.last_fight ? (
             <span>
-              {L(i18n.language, 'Última luta: ', 'Last fight: ', 'Dernier combat : ')}
+              {L(i18n.language, 'Última luta: ', 'Last fight: ', 'Dernier combat : ', 'Última pelea: ')}
               {formatDate(entry.last_fight, true, i18n.language)}
             </span>
           ) : null}
@@ -257,6 +248,7 @@ function RankingRow({
     `${entry.fighter}, ${entry.rank === 0 ? (interim ? 'campeão interino' : 'campeão') : `${entry.rank}º lugar`}. Ver perfil`,
     `${entry.fighter}, rank ${entry.rank || 'champion'}. View profile`,
     `${entry.fighter}, ${entry.rank === 0 ? (interim ? 'champion intérimaire' : 'champion') : `${entry.rank === 1 ? '1re' : `${entry.rank}e`} place`}. Voir le profil`,
+    `${entry.fighter}, ${entry.rank === 0 ? (interim ? 'campeón interino' : 'campeón') : `puesto ${entry.rank}`}. Ver perfil`,
   )
 
   return profile ? (
@@ -285,6 +277,7 @@ function RankChange({ change }: { change: string | null }) {
       `${direction === 'up' ? 'Subiu' : 'Caiu'} ${amount} ${amount === '1' ? 'posição' : 'posições'}`,
       `${direction === 'up' ? 'Up' : 'Down'} ${amount} place${amount === '1' ? '' : 's'}`,
       `${direction === 'up' ? 'Monté' : 'Descendu'} de ${amount} ${amount === '1' ? 'place' : 'places'}`,
+      `${direction === 'up' ? 'Subió' : 'Bajó'} ${amount} ${amount === '1' ? 'puesto' : 'puestos'}`,
     )
 
     return (
@@ -299,6 +292,6 @@ function RankChange({ change }: { change: string | null }) {
       </span>
     )
   }
-  const label = change === 'new' ? L(i18n.language, 'Novo', change, 'Nouveau') : change
+  const label = change === 'new' ? L(i18n.language, 'Novo', change, 'Nouveau', 'Nuevo') : change
   return <span className="type-tech rounded-full border border-[var(--border-subtle)] px-2 py-0.5 text-[11px] font-semibold uppercase text-[var(--text-muted)]">{label}</span>
 }

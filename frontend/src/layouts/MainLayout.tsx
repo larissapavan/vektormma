@@ -8,7 +8,7 @@ import { Header } from '../shared/components/Header'
 import { ScrollToTop } from '../shared/components/ScrollToTop'
 import { PageMeta } from '../shared/components/PageMeta'
 import { SocialLinks } from '../shared/components/SocialLinks'
-import { isLandingPath } from '../shared/data/orgs'
+import { isLandingPath, orgEs } from '../shared/data/orgs'
 import { useOrg } from '../shared/hooks/useOrg'
 import { ServerLoadingState } from '../shared/components/ServerLoadingState'
 import { getOrgDataInfo, waitForHealth } from '../shared/services/api'
@@ -138,6 +138,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
                         org.id === 'pfl' ? `a ${org.shortName}` : `o ${org.shortName}`,
                         `the ${org.shortName}`,
                         org.id === 'ufc' ? `l’${org.shortName}` : org.id === 'pfl' ? `la ${org.shortName}` : `le ${org.shortName}`,
+                        orgEs(org),
                       ),
                       defaultValue: `Independent personal project, not affiliated with the ${org.shortName}`,
                     })}
@@ -147,7 +148,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
 
               <div className="flex items-center gap-1 sm:gap-2 self-start sm:self-center border-t border-[var(--border-subtle)]/40 pt-2 sm:border-t-0 sm:pt-0">
                 <span className="font-mono text-[11px] text-[var(--text-muted)] uppercase tracking-wider hidden md:inline mr-1">
-                  {L(i18n.language, 'Canais oficiais:', 'Official channels:', 'Canaux officiels :')}
+                  {L(i18n.language, 'Canais oficiais:', 'Official channels:', 'Canaux officiels :', 'Canales oficiales:')}
                 </span>
                 <SocialLinks />
               </div>

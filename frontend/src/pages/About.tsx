@@ -2,7 +2,7 @@ import type { ComponentType, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AlertTriangle, Database, ExternalLink, Mail, Users } from 'lucide-react'
 
-import { L } from '../i18n/lang'
+import { L, pick, type ByLang } from '../i18n/lang'
 import { YouTubeIcon, InstagramIcon, TikTokIcon } from '../shared/components/SocialLinks'
 
 const GITHUB_PROFILE = 'https://github.com/larissapavan'
@@ -113,13 +113,13 @@ const sources: { name: string; href?: string; use: string; usePt: string }[] = [
 ]
 
 const SOURCE_USE_FR: Record<string, string> = {
-  'UFCStats.com': 'Profils de lutteurs, événements, résultats et statistiques de carrière.',
-  ESPN: "Événements, résultats, cartes à venir, palmarès, profils des nouveaux lutteurs, photos et les titres d'actualité des pages d'accueil et d'événements (chacun renvoie vers l'article d'origine). Aussi l'ensemble des archives du Bellator : événements, résultats, profils et portraits.",
+  'UFCStats.com': 'Profils des combattants, événements, résultats et statistiques de carrière.',
+  ESPN: "Événements, résultats, cartes à venir, palmarès, profils des nouveaux combattants, photos et les titres d'actualité des pages d'accueil et d'événements (chacun renvoie vers l'article d'origine). Aussi l'ensemble des archives du Bellator : événements, résultats, profils et portraits.",
   'UFC.com': "Classements officiels, photos des champions en titre et villes d'origine.",
-  'UFC Stats Leaders': "Le livre des records officiel de l'UFC : leaders historiques en victoires, finishes, frappe, lutte et plus encore.",
-  'roster.watch': "L'effectif de l'UFC, actuel et ancien : qui en fait partie, nationalités, dates de début et de dernier combat, et les badges d'origine et d'honneur (Contender Series, TUF, Road to UFC, BMF, Hall of Fame).",
+  'UFC Stats Leaders': "Le livre des records officiel de l'UFC : leaders historiques en victoires, victoires avant la limite, frappe, lutte et plus encore.",
+  'roster.watch': "L'effectif de l'UFC, actuel et ancien : qui en fait partie, nationalités, dates de début et de dernier combat, et les badges d'origine et d'honneur (Contender Series, TUF, Road to UFC, BMF, Temple de la renommée).",
   'pflmma.com': "Le site de la Professional Fighters League : événements, résultats, profils, portraits et classements officiels. Seules les pages autorisées par son robots.txt sont lues ; les portraits sont stockés ici en petites copies.",
-  FightHub: "L'annuaire des salles et des équipes, et les lutteurs qui s'y entraînent, affiché sur les pages Salles et rapproché par le nom avec les lutteurs de chaque organisation. Seules les pages autorisées par son robots.txt sont lues.",
+  FightHub: "L'annuaire des salles et des équipes, et les combattants qui s'y entraînent, affiché sur les pages Salles et rapproché par le nom avec les combattants de chaque organisation. Seules les pages autorisées par son robots.txt sont lues.",
   'Next-Fight': 'Annonces de combats, cartes à venir, confirmations d’affrontements et avis de combats de titre (comme UFC 336: Prates vs. Morales).',
   Tapology: "Palmarès complets des combattants, historiques des combats à travers les circuits régionaux et mondiaux de MMA (Jungle Fight, Predador FC, LFA, etc.) et méthodes de victoire.",
   'ONE Championship': "Cartes officielles d'événements du ONE Championship, résultats, profils d'athlètes et champions des divisions de MMA et Muay Thai.",
@@ -129,7 +129,53 @@ const SOURCE_USE_FR: Record<string, string> = {
   'UFC data by scarekrow (Kaggle)': 'L’arbitre, les rounds prévus, l’indicateur de combat de titre et les notes des juges affichés sur les cartes (UFC_full_data_silver_v2.csv).',
   'flagcdn.com': 'Images des drapeaux.',
   'Google Fonts': 'Anton, Barlow et Barlow Condensed, toutes sous la SIL Open Font License.',
-  'UFC Historical Fight Dataset (1993–2026) (Kaggle)': "Le jeu de données de l'autrice, publié sur Kaggle : les événements, combats, lutteurs, classements et règnes de titre sur lesquels ce site est construit.",
+  'UFC Historical Fight Dataset (1993–2026) (Kaggle)': "Le jeu de données de l'autrice, publié sur Kaggle : les événements, combats, combattants, classements et règnes de titre sur lesquels ce site est construit.",
+}
+
+const SOURCE_USE_ES: Record<string, string> = {
+  'UFCStats.com': 'Perfiles de peleadores, eventos, resultados de peleas y estadísticas de carrera.',
+  ESPN: 'Eventos, resultados, próximas carteleras, récords de los peleadores, perfiles de peleadores nuevos, fotos y los titulares de noticias de las páginas de inicio y de eventos (cada uno enlaza a la nota original). También todo el archivo de Bellator: sus eventos, resultados, perfiles de peleadores y retratos.',
+  'UFC.com': 'Ranking oficial, fotos de los campeones actuales y ciudades de origen.',
+  'UFC Stats Leaders': 'El libro oficial de récords de carrera de la UFC: líderes históricos en victorias, finalizaciones, golpeo, lucha en el suelo y más.',
+  'roster.watch': 'El plantel de la UFC, actual y anterior: quién forma parte de él, nacionalidades, fechas de debut y de última pelea, y las insignias de origen y de honor (Contender Series, TUF, Road to UFC, BMF, Salón de la Fama).',
+  'pflmma.com': 'El sitio de la Professional Fighters League: sus eventos, resultados, perfiles de peleadores, retratos y el ranking oficial. Solo se leen las páginas que permite su robots.txt; los retratos se guardan aquí como copias pequeñas.',
+  FightHub: 'El directorio de gimnasios y equipos y de los peleadores que entrenan en cada uno, que se muestra en las páginas de Gimnasios y se cruza por nombre con los peleadores de cada organización. Solo se leen las páginas que permite su robots.txt.',
+  'Next-Fight': 'Anuncios de peleas, próximas carteleras, confirmaciones de enfrentamientos y avisos de peleas por el título (como UFC 336: Prates vs. Morales).',
+  Tapology: 'Récords completos de los peleadores, historiales de peleas en circuitos de MMA regionales y mundiales (Jungle Fight, Predador FC, LFA, etc.) y métodos de victoria.',
+  'ONE Championship': 'Carteleras oficiales de eventos de ONE Championship, resultados, perfiles de peleadores y campeones de las divisiones de MMA y muay thai.',
+  Sherdog: 'Archivo de peleas de carrera, récords históricos, atributos físicos y linajes de carrera.',
+  Wikipedia: 'Récords completos de peleas de MMA profesional, llaves de torneos Grand Prix (Predador FC, Jungle Fight, PRIDE, WEC, Strikeforce) y linajes históricos de títulos (CC BY-SA 4.0).',
+  'Published UFC title histories': 'Campeones, reinados y la lista de peleas por el título BMF, recopilados a mano.',
+  'UFC data by scarekrow (Kaggle)': 'El árbitro, los asaltos programados, la marca de pelea por el título y las puntuaciones de los jueces que se muestran en las carteleras (UFC_full_data_silver_v2.csv).',
+  'flagcdn.com': 'Imágenes de las banderas de los países.',
+  'Google Fonts': 'Anton, Barlow y Barlow Condensed, todas con la licencia SIL Open Font License.',
+  'UFC Historical Fight Dataset (1993–2026) (Kaggle)': 'El conjunto de datos de la autora, publicado en Kaggle: los eventos, peleas, peleadores, rankings y reinados de título sobre los que se construye este sitio.',
+}
+
+const SOURCE_NAMES: Record<string, ByLang> = {
+  'Published UFC title histories': {
+    en: 'Published UFC title histories',
+    pt: 'Históricos de títulos do UFC publicados',
+    fr: 'Historiques de titres UFC publiés',
+    es: 'Historiales de títulos de la UFC publicados',
+  },
+  'UFC data by scarekrow (Kaggle)': {
+    en: 'UFC data by scarekrow (Kaggle)',
+    pt: 'Dados do UFC por scarekrow (Kaggle)',
+    fr: 'Données UFC par scarekrow (Kaggle)',
+    es: 'Datos de la UFC por scarekrow (Kaggle)',
+  },
+  'UFC Historical Fight Dataset (1993–2026) (Kaggle)': {
+    en: 'UFC Historical Fight Dataset (1993–2026) (Kaggle)',
+    pt: 'Base histórica de lutas do UFC (1993–2026) (Kaggle)',
+    fr: 'Jeu de données historique des combats UFC (1993–2026) (Kaggle)',
+    es: 'Conjunto de datos histórico de peleas de la UFC (1993–2026) (Kaggle)',
+  },
+}
+
+function sourceName(name: string, language: string) {
+  const names = SOURCE_NAMES[name]
+  return names ? pick(language, names) : name
 }
 
 export function About() {
@@ -159,9 +205,10 @@ export function About() {
         <p>
           {L(
             i18n.language,
-            'Perfis de atletas, eventos, resultados e rankings são agregados a partir de fontes públicas (UFCStats.com, ESPN, Next-Fight e UFC.com; pflmma.com para a PFL; ESPN e Wikipedia para o Bellator; FightHub para as academias). O histórico de títulos é compilado e validado meticulosamente. Todas as previsões alimentam um pipeline independente de inteligência artificial com recursos de aprendizado de máquina treinados sobre registros históricos.',
+            'Perfis de atletas, eventos, resultados e rankings são coletados de fontes públicas (UFCStats.com, ESPN, Next-Fight e UFC.com; pflmma.com para a PFL; ESPN e Wikipedia para o Bellator; FightHub para as academias). O histórico de títulos é compilado à mão a partir de registros publicados do UFC, e tudo é salvo em arquivos CSV que uma rotina automática atualiza todos os dias. A cada confronto, o sistema compara os dois atletas e entrega essas diferenças a um modelo de aprendizado de máquina que estima a chance de vitória de cada um.',
             "Fighter profiles, events, results and rankings are collected from public sources (UFCStats.com, ESPN, Next-Fight and UFC.com; pflmma.com for the PFL; ESPN and Wikipedia for Bellator; FightHub for the gyms), the title history is compiled by hand from published UFC title records, and everything is saved as CSV files that an automated job refreshes daily. For each matchup the system compares the two fighters and feeds those differences into a machine-learning model that estimates each fighter's chance of winning.",
-            "Les profils de lutteurs, les événements, les résultats et les classements sont collectés à partir de sources publiques (UFCStats.com, ESPN, Next-Fight et UFC.com ; pflmma.com pour la PFL ; ESPN et Wikipedia pour le Bellator ; FightHub pour les salles). L'historique des titres est compilé à la main à partir des historiques de titres UFC publiés, et le tout est enregistré en fichiers CSV qu'une tâche automatisée actualise chaque jour. Pour chaque affrontement, le système compare les deux lutteurs et transmet ces écarts à un modèle d'apprentissage automatique qui estime les chances de victoire de chacun.",
+            "Les profils des combattants, les événements, les résultats et les classements sont collectés à partir de sources publiques (UFCStats.com, ESPN, Next-Fight et UFC.com ; pflmma.com pour la PFL ; ESPN et Wikipedia pour le Bellator ; FightHub pour les salles). L'historique des titres est compilé à la main à partir des historiques de titres UFC publiés, et le tout est enregistré en fichiers CSV qu'une tâche automatisée actualise chaque jour. Pour chaque affrontement, le système compare les deux combattants et transmet ces écarts à un modèle d'apprentissage automatique qui estime les chances de victoire de chacun.",
+            'Los perfiles de peleadores, los eventos, los resultados y el ranking se recopilan de fuentes públicas (UFCStats.com, ESPN, Next-Fight y UFC.com; pflmma.com para la PFL; ESPN y Wikipedia para Bellator; FightHub para los gimnasios). El historial de títulos se compila a mano a partir de los registros de títulos de la UFC publicados, y todo se guarda en archivos CSV que un proceso automático actualiza a diario. Para cada enfrentamiento, el sistema compara a los dos peleadores y alimenta esas diferencias a un modelo de aprendizaje automático que estima la probabilidad de victoria de cada uno.',
           )}
         </p>
       </AboutSection>
@@ -177,13 +224,13 @@ export function About() {
         <p>
           {t('about.contactText')}{' '}
           <ExternalAnchor href={GITHUB_PROFILE}>github.com/larissapavan</ExternalAnchor>{' '}
-          {L(i18n.language, 'ou', 'or', 'ou')}{' '}
+          {L(i18n.language, 'ou', 'or', 'ou', 'o')}{' '}
           <ExternalAnchor href={LINKEDIN_PROFILE}>LinkedIn</ExternalAnchor>.
         </p>
 
         <div className="mt-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-3.5">
           <p className="font-mono text-xs uppercase tracking-wider text-[var(--text-main)] font-bold mb-2.5">
-            {L(i18n.language, 'Canais Oficiais // Vektor MMA', 'Official Channels // Vektor MMA', 'Canaux Officiels // Vektor MMA')}
+            {L(i18n.language, 'Canais Oficiais // Vektor MMA', 'Official Channels // Vektor MMA', 'Canaux Officiels // Vektor MMA', 'Canales oficiales // Vektor MMA')}
           </p>
           <div className="flex flex-wrap gap-4 text-xs font-medium">
             <a
@@ -221,9 +268,9 @@ export function About() {
           {sources.map((source) => (
             <li key={source.name} className="metric-tile rounded-xl px-3 py-2.5">
               <p className="text-sm font-semibold text-[var(--text-main)]">
-                {source.href ? <ExternalAnchor href={source.href}>{source.name}</ExternalAnchor> : source.name}
+                {source.href ? <ExternalAnchor href={source.href}>{sourceName(source.name, i18n.language)}</ExternalAnchor> : sourceName(source.name, i18n.language)}
               </p>
-              <p className="mt-1 text-xs leading-5 text-[var(--text-muted)]">{L(i18n.language, source.usePt, source.use, SOURCE_USE_FR[source.name])}</p>
+              <p className="mt-1 text-xs leading-5 text-[var(--text-muted)]">{L(i18n.language, source.usePt, source.use, SOURCE_USE_FR[source.name], SOURCE_USE_ES[source.name])}</p>
             </li>
           ))}
         </ul>
@@ -231,9 +278,10 @@ export function About() {
         <p className="mt-4 text-xs leading-5 text-[var(--text-muted)]">
           {L(
             i18n.language,
-            'Desenvolvido com tecnologias open-source: React, Vite, Tailwind CSS, Recharts, Framer Motion e Lucide no frontend; FastAPI, pandas, scikit-learn e SHAP no backend.',
+            'Feito com software de código aberto: React, Vite, Tailwind CSS, Recharts, Framer Motion e Lucide na interface; FastAPI, pandas, scikit-learn e SHAP no servidor.',
             'Built with open-source software: React, Vite, Tailwind CSS, Recharts, Framer Motion and Lucide on the front end; FastAPI, pandas, scikit-learn and SHAP on the back end.',
             'Construit avec des logiciels open source : React, Vite, Tailwind CSS, Recharts, Framer Motion et Lucide côté interface ; FastAPI, pandas, scikit-learn et SHAP côté serveur.',
+            'Creado con software de código abierto: React, Vite, Tailwind CSS, Recharts, Framer Motion y Lucide en la interfaz; FastAPI, pandas, scikit-learn y SHAP en el servidor.',
           )}
         </p>
       </AboutSection>
@@ -278,7 +326,7 @@ function ExternalAnchor({ href, children }: { href: string; children: ReactNode 
     >
       {children}
       <ExternalLink className="h-3 w-3 shrink-0" aria-hidden />
-      <span className="sr-only">{L(i18n.language, '(abre em nova aba)', '(opens in a new tab)', '(s’ouvre dans un nouvel onglet)')}</span>
+      <span className="sr-only">{L(i18n.language, '(abre em nova aba)', '(opens in a new tab)', '(s’ouvre dans un nouvel onglet)', '(se abre en una pestaña nueva)')}</span>
     </a>
   )
 }

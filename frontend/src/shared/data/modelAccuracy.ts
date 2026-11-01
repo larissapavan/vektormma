@@ -24,7 +24,7 @@ export function shownMetrics(info: ModelInfo | null | undefined, language: strin
       rocAuc: recent.roc_auc,
       logLoss: recent.log_loss,
       source: 'recent',
-      caption: L(language, `${count} lutas recentes`, `${count} recent fights`, `${count} combats récents`),
+      caption: L(language, `${count} lutas recentes`, `${count} recent fights`, `${count} combats récents`, `${count} peleas recientes`),
     }
   }
   if (info?.metrics?.accuracy != null) {
@@ -33,7 +33,7 @@ export function shownMetrics(info: ModelInfo | null | undefined, language: strin
       rocAuc: info.metrics.roc_auc ?? null,
       logLoss: info.metrics.log_loss ?? null,
       source: 'reported',
-      caption: L(language, 'reportado, não verificado', 'reported, not checked', 'annoncé, non vérifié'),
+      caption: L(language, 'reportado, não verificado', 'reported, not checked', 'annoncé, non vérifié', 'informado, no verificado'),
     }
   }
   return { accuracy: null, rocAuc: null, logLoss: null, source: 'none', caption: '' }

@@ -29,7 +29,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { L, localeTag, uiLang } from '../i18n/lang'
+import { L, localeTag, uiLang, type UiLang } from '../i18n/lang'
 import { ChampionBelt } from '../shared/components/ChampionBelt'
 import { FighterOrigin } from '../shared/components/FighterOrigin'
 import { FighterBadges, FlagList } from '../shared/components/FighterBadges'
@@ -131,27 +131,42 @@ const toneStyles = {
   },
 }
 
-const STANCE_NAMES_PT: Record<string, string> = {
-  Orthodox: 'Destro (Ortodoxo)',
-  Southpaw: 'Canhoto',
-  Switch: 'Ambidestro (Troca de base)',
-  Open: 'Base Aberta',
-  'All stances': 'Todas as bases',
-}
-
-const STANCE_NAMES_FR: Record<string, string> = {
-  Orthodox: 'Orthodoxe',
-  Southpaw: 'Southpaw',
-  Switch: 'Switch',
-  Open: 'Garde ouverte',
-  'All stances': 'Toutes les gardes',
+const STANCE_NAMES: Record<UiLang, Record<string, string> | null> = {
+  en: null,
+  pt: {
+    Orthodox: 'Destro (Ortodoxo)',
+    Southpaw: 'Canhoto',
+    Switch: 'Ambidestro (Troca de base)',
+    Open: 'Base Aberta',
+    'Open Stance': 'Base Aberta',
+    Sideways: 'Base Lateral',
+    Unknown: 'Desconhecida',
+    'All stances': 'Todas as bases',
+  },
+  fr: {
+    Orthodox: 'Droitier (orthodoxe)',
+    Southpaw: 'Gaucher',
+    Switch: 'Ambidextre (change de garde)',
+    Open: 'Garde ouverte',
+    'Open Stance': 'Garde ouverte',
+    Sideways: 'Garde de profil',
+    Unknown: 'Inconnue',
+    'All stances': 'Toutes les gardes',
+  },
+  es: {
+    Orthodox: 'Diestro (ortodoxo)',
+    Southpaw: 'Zurdo',
+    Switch: 'Ambidiestro (cambia de guardia)',
+    Open: 'Guardia abierta',
+    'Open Stance': 'Guardia abierta',
+    Sideways: 'Guardia lateral',
+    Unknown: 'Desconocida',
+    'All stances': 'Todas las guardias',
+  },
 }
 
 function stanceLabel(stance: string, language: string | boolean | null | undefined) {
-  const lang = uiLang(language)
-  if (lang === 'pt') return STANCE_NAMES_PT[stance] ?? stance
-  if (lang === 'fr') return STANCE_NAMES_FR[stance] ?? stance
-  return stance
+  return STANCE_NAMES[uiLang(language)]?.[stance] ?? stance
 }
 
 /** Cards rendered per page in a division; the biggest divisions hold several hundred fighters. A phone gets fewer: each card is tall. */
@@ -267,7 +282,7 @@ export function Fighters() {
               className="ghost-action theme-text inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold uppercase tracking-[0.1em] md:hidden"
             >
               <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
-              {L(i18n.language, 'Filtros', 'Filters', 'Filtres')}
+              {L(i18n.language, 'Filtros', 'Filters', 'Filtres', 'Filtros')}
               {stanceFilter !== 'All stances' || badgeFilter !== '' ? (
                 <span className="grid h-5 min-w-5 place-items-center bg-[var(--accent-red)] px-1 text-[11px] text-white">
                   {(stanceFilter !== 'All stances' ? 1 : 0) + (badgeFilter !== '' ? 1 : 0)}
@@ -279,7 +294,7 @@ export function Fighters() {
           <select
             value={stanceFilter}
             onChange={(event) => setStanceFilter(event.target.value)}
-            aria-label={L(i18n.language, 'Filtrar por base', 'Filter by stance', 'Filtrer par garde')}
+            aria-label={L(i18n.language, 'Filtrar por base', 'Filter by stance', 'Filtrer par garde', 'Filtrar por guardia')}
             className="soft-input theme-text rounded-xl px-3 py-2.5 text-sm outline-none"
           >
             {stances.map((stance) => (
@@ -291,10 +306,10 @@ export function Fighters() {
           <select
             value={badgeFilter}
             onChange={(event) => setBadgeFilter(event.target.value)}
-            aria-label={L(i18n.language, 'Filtrar por selo ou origem', 'Filter by badge or origin', 'Filtrer par badge ou origine')}
+            aria-label={L(i18n.language, 'Filtrar por selo ou origem', 'Filter by badge or origin', 'Filtrer par badge ou origine', 'Filtrar por insignia u origen')}
             className="soft-input theme-text rounded-xl px-3 py-2.5 text-sm outline-none"
           >
-            <option value="">{L(i18n.language, 'Todos os selos e origens', 'All badges and origins', 'Tous les badges et origines')}</option>
+            <option value="">{L(i18n.language, 'Todos os selos e origens', 'All badges and origins', 'Tous les badges et origines', 'Todas las insignias y orígenes')}</option>
             {Object.entries(BADGES).map(([key]) => (
               <option key={key} value={key}>
                 {getBadgeLabel(key, i18n.language)}
@@ -305,7 +320,7 @@ export function Fighters() {
         </div>
 
         <div className="mt-2.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-[var(--border-subtle)] pt-2.5">
-          <div role="group" aria-label={L(i18n.language, 'Status do lutador', 'Fighter status', 'Statut du lutteur')} className="inline-flex max-w-full overflow-x-auto rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] p-0.5 chip-scroll">
+          <div role="group" aria-label={L(i18n.language, 'Status do lutador', 'Fighter status', 'Statut du combattant', 'Estado del peleador')} className="inline-flex max-w-full overflow-x-auto rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] p-0.5 chip-scroll">
             <ActiveTabButton active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} count={fighters.length}>
               {t('fighters.all')}
             </ActiveTabButton>
@@ -317,7 +332,7 @@ export function Fighters() {
             </ActiveTabButton>
           </div>
           <p className="broadcast-label text-[11px] text-[var(--text-muted)]">
-            <span className="tabular-nums text-[var(--text-main)]">{visibleFighters.length}</span> {L(i18n.language, 'exibidos', 'shown', 'affichés')}
+            <span className="tabular-nums text-[var(--text-main)]">{visibleFighters.length}</span> {L(i18n.language, 'exibidos', 'shown', 'affichés', 'mostrados')}
           </p>
         </div>
       </section>
@@ -354,7 +369,7 @@ export function Fighters() {
       ) : (
         <div className="surface-card rounded-[20px] px-4 py-7 text-center">
           <p className="type-display text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">
-            {L(i18n.language, 'Nenhum lutador encontrado', 'No fighters found', 'Aucun lutteur trouvé')}
+            {L(i18n.language, 'Nenhum lutador encontrado', 'No fighters found', 'Aucun combattant trouvé', 'No se encontraron peleadores')}
           </p>
           <p className="mt-2 text-sm text-[var(--text-muted)]">
             {L(
@@ -362,6 +377,7 @@ export function Fighters() {
               'Tente ajustar os termos de busca ou mudar os filtros para encontrar outros lutadores.',
               'Adjust the search or filter to explore another fighter profile in the database.',
               'Ajustez la recherche ou les filtres pour trouver un autre profil dans la base.',
+              'Prueba a ajustar la búsqueda o los filtros para explorar otro perfil de la base de datos.',
             )}
           </p>
         </div>
@@ -466,7 +482,7 @@ function WeightClassBar({
   const sectionOf = (key: string) => (key === 'open-class' ? 2 : key.startsWith('w-') ? 1 : 0)
 
   return (
-    <nav aria-label={L(i18n.language, 'Filtro por categoria de peso', 'Weight class filter', 'Filtre de catégorie de poids')} className="relative rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] py-1.5">
+    <nav aria-label={L(i18n.language, 'Filtro por categoria de peso', 'Weight class filter', 'Filtre de catégorie de poids', 'Filtro por división de peso')} className="relative rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] py-1.5">
       <ScrollArrow direction="left" visible={edges.left} onClick={() => scrollByStep(-1)} />
       <ScrollArrow direction="right" visible={edges.right} onClick={() => scrollByStep(1)} />
       <div
@@ -512,8 +528,8 @@ function ScrollArrow({
       tabIndex={visible ? 0 : -1}
       aria-label={
         direction === 'left'
-          ? L(i18n.language, 'Rolar categorias para a esquerda', 'Scroll weight classes left', 'Faire défiler les catégories vers la gauche')
-          : L(i18n.language, 'Rolar categorias para a direita', 'Scroll weight classes right', 'Faire défiler les catégories vers la droite')
+          ? L(i18n.language, 'Rolar categorias para a esquerda', 'Scroll weight classes left', 'Faire défiler les catégories vers la gauche', 'Desplazar divisiones a la izquierda')
+          : L(i18n.language, 'Rolar categorias para a direita', 'Scroll weight classes right', 'Faire défiler les catégories vers la droite', 'Desplazar divisiones a la derecha')
       }
       className={`absolute top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] backdrop-blur-sm transition hover:text-[#FF1E27] focus-visible:text-[#FF1E27] focus-visible:outline-none ${
         direction === 'left' ? 'left-1' : 'right-1'
@@ -558,12 +574,12 @@ function DivisionPanel({
             <group.icon className="h-5 w-5" aria-hidden="true" />
           </div>
           <div>
-            <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Categoria selecionada', 'Active division', 'Catégorie affichée')}</p>
+            <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Categoria selecionada', 'Active division', 'Catégorie affichée', 'División activa')}</p>
             <h2 className="mt-0.5 text-xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)] sm:text-2xl">
               {groupLabel}
             </h2>
             <p className="mt-1 text-xs text-[var(--text-muted)]">
-              {fighters.length} {L(i18n.language, 'atletas', 'athletes', 'athlètes')} • {group.limit === 'Mixed' ? L(i18n.language, 'Misto', 'Mixed', 'Mixte') : group.limit}
+              {fighters.length} {L(i18n.language, 'atletas', 'athletes', 'combattants', 'atletas')} • {group.limit === 'Mixed' ? L(i18n.language, 'Misto', 'Mixed', 'Mixte', 'Mixto') : group.limit}
             </p>
           </div>
         </div>
@@ -589,14 +605,15 @@ function DivisionPanel({
         ) : (
           <div className="rounded-2xl border border-dashed border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-4 py-7 text-center">
             <p className="type-display text-xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">
-              {L(i18n.language, 'Nenhum atleta nesta categoria', 'No athletes in this division', 'Aucun athlète dans cette catégorie')}
+              {L(i18n.language, 'Nenhum atleta nesta categoria', 'No athletes in this division', 'Aucun combattant dans cette catégorie', 'No hay atletas en esta división')}
             </p>
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[var(--text-muted)]">
               {L(
                 i18n.language,
                 `Nenhum lutador correspondente aos filtros atuais em ${groupLabel}.`,
                 `The current search or stance filter has no matching fighters in ${group.label}.`,
-                `La recherche ou le filtre de garde actuel ne trouve aucun lutteur en ${group.label}.`,
+                `La recherche ou le filtre de garde actuel ne trouve aucun combattant en ${group.label}.`,
+                `La búsqueda o el filtro de guardia actual no encuentra peleadores en ${groupLabel}.`,
               )}
             </p>
           </div>
@@ -608,14 +625,14 @@ function DivisionPanel({
               onClick={() => setPaging({ source: fighters, limit: limit + PAGE_SIZE })}
               className="primary-action inline-flex items-center justify-center rounded-full px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-white"
             >
-              {L(i18n.language, `Mostrar mais ${Math.min(PAGE_SIZE, remaining)}`, `Show ${Math.min(PAGE_SIZE, remaining)} more`, `Afficher ${Math.min(PAGE_SIZE, remaining)} de plus`)}
+              {L(i18n.language, `Mostrar mais ${Math.min(PAGE_SIZE, remaining)}`, `Show ${Math.min(PAGE_SIZE, remaining)} more`, `Afficher ${Math.min(PAGE_SIZE, remaining)} de plus`, `Mostrar ${Math.min(PAGE_SIZE, remaining)} más`)}
             </button>
             <button
               type="button"
               onClick={() => setPaging({ source: fighters, limit: fighters.length })}
               className="ghost-action theme-text inline-flex items-center justify-center rounded-full px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.14em]"
             >
-              {L(i18n.language, `Mostrar todos (${fighters.length.toLocaleString('pt-BR')})`, `Show all ${fighters.length.toLocaleString('en-US')}`, `Tout afficher (${fighters.length.toLocaleString(localeTag(i18n.language))})`)}
+              {L(i18n.language, `Mostrar todos (${fighters.length.toLocaleString('pt-BR')})`, `Show all ${fighters.length.toLocaleString('en-US')}`, `Tout afficher (${fighters.length.toLocaleString(localeTag(i18n.language))})`, `Mostrar todos (${fighters.length.toLocaleString('es-419')})`)}
             </button>
           </div>
         ) : null}
@@ -626,6 +643,7 @@ function DivisionPanel({
               `Exibindo ${shown.length.toLocaleString('pt-BR')} de ${fighters.length.toLocaleString('pt-BR')}`,
               `Showing ${shown.length.toLocaleString('en-US')} of ${fighters.length.toLocaleString('en-US')}`,
               `Affichage de ${shown.length.toLocaleString(localeTag(i18n.language))} sur ${fighters.length.toLocaleString(localeTag(i18n.language))}`,
+              `Mostrando ${shown.length.toLocaleString('es-419')} de ${fighters.length.toLocaleString('es-419')}`,
             )}
           </p>
         ) : null}
@@ -709,7 +727,7 @@ function FighterDivisionCard({
                   <div className="mt-1 flex flex-wrap items-center max-sm:justify-center">
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/50 bg-gradient-to-r from-amber-500/20 to-amber-600/10 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-amber-500 dark:text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
                       <Trophy className="h-3 w-3 text-amber-500 dark:text-amber-400" />
-                      <span>{L(i18n.language, `Campeão ${getDivisionName(fighter.division ?? group.label, i18n.language)}`, `${getDivisionName(fighter.division ?? group.label, i18n.language)} Champion`, `Champion ${getDivisionName(fighter.division ?? group.label, i18n.language)}`)}</span>
+                      <span>{L(i18n.language, `Campeão ${getDivisionName(fighter.division ?? group.label, i18n.language)}`, `${getDivisionName(fighter.division ?? group.label, i18n.language)} Champion`, `Champion ${getDivisionName(fighter.division ?? group.label, i18n.language)}`, `Campeón de ${getDivisionName(fighter.division ?? group.label, i18n.language)}`)}</span>
                     </span>
                   </div>
                 ) : null}
@@ -728,7 +746,7 @@ function FighterDivisionCard({
                     className="inline-flex items-center gap-1 rounded-full border border-[#22c55e]/40 bg-[#22c55e]/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#22c55e]"
                   >
                     <CalendarDays className="h-2.5 w-2.5" />
-                    {L(i18n.language, 'Luta marcada', 'Fight booked', 'Combat prévu')}
+                    {L(i18n.language, 'Luta marcada', 'Fight booked', 'Combat prévu', 'Pelea confirmada')}
                   </span>
                 ) : null}
               </div>
@@ -739,16 +757,16 @@ function FighterDivisionCard({
         </div>
 
         <div className="mt-auto grid grid-cols-3 gap-1.5 pt-3">
-          <MiniStat icon={Ruler} label={L(i18n.language, 'Altura', 'Height', 'Taille')} value={fighter.height_cm ? `${Math.round(fighter.height_cm)} cm` : '—'} />
-          <MiniStat icon={Weight} label={L(i18n.language, 'Peso', 'Weight', 'Poids')} value={fighter.weight_lbs ? `${fighter.weight_lbs.toFixed(0)} lb` : '—'} />
-          <MiniStat icon={Ruler} label={L(i18n.language, 'Envergadura', 'Reach', 'Allonge')} value={fighter.reach_cm ? `${fighter.reach_cm.toFixed(0)} cm` : '—'} />
-          <MiniStat icon={CalendarDays} label={L(i18n.language, 'Idade', 'Age', 'Âge')} value={fighter.age ? `${Math.floor(fighter.age)} ${L(i18n.language, 'anos', 'yrs', 'ans')}` : '—'} />
+          <MiniStat icon={Ruler} label={L(i18n.language, 'Altura', 'Height', 'Taille', 'Estatura')} value={fighter.height_cm ? `${Math.round(fighter.height_cm)} cm` : '—'} />
+          <MiniStat icon={Weight} label={L(i18n.language, 'Peso', 'Weight', 'Poids', 'Peso')} value={fighter.weight_lbs ? `${fighter.weight_lbs.toFixed(0)} lb` : '—'} />
+          <MiniStat icon={Ruler} label={L(i18n.language, 'Envergadura', 'Reach', 'Allonge', 'Alcance')} value={fighter.reach_cm ? `${fighter.reach_cm.toFixed(0)} cm` : '—'} />
+          <MiniStat icon={CalendarDays} label={L(i18n.language, 'Idade', 'Age', 'Âge', 'Edad')} value={fighter.age ? `${Math.floor(fighter.age)} ${L(i18n.language, 'anos', 'yrs', 'ans', 'años')}` : '—'} />
           <MiniStat
             icon={Swords}
-            label={L(i18n.language, 'Postura', 'Style', 'Garde')}
-            value={fighter.stance ? stanceLabel(fighter.stance, i18n.language) : L(i18n.language, 'Não informada', 'Unknown', 'Inconnue')}
+            label={L(i18n.language, 'Postura', 'Style', 'Garde', 'Guardia')}
+            value={fighter.stance ? stanceLabel(fighter.stance, i18n.language) : L(i18n.language, 'Não informada', 'Unknown', 'Inconnue', 'No informada')}
           />
-          <MiniStat icon={Shield} label={L(i18n.language, 'Aproveitamento', 'Win rate', 'Taux de victoire')} value={formatPercent(fighter.win_rate)} />
+          <MiniStat icon={Shield} label={L(i18n.language, 'Aproveitamento', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias')} value={formatPercent(fighter.win_rate)} />
         </div>
 
         <div className="mt-3 flex gap-2">
@@ -758,7 +776,7 @@ function FighterDivisionCard({
             className="primary-action inline-flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-white"
           >
             <Award className="h-3.5 w-3.5" />
-            {L(i18n.language, 'Ver Perfil', 'Performance', 'Profil')}
+            {L(i18n.language, 'Ver Perfil', 'Performance', 'Profil', 'Perfil')}
           </button>
           {fighter.fighter_url ? (
             <a
@@ -766,8 +784,8 @@ function FighterDivisionCard({
               target="_blank"
               rel="noreferrer"
               onClick={(event) => event.stopPropagation()}
-              aria-label={L(i18n.language, `${fighter.name} no UFCStats (abre em nova aba)`, `${fighter.name} on UFCStats (opens in a new tab)`, `${fighter.name} sur UFCStats (s’ouvre dans un nouvel onglet)`)}
-              title={L(i18n.language, 'Abrir no UFCStats', 'Open on UFCStats', 'Ouvrir sur UFCStats')}
+              aria-label={L(i18n.language, `${fighter.name} no UFCStats (abre em nova aba)`, `${fighter.name} on UFCStats (opens in a new tab)`, `${fighter.name} sur UFCStats (s’ouvre dans un nouvel onglet)`, `${fighter.name} en UFCStats (se abre en una pestaña nueva)`)}
+              title={L(i18n.language, 'Abrir no UFCStats', 'Open on UFCStats', 'Ouvrir sur UFCStats', 'Abrir en UFCStats')}
               className="ghost-action inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#C8102E]"
             >
               <ExternalLink className="h-3.5 w-3.5" />
@@ -859,7 +877,7 @@ function getDivisionLabel(fighter: FighterProfile) {
 }
 
 function formatRecord(fighter: FighterProfile, language: string | boolean = false) {
-  return `${fighter.wins ?? 0}-${fighter.losses ?? 0}${fighter.draws ? `-${fighter.draws}` : ''} ${L(language, 'cartel', 'record', 'palmarès')}`
+  return `${fighter.wins ?? 0}-${fighter.losses ?? 0}${fighter.draws ? `-${fighter.draws}` : ''} ${L(language, 'cartel', 'record', 'palmarès', 'récord')}`
 }
 
 function foldText(value: string) {

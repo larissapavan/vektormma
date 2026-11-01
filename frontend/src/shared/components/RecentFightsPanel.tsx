@@ -10,14 +10,14 @@ function ResultChip({ result }: { result: FightRecord['result'] }) {
   if (result === 'win') {
     return (
       <span className="type-tech rounded-full border border-[#C8102E]/25 bg-[#C8102E]/10 px-2 py-0.5 text-[11px] font-bold uppercase text-[#C8102E]">
-        {L(i18n.language, 'Vitória', 'Win', 'Victoire')}
+        {L(i18n.language, 'Vitória', 'Win', 'Victoire', 'Victoria')}
       </span>
     )
   }
   if (result === 'loss') {
     return (
       <span className="type-tech rounded-full border border-[var(--border-subtle)] px-2 py-0.5 text-[11px] font-bold uppercase text-[var(--text-muted)]">
-        {L(i18n.language, 'Derrota', 'Loss', 'Défaite')}
+        {L(i18n.language, 'Derrota', 'Loss', 'Défaite', 'Derrota')}
       </span>
     )
   }
@@ -31,7 +31,7 @@ function ResultChip({ result }: { result: FightRecord['result'] }) {
 function formatMethod(fight: FightRecord, language: string | boolean = false) {
   const method = fight.method ? getMethodLabel(fight.method, language) : null
   if (method && fight.method_detail) return `${method} · ${fight.method_detail}`
-  return method ?? fight.outcome ?? L(language, 'Resultado a definir', 'Result pending', 'Résultat à venir')
+  return method ?? fight.outcome ?? L(language, 'Resultado a definir', 'Result pending', 'Résultat à venir', 'Resultado pendiente')
 }
 
 function formatDate(date: string | null, lang = 'en-US') {
@@ -90,7 +90,7 @@ function Column({
           ))}
         </ul>
       ) : (
-        <p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">{L(i18n.language, 'Nenhuma luta recente registrada no UFC.', 'No recent UFC fights on file.', 'Aucun combat UFC récent enregistré.')}</p>
+        <p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">{L(i18n.language, 'Nenhuma luta recente registrada no UFC.', 'No recent UFC fights on file.', 'Aucun combat UFC récent enregistré.', 'No hay peleas recientes en la UFC registradas.')}</p>
       )}
     </div>
   )
@@ -112,8 +112,8 @@ export function RecentFightsPanel({
   const { i18n } = useTranslation()
   return (
     <article className="surface-card rounded-[20px] p-3 sm:p-4">
-      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Últimos 5 combates', 'Last five', 'Cinq derniers combats')}</p>
-      <h2 className="mt-0.5 text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{L(i18n.language, 'Histórico Recente', 'Recent fights', 'Combats récents')}</h2>
+      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Últimos 5 combates', 'Last five', 'Cinq derniers combats', 'Últimas cinco')}</p>
+      <h2 className="mt-0.5 text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{L(i18n.language, 'Histórico Recente', 'Recent fights', 'Combats récents', 'Peleas recientes')}</h2>
       <div className="mt-3 grid gap-4 sm:grid-cols-2">
         <Column name={nameA} fights={performanceA?.last_performances ?? []} loading={loading} tone="red" />
         <Column name={nameB} fights={performanceB?.last_performances ?? []} loading={loading} tone="blue" />

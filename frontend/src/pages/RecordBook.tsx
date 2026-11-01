@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ChevronDown, Trophy } from 'lucide-react'
 
-import { L, uiLang } from '../i18n/lang'
+import { L, uiLang, type UiLang } from '../i18n/lang'
 import { FighterProfileModal } from '../shared/components/FighterProfileModal'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { SectionHeading } from '../shared/components/SectionHeading'
@@ -116,11 +116,61 @@ const STAT_NOTES_FR: Record<string, string> = {
   'Minimum 5 UFC Fights and 20 Takedown Attempts by Opponent': 'Au moins 5 combats à l’UFC et 20 tentatives d’amenée au sol de l’adversaire',
 }
 
-function localizedLabel(language: string, english: string, pt: Record<string, string>, fr: Record<string, string>, key: string) {
+const CATEGORY_NAMES_ES: Record<string, string> = {
+  Fights: 'Peleas y victorias',
+  Time: 'Tiempo de pelea',
+  Striking: 'Golpeo',
+  Grappling: 'Lucha en el suelo',
+}
+
+const STAT_TITLES_ES: Record<string, string> = {
+  TotalFights: 'Total de peleas',
+  Wins: 'Victorias',
+  Finishes: 'Victorias antes del límite',
+  KOTKOWins: 'Victorias por KO/TKO',
+  SubmissionWins: 'Victorias por sumisión',
+  DecisionWins: 'Victorias por decisión',
+  WinStreak: 'Mayor racha de victorias',
+  TitleFightWins: 'Victorias en peleas por el título',
+  TotalAwards: 'Total de bonos de la noche',
+  AverageFightTimeShort: 'Menor tiempo promedio de pelea',
+  AverageFightTimeLong: 'Mayor tiempo promedio de pelea',
+  TotalFightTime: 'Tiempo total de pelea en el octágono',
+  ControlTime: 'Tiempo total de control',
+  ControlTimePercentage: 'Porcentaje de tiempo de control',
+  TopPositionTime: 'Tiempo de control en posición superior',
+  TopPositionTimePercentage: 'Porcentaje de tiempo en posición superior',
+  BottomPositionTime: 'Tiempo en el suelo en posición inferior',
+  BottomPositionTimePercentage: 'Porcentaje de tiempo en posición inferior',
+  Knockdowns: 'Knockdowns conseguidos',
+  KnockdownsAverage: 'Promedio de knockdowns (por 15 min)',
+  SigStrikesLanded: 'Golpes significativos conectados',
+  SigStrikesAccuracy: 'Precisión de golpes significativos',
+  SLpM: 'Golpes significativos conectados por minuto',
+  SignificantStrikesDifferential: 'Diferencial de golpes significativos',
+  SignificantStrikesDefense: 'Defensa de golpes significativos',
+  SApM: 'Golpes significativos recibidos por minuto',
+  TotalStrikesLanded: 'Total de golpes conectados',
+  TakedownsLanded: 'Derribos conseguidos',
+  TakedownsAccuracy: 'Precisión de derribos',
+  TakedownsDefense: 'Defensa de derribos',
+  SubmissionsAttempted: 'Intentos de sumisión',
+  SubmissionsAverage: 'Promedio de intentos de sumisión (por 15 min)',
+}
+
+const STAT_NOTES_ES: Record<string, string> = {
+  'Minimum 5 UFC Fights': 'Mínimo de 5 peleas en la UFC',
+  'Minimum 5 UFC Fights and 500 Significant Strike Attempts': 'Mínimo de 5 peleas en la UFC y 500 intentos de golpes significativos',
+  'Minimum 5 UFC Fights and 500 Strike Attempts by Opponents': 'Mínimo de 5 peleas en la UFC y 500 intentos de golpes de los rivales',
+  'Minimum 5 UFC Fights and 20 Takedown Attempts': 'Mínimo de 5 peleas en la UFC y 20 intentos de derribo',
+  'Minimum 5 UFC Fights and 20 Takedown Attempts by Opponent': 'Mínimo de 5 peleas en la UFC y 20 intentos de derribo del rival',
+}
+
+type Tables = Record<Exclude<UiLang, 'en'>, Record<string, string>>
+
+function localizedLabel(language: string, english: string, tables: Tables, key: string) {
   const lang = uiLang(language)
-  if (lang === 'pt') return pt[key] ?? english
-  if (lang === 'fr') return fr[key] ?? english
-  return english
+  return lang === 'en' ? english : (tables[lang][key] ?? english)
 }
 
 export function RecordBook() {
@@ -150,7 +200,7 @@ export function RecordBook() {
         />
 
         {categories.length ? (
-          <div role="group" aria-label={L(i18n.language, 'Categorias de recordes', 'Record categories', 'Catégories de records')} className="mt-4 inline-flex max-w-full overflow-x-auto border-2 border-[var(--rule)] bg-[var(--card-bg)] chip-scroll">
+          <div role="group" aria-label={L(i18n.language, 'Categorias de recordes', 'Record categories', 'Catégories de records', 'Categorías de récords')} className="mt-4 inline-flex max-w-full overflow-x-auto border-2 border-[var(--rule)] bg-[var(--card-bg)] chip-scroll">
             {categories.map((category) => (
               <button
                 key={category.name}
@@ -163,7 +213,7 @@ export function RecordBook() {
                     : 'text-[var(--text-main)] hover:bg-[#F2C230] hover:text-[#0E0E0E]'
                 }`}
               >
-                {localizedLabel(i18n.language, category.name, CATEGORY_NAMES_PT, CATEGORY_NAMES_FR, category.name)}
+                {localizedLabel(i18n.language, category.name, { pt: CATEGORY_NAMES_PT, fr: CATEGORY_NAMES_FR, es: CATEGORY_NAMES_ES }, category.name)}
                 <span className="ml-1.5 opacity-70">{category.stats.length}</span>
               </button>
             ))}
@@ -204,8 +254,8 @@ function StatCard({ stat, onOpenProfile }: { stat: RecordBookStat; onOpenProfile
   const { i18n } = useTranslation()
   const [open, setOpen] = useState(false)
   const panelId = `stat-${stat.key}`
-  const title = localizedLabel(i18n.language, stat.title, STAT_TITLES_PT, STAT_TITLES_FR, stat.key)
-  const note = stat.note ? localizedLabel(i18n.language, stat.note, STAT_NOTES_PT, STAT_NOTES_FR, stat.note) : stat.note
+  const title = localizedLabel(i18n.language, stat.title, { pt: STAT_TITLES_PT, fr: STAT_TITLES_FR, es: STAT_TITLES_ES }, stat.key)
+  const note = stat.note ? localizedLabel(i18n.language, stat.note, { pt: STAT_NOTES_PT, fr: STAT_NOTES_FR, es: STAT_NOTES_ES }, stat.note) : stat.note
 
   return (
     <section className="surface-card overflow-hidden rounded-[20px]">
@@ -250,7 +300,7 @@ function LeaderRow({
     <button
       type="button"
       onClick={() => onOpenProfile(leader.fighter)}
-      aria-label={L(i18n.language, `${leader.fighter}, #${leader.rank}. Ver perfil`, `${leader.fighter}, rank ${leader.rank}. View profile`, `${leader.fighter}, rang ${leader.rank}. Voir le profil`)}
+      aria-label={L(i18n.language, `${leader.fighter}, #${leader.rank}. Ver perfil`, `${leader.fighter}, rank ${leader.rank}. View profile`, `${leader.fighter}, rang ${leader.rank}. Voir le profil`, `${leader.fighter}, puesto ${leader.rank}. Ver perfil`)}
       className="flex w-full cursor-pointer items-center text-left gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-[#F2C230]/40 focus-visible:bg-[#F2C230]/40 focus-visible:outline-none"
     >
       <span className="type-num w-4 shrink-0 text-right text-[11px] text-[var(--text-muted)]">{leader.rank}</span>

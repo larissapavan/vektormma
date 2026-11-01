@@ -30,6 +30,7 @@ import { MiniStat } from '../../shared/components/MiniStat'
 import { OrgFighterModal } from '../../shared/components/OrgFighterModal'
 import { SectionHeading } from '../../shared/components/SectionHeading'
 import { L, localeTag } from '../../i18n/lang'
+import { orgEs } from '../../shared/data/orgs'
 import { getDivisionName } from '../../shared/data/divisions'
 import { compareDivisions, formatHeight, formatReach, formatRecord } from '../../shared/data/orgFormat'
 import { normalizeFighterName } from '../../shared/hooks/useFighterImages'
@@ -132,42 +133,44 @@ export function OrgFighters() {
         <div className="grid gap-3 xl:grid-cols-[1.2fr_0.8fr] xl:items-end">
           <SectionHeading
             level={1}
-            eyebrow={L(i18n.language, `Atletas do ${org.shortName}`, `${org.shortName} roster`, `Athlètes ${org.shortName}`)}
-            title={L(i18n.language, `Lutadores do ${org.shortName}`, `${org.shortName} fighters`, `Combattants ${org.shortName}`)}
+            eyebrow={L(i18n.language, `Atletas do ${org.shortName}`, `${org.shortName} roster`, `Combattants ${org.shortName}`, `Peleadores de ${orgEs(org)}`)}
+            title={L(i18n.language, `Lutadores do ${org.shortName}`, `${org.shortName} fighters`, `Combattants ${org.shortName}`, `Peleadores de ${orgEs(org)}`)}
             description={
               isArchived
                 ? L(
                     i18n.language,
                     `Arquivo histórico completo de atletas que lutaram no ${org.shortName} (2009–2023), com cartel, envergadura, academia e histórico detalhado.`,
                     `Historical archive of every fighter who stepped into the ${org.shortName} cage (2009–2023), with record, camp and bout history.`,
-                    `Archives complètes de tous les athlètes ayant combattu au ${org.shortName} (2009–2023), avec palmarès, salle et combats.`,
+                    `Archives complètes de tous les combattants ayant combattu au ${org.shortName} (2009–2023), avec palmarès, salle et combats.`,
+                    `Archivo histórico completo de los peleadores que pelearon en ${orgEs(org)} (2009–2023), con récord, alcance, gimnasio e historial detallado.`,
                   )
                 : L(
                     i18n.language,
                     `Todos os atletas cadastrados do ${org.shortName}, com cartel completo, dados físicos, volume de golpes e academia. Lutadores ativos em destaque.`,
                     `Every fighter on the ${org.shortName} roster, with record, physical stats, striking telemetry and camps. Active fighters first.`,
-                    `Tous les athlètes répertoriés à ${org.shortName}, avec palmarès, mensurations, frappes et salles. Combattants actifs en tête.`,
+                    `Tous les combattants répertoriés à ${org.shortName}, avec palmarès, mensurations, frappes et salles. Combattants actifs en tête.`,
+                    `Todos los peleadores registrados de ${orgEs(org)}, con récord completo, datos físicos, volumen de golpes y gimnasio. Primero los peleadores activos.`,
                   )
             }
           />
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
             <Tile
-              label={L(i18n.language, 'Lutadores', 'Fighters', 'Combattants')}
+              label={L(i18n.language, 'Lutadores', 'Fighters', 'Combattants', 'Peleadores')}
               value={fighters.length.toLocaleString(localeTag(i18n.language))}
             />
             {isArchived ? (
               <Tile
-                label={L(i18n.language, 'Últimos Campeões', 'Final Champions', 'Derniers champions')}
+                label={L(i18n.language, 'Últimos Campeões', 'Final Champions', 'Derniers champions', 'Últimos campeones')}
                 value={championsCount.toLocaleString(localeTag(i18n.language))}
               />
             ) : (
               <Tile
-                label={L(i18n.language, 'Em atividade', 'Active', 'En activité')}
+                label={L(i18n.language, 'Em atividade', 'Active', 'En activité', 'En actividad')}
                 value={activeCount.toLocaleString(localeTag(i18n.language))}
               />
             )}
             <Tile
-              label={L(i18n.language, 'Categorias', 'Divisions', 'Catégories')}
+              label={L(i18n.language, 'Categorias', 'Divisions', 'Catégories', 'Divisiones')}
               value={`${divisions.length}`}
             />
           </div>
@@ -188,8 +191,9 @@ export function OrgFighters() {
                 'Buscar por nome, apelido, categoria ou academia...',
                 'Search by name, nickname or camp',
                 'Chercher par nom, surnom ou salle...',
+                'Buscar por nombre, apodo, división o gimnasio...',
               )}
-              aria-label={L(i18n.language, 'Buscar lutadores', 'Search fighters', 'Chercher des combattants')}
+              aria-label={L(i18n.language, 'Buscar lutadores', 'Search fighters', 'Chercher des combattants', 'Buscar peleadores')}
               className="theme-text w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-[var(--text-muted)]"
             />
           </div>
@@ -197,12 +201,12 @@ export function OrgFighters() {
           {!isArchived ? (
             <div
               role="group"
-              aria-label={L(i18n.language, 'Status', 'Status', 'Statut')}
+              aria-label={L(i18n.language, 'Status', 'Status', 'Statut', 'Estado')}
               className="inline-flex max-w-full overflow-x-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] p-1"
             >
               <button
                 type="button"
-                aria-label={L(i18n.language, 'Ativos', 'Active', 'Actifs')}
+                aria-label={L(i18n.language, 'Ativos', 'Active', 'Actifs', 'Activos')}
                 aria-pressed={status === 'active'}
                 onClick={() => {
                   setStatus('active')
@@ -215,7 +219,7 @@ export function OrgFighters() {
                 }`}
               >
                 <Radio className="h-3 w-3" />
-                <span>{L(i18n.language, 'Ativos', 'Active', 'Actifs')}</span>
+                <span>{L(i18n.language, 'Ativos', 'Active', 'Actifs', 'Activos')}</span>
                 <span
                   aria-hidden="true"
                   className={`ml-1 rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
@@ -228,7 +232,7 @@ export function OrgFighters() {
 
               <button
                 type="button"
-                aria-label={L(i18n.language, 'Todos', 'All time', 'Tous')}
+                aria-label={L(i18n.language, 'Todos', 'All time', 'Tous', 'Todos')}
                 aria-pressed={status === 'all'}
                 onClick={() => {
                   setStatus('all')
@@ -240,7 +244,7 @@ export function OrgFighters() {
                     : 'text-[var(--text-main)] hover:bg-[var(--bg-surface-hover)]'
                 }`}
               >
-                <span>{L(i18n.language, 'Todos', 'All time', 'Tous')}</span>
+                <span>{L(i18n.language, 'Todos', 'All time', 'Tous', 'Todos')}</span>
                 <span
                   aria-hidden="true"
                   className={`ml-1 rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
@@ -287,7 +291,7 @@ export function OrgFighters() {
             </div>
             <div>
               <p className="broadcast-label text-[10px] text-[var(--text-muted)]">
-                {L(i18n.language, 'Categoria Ativa', 'Active Division', 'Catégorie active')}
+                {L(i18n.language, 'Categoria Ativa', 'Active Division', 'Catégorie active', 'División activa')}
               </p>
               <h2 className="text-lg font-bold uppercase tracking-wide text-[var(--text-main)]">
                 {getDivisionName(division, i18n.language)}
@@ -299,7 +303,7 @@ export function OrgFighters() {
             onClick={() => setDivision('ALL')}
             className="text-xs font-bold uppercase tracking-wider text-[var(--accent-red)] hover:underline"
           >
-            {L(i18n.language, 'Ver todas as categorias', 'View all divisions', 'Voir toutes')}
+            {L(i18n.language, 'Ver todas as categorias', 'View all divisions', 'Voir toutes', 'Ver todas las divisiones')}
           </button>
         </div>
       ) : null}
@@ -312,13 +316,14 @@ export function OrgFighters() {
           ))}
         </section>
       ) : matches.length ? (
-        <section aria-label="Fighters" className="space-y-4">
+        <section aria-label={L(i18n.language, 'Lutadores', 'Fighters', 'Combattants', 'Peleadores')} className="space-y-4">
           <p className="text-xs font-semibold text-[var(--text-muted)]">
             {L(
               i18n.language,
               `Exibindo ${Math.min(shown, matches.length).toLocaleString('pt-BR')} de ${matches.length.toLocaleString('pt-BR')} atletas`,
               `Showing ${Math.min(shown, matches.length).toLocaleString('en-US')} of ${matches.length.toLocaleString('en-US')} fighters`,
               `Affichage de ${Math.min(shown, matches.length).toLocaleString(localeTag(i18n.language))} sur ${matches.length.toLocaleString(localeTag(i18n.language))} combattants`,
+              `Mostrando ${Math.min(shown, matches.length).toLocaleString('es-419')} de ${matches.length.toLocaleString('es-419')} peleadores`,
             )}
           </p>
 
@@ -345,6 +350,7 @@ export function OrgFighters() {
                   `Carregar mais ${Math.min(PAGE_SIZE, matches.length - shown)}`,
                   `Show ${Math.min(PAGE_SIZE, matches.length - shown)} more`,
                   `Afficher plus`,
+                  `Mostrar ${Math.min(PAGE_SIZE, matches.length - shown)} más`,
                 )}
               </button>
               <button
@@ -357,6 +363,7 @@ export function OrgFighters() {
                   `Mostrar todos (${matches.length.toLocaleString('pt-BR')})`,
                   `Show all (${matches.length.toLocaleString('en-US')})`,
                   `Tout afficher`,
+                  `Mostrar todos (${matches.length.toLocaleString('es-419')})`,
                 )}
               </button>
             </div>
@@ -365,7 +372,7 @@ export function OrgFighters() {
       ) : (
         <div className="surface-card rounded-[20px] px-4 py-8 text-center">
           <p className="type-display text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">
-            {L(i18n.language, 'Nenhum lutador encontrado', 'No fighters found', 'Aucun combattant trouvé')}
+            {L(i18n.language, 'Nenhum lutador encontrado', 'No fighters found', 'Aucun combattant trouvé', 'No se encontraron peleadores')}
           </p>
           <p className="mt-2 text-sm text-[var(--text-muted)]">
             {L(
@@ -373,6 +380,7 @@ export function OrgFighters() {
               'Tente ajustar os termos de busca ou mudar os filtros de categoria.',
               'Adjust the search or filter to explore other fighter profiles.',
               'Ajustez la recherche ou les filtres pour trouver un autre profil.',
+              'Prueba a ajustar la búsqueda o el filtro de división.',
             )}
           </p>
         </div>
@@ -463,7 +471,7 @@ function OrgWeightClassBar({
           }`}
         >
           <Swords className="h-3.5 w-3.5 shrink-0" />
-          <span>{L(i18n.language, 'Todas as Categorias', 'All Divisions', 'Toutes')}</span>
+          <span>{L(i18n.language, 'Todas as Categorias', 'All Divisions', 'Toutes', 'Todas las divisiones')}</span>
           <span
             className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
               activeDivision === 'ALL'
@@ -605,7 +613,7 @@ function FighterCard({
             <div className="mt-1.5 flex flex-wrap items-center gap-1.5 max-sm:justify-center text-[10px]">
               {fighter.belt ? (
                 <span className="rounded bg-[#F2C230] px-1.5 py-0.5 font-bold uppercase text-[#0E0E0E]">
-                  {interim ? L(i18n.language, 'Interino', 'Interim', 'Intérimaire') : L(i18n.language, 'Campeão', 'Champion', 'Champion')}
+                  {interim ? L(i18n.language, 'Interino', 'Interim', 'Intérimaire', 'Interino') : L(i18n.language, 'Campeão', 'Champion', 'Champion', 'Campeón')}
                 </span>
               ) : fighter.ranking ? (
                 <span className="rounded border border-[var(--border-default)] bg-[var(--bg-surface-subtle)] px-1.5 py-0.5 font-bold text-[var(--text-main)]">
@@ -616,11 +624,11 @@ function FighterCard({
               {!archived && fighter.is_active ? (
                 <span className="inline-flex items-center gap-1 text-[#22c55e] font-semibold">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#22c55e] animate-pulse" />
-                  {L(i18n.language, 'Ativo', 'Active', 'Actif')}
+                  {L(i18n.language, 'Ativo', 'Active', 'Actif', 'Activo')}
                 </span>
               ) : !archived ? (
                 <span className="text-[var(--text-muted)]">
-                  {L(i18n.language, 'Inativo', 'Former', 'Inactif')}
+                  {L(i18n.language, 'Inativo', 'Former', 'Inactif', 'Inactivo')}
                 </span>
               ) : null}
 
@@ -637,22 +645,22 @@ function FighterCard({
         <div className="mt-auto grid grid-cols-2 gap-2 border-t border-[var(--border-subtle)] pt-3">
           <MiniStat
             icon={Shield}
-            label={L(i18n.language, 'Aproveitamento', 'Win Rate', 'Victoires')}
+            label={L(i18n.language, 'Aproveitamento', 'Win Rate', 'Victoires', 'Porcentaje de victorias')}
             value={winRate ?? '—'}
           />
           <MiniStat
             icon={Ruler}
-            label={L(i18n.language, 'Envergadura', 'Reach', 'Allonge')}
+            label={L(i18n.language, 'Envergadura', 'Reach', 'Allonge', 'Alcance')}
             value={reachStr ?? heightStr ?? '—'}
           />
           <MiniStat
             icon={Target}
-            label={L(i18n.language, 'Precisão Golpes', 'Str. Acc', 'Préc. coups')}
+            label={L(i18n.language, 'Precisão Golpes', 'Str. Acc', 'Préc. coups', 'Prec. golpes')}
             value={strAcc ?? '—'}
           />
           <MiniStat
             icon={Zap}
-            label={L(i18n.language, 'Via Rápida', 'Finish Rate', 'Finitions')}
+            label={L(i18n.language, 'Via Rápida', 'Finish Rate', 'Avant la limite', 'Tasa de finalización')}
             value={finishRate ?? (fighter.org_record ? fighter.org_record : '—')}
           />
         </div>
@@ -661,11 +669,11 @@ function FighterCard({
           <button
             type="button"
             onClick={() => onOpen(fighter.name)}
-            aria-label={L(i18n.language, `${fighter.name}. Ver perfil`, `${fighter.name}. View profile`, `${fighter.name}. Voir le profil`)}
+            aria-label={L(i18n.language, `${fighter.name}. Ver perfil`, `${fighter.name}. View profile`, `${fighter.name}. Voir le profil`, `${fighter.name}. Ver perfil`)}
             className="primary-action inline-flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-white"
           >
             <Award className="h-3.5 w-3.5" />
-            {L(i18n.language, 'Ver Perfil', 'View profile', 'Voir profil')}
+            {L(i18n.language, 'Ver Perfil', 'View profile', 'Voir profil', 'Ver perfil')}
           </button>
           {fighter.profile_url ? (
             <a
@@ -673,7 +681,7 @@ function FighterCard({
               target="_blank"
               rel="noreferrer"
               onClick={(e) => e.stopPropagation()}
-              title={L(i18n.language, 'Perfil oficial no ONE', 'Official profile on ONE', 'Profil officiel')}
+              title={L(i18n.language, 'Perfil oficial no ONE', 'Official profile on ONE', 'Profil officiel', 'Perfil oficial en ONE')}
               className="ghost-action inline-flex items-center justify-center gap-1 rounded-full px-2.5 py-1.5 text-xs text-[var(--text-main)] hover:text-[#F2C230]"
             >
               <ExternalLink className="h-3.5 w-3.5" />

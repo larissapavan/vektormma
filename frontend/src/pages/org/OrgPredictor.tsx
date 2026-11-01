@@ -4,6 +4,8 @@ import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { L } from '../../i18n/lang'
+import { orgEs } from '../../shared/data/orgs'
+import { translateHometown } from '../../shared/data/fightLabels'
 import { getDivisionName } from '../../shared/data/divisions'
 import { ChampionBelt } from '../../shared/components/ChampionBelt'
 import { FighterAvatar } from '../../shared/components/FighterAvatar'
@@ -71,9 +73,10 @@ export function OrgPredictor() {
       setError(
         L(
           i18n.language,
-          'Falha na predição. Tente novamente em instantes.',
+          'Falha na previsão. Tente novamente em instantes.',
           'Prediction failed. Please try again.',
           'Échec de prédiction. Veuillez réessayer.',
+          'Falló el pronóstico. Inténtalo de nuevo.',
         ),
       )
     }
@@ -105,19 +108,20 @@ export function OrgPredictor() {
           </span>
           <span className="inline-flex items-center gap-1 rounded-full border border-[var(--rule)] bg-[var(--surface-3)] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[var(--text-main)]">
             <Zap className="h-3 w-3 text-[#C8102E]" />
-            AI Engine
+            {L(i18n.language, 'Motor de IA', 'AI Engine', 'Moteur d’IA', 'Motor de IA')}
           </span>
         </div>
 
         <h1 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-extrabold uppercase tracking-tight text-[var(--text-main)]">
-          {L(i18n.language, 'Quem Vence?', 'Who takes it?', 'Qui gagne ?')}
+          {L(i18n.language, 'Quem Vence?', 'Who takes it?', 'Qui gagne ?', '¿Quién gana?')}
         </h1>
         <p className="mt-2 max-w-xl text-sm font-medium leading-relaxed text-[var(--text-muted)]">
           {L(
             i18n.language,
-            `Selecione dois fighters do ${org.shortName}. O modelo de AI calcula as chances de vitória e os fatores determinantes.`,
+            `Selecione dois atletas do ${org.shortName}. O modelo de IA calcula as chances de vitória e os fatores determinantes.`,
             `Pick any two ${org.shortName} fighters. The machine learning model projects the odds and shows the numbers driving the prediction.`,
-            `Sélectionnez deux fighters de ${org.shortName}. Le modèle d’AI calcule les cotes et détaille les facteurs décisifs.`,
+            `Sélectionnez deux combattants de ${org.shortName}. Le modèle d’IA calcule les cotes et détaille les facteurs décisifs.`,
+            `Elige a dos peleadores de ${orgEs(org)}. El modelo de aprendizaje automático proyecta las probabilidades y muestra los números que impulsan el pronóstico.`,
           )}
         </p>
 
@@ -152,7 +156,7 @@ export function OrgPredictor() {
           </p>
           <p className="mt-0.5 text-2xl sm:text-3xl font-extrabold text-[var(--text-main)]">{fighters.length}</p>
           <p className="text-xs font-semibold text-[var(--text-muted)]">
-            {activeFighters} {L(i18n.language, 'ativos', 'active', 'actifs')}
+            {activeFighters} {L(i18n.language, 'ativos', 'active', 'actifs', 'activos')}
           </p>
         </div>
 
@@ -166,19 +170,19 @@ export function OrgPredictor() {
 
         <div className="border-b border-r border-[var(--rule)] p-3 sm:px-5 sm:py-3.5 lg:border-b-0">
           <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
-            AI Engine
+            {L(i18n.language, 'Motor de IA', 'AI Engine', 'Moteur d’IA', 'Motor de IA')}
           </p>
-          <p className="mt-0.5 text-2xl sm:text-3xl font-extrabold text-[var(--text-main)]">ML Pro</p>
+          <p className="mt-0.5 text-2xl sm:text-3xl font-extrabold text-[var(--text-main)]">{L(i18n.language, 'IA Pro', 'ML Pro', 'IA Pro', 'IA Pro')}</p>
           <p className="text-xs font-semibold text-[var(--text-muted)]">XGBoost / LightGBM</p>
         </div>
 
         <div className="p-3 sm:px-5 sm:py-3.5">
           <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
-            SHAP Factors
+            {L(i18n.language, 'Fatores SHAP', 'SHAP Factors', 'Facteurs SHAP', 'Factores SHAP')}
           </p>
-          <p className="mt-0.5 text-2xl sm:text-3xl font-extrabold text-[#22c55e]">Active</p>
+          <p className="mt-0.5 text-2xl sm:text-3xl font-extrabold text-[#22c55e]">{L(i18n.language, 'Ativo', 'Active', 'Actif', 'Activo')}</p>
           <p className="text-xs font-semibold text-[var(--text-muted)]">
-            Biometrics & Striking
+            {L(i18n.language, 'Biometria e trocação', 'Biometrics & Striking', 'Biométrie et frappe', 'Biometría y golpeo')}
           </p>
         </div>
       </div>
@@ -315,11 +319,11 @@ function CornerCard({
             className="w-full rounded-xl border border-[var(--rule)] bg-[var(--surface-1)] px-3 py-2 text-sm font-bold text-[var(--text-main)] outline-none"
           >
             <option value="">
-              {loading ? 'Loading...' : 'Choose a fighter...'}
+              {loading ? L(i18n.language, 'Carregando...', 'Loading...', 'Chargement...', 'Cargando...') : L(i18n.language, 'Escolha um lutador...', 'Choose a fighter...', 'Choisissez un combattant...', 'Elige un peleador...')}
             </option>
             {sortedFighters.map((f) => (
               <option key={f.name} value={f.name} disabled={f.name === disabledName}>
-                {f.name} {f.division ? `(${getDivisionName(f.division, 'pt')})` : ''} {f.belt ? '👑' : ''}
+                {f.name} {f.division ? `(${getDivisionName(f.division, i18n.language)})` : ''} {f.belt ? '👑' : ''}
               </option>
             ))}
           </select>
@@ -352,7 +356,7 @@ function CornerCard({
                 ) : null}
                 {fighter.country ? (
                   <p className="mt-1 text-xs font-medium text-[var(--text-muted)]">
-                    📍 {fighter.hometown ? `${fighter.hometown}, ` : ''}{fighter.country}
+                    📍 {fighter.hometown ? `${translateHometown(fighter.hometown, i18n.language)}, ` : ''}{translateHometown(fighter.country, i18n.language)}
                   </p>
                 ) : null}
                 {fighter.camp ? (
@@ -364,7 +368,7 @@ function CornerCard({
             </div>
 
             <div className="flex items-end justify-between border-y border-[var(--rule)] py-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Record</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">{L(i18n.language, 'Cartel', 'Record', 'Palmarès', 'Récord')}</span>
               <span className="text-2xl sm:text-3xl font-extrabold text-[var(--text-main)]">
                 {fighter.wins ?? 0}-{fighter.losses ?? 0}{fighter.draws ? `-${fighter.draws}` : ''}
               </span>
@@ -372,27 +376,27 @@ function CornerCard({
 
             <div className="grid grid-cols-2 gap-2 text-xs font-bold sm:grid-cols-3">
               <div className="rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] p-2">
-                <span className="block text-[10px] text-[var(--text-muted)] uppercase">Age</span>
+                <span className="block text-[10px] text-[var(--text-muted)] uppercase">{L(i18n.language, 'Idade', 'Age', 'Âge', 'Edad')}</span>
                 <span className="text-sm font-bold text-[var(--text-main)]">{fighter.age ? `${Math.round(fighter.age)}` : '—'}</span>
               </div>
               <div className="rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] p-2">
-                <span className="block text-[10px] text-[var(--text-muted)] uppercase">Height</span>
+                <span className="block text-[10px] text-[var(--text-muted)] uppercase">{L(i18n.language, 'Altura', 'Height', 'Taille', 'Estatura')}</span>
                 <span className="text-sm font-bold text-[var(--text-main)]">{fighter.height_cm ? `${Math.round(fighter.height_cm)} cm` : '—'}</span>
               </div>
               <div className="rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] p-2">
-                <span className="block text-[10px] text-[var(--text-muted)] uppercase">Reach</span>
+                <span className="block text-[10px] text-[var(--text-muted)] uppercase">{L(i18n.language, 'Envergadura', 'Reach', 'Allonge', 'Alcance')}</span>
                 <span className="text-sm font-bold text-[var(--text-main)]">{fighter.reach_cm ? `${Math.round(fighter.reach_cm)} cm` : '—'}</span>
               </div>
               <div className="rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] p-2">
-                <span className="block text-[10px] text-[var(--text-muted)] uppercase">Str. Acc</span>
+                <span className="block text-[10px] text-[var(--text-muted)] uppercase">{L(i18n.language, 'Prec. golpes', 'Str. Acc', 'Préc. coups', 'Prec. golpes')}</span>
                 <span className="text-sm font-bold text-[var(--text-main)]">{fighter.sig_str_acc ? `${Math.round(fighter.sig_str_acc * 100)}%` : '—'}</span>
               </div>
               <div className="rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] p-2">
-                <span className="block text-[10px] text-[var(--text-muted)] uppercase">TD / 15m</span>
+                <span className="block text-[10px] text-[var(--text-muted)] uppercase">{L(i18n.language, 'Quedas / 15m', 'TD / 15m', 'Amenées / 15 min', 'Derribos / 15 min')}</span>
                 <span className="text-sm font-bold text-[var(--text-main)]">{fighter.takedown_avg_per_15min != null ? fighter.takedown_avg_per_15min.toFixed(2) : '—'}</span>
               </div>
               <div className="rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] p-2">
-                <span className="block text-[10px] text-[var(--text-muted)] uppercase">Finish Rate</span>
+                <span className="block text-[10px] text-[var(--text-muted)] uppercase">{L(i18n.language, 'Via rápida', 'Finish Rate', 'Avant la limite', 'Tasa de finalización')}</span>
                 <span className="text-sm font-bold text-[var(--text-main)]">{fighter.finish_rate != null ? `${Math.round(fighter.finish_rate * 100)}%` : '—'}</span>
               </div>
             </div>
@@ -515,9 +519,9 @@ function OrgDrivers({ factors }: { factors: MainFactor[] }) {
     <section className="rounded-2xl border border-[var(--rule)] bg-[var(--card-bg)] overflow-hidden shadow-xs">
       <div className="flex items-center justify-between bg-[var(--surface-2)] border-b border-[var(--rule)] px-4 py-2.5">
         <span className="text-base font-bold uppercase tracking-wide text-[var(--text-main)]">
-          Key Factors (SHAP)
+          {L(i18n.language, 'Fatores-chave (SHAP)', 'Key Factors (SHAP)', 'Facteurs clés (SHAP)', 'Factores clave (SHAP)')}
         </span>
-        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Model Explainability</span>
+        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">{L(i18n.language, 'Explicabilidade do modelo', 'Model Explainability', 'Explicabilité du modèle', 'Explicabilidad del modelo')}</span>
       </div>
 
       <div className="space-y-3 p-5">

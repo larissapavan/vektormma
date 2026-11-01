@@ -13,11 +13,11 @@ function timeAgo(published: string | null, language: string) {
   const time = new Date(published).getTime()
   if (Number.isNaN(time)) return null
   const minutes = Math.max(0, Math.round((Date.now() - time) / 60000))
-  if (minutes < 60) return L(language, `há ${Math.max(1, minutes)}m`, `${Math.max(1, minutes)}m ago`, `il y a ${Math.max(1, minutes)} min`)
+  if (minutes < 60) return L(language, `há ${Math.max(1, minutes)}m`, `${Math.max(1, minutes)}m ago`, `il y a ${Math.max(1, minutes)} min`, `hace ${Math.max(1, minutes)} min`)
   const hours = Math.round(minutes / 60)
-  if (hours < 24) return L(language, `há ${hours}h`, `${hours}h ago`, `il y a ${hours} h`)
+  if (hours < 24) return L(language, `há ${hours}h`, `${hours}h ago`, `il y a ${hours} h`, `hace ${hours} h`)
   const days = Math.round(hours / 24)
-  if (days <= 7) return L(language, `há ${days}d`, `${days}d ago`, `il y a ${days} j`)
+  if (days <= 7) return L(language, `há ${days}d`, `${days}d ago`, `il y a ${days} j`, `hace ${days} d`)
   return new Date(time).toLocaleDateString(localeTag(language), { month: 'short', day: 'numeric' })
 }
 
@@ -34,7 +34,7 @@ export function LatestNewsCard({ limit = 6, quiet = false }: { limit?: number; q
         <div className="flex items-center gap-2">
           <Newspaper className={`h-3.5 w-3.5 ${quiet ? 'text-[var(--text-muted)]' : 'text-[var(--accent-red)]'}`} />
           <h2 id="latest-news-title" className={`broadcast-label text-[11px] ${quiet ? 'text-[var(--text-muted)]' : 'text-[var(--text-main)]'}`}>
-            {L(i18n.language, 'Últimas notícias do UFC', 'Latest from the UFC', 'Dernières nouvelles de l\'UFC')}
+            {L(i18n.language, 'Últimas notícias do UFC', 'Latest from the UFC', 'Dernières nouvelles de l\'UFC', 'Últimas noticias de la UFC')}
           </h2>
         </div>
         <a
@@ -43,7 +43,7 @@ export function LatestNewsCard({ limit = 6, quiet = false }: { limit?: number; q
           rel="noreferrer"
           className="ghost-action inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#FFFFFF] transition hover:!bg-[#F2C230] hover:!text-[#0E0E0E]"
         >
-          {L(i18n.language, 'Seguir @ufc no X', 'Follow @ufc on X', 'Suivre @ufc sur X')}
+          {L(i18n.language, 'Seguir @ufc no X', 'Follow @ufc on X', 'Suivre @ufc sur X', 'Seguir a @ufc en X')}
           <ExternalLink className="h-3 w-3" />
         </a>
       </div>
@@ -57,11 +57,11 @@ export function LatestNewsCard({ limit = 6, quiet = false }: { limit?: number; q
       </ul>
 
       <p className="theme-muted mt-3 text-xs">
-        {L(i18n.language, 'Notícias via ', 'Headlines via ', 'Titres via ')}
+        {L(i18n.language, 'Notícias via ', 'Headlines via ', 'Titres via ', 'Noticias vía ')}
         <a href={data.source_url} target="_blank" rel="noreferrer" className="font-semibold underline decoration-2 underline-offset-2 hover:bg-[#F2C230] hover:text-[#0E0E0E]">
           {data.source_name}
         </a>
-        {L(i18n.language, '. Cada história abre no site oficial da fonte.', '. Each story opens on their site.', '. Chaque article s\'ouvre sur le site de la source.')}
+        {L(i18n.language, '. Cada história abre no site oficial da fonte.', '. Each story opens on their site.', '. Chaque article s\'ouvre sur le site de la source.', '. Cada historia se abre en el sitio oficial de la fuente.')}
       </p>
     </section>
   )
@@ -87,7 +87,7 @@ function NewsRow({ item, quiet = false }: { item: NewsItem; quiet?: boolean }) {
         {item.kind === 'video' ? (
           <span className="absolute bottom-0 left-0 inline-flex items-center gap-1 bg-[#C8102E] px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] text-white">
             <Play className="h-2.5 w-2.5 fill-current" />
-            {L(i18n.language, 'Vídeo', 'Video', 'Vidéo')}
+            {L(i18n.language, 'Vídeo', 'Video', 'Vidéo', 'Video')}
           </span>
         ) : null}
       </div>

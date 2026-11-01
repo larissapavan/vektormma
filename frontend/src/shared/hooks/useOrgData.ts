@@ -8,6 +8,8 @@ import {
   getOrgUpcomingEvents,
 } from '../services/api'
 import type { FightRecord, OrgEvent, OrgFighter, OrgRankingCategory } from '../types/api'
+import i18n from '../../i18n'
+import { L } from '../../i18n/lang'
 
 /**
  * Data of the organizations other than the UFC. Every answer is requested once per organization and shared by all the
@@ -81,7 +83,7 @@ export function useOrgFighters(org: string | null) {
   const { data, loading, error } = useOrgResource(
     org && `${org}:fighters`,
     () => getOrgFighters(org as string),
-    'Unable to load fighters from the API.',
+    L(i18n.language, 'Não foi possível carregar os lutadores da API.', 'Unable to load fighters from the API.', 'Impossible de charger les combattants depuis l’API.', 'No se pudieron cargar los peleadores desde la API.'),
     NO_FIGHTERS,
   )
   return { fighters: data, loading, error }
@@ -91,7 +93,7 @@ export function useOrgEvents(org: string) {
   const { data, loading, error } = useOrgResource(
     `${org}:events`,
     () => getOrgEvents(org),
-    'Unable to load events from the API.',
+    L(i18n.language, 'Não foi possível carregar os eventos da API.', 'Unable to load events from the API.', 'Impossible de charger les événements depuis l’API.', 'No se pudieron cargar los eventos desde la API.'),
     NO_EVENTS,
   )
   return { events: data, loading, error }
@@ -101,7 +103,7 @@ export function useOrgUpcomingEvents(org: string) {
   const { data, loading, error } = useOrgResource(
     `${org}:upcoming`,
     () => getOrgUpcomingEvents(org),
-    'Unable to load upcoming events from the API.',
+    L(i18n.language, 'Não foi possível carregar os próximos eventos da API.', 'Unable to load upcoming events from the API.', 'Impossible de charger les prochains événements depuis l’API.', 'No se pudieron cargar los próximos eventos desde la API.'),
     NO_EVENTS,
   )
   return { events: data, loading, error }
@@ -111,7 +113,7 @@ export function useOrgRankings(org: string) {
   const { data, loading, error } = useOrgResource(
     `${org}:rankings`,
     () => getOrgRankings(org),
-    'Unable to load rankings from the API.',
+    L(i18n.language, 'Não foi possível carregar o ranking da API.', 'Unable to load rankings from the API.', 'Impossible de charger les classements depuis l’API.', 'No se pudo cargar el ranking desde la API.'),
     NO_RANKINGS,
   )
   return { rankings: data, loading, error }
@@ -121,7 +123,7 @@ export function useOrgFighterFights(org: string, fighter: string) {
   const { data, loading, error } = useOrgResource(
     `${org}:fights:${fighter}`,
     () => getOrgFighterFights(org, fighter),
-    'Unable to load this fighter’s fights.',
+    L(i18n.language, 'Não foi possível carregar as lutas deste atleta.', 'Unable to load this fighter’s fights.', 'Impossible de charger les combats de ce combattant.', 'No se pudieron cargar las peleas de este peleador.'),
     NO_FIGHTS,
   )
   return { fights: data, loading, error }

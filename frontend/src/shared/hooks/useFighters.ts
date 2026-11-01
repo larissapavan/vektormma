@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { getFighters } from '../services/api'
 import type { FighterProfile } from '../types/api'
+import i18n from '../../i18n'
+import { L } from '../../i18n/lang'
 
 /**
  * One request for the whole catalog, shared by every component that asks for it. The home page alone mounts the hook a
@@ -38,7 +40,7 @@ export function useFighters(enabled = true) {
     let active = true
     loadCatalog()
       .then((data) => active && setFighters(data))
-      .catch(() => active && setError('Unable to load fighters from the API.'))
+      .catch(() => active && setError(L(i18n.language, 'Não foi possível carregar os lutadores da API.', 'Unable to load fighters from the API.', 'Impossible de charger les combattants depuis l’API.', 'No se pudieron cargar los peleadores desde la API.')))
       .finally(() => active && setLoading(false))
     return () => {
       active = false

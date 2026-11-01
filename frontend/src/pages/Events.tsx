@@ -3,7 +3,9 @@ import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { CalendarClock, CalendarDays, ChevronDown, Gamepad2, Hash, MapPin, Search, Swords } from 'lucide-react'
 
-import { L, localeTag, uiLang } from '../i18n/lang'
+import { L, localeTag } from '../i18n/lang'
+import { translateHometown } from '../shared/data/fightLabels'
+import { formatMethod as formatMethodLabel } from '../shared/data/orgFormat'
 import { FighterProfileModal } from '../shared/components/FighterProfileModal'
 import { CardSimulatorModal } from '../shared/components/CardSimulatorModal'
 import { LatestNewsCard } from '../shared/components/LatestNewsCard'
@@ -16,36 +18,6 @@ import { useUpcomingPicks } from '../shared/hooks/useUpcomingPicks'
 import type { EventSummary, FightResult, UpcomingPick } from '../shared/types/api'
 
 const NUMBERED_EVENT_PATTERN = /^UFC \d+/
-
-const METHOD_LABELS_EN: Record<string, string> = {
-  'U-DEC': 'Unanimous Decision',
-  'S-DEC': 'Split Decision',
-  'M-DEC': 'Majority Decision',
-  'KO/TKO': 'Knockout',
-  SUB: 'Submission',
-  DQ: 'Disqualification',
-  'NO CONTEST': 'No Contest',
-}
-
-const METHOD_LABELS_PT: Record<string, string> = {
-  'U-DEC': 'Decisão Unânime',
-  'S-DEC': 'Decisão Dividida',
-  'M-DEC': 'Decisão Majoritária',
-  'KO/TKO': 'Nocaute (KO/TKO)',
-  SUB: 'Finalização',
-  DQ: 'Desqualificação',
-  'NO CONTEST': 'Sem Resultado (NC)',
-}
-
-const METHOD_LABELS_FR: Record<string, string> = {
-  'U-DEC': 'Décision unanime',
-  'S-DEC': 'Décision partagée',
-  'M-DEC': 'Décision majoritaire',
-  'KO/TKO': 'KO/TKO',
-  SUB: 'Soumission',
-  DQ: 'Disqualification',
-  'NO CONTEST': 'Sans décision',
-}
 
 const MONTH_KEYS = [
   '01', '02', '03', '04', '05', '06',
@@ -222,7 +194,7 @@ export function Events() {
             <select
               value={yearFilter}
               onChange={(event) => setYearFilter(event.target.value)}
-              aria-label={L(i18n.language, 'Filtrar por ano', 'Filter by year', 'Filtrer par année')}
+              aria-label={L(i18n.language, 'Filtrar por ano', 'Filter by year', 'Filtrer par année', 'Filtrar por año')}
               className="soft-input theme-text rounded-xl px-3 py-2.5 text-sm outline-none"
             >
               <option value="ALL">{t('events.allYears')}</option>
@@ -235,7 +207,7 @@ export function Events() {
             <select
               value={monthFilter}
               onChange={(event) => setMonthFilter(event.target.value)}
-              aria-label={L(i18n.language, 'Filtrar por mês', 'Filter by month', 'Filtrer par mois')}
+              aria-label={L(i18n.language, 'Filtrar por mês', 'Filter by month', 'Filtrer par mois', 'Filtrar por mes')}
               className="soft-input theme-text rounded-xl px-3 py-2.5 text-sm outline-none"
             >
               <option value="ALL">{t('events.allMonths')}</option>
@@ -384,7 +356,7 @@ function EventGroup({
             </div>
           ) : (
             <div className="rounded-[16px] px-4 py-4 text-center text-sm text-[var(--text-muted)]">
-              {L(i18n.language, 'Nenhum resultado nesta seção.', 'No matches in this section.', 'Aucun résultat dans cette section.')}
+              {L(i18n.language, 'Nenhum resultado nesta seção.', 'No matches in this section.', 'Aucun résultat dans cette section.', 'No hay resultados en esta sección.')}
             </div>
           )}
         </div>
@@ -438,7 +410,7 @@ function EventCard({
             {event.location ? (
               <p className="theme-muted flex items-center gap-1.5 text-xs">
                 <MapPin className="h-3.5 w-3.5" />
-                {event.location}
+                {translateHometown(event.location, i18n.language)}
               </p>
             ) : <span />}
 
@@ -449,7 +421,7 @@ function EventCard({
                 className="inline-flex items-center gap-1.5 rounded-full border border-[#C8102E]/40 bg-[#C8102E]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-[#C8102E]"
               >
                 <Gamepad2 className="h-3.5 w-3.5 text-[#F2C230]" />
-                {L(i18n.language, 'Simular Card (Você vs IA)', 'Simulate Card (You vs AI)', 'Simuler la carte (vous contre l’IA)')}
+                {L(i18n.language, 'Simular Card (Você vs. IA)', 'Simulate Card (You vs AI)', 'Simuler la carte (vous contre l’IA)', 'Simular cartelera (tú vs. la IA)')}
               </button>
             ) : null}
           </div>
@@ -476,7 +448,7 @@ function FightRow({ eventName, fight, pick }: { eventName: string; fight: FightR
     [formatMethod(fight, i18n.language), fight.round ? `R${fight.round}` : null, fight.time, fight.num_rounds ? `${fight.num_rounds} rounds` : null]
       .filter(Boolean)
       .join(' · '),
-    fight.referee ? L(i18n.language, `Árbitro: ${fight.referee}`, `Referee: ${fight.referee}`, `Arbitre : ${fight.referee}`) : null,
+    fight.referee ? L(i18n.language, `Árbitro: ${fight.referee}`, `Referee: ${fight.referee}`, `Arbitre : ${fight.referee}`, `Árbitro: ${fight.referee}`) : null,
     fight.result?.startsWith('Decision') && fight.result_details ? `${fight.result} · ${fight.result_details}` : null,
   ].filter((line): line is string => Boolean(line))
 
@@ -493,16 +465,12 @@ function SummaryTile({ label, value }: { label: string; value: string }) {
 }
 
 function formatEventDate(date: string | null, lang: string = 'en-US'): string {
-  if (!date) return L(lang, 'Data a confirmar', 'Date unknown', 'Date inconnue')
+  if (!date) return L(lang, 'Data a confirmar', 'Date unknown', 'Date inconnue', 'Fecha por confirmar')
   const parsed = new Date(`${date}T00:00:00`)
   if (Number.isNaN(parsed.getTime())) return date
   return parsed.toLocaleDateString(localeTag(lang), { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
 function formatMethod(fight: FightResult, language: string | boolean = false): string {
-  if (!fight.method) return L(language, 'Resultado a definir', 'Result pending', 'Résultat en attente')
-  const lang = uiLang(language)
-  const labels = lang === 'pt' ? METHOD_LABELS_PT : lang === 'fr' ? METHOD_LABELS_FR : METHOD_LABELS_EN
-  const label = labels[fight.method] ?? fight.method
-  return fight.method_detail ? `${label} (${fight.method_detail})` : label
+  return formatMethodLabel(fight.method, fight.method_detail, language) ?? L(language, 'Resultado a definir', 'Result pending', 'Résultat en attente', 'Resultado pendiente')
 }

@@ -1,3 +1,5 @@
+import { uiLang, type UiLang } from '../../i18n/lang'
+import { localizeCountryName } from './fightLabels'
 import type { FighterProfile } from '../types/api'
 
 type BadgeInfo = { short: string; label: string; honor: boolean }
@@ -33,7 +35,7 @@ export const BADGE_LABELS_FR: Record<string, string> = {
   bmf_current: 'Champion BMF actuel',
   goat: 'Plus grand de tous les temps (GOAT)',
   bmf: 'Ancien champion BMF',
-  hof: "Hall of Fame de l'UFC",
+  hof: "Temple de la renommée de l'UFC",
   dwcs: "Dana White's Contender Series",
   tuf: 'The Ultimate Fighter',
   r2u: 'Road to UFC',
@@ -42,12 +44,28 @@ export const BADGE_LABELS_FR: Record<string, string> = {
   pride: 'Pride FC',
 }
 
+export const BADGE_LABELS_ES: Record<string, string> = {
+  bmf_current: 'Campeón BMF actual',
+  goat: 'El mejor de todos los tiempos (GOAT)',
+  bmf: 'Excampeón BMF',
+  hof: 'Salón de la Fama de la UFC',
+  dwcs: "Dana White's Contender Series",
+  tuf: 'The Ultimate Fighter',
+  r2u: 'Road to UFC',
+  sf: 'Strikeforce',
+  wec: 'World Extreme Cagefighting',
+  pride: 'Pride FC',
+}
+
+const BADGE_LABELS: Record<UiLang, Record<string, string> | null> = {
+  pt: BADGE_LABELS_PT,
+  fr: BADGE_LABELS_FR,
+  es: BADGE_LABELS_ES,
+  en: null,
+}
+
 export function getBadgeLabel(key: string, language: string | boolean = false): string {
-  const portuguese = language === true || (typeof language === 'string' && language.startsWith('pt'))
-  const french = typeof language === 'string' && language.startsWith('fr')
-  if (portuguese && BADGE_LABELS_PT[key]) return BADGE_LABELS_PT[key]
-  if (french && BADGE_LABELS_FR[key]) return BADGE_LABELS_FR[key]
-  return BADGES[key]?.label ?? key
+  return BADGE_LABELS[uiLang(language)]?.[key] ?? BADGES[key]?.label ?? key
 }
 
 /** The champion seals: shown on the profile, left off ranking and champion lists, and drawn in silver. */
@@ -59,7 +77,7 @@ export function badgesForRankings(badges: string[] | undefined) {
 }
 
 /** "Georgia · Spain": the nationalities as text, only when there is more than one to explain. */
-export function nationalityText(fighter: Pick<FighterProfile, 'nationalities'>): string | null {
-  const names = (fighter.nationalities ?? []).map((nationality) => nationality.name)
+export function nationalityText(fighter: Pick<FighterProfile, 'nationalities'>, language: string | boolean = false): string | null {
+  const names = (fighter.nationalities ?? []).map((nationality) => localizeCountryName(nationality.name, language))
   return names.length > 1 ? names.join(' · ') : null
 }

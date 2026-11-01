@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ChevronDown, Crown, Flame, Layers, Shield, ThumbsDown, Trophy } from 'lucide-react'
 
-import { L, localeTag, uiLang } from '../i18n/lang'
+import { L, localeTag, pick, uiLang, type ByLang, type UiLang } from '../i18n/lang'
 import { FighterAvatar } from '../shared/components/FighterAvatar'
 import { FighterBadges, FlagList } from '../shared/components/FighterBadges'
 import { badgesForRankings } from '../shared/data/badges'
@@ -12,6 +12,7 @@ import { ChampionBelt } from '../shared/components/ChampionBelt'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { SectionHeading } from '../shared/components/SectionHeading'
 import { divisionLimit, divisionOrder, getDivisionName } from '../shared/data/divisions'
+import { METHOD_WORDS, translateTechnique } from '../shared/data/fightLabels'
 import { useChampions } from '../shared/hooks/useChampions'
 import { useFighterImages, getFighterImageUrl, normalizeFighterName } from '../shared/hooks/useFighterImages'
 import { useFighters } from '../shared/hooks/useFighters'
@@ -57,7 +58,7 @@ export function Champions() {
 
           <div
             role="tablist"
-            aria-label={L(i18n.language, 'Escolha a visualização', 'Choose what to see', 'Choisir la vue')}
+            aria-label={L(i18n.language, 'Escolha a visualização', 'Choose what to see', 'Choisir la vue', 'Elige qué ver')}
             className="mt-4 inline-flex max-w-full overflow-x-auto border-2 border-[var(--rule)] bg-[var(--card-bg)] chip-scroll"
           >
             {views.map((item) => (
@@ -161,20 +162,20 @@ function formatFightDate(date: string | null | undefined, lang: string = 'en-US'
     : parsed.toLocaleDateString(localeTag(lang), { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
-const RESULT_METHODS: Record<string, { en: string; pt: string; fr: string }> = {
-  'KO/TKO': { en: 'KO/TKO', pt: 'nocaute (KO/TKO)', fr: 'KO/TKO' },
-  SUB: { en: 'submission', pt: 'finalização', fr: 'soumission' },
-  'U-DEC': { en: 'unanimous decision', pt: 'decisão unânime', fr: 'décision unanime' },
-  'S-DEC': { en: 'split decision', pt: 'decisão dividida', fr: 'décision partagée' },
-  'M-DEC': { en: 'majority decision', pt: 'decisão majoritária', fr: 'décision majoritaire' },
-  DQ: { en: 'disqualification', pt: 'desqualificação', fr: 'disqualification' },
+const RESULT_METHODS: Record<string, ByLang> = {
+  'KO/TKO': { en: 'KO/TKO', pt: 'nocaute (KO/TKO)', fr: 'KO/TKO', es: 'nocaut (KO/TKO)' },
+  SUB: { en: 'submission', pt: 'finalização', fr: 'soumission', es: 'sumisión' },
+  'U-DEC': { en: 'unanimous decision', pt: 'decisão unânime', fr: 'décision unanime', es: 'decisión unánime' },
+  'S-DEC': { en: 'split decision', pt: 'decisão dividida', fr: 'décision partagée', es: 'decisión dividida' },
+  'M-DEC': { en: 'majority decision', pt: 'decisão majoritária', fr: 'décision majoritaire', es: 'decisión mayoritaria' },
+  DQ: { en: 'disqualification', pt: 'desqualificação', fr: 'disqualification', es: 'descalificación' },
 }
 
 function describeLastFight(fight: NonNullable<TitleReign['last_fight']>, lang: string = 'en-US') {
-  const outcome = fight.result === 'win' ? L(lang, 'Vitória', 'Win', 'Victoire') : fight.result === 'loss' ? L(lang, 'Derrota', 'Loss', 'Défaite') : L(lang, 'Sem resultado', 'No result', 'Sans résultat')
+  const outcome = fight.result === 'win' ? L(lang, 'Vitória', 'Win', 'Victoire', 'Victoria') : fight.result === 'loss' ? L(lang, 'Derrota', 'Loss', 'Défaite', 'Derrota') : L(lang, 'Sem resultado', 'No result', 'Sans résultat', 'Sin resultado')
   const methodObj = fight.method ? RESULT_METHODS[fight.method] : null
-  const methodStr = methodObj ? L(lang, methodObj.pt, methodObj.en, methodObj.fr) : fight.method
-  const method = methodStr ? L(lang, ` por ${methodStr}`, ` by ${methodStr}`, ` par ${methodStr}`) : ''
+  const methodStr = methodObj ? pick(lang, methodObj) : fight.method
+  const method = methodStr ? L(lang, ` por ${methodStr}`, ` by ${methodStr}`, ` par ${methodStr}`, ` por ${methodStr}`) : ''
   const round = fight.round ? ` (R${fight.round})` : ''
   const date = formatFightDate(fight.date, lang)
   return `${outcome}${method}${round}${date ? ` · ${date}` : ''}`
@@ -295,7 +296,7 @@ function CurrentChampionsSection({ reigns, history }: { reigns: TitleReign[]; hi
               <button
                 type="button"
                 onClick={() => openProfile(reign.champion)}
-                aria-label={L(i18n.language, `${reign.champion}, campeão peso ${divisionLabel}. Ver perfil`, `${reign.champion}, ${reign.division} champion. View profile`, `${reign.champion}, champion ${reign.division}. Voir le profil`)}
+                aria-label={L(i18n.language, `${reign.champion}, campeão peso ${divisionLabel}. Ver perfil`, `${reign.champion}, ${reign.division} champion. View profile`, `${reign.champion}, champion ${reign.division}. Voir le profil`, `${reign.champion}, campeón de ${divisionLabel}. Ver perfil`)}
                 className="metric-tile group grid w-full min-w-0 cursor-pointer text-left grid-cols-[auto_1fr] items-center gap-x-4 gap-y-2 px-3 py-3 sm:px-4 md:grid-cols-[170px_auto_1fr_auto] md:gap-x-6"
               >
                 <div className="col-span-2 min-w-0 md:col-span-1">
@@ -326,7 +327,7 @@ function CurrentChampionsSection({ reigns, history }: { reigns: TitleReign[]; hi
                   ) : null}
                   {last ? (
                     <p className="mt-1 text-[13px] leading-5 text-[var(--text-main)]">
-                      <span className="font-bold">{L(i18n.language, 'Última luta', 'Last fight', 'Dernier combat')}:</span> {reign.champion} vs. {last.opponent}
+                      <span className="font-bold">{L(i18n.language, 'Última luta', 'Last fight', 'Dernier combat', 'Última pelea')}:</span> {reign.champion} vs. {last.opponent}
                       <span className="theme-muted block text-xs sm:inline sm:before:content-['_·_']">{describeLastFight(last, i18n.language)}</span>
                     </p>
                   ) : null}
@@ -370,9 +371,17 @@ const END_LABELS_FR: Record<string, string> = {
   unified: 'Unifié avec la ceinture incontestée',
 }
 
+const END_LABELS_ES: Record<string, string> = {
+  lost_title_fight: 'Perdió el cinturón',
+  vacated: 'Dejó vacante el cinturón',
+  stripped: 'Despojado del cinturón',
+  unified: 'Unificado con el cinturón indiscutido',
+}
+
 function ordinal(value: number, language: string | boolean = false) {
   const lang = uiLang(language)
   if (lang === 'pt') return `${value}º`
+  if (lang === 'es') return `${value}.º`
   if (lang === 'fr') return value === 1 ? '1er' : `${value}e`
   const suffix = value % 100 >= 11 && value % 100 <= 13 ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' } as Record<number, string>)[value % 10] ?? 'th'
   return `${value}${suffix}`
@@ -382,40 +391,62 @@ function endReasonLabel(reason: string, language: string | boolean) {
   const lang = uiLang(language)
   if (lang === 'pt') return END_LABELS_PT[reason] ?? reason
   if (lang === 'fr') return END_LABELS_FR[reason] ?? reason
+  if (lang === 'es') return END_LABELS_ES[reason] ?? reason
   return END_LABELS[reason] ?? null
+}
+
+/** How a reign was won, as the data words it ("def. Name", "promoted to champion"), in each language. */
+const WON_HOW: Record<Exclude<UiLang, 'en'>, {
+  undisputed: string
+  champion: string
+  awarded: string
+  defeated: string
+  interimChampion: string
+  forInterim: string
+  forUndisputed: string
+}> = {
+  pt: {
+    undisputed: 'Promovido a campeão linear',
+    champion: 'Promovido a campeão',
+    awarded: 'Cinturão concedido',
+    defeated: 'Venceu ',
+    interimChampion: 'o campeão interino',
+    forInterim: 'pelo cinturão interino',
+    forUndisputed: 'pelo cinturão linear',
+  },
+  fr: {
+    undisputed: 'Promu champion incontesté',
+    champion: 'Promu champion',
+    awarded: 'Titre attribué',
+    defeated: 'Victoire contre ',
+    interimChampion: 'le champion intérimaire',
+    forInterim: 'pour le titre intérimaire',
+    forUndisputed: 'pour le titre incontesté',
+  },
+  es: {
+    undisputed: 'Ascendido a campeón indiscutido',
+    champion: 'Ascendido a campeón',
+    awarded: 'Título otorgado',
+    defeated: 'Venció a ',
+    interimChampion: 'el campeón interino',
+    forInterim: 'por el título interino',
+    forUndisputed: 'por el título indiscutido',
+  },
 }
 
 function translateWonHow(wonHow: string | null | undefined, language: string | boolean): string | null {
   if (!wonHow) return null
   const lang = uiLang(language)
   if (lang === 'en') return wonHow
-  if (lang === 'fr') return translateWonHowFr(wonHow)
+  const words = WON_HOW[lang]
   let text = wonHow.trim()
-  if (/^promoted to undisputed champion$/i.test(text)) {
-    return 'Promovido a campeão linear'
-  }
-  if (/^promoted to champion$/i.test(text)) {
-    return 'Promovido a campeão'
-  }
-  if (/^awarded title$/i.test(text)) {
-    return 'Cinturão concedido'
-  }
-  text = text.replace(/^def\.\s*/i, 'Venceu ')
-  text = text.replace(/\binterim champion\b/i, 'o campeão interino')
-  text = text.replace(/\bfor interim title\b/i, 'pelo cinturão interino')
-  text = text.replace(/\bfor undisputed title\b/i, 'pelo cinturão linear')
-  return text
-}
-
-function translateWonHowFr(wonHow: string): string {
-  let text = wonHow.trim()
-  if (/^promoted to undisputed champion$/i.test(text)) return 'Promu champion incontesté'
-  if (/^promoted to champion$/i.test(text)) return 'Promu champion'
-  if (/^awarded title$/i.test(text)) return 'Titre attribué'
-  text = text.replace(/^def\.\s*/i, 'Victoire contre ')
-  text = text.replace(/\binterim champion\b/i, 'le champion intérimaire')
-  text = text.replace(/\bfor interim title\b/i, 'pour le titre intérimaire')
-  text = text.replace(/\bfor undisputed title\b/i, 'pour le titre incontesté')
+  if (/^promoted to undisputed champion$/i.test(text)) return words.undisputed
+  if (/^promoted to champion$/i.test(text)) return words.champion
+  if (/^awarded title$/i.test(text)) return words.awarded
+  text = text.replace(/^def\.\s*/i, words.defeated)
+  text = text.replace(/\binterim champion\b/i, words.interimChampion)
+  text = text.replace(/\bfor interim title\b/i, words.forInterim)
+  text = text.replace(/\bfor undisputed title\b/i, words.forUndisputed)
   return text
 }
 
@@ -443,16 +474,16 @@ function DivisionHistory({ division, reigns }: { division: string; reigns: Title
         className="ghost-action inline-flex w-full items-center justify-between gap-2 px-3 py-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-main)] transition hover:!bg-[#F2C230] hover:text-[#0E0E0E]"
       >
         <span>
-          {divisionLabel} {L(i18n.language, '• Histórico de campeões', 'title history', 'historique des titres')}
+          {divisionLabel} {L(i18n.language, '• Histórico de campeões', 'title history', 'historique des titres', '• Historial de campeones')}
           <span className="theme-muted ml-2 font-semibold normal-case tracking-normal">
-            {history.length} {history.length === 1 ? L(i18n.language, 'reinado', 'reign', 'règne') : L(i18n.language, 'reinados', 'reigns', 'règnes')} · {holders} {holders === 1 ? L(i18n.language, 'campeão', 'champion', 'champion') : L(i18n.language, 'campeões', 'champions', 'champions')}
+            {history.length} {history.length === 1 ? L(i18n.language, 'reinado', 'reign', 'règne', 'reinado') : L(i18n.language, 'reinados', 'reigns', 'règnes', 'reinados')} · {holders} {holders === 1 ? L(i18n.language, 'campeão', 'champion', 'champion', 'campeón') : L(i18n.language, 'campeões', 'champions', 'champions', 'campeones')}
           </span>
         </span>
         <ChevronDown aria-hidden className={`h-4 w-4 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open ? (
-        <section id={panelId} aria-label={L(i18n.language, `${divisionLabel}: todos os campeões`, `${divisionLabel}: every champion`, `${divisionLabel} : tous les champions`)} className="fade-up mt-1.5 min-w-0 border-2 border-[var(--rule)] bg-[var(--surface-3)] p-3 sm:p-4">
+        <section id={panelId} aria-label={L(i18n.language, `${divisionLabel}: todos os campeões`, `${divisionLabel}: every champion`, `${divisionLabel} : tous les champions`, `${divisionLabel}: todos los campeones`)} className="fade-up mt-1.5 min-w-0 border-2 border-[var(--rule)] bg-[var(--surface-3)] p-3 sm:p-4">
           <ol>
             {history.map((reign) => (
               <ReignRow key={`${reign.date_won}-${reign.champion}-${reign.title_type}`} reign={reign} onOpen={openProfile} />
@@ -468,9 +499,9 @@ function ReignRow({ reign, onOpen }: { reign: TitleReign; onOpen: (name: string)
   const { i18n } = useTranslation()
   const date = formatFightDate(reign.date_won, i18n.language)
   const interim = reign.title_type === 'interim'
-  const held = reign.days_held != null ? `${reign.days_held.toLocaleString(localeTag(i18n.language))} ${L(i18n.language, 'dias', 'days', 'jours')}` : null
-  const defenses = `${reign.defenses_count} ${reign.defenses_count === 1 ? L(i18n.language, 'defesa', 'defense', 'défense') : L(i18n.language, 'defesas', 'defenses', 'défenses')}`
-  const ended = reign.is_current ? L(i18n.language, 'Campeão atual', 'Current champion', 'Champion actuel') : endReasonLabel(reign.end_reason, i18n.language)
+  const held = reign.days_held != null ? `${reign.days_held.toLocaleString(localeTag(i18n.language))} ${L(i18n.language, 'dias', 'days', 'jours', 'días')}` : null
+  const defenses = `${reign.defenses_count} ${reign.defenses_count === 1 ? L(i18n.language, 'defesa', 'defense', 'défense', 'defensa') : L(i18n.language, 'defesas', 'defenses', 'défenses', 'defensas')}`
+  const ended = reign.is_current ? L(i18n.language, 'Campeão atual', 'Current champion', 'Champion actuel', 'Campeón actual') : endReasonLabel(reign.end_reason, i18n.language)
 
   return (
     <li className="grid grid-cols-[3.25rem_minmax(0,1fr)] gap-x-2.5 border-l-2 border-[var(--rule)] py-1.5 pl-2.5 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:gap-x-3.5">
@@ -490,22 +521,22 @@ function ReignRow({ reign, onOpen }: { reign: TitleReign; onOpen: (name: string)
           </button>
           {reign.is_current ? (
             <span className="bg-[#F2C230] px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] text-[#0E0E0E]">
-              {L(i18n.language, 'Atual', 'Current', 'Actuel')}
+              {L(i18n.language, 'Atual', 'Current', 'Actuel', 'Actual')}
             </span>
           ) : null}
           {interim ? (
             <span className="border border-[var(--rule)] px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-main)]">
-              {L(i18n.language, 'Interino', 'Interim', 'Intérimaire')}
+              {L(i18n.language, 'Interino', 'Interim', 'Intérimaire', 'Interino')}
             </span>
           ) : null}
           {reign.fighter_reign_index > 1 ? (
             <span className="theme-muted text-[11px] font-bold uppercase tracking-[0.1em]">
-              {ordinal(reign.fighter_reign_index, i18n.language)} {L(i18n.language, 'reinado', 'reign', 'règne')}
+              {ordinal(reign.fighter_reign_index, i18n.language)} {L(i18n.language, 'reinado', 'reign', 'règne', 'reinado')}
             </span>
           ) : null}
         </div>
         <p className="theme-muted mt-0.5 text-[11px] leading-4">
-          {[translateWonHow(reign.won_how, i18n.language), reign.event].filter(Boolean).join(' · ') || L(i18n.language, 'Conquista do cinturão', 'Title win', 'Conquête du titre')}
+          {[translateWonHow(reign.won_how, i18n.language), reign.event].filter(Boolean).join(' · ') || L(i18n.language, 'Conquista do cinturão', 'Title win', 'Conquête du titre', 'Conquista del título')}
         </p>
         <p className="theme-muted text-[11px] leading-4">
           {[held, defenses, ended].filter(Boolean).join(' · ')}
@@ -528,7 +559,7 @@ function GreatestChampionsSection({ champions }: { champions: ChampionSummary[] 
         <Shield className="h-4 w-4 text-[#C8102E]" />
         <h2 className="broadcast-label text-xs text-[var(--text-main)]">{t('champions.greatest')}</h2>
         <span className="theme-muted text-xs">
-          {L(i18n.language, 'por tempo total como campeão', 'by total time as champion', 'par temps total en tant que champion')}
+          {L(i18n.language, 'por tempo total como campeão', 'by total time as champion', 'par temps total en tant que champion', 'por tiempo total como campeón')}
         </span>
       </div>
 
@@ -542,12 +573,12 @@ function GreatestChampionsSection({ champions }: { champions: ChampionSummary[] 
             subtitle={champion.divisions.map((div) => getDivisionName(div, i18n.language)).join(' · ')}
             current={champion.is_current_champion}
             stats={[
-              { label: L(i18n.language, 'Dias', 'Days', 'Jours'), value: champion.total_days_as_champion.toLocaleString(localeTag(i18n.language)) },
-              { label: L(i18n.language, 'Defesas', 'Defenses', 'Défenses'), value: String(champion.total_defenses) },
-              { label: L(i18n.language, 'Reinados', 'Reigns', 'Règnes'), value: String(champion.total_reigns) },
+              { label: L(i18n.language, 'Dias', 'Days', 'Jours', 'Días'), value: champion.total_days_as_champion.toLocaleString(localeTag(i18n.language)) },
+              { label: L(i18n.language, 'Defesas', 'Defenses', 'Défenses', 'Defensas'), value: String(champion.total_defenses) },
+              { label: L(i18n.language, 'Reinados', 'Reigns', 'Règnes', 'Reinados'), value: String(champion.total_reigns) },
             ]}
             onClick={() => openProfile(champion.champion)}
-            ariaLabel={L(i18n.language, `${champion.champion}, ver perfil`, `${champion.champion}, view profile`, `${champion.champion}, voir le profil`)}
+            ariaLabel={L(i18n.language, `${champion.champion}, ver perfil`, `${champion.champion}, view profile`, `${champion.champion}, voir le profil`, `${champion.champion}, ver perfil`)}
           />
         ))}
       </div>
@@ -602,10 +633,30 @@ const RECORD_UNITS_FR: Record<string, string> = {
   times: 'fois',
 }
 
+const RECORD_LABELS_ES: Record<string, string> = {
+  most_defenses_single_reign: 'Más defensas en un solo reinado',
+  longest_reign: 'Reinado más largo',
+  most_cumulative_defenses: 'Más defensas del título en la carrera',
+  most_title_reigns: 'Más reinados como campeón',
+  multi_division_champions: 'Campeones en más de una división',
+  shortest_reign: 'Reinado más corto',
+  most_times_stripped: 'Más títulos retirados fuera del octágono',
+  most_title_losses: 'Más derrotas en peleas por el título',
+}
+
+const RECORD_UNITS_ES: Record<string, string> = {
+  defenses: 'defensas',
+  days: 'días',
+  reigns: 'reinados',
+  divisions: 'divisiones',
+  times: 'veces',
+}
+
 function getRecordCategoryLabel(category: RecordCategory, language: string | boolean): string {
   const lang = uiLang(language)
   if (lang === 'pt') return RECORD_LABELS_PT[category.key] ?? category.label
   if (lang === 'fr') return RECORD_LABELS_FR[category.key] ?? category.label
+  if (lang === 'es') return RECORD_LABELS_ES[category.key] ?? category.label
   return category.label
 }
 
@@ -613,6 +664,7 @@ function getRecordUnit(unit: string, language: string | boolean): string {
   const lang = uiLang(language)
   if (lang === 'pt') return RECORD_UNITS_PT[unit] ?? unit
   if (lang === 'fr') return RECORD_UNITS_FR[unit] ?? unit
+  if (lang === 'es') return RECORD_UNITS_ES[unit] ?? unit
   return unit
 }
 
@@ -649,7 +701,7 @@ function RecordCard({ category }: { category: RecordCategory }) {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-[var(--text-muted)]">{L(i18n.language, 'Nenhum registro nesta categoria.', 'No entries in this category.', 'Aucune entrée dans cette catégorie.')}</p>
+            <p className="text-sm text-[var(--text-muted)]">{L(i18n.language, 'Nenhum registro nesta categoria.', 'No entries in this category.', 'Aucune entrée dans cette catégorie.', 'No hay registros en esta categoría.')}</p>
           )}
         </div>
       ) : null}
@@ -667,7 +719,7 @@ function RecordRow({ entry, unit }: { entry: RecordCategory['entries'][number]; 
     <button
       type="button"
       onClick={() => openProfile(entry.champion)}
-      aria-label={L(i18n.language, `${entry.champion}, ${entry.rank}º lugar. Ver perfil`, `${entry.champion}, rank ${entry.rank}. View profile`, `${entry.champion}, rang ${entry.rank}. Voir le profil`)}
+      aria-label={L(i18n.language, `${entry.champion}, ${entry.rank}º lugar. Ver perfil`, `${entry.champion}, rank ${entry.rank}. View profile`, `${entry.champion}, rang ${entry.rank}. Voir le profil`, `${entry.champion}, puesto ${entry.rank}. Ver perfil`)}
       className="flex w-full cursor-pointer items-center text-left gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-[#F2C230]/40 focus-visible:bg-[#F2C230]/40 focus-visible:outline-none"
     >
       <span className="type-num w-4 shrink-0 text-right text-[11px] text-[var(--text-muted)]">{entry.rank}</span>
@@ -719,9 +771,9 @@ function MultiDivisionSection({ category, current }: { category: RecordCategory;
                 subtitle={divisions.join(' · ')}
                 current={holdsBelt}
                 stats={[
-                  { label: L(i18n.language, 'Disputas', 'Fights', 'Combats'), value: String(fights.length) },
-                  { label: L(i18n.language, 'Cinturões', 'Belts', 'Ceintures'), value: String(fights.filter((fight) => fight.role === 'won_title').length) },
-                  { label: L(i18n.language, 'Defesas', 'Defenses', 'Défenses'), value: String(fights.filter((fight) => fight.role === 'defense').length) },
+                  { label: L(i18n.language, 'Disputas', 'Fights', 'Combats', 'Peleas'), value: String(fights.length) },
+                  { label: L(i18n.language, 'Cinturões', 'Belts', 'Ceintures', 'Cinturones'), value: String(fights.filter((fight) => fight.role === 'won_title').length) },
+                  { label: L(i18n.language, 'Defesas', 'Defenses', 'Défenses', 'Defensas'), value: String(fights.filter((fight) => fight.role === 'defense').length) },
                 ]}
                 onClick={() => setOpenName(isOpen ? null : entry.champion)}
                 ariaLabel={L(
@@ -729,6 +781,7 @@ function MultiDivisionSection({ category, current }: { category: RecordCategory;
                   `${entry.champion}, ${isOpen ? 'ocultar' : 'ver'} disputas de cinturão`,
                   `${entry.champion}, ${isOpen ? 'hide' : 'view'} title fights`,
                   `${entry.champion}, ${isOpen ? 'masquer' : 'voir'} les combats de titre`,
+                  `${entry.champion}, ${isOpen ? 'ocultar' : 'ver'} peleas por el título`,
                 )}
                 expanded={isOpen}
                 controls={panelId}
@@ -771,79 +824,82 @@ const RESULT_STYLES_FR: Record<TitleFight['result'], { letter: string; className
   no_contest: { letter: 'NC', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Sans décision' },
 }
 
+const RESULT_STYLES_ES: Record<TitleFight['result'], { letter: string; className: string; name: string }> = {
+  win: { letter: 'V', className: 'bg-[var(--rule)] text-[var(--card-bg)]', name: 'Victoria' },
+  loss: { letter: 'D', className: 'bg-[#C8102E] text-white', name: 'Derrota' },
+  draw: { letter: 'E', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Empate' },
+  no_contest: { letter: 'SR', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Sin resultado' },
+}
+
 function resultStyle(result: TitleFight['result'], language: string | boolean) {
   const lang = uiLang(language)
   if (lang === 'pt') return RESULT_STYLES_PT[result]
   if (lang === 'fr') return RESULT_STYLES_FR[result]
+  if (lang === 'es') return RESULT_STYLES_ES[result]
   return RESULT_STYLES[result]
+}
+
+/** The wording of a title fight's role ("Won title", "Title defense #3", ...) in each language. */
+const FIGHT_ROLES: Record<Exclude<UiLang, 'en'>, {
+  wonInterim: string
+  won: string
+  defense: (number: string) => string
+  defended: string
+  lost: string
+  challengeLost: string
+  titleFightWin: string
+  draw: string
+  noContest: string
+}> = {
+  pt: {
+    wonInterim: 'Conquistou o Cinturão Interino',
+    won: 'Conquistou o Cinturão',
+    defense: (num) => `Defesa de Cinturão #${num}`,
+    defended: 'Defesa de Cinturão',
+    lost: 'Perdeu o Cinturão',
+    challengeLost: 'Derrota em Disputa de Cinturão',
+    titleFightWin: 'Vitória em Disputa de Cinturão',
+    draw: 'Empate em Disputa de Cinturão',
+    noContest: 'Sem Resultado em Disputa de Cinturão',
+  },
+  fr: {
+    wonInterim: 'A remporté la ceinture intérimaire',
+    won: 'A remporté la ceinture',
+    defense: (num) => `Défense de titre n°${num}`,
+    defended: 'Défense de titre',
+    lost: 'A perdu la ceinture',
+    challengeLost: 'Défaite en combat de titre',
+    titleFightWin: 'Victoire en combat de titre',
+    draw: 'Nul en combat de titre',
+    noContest: 'Sans décision en combat de titre',
+  },
+  es: {
+    wonInterim: 'Ganó el cinturón interino',
+    won: 'Ganó el cinturón',
+    defense: (num) => `Defensa del título n.º ${num}`,
+    defended: 'Defensa del título',
+    lost: 'Perdió el cinturón',
+    challengeLost: 'Derrota en pelea por el título',
+    titleFightWin: 'Victoria en pelea por el título',
+    draw: 'Empate en pelea por el título',
+    noContest: 'Sin resultado en pelea por el título',
+  },
 }
 
 function translateFightRole(label: string, language: string | boolean): string {
   const lang = uiLang(language)
   if (lang === 'en') return label
-  if (lang === 'fr') return translateFightRoleFr(label)
+  const words = FIGHT_ROLES[lang]
   const lower = label.toLowerCase().trim()
-  if (lower === 'won interim title' || (lower.includes('interim') && lower.includes('won'))) {
-    return 'Conquistou o Cinturão Interino'
-  }
-  if (lower === 'won title' || lower.includes('won undisputed') || (lower.includes('won') && !lower.includes('interim'))) {
-    return 'Conquistou o Cinturão'
-  }
-  if (lower.startsWith('title defense #')) {
-    const num = label.replace(/^[^\d]+/, '')
-    return `Defesa de Cinturão #${num}`
-  }
-  if (lower.includes('defended') || lower.includes('title defense')) {
-    return 'Defesa de Cinturão'
-  }
-  if (lower === 'lost title' || lower.includes('lost title') || lower.includes('lost undisputed')) {
-    return 'Perdeu o Cinturão'
-  }
-  if (lower.includes('title shot, lost') || lower.includes('challenged')) {
-    return 'Derrota em Disputa de Cinturão'
-  }
-  if (lower === 'title fight win') {
-    return 'Vitória em Disputa de Cinturão'
-  }
-  if (lower.includes('draw')) {
-    return 'Empate em Disputa de Cinturão'
-  }
-  if (lower.includes('no contest')) {
-    return 'Sem Resultado em Disputa de Cinturão'
-  }
-  return label
-}
-
-function translateFightRoleFr(label: string): string {
-  const lower = label.toLowerCase().trim()
-  if (lower === 'won interim title' || (lower.includes('interim') && lower.includes('won'))) {
-    return 'A remporté la ceinture intérimaire'
-  }
-  if (lower === 'won title' || lower.includes('won undisputed') || (lower.includes('won') && !lower.includes('interim'))) {
-    return 'A remporté la ceinture'
-  }
-  if (lower.startsWith('title defense #')) {
-    const num = label.replace(/^[^\d]+/, '')
-    return `Défense de titre n°${num}`
-  }
-  if (lower.includes('defended') || lower.includes('title defense')) {
-    return 'Défense de titre'
-  }
-  if (lower === 'lost title' || lower.includes('lost title') || lower.includes('lost undisputed')) {
-    return 'A perdu la ceinture'
-  }
-  if (lower.includes('title shot, lost') || lower.includes('challenged')) {
-    return 'Défaite en combat de titre'
-  }
-  if (lower === 'title fight win') {
-    return 'Victoire en combat de titre'
-  }
-  if (lower.includes('draw')) {
-    return 'Nul en combat de titre'
-  }
-  if (lower.includes('no contest')) {
-    return 'Sans décision en combat de titre'
-  }
+  if (lower === 'won interim title' || (lower.includes('interim') && lower.includes('won'))) return words.wonInterim
+  if (lower === 'won title' || lower.includes('won undisputed') || (lower.includes('won') && !lower.includes('interim'))) return words.won
+  if (lower.startsWith('title defense #')) return words.defense(label.replace(/^[^\d]+/, ''))
+  if (lower.includes('defended') || lower.includes('title defense')) return words.defended
+  if (lower === 'lost title' || lower.includes('lost title') || lower.includes('lost undisputed')) return words.lost
+  if (lower.includes('title shot, lost') || lower.includes('challenged')) return words.challengeLost
+  if (lower === 'title fight win') return words.titleFightWin
+  if (lower.includes('draw')) return words.draw
+  if (lower.includes('no contest')) return words.noContest
   return label
 }
 
@@ -851,85 +907,20 @@ function translateMethod(method: string | null | undefined, language: string | b
   if (!method) return null
   const lang = uiLang(language)
   if (lang === 'en') return method
-  if (lang === 'fr') return translateMethodFr(method)
+  const words = METHOD_WORDS[lang]
   const m = method.trim()
   const lower = m.toLowerCase()
-  if (lower.startsWith('ko') || lower.startsWith('tko') || lower.includes('ko/tko')) return 'Nocaute / TKO'
+  if (lower.startsWith('ko') || lower.startsWith('tko') || lower.includes('ko/tko')) return lang === 'pt' ? 'Nocaute / TKO' : lang === 'es' ? 'Nocaut / TKO' : 'KO/TKO'
   if (lower.startsWith('sub')) {
-    const detail = m.replace(/^submission\s*/i, '').trim()
-    if (detail) {
-      const cleanDetail = detail.replace(/^\(/, '').replace(/\)$/, '').trim()
-      const ptDetails: Record<string, string> = {
-        'rear naked choke': 'Mata-leão',
-        'rear-naked choke': 'Mata-leão',
-        'guillotine choke': 'Guilhotina',
-        'guillotine': 'Guilhotina',
-        'armbar': 'Chave de braço (Armbar)',
-        'triangle choke': 'Triângulo',
-        'triangle armbar': 'Triângulo com chave de braço',
-        'kimura': 'Kimura',
-        'americana': 'Americana',
-        'kneebar': 'Chave de joelho',
-        'ankle lock': 'Chave de tornozelo',
-        'heel hook': 'Chave de calcanhar',
-        "d'arce choke": "D'Arce Choke",
-        'darce choke': "D'Arce Choke",
-        'anaconda choke': 'Triângulo de mão (Anaconda)',
-        'von flue choke': 'Von Flue Choke',
-        'neck crank': 'Manivela de pescoço',
-      }
-      const translatedSub = ptDetails[cleanDetail.toLowerCase()] ?? cleanDetail
-      return `Finalização (${translatedSub})`
-    }
-    return 'Finalização'
+    const detail = m.replace(/^submission\s*/i, '').trim().replace(/^\(/, '').replace(/\)$/, '').trim()
+    return detail ? `${words.submission} (${translateTechnique(detail, language)})` : words.submission
   }
-  if (lower.includes('unanimous') || /^u-dec$/i.test(m)) return 'Decisão Unânime'
-  if (lower.includes('split') || /^s-dec$/i.test(m)) return 'Decisão Dividida'
-  if (lower.includes('majority') || /^m-dec$/i.test(m)) return 'Decisão Majoritária'
-  if (lower.includes('decision') || /^dec$/i.test(m)) return 'Decisão'
-  if (lower.includes('disqualification') || /^dq$/i.test(m)) return 'Desqualificação'
-  if (lower.includes('no contest') || /^nc$/i.test(m)) return 'Sem Resultado'
-  return method
-}
-
-function translateMethodFr(method: string): string {
-  const m = method.trim()
-  const lower = m.toLowerCase()
-  if (lower.startsWith('ko') || lower.startsWith('tko') || lower.includes('ko/tko')) return 'KO/TKO'
-  if (lower.startsWith('sub')) {
-    const detail = m.replace(/^submission\s*/i, '').trim()
-    if (detail) {
-      const cleanDetail = detail.replace(/^\(/, '').replace(/\)$/, '').trim()
-      const frDetails: Record<string, string> = {
-        'rear naked choke': 'étranglement arrière',
-        'rear-naked choke': 'étranglement arrière',
-        'guillotine choke': 'guillotine',
-        'guillotine': 'guillotine',
-        'armbar': 'clé de bras',
-        'triangle choke': 'triangle',
-        'triangle armbar': 'triangle avec clé de bras',
-        'kimura': 'kimura',
-        'americana': 'americana',
-        'kneebar': 'clé de genou',
-        'ankle lock': 'clé de cheville',
-        'heel hook': 'crochetage de talon',
-        "d'arce choke": "étranglement D'Arce",
-        'darce choke': "étranglement D'Arce",
-        'anaconda choke': 'anaconda',
-        'von flue choke': 'Von Flue',
-        'neck crank': 'crank cervical',
-      }
-      const translatedSub = frDetails[cleanDetail.toLowerCase()] ?? cleanDetail
-      return `Soumission (${translatedSub})`
-    }
-    return 'Soumission'
-  }
-  if (lower.includes('unanimous') || /^u-dec$/i.test(m)) return 'Décision unanime'
-  if (lower.includes('split') || /^s-dec$/i.test(m)) return 'Décision partagée'
-  if (lower.includes('majority') || /^m-dec$/i.test(m)) return 'Décision majoritaire'
-  if (lower.includes('decision') || /^dec$/i.test(m)) return 'Décision'
-  if (lower.includes('disqualification') || /^dq$/i.test(m)) return 'Disqualification'
-  if (lower.includes('no contest') || /^nc$/i.test(m)) return 'Sans décision'
+  if (lower.includes('unanimous') || /^u-dec$/i.test(m)) return words.unanimous
+  if (lower.includes('split') || /^s-dec$/i.test(m)) return words.split
+  if (lower.includes('majority') || /^m-dec$/i.test(m)) return words.majority
+  if (lower.includes('decision') || /^dec$/i.test(m)) return words.decision
+  if (lower.includes('disqualification') || /^dq$/i.test(m)) return words.disqualification
+  if (lower.includes('no contest') || /^nc$/i.test(m)) return words.noContest
   return method
 }
 
@@ -938,14 +929,14 @@ function ChampionTimeline({ entry }: { entry: RecordEntry }) {
   const openProfile = useContext(OpenProfileContext)
   const fights = entry.title_fights ?? []
   const stats = [
-    { label: L(i18n.language, 'Disputas de cinturão', 'Title fights', 'Combats de titre'), value: fights.length },
-    { label: L(i18n.language, 'Cinturões conquistados', 'Belts won', 'Ceintures gagnées'), value: fights.filter((fight) => fight.role === 'won_title').length },
-    { label: L(i18n.language, 'Defesas', 'Defenses', 'Défenses'), value: fights.filter((fight) => fight.role === 'defense').length },
-    { label: L(i18n.language, 'Derrotas', 'Losses', 'Défaites'), value: fights.filter((fight) => fight.result === 'loss').length },
+    { label: L(i18n.language, 'Disputas de cinturão', 'Title fights', 'Combats de titre', 'Peleas por el título'), value: fights.length },
+    { label: L(i18n.language, 'Cinturões conquistados', 'Belts won', 'Ceintures gagnées', 'Cinturones ganados'), value: fights.filter((fight) => fight.role === 'won_title').length },
+    { label: L(i18n.language, 'Defesas', 'Defenses', 'Défenses', 'Defensas'), value: fights.filter((fight) => fight.role === 'defense').length },
+    { label: L(i18n.language, 'Derrotas', 'Losses', 'Défaites', 'Derrotas'), value: fights.filter((fight) => fight.result === 'loss').length },
   ]
 
   return (
-    <section aria-label={L(i18n.language, `${entry.champion}: todas as disputas de cinturão`, `${entry.champion}: every title fight`, `${entry.champion} : chaque combat de titre`)} className="fade-up mt-2 min-w-0 border-2 border-[var(--rule)] bg-[var(--surface-3)] p-3 sm:p-4">
+    <section aria-label={L(i18n.language, `${entry.champion}: todas as disputas de cinturão`, `${entry.champion}: every title fight`, `${entry.champion} : chaque combat de titre`, `${entry.champion}: todas las peleas por el título`)} className="fade-up mt-2 min-w-0 border-2 border-[var(--rule)] bg-[var(--surface-3)] p-3 sm:p-4">
       <dl className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
         {stats.map((stat) => (
           <div key={stat.label} className="metric-tile px-3 py-2">
@@ -962,7 +953,7 @@ function ChampionTimeline({ entry }: { entry: RecordEntry }) {
           ))}
         </ol>
       ) : (
-        <p className="theme-muted mt-4 text-sm">{L(i18n.language, 'Nenhuma disputa de cinturão encontrada no histórico.', 'No title fights found in the fight history.', 'Aucun combat de titre dans l’historique.')}</p>
+        <p className="theme-muted mt-4 text-sm">{L(i18n.language, 'Nenhuma disputa de cinturão encontrada no histórico.', 'No title fights found in the fight history.', 'Aucun combat de titre dans l’historique.', 'No se encontraron peleas por el título en el historial.')}</p>
       )}
 
       <button
@@ -970,7 +961,7 @@ function ChampionTimeline({ entry }: { entry: RecordEntry }) {
         onClick={() => openProfile(entry.champion)}
         className="ghost-action mt-4 inline-flex w-full items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-main)] transition hover:!bg-[#F2C230] hover:text-[#0E0E0E]"
       >
-        {L(i18n.language, 'Ver perfil completo', 'View full profile', 'Voir le profil complet')}
+        {L(i18n.language, 'Ver perfil completo', 'View full profile', 'Voir le profil complet', 'Ver perfil completo')}
       </button>
     </section>
   )
@@ -1008,7 +999,7 @@ function TitleFightRow({ fight, previous }: { fight: TitleFight; previous: Title
             </span>
             {fight.title_type === 'interim' && !/interim/i.test(fight.label) ? (
               <span className="border border-[var(--rule)] px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-main)]">
-                {L(i18n.language, 'Interino', 'Interim', 'Intérimaire')}
+                {L(i18n.language, 'Interino', 'Interim', 'Intérimaire', 'Interino')}
               </span>
             ) : null}
           </div>

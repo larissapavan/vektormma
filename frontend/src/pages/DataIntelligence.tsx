@@ -22,6 +22,7 @@ const DATA_ECOSYSTEM_SOURCES = [
     scopePt: 'Telemetria oficial round a round, golpes significativos, controle de solo e biometria dos lutadores (1993–2026).',
     scopeEn: 'Official round-by-round fight telemetry, significant strikes, ground control time, and biometrics (1993–2026).',
     scopeFr: 'Télémétrie officielle round par round, frappes significatives, contrôle au sol et biométrie (1993–2026).',
+    scopeEs: 'Telemetría oficial asalto por asalto, golpes significativos, control en el suelo y biometría de los peleadores (1993–2026).',
   },
   {
     org: 'PFL',
@@ -31,6 +32,7 @@ const DATA_ECOSYSTEM_SOURCES = [
     scopePt: 'Estrutura de torneio regular, pontuação do SmartCage, playoffs e campeonatos sazonais de US$ 1M.',
     scopeEn: 'Regular season tournament structure, SmartCage metrics, playoffs, and $1M championship brackets.',
     scopeFr: 'Structure de tournoi de saison régulière, métriques SmartCage, éliminatoires et finales à 1M$.',
+    scopeEs: 'Estructura de torneo de temporada regular, métricas de SmartCage, playoffs y campeonatos de 1 millón de dólares.',
   },
   {
     org: 'ONE',
@@ -40,6 +42,7 @@ const DATA_ECOSYSTEM_SOURCES = [
     scopePt: 'Regras globais de MMA, combates de Muay Thai com luvas abertas de 4oz e campeões mundiais.',
     scopeEn: 'Global martial arts ruleset, 4oz open-finger glove Muay Thai, and world title holders.',
     scopeFr: 'Règles globales de MMA, Muay Thai en gants 4oz à doigts ouverts et champions du monde.',
+    scopeEs: 'Reglamento global de artes marciales mixtas, muay thai con guantes de 4 oz de dedos abiertos y campeones mundiales.',
   },
   {
     org: 'Bellator',
@@ -49,6 +52,7 @@ const DATA_ECOSYSTEM_SOURCES = [
     scopePt: 'Acervo histórico completo do Bellator (2009–2023), torneios Grand Prix e linhagens oficiais de cinturões.',
     scopeEn: 'Full Bellator archive (2009–2023), Grand Prix tournament brackets, and title lineages.',
     scopeFr: 'Archives complètes du Bellator (2009–2023), tournois Grand Prix et lignées de ceintures.',
+    scopeEs: 'Archivo completo de Bellator (2009–2023), llaves de torneos Grand Prix y linajes de cinturones.',
   },
   {
     org: 'Camps & Gyms',
@@ -58,6 +62,7 @@ const DATA_ECOSYSTEM_SOURCES = [
     scopePt: 'Cartéis no circuito regional (LFA, Jungle Fight, Cage Warriors), mapeamento de academias e histórico de camps.',
     scopeEn: 'Regional circuit track records (LFA, Jungle Fight, Cage Warriors), camp affiliations, and gym directories.',
     scopeFr: 'Palmarès sur les circuits régionaux, affiliations aux camps et annuaire des salles d’entraînement.',
+    scopeEs: 'Récords en circuitos regionales (LFA, Jungle Fight, Cage Warriors), afiliaciones a campamentos y directorio de gimnasios.',
   },
 ]
 
@@ -119,7 +124,7 @@ export function DataIntelligence() {
           <section className="surface-card rounded-[20px] p-4 sm:p-6 lg:p-8">
             <div className="mb-6 border-b border-[var(--border-subtle)] pb-4">
               <span className="font-mono text-xs uppercase tracking-widest text-[#E11D48] font-bold">
-                {L(i18n.language, 'ARQUITETURA DE DADOS', 'DATA ARCHITECTURE', 'ARCHITECTURE DES DONNÉES')}
+                {L(i18n.language, 'ARQUITETURA DE DADOS', 'DATA ARCHITECTURE', 'ARCHITECTURE DES DONNÉES', 'ARQUITECTURA DE DATOS')}
               </span>
               <h2 className="mt-1 font-display font-black text-xl sm:text-2xl uppercase tracking-tight text-[var(--text-primary)] dark:text-white">
                 {t('dataIntelligence.pipelineTitle')}
@@ -136,10 +141,10 @@ export function DataIntelligence() {
           <section className="surface-card rounded-[20px] p-4 sm:p-6">
             <div className="mb-4">
               <span className="font-mono text-xs uppercase tracking-widest text-[#E11D48] font-bold">
-                {L(i18n.language, 'ECOSSISTEMA', 'ECOSYSTEM', 'ÉCOSYSTÈME')}
+                {L(i18n.language, 'ECOSSISTEMA', 'ECOSYSTEM', 'ÉCOSYSTÈME', 'ECOSISTEMA')}
               </span>
               <h3 className="mt-1 font-display font-bold text-lg sm:text-xl uppercase tracking-tight text-[var(--text-primary)] dark:text-white">
-                {L(i18n.language, 'Fontes de Dados & Cobertura Analítica', 'Data Sources & Coverage', 'Sources de Données & Couverture')}
+                {L(i18n.language, 'Fontes de Dados & Cobertura Analítica', 'Data Sources & Coverage', 'Sources de Données & Couverture', 'Fuentes de datos y cobertura analítica')}
               </h3>
             </div>
 
@@ -154,7 +159,7 @@ export function DataIntelligence() {
                       className="rounded-md px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider"
                       style={{ backgroundColor: `${src.accent}15`, color: src.accent }}
                     >
-                      {src.org}
+                      {src.org === 'Camps & Gyms' ? L(i18n.language, 'Academias & Camps', 'Camps & Gyms', 'Salles & Camps', 'Gimnasios y campamentos') : src.org}
                     </span>
                     <a
                       href={src.href}
@@ -169,7 +174,7 @@ export function DataIntelligence() {
                     {src.name}
                   </h4>
                   <p className="mt-1 text-xs leading-relaxed text-[var(--text-secondary)] dark:text-neutral-400">
-                    {L(i18n.language, src.scopePt, src.scopeEn, src.scopeFr)}
+                    {L(i18n.language, src.scopePt, src.scopeEn, src.scopeFr, src.scopeEs)}
                   </p>
                 </div>
               ))}
@@ -190,7 +195,7 @@ function ModernDataPipeline() {
       <div className="w-full">
         <div className="mb-2 text-center">
           <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#2563EB]">
-            {L(i18n.language, '01. FONTES PRIMÁRIAS DE INGESTÃO', '01. PRIMARY INGESTION SOURCES', '01. SOURCES PRIMAIRES D’INGESTION')}
+            {L(i18n.language, '01. FONTES PRIMÁRIAS DE INGESTÃO', '01. PRIMARY INGESTION SOURCES', '01. SOURCES PRIMAIRES D’INGESTION', '01. FUENTES PRIMARIAS DE INGESTA')}
           </span>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 w-full">
@@ -213,14 +218,14 @@ function ModernDataPipeline() {
         </div>
       </div>
 
-      <PipelineFlowDown label={L(i18n.language, 'Batch ETL & Web Scraping em conformidade com robots.txt', 'Batch ETL & robots.txt Compliant Ingestion', 'Batch ETL & Ingestion conforme robots.txt')} />
+      <PipelineFlowDown label={L(i18n.language, 'ETL em lote e coleta web em conformidade com robots.txt', 'Batch ETL & robots.txt Compliant Ingestion', 'ETL par lots et collecte conforme à robots.txt', 'ETL por lotes y recopilación web conforme a robots.txt')} />
 
       {/* 2. Camada de Dados Brutos */}
       <div className="w-full max-w-xl rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] p-3 sm:p-4 text-center">
         <div className="flex items-center justify-center gap-2">
           <Database className="h-4 w-4 text-[#38BDF8]" />
           <h4 className="font-display font-bold text-sm uppercase tracking-wider text-[var(--text-primary)] dark:text-white">
-            {L(i18n.language, 'Ingestão de Dados Brutos (Raw Layer)', 'Raw Ingestion Layer', 'Couche de Données Brutes')}
+            {L(i18n.language, 'Ingestão de Dados Brutos', 'Raw Ingestion Layer', 'Couche de Données Brutes', 'Capa de ingesta de datos en bruto')}
           </h4>
         </div>
         <p className="mt-1 text-[11px] text-[var(--text-secondary)] dark:text-neutral-400">
@@ -229,6 +234,7 @@ function ModernDataPipeline() {
             'Mais de 18.000 combates e 11.500 perfis registrados com controle de esquemas CSV e hashes de integridade.',
             'Over 18,000 bouts and 11,500 profiles recorded with CSV schema validation and uniqueness hashing.',
             'Plus de 18 000 combats et 11 500 profils enregistrés avec contrôle de schéma CSV et hachages d’intégrité.',
+            'Más de 18.000 combates y 11.500 perfiles registrados, con validación de esquemas CSV y hashes de integridad.',
           )}
         </p>
       </div>
@@ -240,7 +246,7 @@ function ModernDataPipeline() {
         <div className="flex items-center justify-center gap-2">
           <Layers className="h-4 w-4 text-[#A855F7]" />
           <h4 className="font-display font-bold text-sm uppercase tracking-wider text-[var(--text-primary)] dark:text-white">
-            {L(i18n.language, 'Tratamento & Resolução de Entidades', 'Cleansing & Entity Resolution', 'Nettoyage & Résolution d’Entités')}
+            {L(i18n.language, 'Tratamento & Resolução de Entidades', 'Cleansing & Entity Resolution', 'Nettoyage & Résolution d’Entités', 'Depuración y resolución de entidades')}
           </h4>
         </div>
         <p className="mt-1 text-[11px] text-[var(--text-secondary)] dark:text-neutral-400">
@@ -249,6 +255,7 @@ function ModernDataPipeline() {
             'Fusão de homônimos entre organizações, padronização de categorias de peso e unificação de cartéis de carreira.',
             'Cross-organization deduplication, standardizing weight divisions, and merging multi-circuit fight records.',
             'Fusion des doublons entre organisations, harmonisation des catégories de poids et consolidation des palmarès.',
+            'Fusión de homónimos entre organizaciones, estandarización de divisiones de peso y unificación de récords de carrera.',
           )}
         </p>
       </div>
@@ -261,7 +268,7 @@ function ModernDataPipeline() {
           <div className="flex items-center justify-center gap-2">
             <Cpu className="h-4 w-4 text-[#F59E0B]" />
             <h4 className="font-display font-bold text-sm sm:text-base uppercase tracking-wider text-[var(--text-primary)] dark:text-white">
-              {L(i18n.language, 'Engenharia de Atributos (46 Features Preditivas)', 'Feature Engineering (46 Predictive Features)', 'Ingénierie des Variables (46 Features ML)')}
+              {L(i18n.language, 'Engenharia de Variáveis (46 Variáveis Preditivas)', 'Feature Engineering (46 Predictive Features)', 'Ingénierie des Variables (46 variables prédictives)', 'Ingeniería de variables (46 variables predictivas)')}
             </h4>
           </div>
           <p className="mt-1 text-[11px] text-[var(--text-secondary)] dark:text-neutral-400">
@@ -270,6 +277,7 @@ function ModernDataPipeline() {
               'Variáveis diferenciais computadas entre os dois oponentes imediatamente antes de cada luta.',
               'Differential metrics computed between the two opposing corners right before fight night.',
               'Variables différentielles calculées entre les deux combattants avant chaque affrontement.',
+              'Variables diferenciales calculadas entre los dos oponentes justo antes de cada pelea.',
             )}
           </p>
         </div>
@@ -277,58 +285,59 @@ function ModernDataPipeline() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-left">
           <div className="rounded-xl border border-[var(--border-subtle)]/60 bg-black/10 dark:bg-white/[0.02] p-2.5">
             <span className="font-mono text-[10px] font-bold uppercase text-[#F59E0B] block">
-              {L(i18n.language, '📏 Biometria & Postura', '📏 Biometrics & Stance', '📏 Biométrie & Garde')}
+              {L(i18n.language, '📏 Biometria & Base', '📏 Biometrics & Stance', '📏 Biométrie & Garde', '📏 Biometría y guardia')}
             </span>
             <span className="text-[11px] text-[var(--text-secondary)] dark:text-neutral-300 leading-tight block mt-0.5">
-              {L(i18n.language, 'Diferencial de envergadura, alcance de pernas, idade, altura e base (Ortodoxo vs Southpaw).', 'Reach, leg reach, age, height advantage, and stance matchups (Orthodox vs Southpaw).', 'Écarts d’allonge, allonge de jambes, âge, taille et garde (Droitier vs Fausse patte).')}
+              {L(i18n.language, 'Diferencial de envergadura, alcance de pernas, idade, altura e base (Destro vs Canhoto).', 'Reach, leg reach, age, height advantage, and stance matchups (Orthodox vs Southpaw).', 'Écarts d’allonge, allonge de jambes, âge, taille et garde (Droitier vs Gaucher).', 'Diferencia de alcance, alcance de piernas, edad, estatura y guardia (ortodoxo vs. zurdo).')}
             </span>
           </div>
 
           <div className="rounded-xl border border-[var(--border-subtle)]/60 bg-black/10 dark:bg-white/[0.02] p-2.5">
             <span className="font-mono text-[10px] font-bold uppercase text-[#E11D48] block">
-              {L(i18n.language, '🥊 Trocação (Striking)', '🥊 Striking Telemetry', '🥊 Télémétrie de Striking')}
+              {L(i18n.language, '🥊 Trocação', '🥊 Striking Telemetry', '🥊 Télémétrie de frappe', '🥊 Telemetría de golpeo')}
             </span>
             <span className="text-[11px] text-[var(--text-secondary)] dark:text-neutral-300 leading-tight block mt-0.5">
-              {L(i18n.language, 'Golpes significativos conectados/min (SLpM), absorvidos (SApM), precisão e defesa.', 'Significant strikes landed/min (SLpM), absorbed/min (SApM), striking accuracy and defense %.', 'Frappes significatives/min (SLpM), absorbées (SApM), précision et défense %.')}
+              {L(i18n.language, 'Golpes significativos conectados/min (SLpM), absorvidos (SApM), precisão e defesa.', 'Significant strikes landed/min (SLpM), absorbed/min (SApM), striking accuracy and defense %.', 'Frappes significatives/min (SLpM), absorbées (SApM), précision et défense %.', 'Golpes significativos conectados/min (SLpM), recibidos (SApM), precisión y defensa.')}
             </span>
           </div>
 
           <div className="rounded-xl border border-[var(--border-subtle)]/60 bg-black/10 dark:bg-white/[0.02] p-2.5">
             <span className="font-mono text-[10px] font-bold uppercase text-[#38BDF8] block">
-              {L(i18n.language, '🤼 Grappling & Quedas', '🤼 Grappling & Control', '🤼 Grappling & Sol')}
+              {L(i18n.language, '🤼 Luta no Chão & Quedas', '🤼 Grappling & Control', '🤼 Lutte au sol & Contrôle', '🤼 Lucha en el suelo y derribos')}
             </span>
             <span className="text-[11px] text-[var(--text-secondary)] dark:text-neutral-300 leading-tight block mt-0.5">
-              {L(i18n.language, 'Média de quedas/15min, acurácia de takedown, defesa de quedas e finalizações/15min.', 'Takedown avg/15min, takedown accuracy, takedown defense %, and submission attempts.', 'Moyenne d’amenées/15min, précision, défense de lutte et tentatives de soumission.')}
+              {L(i18n.language, 'Média de quedas/15min, precisão de quedas, defesa de quedas e finalizações/15min.', 'Takedown avg/15min, takedown accuracy, takedown defense %, and submission attempts.', 'Moyenne d’amenées/15min, précision, défense de lutte et tentatives de soumission.', 'Promedio de derribos/15 min, precisión de derribos, defensa de derribos e intentos de sumisión/15 min.')}
             </span>
           </div>
 
           <div className="rounded-xl border border-[var(--border-subtle)]/60 bg-black/10 dark:bg-white/[0.02] p-2.5">
             <span className="font-mono text-[10px] font-bold uppercase text-[#10B981] block">
-              {L(i18n.language, '📈 Elo Rating & Momento', '📈 Elo Rating & Momentum', '📈 Elo Rating & Dynamique')}
+              {L(i18n.language, '📈 Pontuação Elo & Momento', '📈 Elo Rating & Momentum', '📈 Cote Elo & Dynamique', '📈 Puntuación Elo y momento')}
             </span>
             <span className="text-[11px] text-[var(--text-secondary)] dark:text-neutral-300 leading-tight block mt-0.5">
-              {L(i18n.language, 'Rating Elo ponderado por nível de oposição, streak de vitórias e dias de inatividade.', 'Opponent-quality adjusted Elo rating, win/loss streaks, and days since last fight.', 'Rating Elo ajusté selon l’opposition, séries de victoires et jours d’inactivité.')}
+              {L(i18n.language, 'Pontuação Elo ponderada pelo nível da oposição, sequência de vitórias e dias de inatividade.', 'Opponent-quality adjusted Elo rating, win/loss streaks, and days since last fight.', 'Cote Elo ajustée selon l’opposition, séries de victoires et jours d’inactivité.', 'Puntuación Elo ajustada por la calidad de los rivales, rachas de victorias y días de inactividad.')}
             </span>
           </div>
         </div>
       </div>
 
-      <PipelineFlowDown label={L(i18n.language, 'Validação Temporal com Janela Expansiva (Anti-Leakage)', 'Chronological Walk-Forward Split (Zero Lookahead)', 'Validation Temporelle sans Fuite (Zero Leakage)')} />
+      <PipelineFlowDown label={L(i18n.language, 'Validação Temporal com Janela Expansiva (Sem Vazamento de Dados)', 'Chronological Walk-Forward Split (Zero Lookahead)', 'Validation Temporelle sans Fuite de Données', 'Validación temporal con ventana expansiva (sin fuga de datos)')} />
 
       {/* 5. Previsão & Explicabilidade */}
       <div className="w-full max-w-xl rounded-2xl border border-[#C8102E]/30 bg-[#C8102E]/10 p-4 sm:p-5 text-center shadow-lg shadow-[#C8102E]/5">
         <div className="flex items-center justify-center gap-2">
           <Sparkles className="h-4 w-4 text-[#FF2E54]" />
           <h4 className="font-display font-extrabold text-sm sm:text-base uppercase tracking-wider text-white">
-            {L(i18n.language, 'Previsão de Vitória & Explicabilidade SHAP', 'Win Probability & SHAP Explainability', 'Probabilité de Victoire & Explicabilité SHAP')}
+            {L(i18n.language, 'Previsão de Vitória & Explicabilidade SHAP', 'Win Probability & SHAP Explainability', 'Probabilité de Victoire & Explicabilité SHAP', 'Probabilidad de victoria y explicabilidad SHAP')}
           </h4>
         </div>
         <p className="mt-1 text-[11px] sm:text-xs text-neutral-300 leading-relaxed max-w-lg mx-auto">
           {L(
             i18n.language,
-            'Ensemble de Gradient Boosting calibrado estatisticamente por probabilidade. Os valores SHAP revelam exatamente quais fatores justificam o favoritismo de cada córner.',
+            'Conjunto de Gradient Boosting calibrado estatisticamente por probabilidade. Os valores SHAP revelam exatamente quais fatores justificam o favoritismo de cada córner.',
             'Calibrated Gradient Boosting ensemble outputting true probabilities. TreeSHAP explains exactly which features drove the odds for each corner.',
             'Ensemble de Gradient Boosting calibré en probabilités. Les valeurs SHAP explicitent les variables clés favorisant chaque coin.',
+            'Conjunto de Gradient Boosting calibrado estadísticamente por probabilidad. Los valores SHAP revelan exactamente qué factores justifican el favoritismo de cada esquina.',
           )}
         </p>
       </div>

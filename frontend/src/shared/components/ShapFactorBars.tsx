@@ -27,8 +27,8 @@ export function ShapFactorBars({
     <article className="surface-card rounded-[20px] p-3 sm:p-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Explicabilidade da IA (SHAP)', 'SHAP explainability', 'Explicabilité de l\'IA (SHAP)')}</p>
-          <h2 className="mt-0.5 text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{L(i18n.language, 'Fatores Decisivos do Combate', 'Key matchup factors', 'Facteurs décisifs du combat')}</h2>
+          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Explicabilidade da IA (SHAP)', 'SHAP explainability', 'Explicabilité de l\'IA (SHAP)', 'Explicabilidad de la IA (SHAP)')}</p>
+          <h2 className="mt-0.5 text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{L(i18n.language, 'Fatores Decisivos do Combate', 'Key matchup factors', 'Facteurs décisifs du combat', 'Factores decisivos del enfrentamiento')}</h2>
         </div>
         <div className="flex flex-wrap items-center gap-3 text-[11px] font-bold uppercase tracking-[0.12em]">
           <span className="inline-flex items-center gap-1.5 text-[#C8102E]">
@@ -47,6 +47,7 @@ export function ShapFactorBars({
           'As barras indicam qual lutador foi favorecido por cada métrica estatística. Barras maiores indicam impacto mais forte.',
           'Bars are colored by the fighter they favored. Longer means a stronger push.',
           'Les barres indiquent quel combattant a été favorisé par chaque métrique. Plus la barre est longue, plus l\'effet est fort.',
+          'Las barras se colorean según el peleador al que favorecieron. Más largas significa un empuje más fuerte.',
         )}
       </p>
 
@@ -64,6 +65,7 @@ export function ShapFactorBars({
             `${featureTitle} favoreceu a previsão para ${favoredName}.`,
             factor.explanation,
             `${featureTitle} a favorisé la prévision pour ${favoredName}.`,
+            `${featureTitle} inclinó el pronóstico a favor de ${favoredName}.`,
           )
 
           return (
@@ -75,7 +77,7 @@ export function ShapFactorBars({
               <div
                 className="mt-1.5 h-3 overflow-hidden rounded-full bg-[#262626]"
                 role="img"
-                aria-label={L(i18n.language, `${featureTitle} favoreceu ${favoredName}`, `${factor.feature} favored ${favoredName}`, `${featureTitle} a favorisé ${favoredName}`)}
+                aria-label={L(i18n.language, `${featureTitle} favoreceu ${favoredName}`, `${factor.feature} favored ${favoredName}`, `${featureTitle} a favorisé ${favoredName}`, `${featureTitle} favoreció a ${favoredName}`)}
               >
                 <div className={`h-full rounded-full ${color}`} style={{ width: `${width}%` }} />
               </div>

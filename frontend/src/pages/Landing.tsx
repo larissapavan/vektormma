@@ -13,15 +13,18 @@ interface OrgMetric {
   labelPt: string
   labelEn: string
   labelFr: string
+  labelEs: string
   valuePt: string
   valueEn: string
   valueFr: string
+  valueEs: string
 }
 
 interface OrgStatusBadge {
   labelPt: string
   labelEn: string
   labelFr: string
+  labelEs: string
   pulse?: boolean
 }
 
@@ -32,6 +35,7 @@ interface OrgCardInfo {
   fullName: string
   fullNameEn?: string
   fullNameFr?: string
+  fullNameEs?: string
   accentColor: string
   hoverBorder: string
   glove: { src: string; glow: string; duration: string; delay: string }
@@ -52,11 +56,12 @@ const ORG_CARDS: OrgCardInfo[] = [
       labelPt: 'Previsões IA',
       labelEn: 'AI Predictions',
       labelFr: 'Pronostics IA',
+      labelEs: 'Pronósticos IA',
       pulse: true,
     },
     metrics: [
-      { labelPt: 'Divisões', labelEn: 'Divisions', labelFr: 'Divisions', valuePt: '12', valueEn: '12', valueFr: '12' },
-      { labelPt: 'Lutas', labelEn: 'Bouts', labelFr: 'Combats', valuePt: '8.9k+', valueEn: '8.9k+', valueFr: '8.9k+' },
+      { labelPt: 'Divisões', labelEn: 'Divisions', labelFr: 'Divisions', labelEs: 'Divisiones', valuePt: '12', valueEn: '12', valueFr: '12', valueEs: '12' },
+      { labelPt: 'Lutas', labelEn: 'Bouts', labelFr: 'Combats', labelEs: 'Peleas', valuePt: '8.9k+', valueEn: '8.9k+', valueFr: '8.9k+', valueEs: '8.9k+' },
     ],
   },
   {
@@ -71,11 +76,12 @@ const ORG_CARDS: OrgCardInfo[] = [
       labelPt: 'Liga & Torneio',
       labelEn: 'Tournament',
       labelFr: 'Tournoi Actif',
+      labelEs: 'Torneo',
       pulse: false,
     },
     metrics: [
-      { labelPt: 'Divisões', labelEn: 'Divisions', labelFr: 'Divisions', valuePt: '10', valueEn: '10', valueFr: '10' },
-      { labelPt: 'Formato', labelEn: 'Format', labelFr: 'Format', valuePt: 'Torneio', valueEn: 'Tournament', valueFr: 'Tournoi' },
+      { labelPt: 'Divisões', labelEn: 'Divisions', labelFr: 'Divisions', labelEs: 'Divisiones', valuePt: '10', valueEn: '10', valueFr: '10', valueEs: '10' },
+      { labelPt: 'Formato', labelEn: 'Format', labelFr: 'Format', labelEs: 'Formato', valuePt: 'Torneio', valueEn: 'Tournament', valueFr: 'Tournoi', valueEs: 'Torneo' },
     ],
   },
   {
@@ -90,11 +96,12 @@ const ORG_CARDS: OrgCardInfo[] = [
       labelPt: 'Previsões IA',
       labelEn: 'AI Predictions',
       labelFr: 'Pronostics IA',
+      labelEs: 'Pronósticos IA',
       pulse: true,
     },
     metrics: [
-      { labelPt: 'Divisões', labelEn: 'Divisions', labelFr: 'Divisions', valuePt: '10', valueEn: '10', valueFr: '10' },
-      { labelPt: 'Modalidades', labelEn: 'Disciplines', labelFr: 'Disciplines', valuePt: 'MMA & Muay Thai', valueEn: 'MMA & Muay Thai', valueFr: 'MMA & Muay Thai' },
+      { labelPt: 'Divisões', labelEn: 'Divisions', labelFr: 'Divisions', labelEs: 'Divisiones', valuePt: '10', valueEn: '10', valueFr: '10', valueEs: '10' },
+      { labelPt: 'Modalidades', labelEn: 'Disciplines', labelFr: 'Disciplines', labelEs: 'Disciplinas', valuePt: 'MMA & Muay Thai', valueEn: 'MMA & Muay Thai', valueFr: 'MMA & Muay Thai', valueEs: 'MMA & Muay Thai' },
     ],
   },
   {
@@ -104,6 +111,7 @@ const ORG_CARDS: OrgCardInfo[] = [
     fullName: 'Bellator MMA',
     fullNameEn: 'Bellator MMA',
     fullNameFr: 'Bellator MMA',
+    fullNameEs: 'Bellator MMA',
     accentColor: '#10B981',
     hoverBorder: 'border-[#10B981]/35 hover:border-[#10B981] hover:shadow-[0_0_30px_rgba(16,185,129,0.28),inset_0_0_15px_rgba(16,185,129,0.08)]',
     glove: { src: '/mma-glove-bellator.webp', glow: '#10B981', duration: '4.9s', delay: '-0.8s' },
@@ -111,11 +119,12 @@ const ORG_CARDS: OrgCardInfo[] = [
       labelPt: 'Arquivo Histórico',
       labelEn: 'Historical Archive',
       labelFr: 'Archives',
+      labelEs: 'Archivo histórico',
       pulse: false,
     },
     metrics: [
-      { labelPt: 'Divisões', labelEn: 'Divisions', labelFr: 'Divisions', valuePt: '10', valueEn: '10', valueFr: '10' },
-      { labelPt: 'Campeões', labelEn: 'Champions', labelFr: 'Champions', valuePt: '71', valueEn: '71', valueFr: '71' },
+      { labelPt: 'Divisões', labelEn: 'Divisions', labelFr: 'Divisions', labelEs: 'Divisiones', valuePt: '10', valueEn: '10', valueFr: '10', valueEs: '10' },
+      { labelPt: 'Campeões', labelEn: 'Champions', labelFr: 'Champions', labelEs: 'Campeones', valuePt: '71', valueEn: '71', valueFr: '71', valueEs: '71' },
     ],
   },
 ]
@@ -170,9 +179,10 @@ export function Landing() {
               <p className="font-sans text-sm sm:text-base text-[var(--text-secondary)] dark:text-neutral-400 font-normal max-w-lg leading-relaxed">
                 {L(
                   i18n.language,
-                  'A ciência dos dados aplicada ao combate. Previsões por machine learning, cartéis históricos e telemetria analítica com a inteligência da Vektor MMA.',
+                  'A ciência de dados aplicada ao combate. Previsões por aprendizado de máquina, cartéis históricos e telemetria analítica com a inteligência da Vektor MMA.',
                   'Data science applied to combat sports. Machine learning predictions, official records, and analytical telemetry with Vektor MMA intelligence.',
-                  'La science des données appliquée au combat. Prédictions par machine learning, historiques et télémétrie analytique avec l\'intelligence Vektor MMA.',
+                  "La science des données appliquée au combat. Prévisions par apprentissage automatique, historiques et télémétrie analytique avec l'intelligence Vektor MMA.",
+                  'La ciencia de datos aplicada al combate. Pronósticos con aprendizaje automático, récords históricos y telemetría analítica con la inteligencia de Vektor MMA.',
                 )}
               </p>
 
@@ -188,6 +198,7 @@ export function Landing() {
                       'EXPLORAR ORGANIZAÇÕES',
                       'EXPLORE ORGANIZATIONS',
                       'EXPLORER LES ORGANISATIONS',
+                      'EXPLORAR ORGANIZACIONES',
                     )}
                   </span>
                   <ArrowDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-1" />
@@ -203,7 +214,8 @@ export function Landing() {
                       i18n.language,
                       'VER MODELO PREDITIVO',
                       'EXPLORE AI MODEL',
-                      'MODÈLE PRÉDICTIF',
+                      'VOIR LE MODÈLE PRÉDICTIF',
+                      'VER EL MODELO PREDICTIVO',
                     )}
                   </span>
                   <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
@@ -234,7 +246,7 @@ export function Landing() {
                 >
                   <img
                     src="/vektor_mma_championship_belt.png"
-                    alt="Cinturão de Campeonato Vektor MMA"
+                    alt={L(i18n.language, 'Cinturão de campeão da Vektor MMA', 'Vektor MMA championship belt', 'Ceinture de champion Vektor MMA', 'Cinturón de campeón de Vektor MMA')}
                     className="h-auto w-full object-contain filter drop-shadow-[0_20px_35px_rgba(225,29,72,0.25)] select-none pointer-events-none"
                   />
                 </motion.div>
@@ -271,7 +283,7 @@ export function Landing() {
                 <span className="text-[#E11D48] font-display font-extrabold text-2xl sm:text-3xl">+</span>
               </div>
               <p className="mt-1 font-sans text-xs uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400 font-medium">
-                {L(i18n.language, 'Lutas Catalogadas', 'Bouts Cataloged', 'Combats Catalogués')}
+                {L(i18n.language, 'Lutas Catalogadas', 'Bouts Cataloged', 'Combats catalogués', 'Peleas catalogadas')}
               </p>
             </div>
 
@@ -284,7 +296,7 @@ export function Landing() {
                 <span className="text-[#2563EB] font-display font-extrabold text-2xl sm:text-3xl">+</span>
               </div>
               <p className="mt-1 font-sans text-xs uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400 font-medium">
-                {L(i18n.language, 'Atletas Monitorados', 'Athletes Profiled', 'Athlètes Répertoriés')}
+                {L(i18n.language, 'Atletas Monitorados', 'Athletes Profiled', 'Combattants répertoriés', 'Peleadores registrados')}
               </p>
             </div>
 
@@ -296,7 +308,7 @@ export function Landing() {
                 </span>
               </div>
               <p className="mt-1 font-sans text-xs uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400 font-medium">
-                {L(i18n.language, 'Variáveis de ML por Combate', 'ML Features Computed', 'Variables ML / Combat')}
+                {L(i18n.language, 'Variáveis Preditivas por Combate', 'ML Features Computed', 'Variables prédictives par combat', 'Variables predictivas por pelea')}
               </p>
             </div>
 
@@ -309,7 +321,7 @@ export function Landing() {
                 <span className="text-[#F59E0B] font-display font-extrabold text-2xl sm:text-3xl">+</span>
               </div>
               <p className="mt-1 font-sans text-xs uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400 font-medium">
-                {L(i18n.language, 'Anos de Histórico (1993–2026)', 'Years of History (1993–2026)', 'Années d’Histoire (1993–2026)')}
+                {L(i18n.language, 'Anos de Histórico (1993–2026)', 'Years of History (1993–2026)', 'Années d’Histoire (1993–2026)', 'Años de historia (1993–2026)')}
               </p>
             </div>
           </div>
@@ -321,17 +333,17 @@ export function Landing() {
         <section id="organizations-grid" className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 pt-6 sm:pt-8 pb-3 sm:pb-4 w-full">
           <div className="mb-4 sm:mb-5">
             <span className="font-mono text-xs uppercase tracking-widest text-[#E11D48] font-bold">
-              {L(i18n.language, 'LIGAS & ORGANIZAÇÕES', 'LEAGUES & ORGANIZATIONS', 'LIGUES & ORGANISATIONS')}
+              {L(i18n.language, 'LIGAS & ORGANIZAÇÕES', 'LEAGUES & ORGANIZATIONS', 'LIGUES & ORGANISATIONS', 'LIGAS Y ORGANIZACIONES')}
             </span>
             <h2 className="mt-1 font-display font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-[var(--text-primary)] dark:text-white">
-              {L(i18n.language, 'Escolha uma Organização', 'Pick an Organization', 'Choisir une Organisation')}
+              {L(i18n.language, 'Escolha uma Organização', 'Pick an Organization', 'Choisir une Organisation', 'Elige una organización')}
             </h2>
           </div>
 
           {/* Grade de Organizações com Cards Individuais Modernos e Luvas 3D Destacadas */}
           <div
             role="list"
-            aria-label="Organizations"
+            aria-label={L(i18n.language, 'Organizações', 'Organizations', 'Organisations', 'Organizaciones')}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5"
           >
             {ORG_CARDS.map((card) => {
@@ -394,6 +406,7 @@ export function Landing() {
                           card.statusBadge.labelPt,
                           card.statusBadge.labelEn,
                           card.statusBadge.labelFr,
+                          card.statusBadge.labelEs,
                         )}
                       </span>
                     </div>
@@ -409,6 +422,7 @@ export function Landing() {
                           card.fullName,
                           card.fullNameEn ?? card.fullName,
                           card.fullNameFr ?? card.fullName,
+                          card.fullNameEs ?? card.fullName,
                         )}
                       </p>
                     </div>
@@ -451,18 +465,18 @@ export function Landing() {
                     <div className="my-3 grid grid-cols-2 gap-2 border-y border-[var(--border-subtle)] dark:border-white/5 py-2.5">
                       <div>
                         <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400 font-medium block">
-                          {L(i18n.language, card.metrics[0].labelPt, card.metrics[0].labelEn, card.metrics[0].labelFr)}
+                          {L(i18n.language, card.metrics[0].labelPt, card.metrics[0].labelEn, card.metrics[0].labelFr, card.metrics[0].labelEs)}
                         </span>
                         <p className="mt-0.5 font-display font-bold text-sm sm:text-base text-[var(--text-primary)] dark:text-white tabular-nums">
-                          {L(i18n.language, card.metrics[0].valuePt, card.metrics[0].valueEn, card.metrics[0].valueFr)}
+                          {L(i18n.language, card.metrics[0].valuePt, card.metrics[0].valueEn, card.metrics[0].valueFr, card.metrics[0].valueEs)}
                         </p>
                       </div>
                       <div>
                         <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400 font-medium block">
-                          {L(i18n.language, card.metrics[1].labelPt, card.metrics[1].labelEn, card.metrics[1].labelFr)}
+                          {L(i18n.language, card.metrics[1].labelPt, card.metrics[1].labelEn, card.metrics[1].labelFr, card.metrics[1].labelEs)}
                         </span>
                         <p className="mt-0.5 font-display font-bold text-xs sm:text-[13px] text-[var(--text-primary)] dark:text-white leading-tight">
-                          {L(i18n.language, card.metrics[1].valuePt, card.metrics[1].valueEn, card.metrics[1].valueFr)}
+                          {L(i18n.language, card.metrics[1].valuePt, card.metrics[1].valueEn, card.metrics[1].valueFr, card.metrics[1].valueEs)}
                         </p>
                       </div>
                     </div>
@@ -471,7 +485,7 @@ export function Landing() {
                       <span
                         className="inline-flex w-full items-center justify-between rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3.5 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)] transition-all duration-300 group-hover:bg-[var(--accent-color)] group-hover:text-white group-hover:border-[var(--accent-color)] dark:border-white/10 dark:bg-white/5 dark:text-neutral-200 shadow-xs"
                       >
-                        <span>{L(i18n.language, 'Entrar', 'Enter', 'Entrer')}</span>
+                        <span>{L(i18n.language, 'Entrar', 'Enter', 'Entrer', 'Entrar')}</span>
                         <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
                       </span>
                     </div>
@@ -498,9 +512,10 @@ export function Landing() {
                 <span className="text-[11px] sm:text-xs text-[var(--text-secondary)] dark:text-neutral-400">
                   {L(
                     i18n.language,
-                    'Telemetria e predições em esportes de combate',
+                    'Telemetria e previsões em esportes de combate',
                     'Combat sports analytics & AI predictions',
-                    'Télémétrie et prédictions en sports de combat',
+                    'Télémétrie et prévisions en sports de combat',
+                    'Telemetría y pronósticos en deportes de combate',
                   )}
                 </span>
               </div>
@@ -508,20 +523,20 @@ export function Landing() {
               {/* Links de navegação + Redes Sociais */}
               <div className="flex flex-wrap items-center gap-3 sm:gap-5">
                 <nav
-                  aria-label={L(i18n.language, 'Links do rodapé', 'Footer links', 'Liens de bas de page')}
+                  aria-label={L(i18n.language, 'Links do rodapé', 'Footer links', 'Liens de bas de page', 'Enlaces del pie de página')}
                   className="flex items-center gap-3 sm:gap-4 font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400"
                 >
                   <Link to="/about" className="hover:text-[var(--text-primary)] dark:hover:text-white transition">
-                    {L(i18n.language, 'Sobre', 'About', 'À propos')}
+                    {L(i18n.language, 'Sobre', 'About', 'À propos', 'Acerca de')}
                   </Link>
                   <Link to="/data" className="hover:text-[var(--text-primary)] dark:hover:text-white transition">
-                    {L(i18n.language, 'Dados', 'Data', 'Données')}
+                    {L(i18n.language, 'Dados', 'Data', 'Données', 'Datos')}
                   </Link>
                   <Link to="/model" className="hover:text-[var(--text-primary)] dark:hover:text-white transition">
-                    {L(i18n.language, 'Sistema ML', 'ML System', 'Système ML')}
+                    {L(i18n.language, 'Sistema de IA', 'ML System', 'Système d’IA', 'Sistema de IA')}
                   </Link>
                   <Link to="/track-record" className="hover:text-[var(--text-primary)] dark:hover:text-white transition">
-                    {L(i18n.language, 'Acurácia', 'Track Record', 'Historique')}
+                    {L(i18n.language, 'Acurácia', 'Track Record', 'Historique', 'Historial')}
                   </Link>
                 </nav>
 
@@ -539,6 +554,7 @@ export function Landing() {
                   'Projeto analítico independente. Não afiliado ao UFC, PFL, Bellator ou ONE Championship.',
                   'Independent analytics project. Not affiliated with UFC, PFL, Bellator, or ONE Championship.',
                   'Projet analytique indépendant. Non affilié à l’UFC, au PFL, au Bellator ou au ONE Championship.',
+                  'Proyecto analítico independiente. No afiliado a la UFC, la PFL, Bellator ni ONE Championship.',
                 )}
               </p>
               <Link
@@ -550,6 +566,7 @@ export function Landing() {
                   'Metodologia do projeto →',
                   'Project methodology →',
                   'Méthodologie du projet →',
+                  'Metodología del proyecto →',
                 )}
               </Link>
             </div>

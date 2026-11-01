@@ -20,11 +20,12 @@ export function PickChip({ pick, className = '' }: { pick: UpcomingPick | undefi
         `Palpite do modelo baseado em dados estatísticos. Não é recomendação de aposta.`,
         `The model's pick (${edgeLabel(pick.probability).toLowerCase()}), based on each fighter's current stats. Not betting advice.`,
         `Pronostic du modèle (${edgeLabel(pick.probability, 'fr').toLowerCase()}), fondé sur les stats actuelles de chaque combattant. Ce n'est pas un conseil de pari.`,
+        `El pronóstico del modelo (${edgeLabel(pick.probability, 'es').toLowerCase()}), basado en las estadísticas actuales de cada peleador. No es un consejo de apuestas.`,
       )}
     >
       <Sparkles className="h-3 w-3 shrink-0 text-[var(--accent-red)]" aria-hidden="true" />
       <span>
-        {L(i18n.language, 'Modelo', 'Model', 'Modèle')}: {pick.predicted_winner} {shown}
+        {L(i18n.language, 'Modelo', 'Model', 'Modèle', 'Modelo')}: {pick.predicted_winner} {shown}
       </span>
       <span className="h-2 w-14 shrink-0 overflow-hidden rounded-full bg-[var(--rule)]" aria-hidden="true">
         <span className="block h-full bg-[var(--accent-red)]" style={{ width: `${percent}%` }} />

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { getEvents } from '../services/api'
 import type { EventSummary } from '../types/api'
+import i18n from '../../i18n'
+import { L } from '../../i18n/lang'
 
 export function useEvents() {
   const [events, setEvents] = useState<EventSummary[]>([])
@@ -15,7 +17,7 @@ export function useEvents() {
         setEvents(data)
       } catch (requestError) {
         console.error(requestError)
-        setError('Unable to load events from the API.')
+        setError(L(i18n.language, 'Não foi possível carregar os eventos da API.', 'Unable to load events from the API.', 'Impossible de charger les événements depuis l’API.', 'No se pudieron cargar los eventos desde la API.'))
       } finally {
         setLoading(false)
       }

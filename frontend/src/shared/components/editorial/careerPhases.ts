@@ -1,11 +1,13 @@
+import type { ByLang } from '../../../i18n/lang'
+import { getDivisionName } from '../../data/divisions'
 import type { FighterProfile, FightRecord } from '../../types/api'
 
 export interface CareerPhase {
   id: string
   chapterNumber: string
   period: string
-  title: Record<'en' | 'pt' | 'fr', string>
-  story: Record<'en' | 'pt' | 'fr', string>
+  title: ByLang
+  story: ByLang
   wins: number
   losses: number
   finishes: number
@@ -27,6 +29,15 @@ export function buildCareerPhases(
 
   const total = sorted.length
 
+  // The division in every language, so each story names it in its own words.
+  const divisionName = (lang: keyof ByLang, fallback: string) => (profile.division ? getDivisionName(profile.division, lang) : fallback)
+  const division: ByLang = {
+    en: divisionName('en', 'division'),
+    pt: divisionName('pt', 'categoria'),
+    fr: divisionName('fr', 'catégorie').toLowerCase(),
+    es: divisionName('es', 'división'),
+  }
+
   if (total === 0) {
     const wins = profile.wins ?? 0
     const losses = profile.losses ?? 0
@@ -39,11 +50,13 @@ export function buildCareerPhases(
           en: 'Ascent to Combat Mastery',
           pt: 'Ascensão ao Domínio no Combate',
           fr: 'Ascension vers la Maîtrise du Combat',
+          es: 'Ascenso al Dominio del Combate',
         },
         story: {
-          en: `${profile.name} established dominance inside the cage, competing across the highest echelons of the UFC ${profile.division ?? 'division'}.`,
-          pt: `${profile.name} consolidou seu domínio dentro do octógono, competindo no mais alto escalão da categoria ${profile.division ?? ''} do UFC.`,
-          fr: `${profile.name} a imposé sa domination dans l'octogone, évoluant au plus haut niveau de la division ${profile.division ?? ''} de l'UFC.`,
+          en: `${profile.name} established dominance inside the cage, competing across the highest echelons of the UFC ${division.en}.`,
+          pt: `${profile.name} consolidou seu domínio dentro do octógono, competindo no mais alto escalão do ${division.pt} do UFC.`,
+          fr: `${profile.name} a imposé sa domination dans l'octogone, évoluant au plus haut niveau des ${division.fr} de l'UFC.`,
+          es: `${profile.name} consolidó su dominio dentro del octágono, compitiendo en lo más alto del ${division.es} de la UFC.`,
         },
         wins,
         losses,
@@ -70,12 +83,14 @@ export function buildCareerPhases(
         en: 'The Genesis & Octagon Arrival',
         pt: 'A Gênese & Chegada ao Octógono',
         fr: 'La Genèse & Entrée dans l’Octogone',
+        es: 'El Génesis y la Llegada al Octágono',
       },
       badge: 'DEBUT ERA',
-      story: (name: string, div: string, count: number, wins: number, koSub: number) => ({
-        en: `The initial trial by fire. Across ${count} grueling matchups, ${name} laid down their technical foundation, collecting ${wins} victories with ${koSub} devastating finishes that signaled a dangerous new presence in the ${div}.`,
-        pt: `O teste de fogo inicial. Ao longo de ${count} combates intensos, ${name} estabeleceu sua base técnica e acumulou ${wins} vitórias com ${koSub} finalizações contundentes, avisando a divisão ${div} sobre uma nova força.`,
-        fr: `L'épreuve du feu initiale. À travers ${count} combats acharnés, ${name} a forgé ses fondations martiales, signant ${wins} victoires dont ${koSub} finitions éclatantes dans la catégorie ${div}.`,
+      story: (name: string, div: ByLang, count: number, wins: number, koSub: number): ByLang => ({
+        en: `The initial trial by fire. Across ${count} grueling matchups, ${name} laid down their technical foundation, collecting ${wins} victories with ${koSub} devastating finishes that signaled a dangerous new presence in the ${div.en}.`,
+        pt: `O teste de fogo inicial. Ao longo de ${count} combates intensos, ${name} estabeleceu sua base técnica e acumulou ${wins} vitórias com ${koSub} finalizações contundentes, anunciando uma nova força no ${div.pt}.`,
+        fr: `L'épreuve du feu initiale. À travers ${count} combats acharnés, ${name} a forgé ses fondations martiales, signant ${wins} victoires dont ${koSub} avant la limite, éclatantes, chez les ${div.fr}.`,
+        es: `La prueba de fuego inicial. A lo largo de ${count} combates exigentes, ${name} sentó sus bases técnicas y sumó ${wins} victorias, con ${koSub} finalizaciones contundentes que anunciaban una nueva fuerza en el ${div.es}.`,
       }),
     },
     {
@@ -83,12 +98,14 @@ export function buildCareerPhases(
         en: 'The Contender Crucible',
         pt: 'A Forja dos Desafiantes',
         fr: 'L’Épreuve des Prétendants',
+        es: 'El Crisol de los Aspirantes',
       },
       badge: 'CONTENDER RUN',
-      story: (name: string, _div: string, _count: number, wins: number, _koSub: number) => ({
+      story: (name: string, _div: ByLang, _count: number, wins: number, _koSub: number): ByLang => ({
         en: `Entering the ranked waters. Tested against seasoned veterans, ${name} demonstrated elite composure and tactical maturity, amassing ${wins} key triumphs on the road to title contention.`,
         pt: `A entrada nas águas profundas dos ranqueados. Testado contra veteranos condecorados, ${name} demonstrou frieza e maturidade tática, conquistando ${wins} triunfos cruciais rumo ao topo.`,
         fr: `L'entrée dans l'élite du classement. Opposé à des vétérans chevronnés, ${name} a fait preuve d'un sang-froid et d'une rigueur tactique remarquables, cumulant ${wins} victoires déterminantes vers le sommet.`,
+        es: `La entrada a las aguas del ranking. Puesto a prueba ante veteranos curtidos, ${name} mostró temple y madurez táctica, y acumuló ${wins} triunfos clave rumbo a la disputa por el título.`,
       }),
     },
     {
@@ -96,12 +113,14 @@ export function buildCareerPhases(
         en: 'Championship Peaks & Defining Wars',
         pt: 'O Ápice do Cinturão & Grandes Batalhas',
         fr: 'Sommets Mondiaux & Combats Mythiques',
+        es: 'Las Cumbres del Cinturón y las Grandes Batallas',
       },
       badge: profile.belt ? 'CHAMPIONSHIP' : 'ELITE WARS',
-      story: (name: string, _div: string, _count: number, _wins: number, _koSub: number) => ({
+      story: (name: string, _div: ByLang, _count: number, _wins: number, _koSub: number): ByLang => ({
         en: `The clash of titans. At the highest level of combat athletics, ${name} went toe-to-toe with world champions and hall-of-fame caliber opponents, delivering career-defining moments.`,
         pt: `O embate entre titãs. No mais alto nível dos esportes de combate, ${name} enfrentou campeões mundiais e oponentes de calibre lendário, consolidando performances memoráveis.`,
         fr: `Le choc des titans. Au pinacle des sports de combat, ${name} a défié des champions d'exception, livrant des prestations mémorables qui ont marqué l'histoire de la catégorie.`,
+        es: `El choque de titanes. En lo más alto de los deportes de combate, ${name} se midió con campeones mundiales y rivales de calibre legendario, y firmó actuaciones memorables.`,
       }),
     },
     {
@@ -109,12 +128,14 @@ export function buildCareerPhases(
         en: 'Modern Reign & Legacy',
         pt: 'Reinado Moderno & Legado',
         fr: 'Règne Moderne & Héritage',
+        es: 'Reinado Moderno y Legado',
       },
       badge: profile.belt ? 'UNDISPUTED REIGN' : 'POUND-FOR-POUND',
-      story: (_name: string, _div: string, _count: number, _wins: number, _koSub: number) => ({
+      story: (_name: string, _div: ByLang, _count: number, _wins: number, _koSub: number): ByLang => ({
         en: 'The era of mastery. Standing firm among the pound-for-pound elite, every walk to the Octagon is a testament to strategic longevity, supreme physical conditioning, and lethal execution.',
-        pt: 'A era do domínio supremo. Firme entre a elite peso por peso mundial, cada caminhada ao cage é uma aula de longevidade tática, condicionamento e execução letal.',
-        fr: "L'ère de la consécration. Bien ancré dans l'élite mondiale pound-for-pound, chaque entrée dans la cage témoigne d'une longévité stratégique et d'une précision chirurgicale.",
+        pt: 'A era do domínio supremo. Firme entre a elite peso por peso mundial, cada caminhada ao octógono é uma aula de longevidade tática, condicionamento e execução letal.',
+        fr: "L'ère de la consécration. Bien ancré dans l'élite mondiale livre pour livre, chaque entrée dans l'octogone témoigne d'une longévité stratégique et d'une précision chirurgicale.",
+        es: 'La era del dominio supremo. Firme entre la élite libra por libra, cada caminata hacia el octágono es una lección de longevidad táctica, preparación física y ejecución letal.',
       }),
     },
   ]
@@ -141,7 +162,7 @@ export function buildCareerPhases(
       title: meta.title,
       story: meta.story(
         profile.name,
-        profile.division || 'UFC',
+        division,
         chunk.length,
         wins,
         finishes,

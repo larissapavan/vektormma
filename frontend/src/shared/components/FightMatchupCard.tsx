@@ -68,7 +68,7 @@ export function FightMatchupCard({
         <TitleFightBadge fight={titleFightInfo} />
         {isTbdMatchup ? (
           <span className="selector-chip border-amber-400/40 bg-amber-400/10 text-amber-500 dark:text-amber-300 font-mono text-[11px] font-bold uppercase tracking-wider">
-            {L(i18n.language, '✦ Buscando Substituto', '✦ Seeking Replacement', '✦ En recherche d\'adversaire')}
+            {L(i18n.language, '✦ Buscando Substituto', '✦ Seeking Replacement', '✦ En recherche d\'adversaire', '✦ Busca reemplazo')}
           </span>
         ) : (
           <span className="pointer-events-auto">
@@ -132,7 +132,7 @@ function CornerName({
     return (
       <span className={`flex min-w-0 items-center gap-1.5 px-1 py-1 ${side}`}>
         <span className="min-w-0 truncate font-mono text-xs xs:text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-amber-400">
-          {L(i18n.language, 'Aguardando Oponente (TBD)', 'Awaiting Opponent (TBD)', 'Adversaire à déterminer (TBD)')}
+          {L(i18n.language, 'Aguardando Oponente (a definir)', 'Awaiting Opponent (TBD)', 'Adversaire à déterminer', 'Esperando rival (por definir)')}
         </span>
       </span>
     )
@@ -151,7 +151,7 @@ function CornerName({
       <button
         type="button"
         onClick={() => onOpenFighter(profile.name)}
-        aria-label={L(i18n.language, `${name}. Ver perfil`, `${name}. View profile`, `${name}. Voir le profil`)}
+        aria-label={L(i18n.language, `${name}. Ver perfil`, `${name}. View profile`, `${name}. Voir le profil`, `${name}. Ver perfil`)}
         className={`pointer-events-auto flex min-w-0 items-center gap-1.5 px-1 py-1 ${side}`}
       >
         {label}

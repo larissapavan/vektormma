@@ -30,11 +30,11 @@ export function DivisionMatrixCard({ category }: { category: string }) {
   }
 
   return (
-    <section aria-label={L(i18n.language, 'Todos contra todos na categoria', 'Division round robin', 'Tous contre tous dans la catégorie')} className="surface-card rounded-[20px] p-3 sm:p-4">
+    <section aria-label={L(i18n.language, 'Todos contra todos na categoria', 'Division round robin', 'Tous contre tous dans la catégorie', 'Todos contra todos en la división')} className="surface-card rounded-[20px] p-3 sm:p-4">
       <div className="flex items-center gap-2">
         <Swords className="h-4 w-4 text-[#C8102E]" />
         <h2 className="broadcast-label text-xs text-[var(--text-main)]">
-          {L(i18n.language, 'Quem o modelo favorece nesta categoria?', 'Who does the model like in this division?', 'Qui le modèle favorise-t-il dans cette catégorie ?')}
+          {L(i18n.language, 'Quem o modelo favorece nesta categoria?', 'Who does the model like in this division?', 'Qui le modèle favorise-t-il dans cette catégorie ?', '¿A quién prefiere el modelo en esta división?')}
         </h2>
       </div>
       <p className="theme-muted mt-0.5 text-xs leading-5">
@@ -43,6 +43,7 @@ export function DivisionMatrixCard({ category }: { category: string }) {
           'Cada lutador do top 8 contra todos os outros, segundo o modelo. A probabilidade média de vitória sobre os demais permite avaliar toda a categoria de uma vez. Não é uma previsão de torneio: nenhuma chave é simulada.',
           'Every fighter in the top 8 against every other, by the model. The average chance of beating the rest is a way to read the whole division at once. It is not a tournament forecast: no bracket is simulated.',
           'Chaque combattant du top 8 contre tous les autres, selon le modèle. La probabilité moyenne de battre le reste permet de lire toute la catégorie d\'un coup. Ce n\'est pas une prévision de tournoi : aucun tableau n\'est simulé.',
+          'Cada peleador del top 8 contra todos los demás, según el modelo. La probabilidad media de ganarle al resto sirve para leer toda la división de una vez. No es un pronóstico de torneo: no se simula ninguna llave.',
         )}
       </p>
 
@@ -54,15 +55,15 @@ export function DivisionMatrixCard({ category }: { category: string }) {
           className="ghost-action mt-3 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] disabled:opacity-60"
         >
           {state === 'loading'
-            ? L(i18n.language, 'Executando simulação…', 'Running the model…', 'Simulation en cours…')
-            : L(i18n.language, 'Simular confrontos da categoria', 'Run the round robin', 'Simuler les confrontations de la catégorie')}
+            ? L(i18n.language, 'Executando simulação…', 'Running the model…', 'Simulation en cours…', 'Ejecutando el modelo…')
+            : L(i18n.language, 'Simular confrontos da categoria', 'Run the round robin', 'Simuler les confrontations de la catégorie', 'Simular los enfrentamientos de la división')}
         </button>
       ) : (
         <Standings matrix={matrix} />
       )}
       {state === 'error' ? (
         <p className="mt-2 text-sm text-[var(--text-main)]">
-          {L(i18n.language, 'Não foi possível simular os confrontos. Tente novamente em instantes.', 'Could not run the round robin. Try again in a moment.', 'Impossible de simuler les confrontations. Réessayez dans un instant.')}
+          {L(i18n.language, 'Não foi possível simular os confrontos. Tente novamente em instantes.', 'Could not run the round robin. Try again in a moment.', 'Impossible de simuler les confrontations. Réessayez dans un instant.', 'No se pudieron simular los enfrentamientos. Inténtalo de nuevo en un momento.')}
         </p>
       ) : null}
     </section>
@@ -97,11 +98,12 @@ function Standings({ matrix }: { matrix: DivisionMatrix }) {
               'Probabilidade de o atleta na linha vencer o atleta na coluna.',
               'Chance that the fighter in the row beats the fighter in the column.',
               'Probabilité que le combattant de la ligne batte celui de la colonne.',
+              'Probabilidad de que el peleador de la fila venza al peleador de la columna.',
             )}
           </caption>
           <thead>
             <tr>
-              <th scope="col" className="p-1.5 text-left font-semibold">{L(i18n.language, 'Lutador', 'Fighter', 'Combattant')}</th>
+              <th scope="col" className="p-1.5 text-left font-semibold">{L(i18n.language, 'Lutador', 'Fighter', 'Combattant', 'Peleador')}</th>
               {matrix.fighters.map((name) => (
                 <th key={name} scope="col" className="p-1.5 text-center font-semibold">{name.split(' ').slice(-1)[0]}</th>
               ))}
@@ -126,7 +128,7 @@ function Standings({ matrix }: { matrix: DivisionMatrix }) {
       </div>
 
       {matrix.skipped.length ? (
-        <p className="theme-muted text-xs">{L(i18n.language, `De fora, ainda sem perfil: ${matrix.skipped.join(', ')}.`, `Left out, with no profile yet: ${matrix.skipped.join(', ')}.`, `Absents, encore sans profil : ${matrix.skipped.join(', ')}.`)}</p>
+        <p className="theme-muted text-xs">{L(i18n.language, `De fora, ainda sem perfil: ${matrix.skipped.join(', ')}.`, `Left out, with no profile yet: ${matrix.skipped.join(', ')}.`, `Absents, encore sans profil : ${matrix.skipped.join(', ')}.`, `Quedaron fuera, aún sin perfil: ${matrix.skipped.join(', ')}.`)}</p>
       ) : null}
     </div>
   )

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { getUpcomingEvents } from '../services/api'
 import type { EventSummary } from '../types/api'
+import i18n from '../../i18n'
+import { L } from '../../i18n/lang'
 
 export function useUpcomingEvents() {
   const [events, setEvents] = useState<EventSummary[]>([])
@@ -15,7 +17,7 @@ export function useUpcomingEvents() {
         setEvents(data)
       } catch (requestError) {
         console.error(requestError)
-        setError('Unable to load upcoming events from the API.')
+        setError(L(i18n.language, 'Não foi possível carregar os próximos eventos da API.', 'Unable to load upcoming events from the API.', 'Impossible de charger les prochains événements depuis l’API.', 'No se pudieron cargar los próximos eventos desde la API.'))
       } finally {
         setLoading(false)
       }

@@ -42,9 +42,9 @@ export function CopyLinkButton({ href, label, className = '' }: { href: string; 
     timer.current = window.setTimeout(() => setState('idle'), 2200)
   }
 
-  const idleLabel = label ?? L(i18n.language, 'Copiar link', 'Copy link', 'Copier le lien')
-  const copiedLabel = L(i18n.language, 'Link copiado', 'Link copied', 'Lien copié')
-  const failedLabel = L(i18n.language, 'Falha ao copiar', 'Copy failed', 'Échec de la copie')
+  const idleLabel = label ?? L(i18n.language, 'Copiar link', 'Copy link', 'Copier le lien', 'Copiar enlace')
+  const copiedLabel = L(i18n.language, 'Link copiado', 'Link copied', 'Lien copié', 'Enlace copiado')
+  const failedLabel = L(i18n.language, 'Falha ao copiar', 'Copy failed', 'Échec de la copie', 'No se pudo copiar')
 
   return (
     <button

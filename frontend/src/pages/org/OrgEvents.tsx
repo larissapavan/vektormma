@@ -8,6 +8,8 @@ import { OrgFightRow } from '../../shared/components/OrgFightRow'
 import { OrgFighterModal } from '../../shared/components/OrgFighterModal'
 import { SectionHeading } from '../../shared/components/SectionHeading'
 import { L, localeTag } from '../../i18n/lang'
+import { orgEs } from '../../shared/data/orgs'
+import { translateHometown } from '../../shared/data/fightLabels'
 import { formatDate } from '../../shared/data/orgFormat'
 import { useOrg } from '../../shared/hooks/useOrg'
 import { useOrgEvents, useOrgUpcomingEvents } from '../../shared/hooks/useOrgData'
@@ -26,7 +28,7 @@ function eventKey(event: OrgEvent) {
 
 export function OrgEvents() {
   const { i18n } = useTranslation()
-  const allYearsLabel = L(i18n.language, 'Todos os anos', 'All years', 'Toutes les années')
+  const allYearsLabel = L(i18n.language, 'Todos os anos', 'All years', 'Toutes les années', 'Todos los años')
 
   const org = useOrg()
   const { events, loading, error } = useOrgEvents(org.id)
@@ -70,7 +72,7 @@ export function OrgEvents() {
   const byYear = useMemo(() => {
     const groups = new Map<string, OrgEvent[]>()
     for (const event of visibleEvents) {
-      const year = event.date?.slice(0, 4) ?? L(i18n.language, 'Sem data', 'Unknown', 'Date inconnue')
+      const year = event.date?.slice(0, 4) ?? L(i18n.language, 'Sem data', 'Unknown', 'Date inconnue', 'Sin fecha')
       groups.set(year, [...(groups.get(year) ?? []), event])
     }
     return Array.from(groups.entries()).sort(([a], [b]) => Number(b) - Number(a))
@@ -91,18 +93,19 @@ export function OrgEvents() {
         <div className="grid gap-3 xl:grid-cols-[1fr_0.8fr] xl:items-end">
           <SectionHeading
             level={1}
-            eyebrow={L(i18n.language, 'Histórico de Eventos', 'Event archive', 'Historique des événements')}
-            title={L(i18n.language, `Cards e Lutas do ${org.shortName}`, `${org.shortName} fight cards`, `Cartes et combats ${org.shortName}`)}
+            eyebrow={L(i18n.language, 'Histórico de Eventos', 'Event archive', 'Historique des événements', 'Archivo de eventos')}
+            title={L(i18n.language, `Cards e Lutas do ${org.shortName}`, `${org.shortName} fight cards`, `Cartes et combats ${org.shortName}`, `Carteleras y peleas de ${orgEs(org)}`)}
             description={L(
               i18n.language,
               'Histórico completo de eventos. Abra o card para ver todos os confrontos, vencedores, método e round.',
               'Search the full event history and open a card to see every fight, the winner, method and round.',
               'Historique complet des événements. Ouvrez une carte pour voir chaque combat, le vainqueur, la méthode et le round.',
+              'Busca en el historial completo de eventos y abre una cartelera para ver cada pelea, el ganador, el método y el asalto.',
             )}
           />
           <div className="grid gap-2 sm:grid-cols-2">
-            <SummaryTile label={L(i18n.language, 'Eventos', 'Events', 'Événements')} value={`${visibleEvents.length}`} />
-            <SummaryTile label={L(i18n.language, 'Lutas Catalogadas', 'Fights tracked', 'Combats suivis')} value={totalFights.toLocaleString(localeTag(i18n.language))} />
+            <SummaryTile label={L(i18n.language, 'Eventos', 'Events', 'Événements', 'Eventos')} value={`${visibleEvents.length}`} />
+            <SummaryTile label={L(i18n.language, 'Lutas Catalogadas', 'Fights tracked', 'Combats suivis', 'Peleas registradas')} value={totalFights.toLocaleString(localeTag(i18n.language))} />
           </div>
         </div>
 
@@ -112,15 +115,15 @@ export function OrgEvents() {
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder={L(i18n.language, 'Buscar por evento, lutador, data ou local...', 'Search event, fighter, date or location', 'Chercher un événement, un combattant, une date ou un lieu...')}
-              aria-label={L(i18n.language, 'Buscar eventos', 'Search events', 'Chercher des événements')}
+              placeholder={L(i18n.language, 'Buscar por evento, lutador, data ou local...', 'Search event, fighter, date or location', 'Chercher un événement, un combattant, une date ou un lieu...', 'Buscar evento, peleador, fecha o sede...')}
+              aria-label={L(i18n.language, 'Buscar eventos', 'Search events', 'Chercher des événements', 'Buscar eventos')}
               className="theme-text w-full bg-transparent outline-none placeholder:text-[var(--text-muted)]"
             />
           </div>
           <select
             value={yearFilter}
             onChange={(event) => setYearFilter(event.target.value)}
-            aria-label={L(i18n.language, 'Filtrar por ano', 'Filter by year', 'Filtrer par année')}
+            aria-label={L(i18n.language, 'Filtrar por ano', 'Filter by year', 'Filtrer par année', 'Filtrar por año')}
             className="soft-input theme-text rounded-xl px-3 py-2.5 text-sm outline-none"
           >
             <option value="ALL">{allYearsLabel}</option>
@@ -136,11 +139,11 @@ export function OrgEvents() {
       {upcoming.loading ? (
         <LoadingSkeleton className="h-[80px]" />
       ) : visibleUpcoming.length ? (
-        <section className="surface-card rounded-[20px] p-3 sm:p-4" aria-label="Upcoming events">
+        <section className="surface-card rounded-[20px] p-3 sm:p-4" aria-label={L(i18n.language, 'Próximos eventos', 'Upcoming events', 'Prochains événements', 'Próximos eventos')}>
           <div className="mb-2 flex items-center gap-2">
             <CalendarClock className="h-4 w-4 text-[var(--accent-red)]" />
             <h2 className="broadcast-label text-xs text-[var(--text-main)]">
-              {L(i18n.language, 'Próximos Cards & Eventos', 'Upcoming events', 'Prochains cards et événements')}
+              {L(i18n.language, 'Próximos Cards & Eventos', 'Upcoming events', 'Prochaines cartes et événements', 'Próximas carteleras y eventos')}
             </h2>
             <span className="text-xs text-[var(--text-muted)]">({visibleUpcoming.length})</span>
           </div>
@@ -212,10 +215,10 @@ export function OrgEvents() {
       ) : (
         <div className="surface-card rounded-[20px] px-4 py-7 text-center">
           <p className="type-display text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">
-            {L(i18n.language, 'Nenhum evento encontrado', 'No events found', 'Aucun événement trouvé')}
+            {L(i18n.language, 'Nenhum evento encontrado', 'No events found', 'Aucun événement trouvé', 'No se encontraron eventos')}
           </p>
           <p className="mt-2 text-sm text-[var(--text-muted)]">
-            {L(i18n.language, 'Ajuste os filtros para encontrar outro card.', 'Adjust the search to find another card.', 'Ajustez les filtres pour trouver une autre carte.')}
+            {L(i18n.language, 'Ajuste os filtros para encontrar outro card.', 'Adjust the search to find another card.', 'Ajustez les filtres pour trouver une autre carte.', 'Ajusta los filtros para encontrar otra cartelera.')}
           </p>
         </div>
       )}
@@ -258,7 +261,7 @@ function EventCard({
             </span>
             <span className="inline-flex items-center gap-1">
               <Swords className="h-3 w-3" />
-              {event.fight_count} {event.fight_count === 1 ? L(i18n.language, 'luta', 'fight', 'combat') : L(i18n.language, 'lutas', 'fights', 'combats')}
+              {event.fight_count} {event.fight_count === 1 ? L(i18n.language, 'luta', 'fight', 'combat', 'pelea') : L(i18n.language, 'lutas', 'fights', 'combats', 'peleas')}
             </span>
             {event.circuit && event.circuit !== 'PFL' ? <span className="selector-chip !px-1.5 !py-0 text-[11px] text-[var(--text-main)]">{event.circuit}</span> : null}
           </div>
@@ -271,7 +274,7 @@ function EventCard({
           {event.location ? (
             <p className="mb-2.5 flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
               <MapPin className="h-3.5 w-3.5" />
-              {event.location}
+              {translateHometown(event.location, i18n.language)}
             </p>
           ) : null}
           {event.fights.length ? (
@@ -282,7 +285,7 @@ function EventCard({
             </div>
           ) : (
             <p className="text-sm text-[var(--text-muted)]">
-              {L(i18n.language, 'Nenhuma luta detalhada disponível para este card ainda.', 'No fight data available for this card yet.', 'Aucun combat détaillé n\'est encore disponible pour cette carte.')}
+              {L(i18n.language, 'Nenhuma luta detalhada disponível para este card ainda.', 'No fight data available for this card yet.', 'Aucun combat détaillé n\'est encore disponible pour cette carte.', 'Todavía no hay datos detallados de peleas para esta cartelera.')}
             </p>
           )}
         </div>

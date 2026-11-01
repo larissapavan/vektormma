@@ -112,6 +112,11 @@ export function switchOrgPath(target: OrgConfig, currentPath: string): string {
   return orgPath(target, validSection)
 }
 
+/** The organization the way Spanish names it: "la UFC" and "la PFL" take an article, "Bellator" and "ONE" do not. */
+export function orgEs(org: Pick<OrgConfig, 'id' | 'shortName'>): string {
+  return org.id === 'ufc' || org.id === 'pfl' ? `la ${org.shortName}` : org.id === 'one' ? 'ONE Championship' : org.shortName
+}
+
 /** The landing screen sits at "/", outside the organization hierarchy. */
 export const LANDING_PATH = '/'
 

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { L } from '../../i18n/lang'
 import type { FighterProfile } from '../types/api'
 import { nationalityText } from '../data/badges'
+import { translateHometown } from '../data/fightLabels'
 
 type FighterOriginProps = {
   fighter: Pick<FighterProfile, 'hometown' | 'country' | 'nationalities'>
@@ -14,8 +15,8 @@ type FighterOriginProps = {
 export function FighterOrigin({ fighter, className = '' }: FighterOriginProps) {
   const { i18n } = useTranslation()
 
-  const place = fighter.hometown ?? fighter.country
-  const nationalities = nationalityText(fighter)
+  const place = translateHometown(fighter.hometown ?? fighter.country, i18n.language)
+  const nationalities = nationalityText(fighter, i18n.language)
   if (!place && !nationalities) return null
 
   return (
@@ -24,7 +25,7 @@ export function FighterOrigin({ fighter, className = '' }: FighterOriginProps) {
         <li className="flex items-start gap-1.5">
           <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--text-muted)]" aria-hidden="true" />
           <span className="min-w-0">
-            <span className="sr-only">{L(i18n.language, 'Origem: ', 'From: ', 'Origine : ')}</span>
+            <span className="sr-only">{L(i18n.language, 'Origem: ', 'From: ', 'Origine : ', 'Origen: ')}</span>
             {place}
           </span>
         </li>
@@ -33,7 +34,7 @@ export function FighterOrigin({ fighter, className = '' }: FighterOriginProps) {
         <li className="flex items-start gap-1.5">
           <Flag className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--text-muted)]" aria-hidden="true" />
           <span className="min-w-0">
-            <span className="sr-only">{L(i18n.language, 'Nacionalidades: ', 'Nationalities: ', 'Nationalités : ')}</span>
+            <span className="sr-only">{L(i18n.language, 'Nacionalidades: ', 'Nationalities: ', 'Nationalités : ', 'Nacionalidades: ')}</span>
             {nationalities}
           </span>
         </li>

@@ -5,6 +5,7 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import ptBR from './locales/pt-BR.json'
 import enUS from './locales/en-US.json'
 import frFR from './locales/fr-FR.json'
+import es419 from './locales/es-419.json'
 
 export const LANGUAGE_STORAGE_KEY = 'ufc-predictor:language'
 
@@ -17,6 +18,9 @@ export const resources = {
   },
   'fr-FR': {
     translation: frFR,
+  },
+  'es-419': {
+    translation: es419,
   },
 } as const
 
@@ -40,5 +44,14 @@ i18n
       escapeValue: false, // React already protects against XSS
     },
   })
+
+// Keeps <html lang> in step with the language on screen (screen readers and browser translation read it).
+if (typeof document !== 'undefined') {
+  const syncHtmlLang = (language: string) => {
+    document.documentElement.lang = language
+  }
+  syncHtmlLang(i18n.resolvedLanguage ?? i18n.language)
+  i18n.on('languageChanged', syncHtmlLang)
+}
 
 export default i18n

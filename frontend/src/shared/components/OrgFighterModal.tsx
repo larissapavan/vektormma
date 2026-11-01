@@ -28,7 +28,8 @@ import {
   formatWeight,
   originLine,
 } from '../data/orgFormat'
-import type { OrgConfig } from '../data/orgs'
+import { orgEs, type OrgConfig } from '../data/orgs'
+import { translateHometown } from '../data/fightLabels'
 import { useOrgFighterFights, useOrgFighters } from '../hooks/useOrgData'
 import { normalizeFighterName } from '../hooks/useFighterImages'
 import type { FightRecord, OrgFighter } from '../types/api'
@@ -186,7 +187,7 @@ export function OrgFighterModal({
     >
       <motion.section
         role="dialog"
-        aria-label={L(i18n.language, `${name}, perfil no ${org.shortName}`, `${name}, ${org.shortName} fighter profile`, `${name}, profil ${org.shortName}`)}
+        aria-label={L(i18n.language, `${name}, perfil no ${org.shortName}`, `${name}, ${org.shortName} fighter profile`, `${name}, profil ${org.shortName}`, `${name}, perfil de peleador de ${orgEs(org)}`)}
         className="surface-card flex h-[min(680px,calc(100vh-1.5rem))] w-full max-w-[580px] flex-col overflow-hidden rounded-[22px] border-[var(--border-subtle)]"
         initial={{ opacity: 0, y: 16, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -202,7 +203,7 @@ export function OrgFighterModal({
             />
             <div className="min-w-0">
               <p className="broadcast-label text-[11px] text-[var(--text-muted)]">
-                {L(i18n.language, `Perfil de Performance • ${org.shortName}`, `${org.shortName} fighter profile`, `Profil de performance • ${org.shortName}`)}
+                {L(i18n.language, `Perfil de Performance • ${org.shortName}`, `${org.shortName} fighter profile`, `Profil de performance • ${org.shortName}`, `Perfil de rendimiento • ${org.shortName}`)}
               </p>
               <h2 className="flex items-center gap-2 text-xl font-bold uppercase tracking-[0.02em] text-[var(--text-main)]">
                 {profile?.country_code ? <FlagIcon code={profile.country_code} country={profile.country} className="h-4 w-6" /> : null}
@@ -220,7 +221,7 @@ export function OrgFighterModal({
             type="button"
             onClick={onClose}
             className="ghost-action grid h-9 w-9 shrink-0 place-items-center rounded-full"
-            aria-label={L(i18n.language, 'Fechar perfil do lutador', 'Close fighter profile', 'Fermer le profil du combattant')}
+            aria-label={L(i18n.language, 'Fechar perfil do lutador', 'Close fighter profile', 'Fermer le profil du combattant', 'Cerrar el perfil del peleador')}
           >
             <X className="h-4 w-4" />
           </button>
@@ -232,9 +233,9 @@ export function OrgFighterModal({
             {/* Top 3 Summary Counter Row (UFC style) */}
             {totalCareerFights > 0 ? (
               <div className="grid grid-cols-3 gap-2">
-                <MiniStat label={L(i18n.language, 'Lutas', 'Fights', 'Combats')} value={`${totalCareerFights}`} />
-                <MiniStat label={L(i18n.language, 'Vitórias', 'Wins', 'Victoires')} value={`${totalWins}`} />
-                <MiniStat label={L(i18n.language, 'Derrotas', 'Losses', 'Défaites')} value={`${totalLosses}`} />
+                <MiniStat label={L(i18n.language, 'Lutas', 'Fights', 'Combats', 'Peleas')} value={`${totalCareerFights}`} />
+                <MiniStat label={L(i18n.language, 'Vitórias', 'Wins', 'Victoires', 'Victorias')} value={`${totalWins}`} />
+                <MiniStat label={L(i18n.language, 'Derrotas', 'Losses', 'Défaites', 'Derrotas')} value={`${totalLosses}`} />
               </div>
             ) : null}
 
@@ -250,7 +251,7 @@ export function OrgFighterModal({
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-[#C8102E]/40 bg-[#C8102E]/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--accent-red)]">
                     <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#C8102E]" />
-                    {L(i18n.language, 'Próxima luta', 'Next fight', 'Prochain combat')}
+                    {L(i18n.language, 'Próxima luta', 'Next fight', 'Prochain combat', 'Próxima pelea')}
                   </span>
                   <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--text-muted)]">
                     <CalendarDays className="h-3 w-3 text-[var(--accent-red)]" />
@@ -311,7 +312,7 @@ export function OrgFighterModal({
             {yearlyTrends.length > 1 ? (
               <div className="metric-tile rounded-2xl p-3">
                 <p className="broadcast-label text-[11px] text-[var(--text-muted)]">
-                  {L(i18n.language, 'Desempenho por Ano', 'Yearly performance trends', 'Tendances par année')}
+                  {L(i18n.language, 'Desempenho por Ano', 'Yearly performance trends', 'Tendances par année', 'Tendencias de rendimiento por año')}
                 </p>
                 <div className="mt-2.5 grid grid-cols-2 gap-2 sm:grid-cols-4">
                   {yearlyTrends.slice(-4).map((item) => (
@@ -325,7 +326,7 @@ export function OrgFighterModal({
                       </div>
                       <p className="mt-1 text-[10px] text-[var(--text-muted)]">
                         {item.wins}V / {item.fights}{' '}
-                        {item.fights === 1 ? L(i18n.language, 'luta', 'fight', 'combat') : L(i18n.language, 'lutas', 'fights', 'combats')}
+                        {item.fights === 1 ? L(i18n.language, 'luta', 'fight', 'combat', 'pelea') : L(i18n.language, 'lutas', 'fights', 'combats', 'peleas')}
                       </p>
                     </div>
                   ))}
@@ -337,7 +338,7 @@ export function OrgFighterModal({
             {weightClassHistory.length > 0 ? (
               <div className="metric-tile rounded-2xl p-3">
                 <p className="broadcast-label text-[11px] text-[var(--text-muted)]">
-                  {L(i18n.language, 'Histórico de Categorias', 'Weight class history', 'Historique des catégories')}
+                  {L(i18n.language, 'Histórico de Categorias', 'Weight class history', 'Historique des catégories', 'Historial de divisiones de peso')}
                 </p>
                 <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-sm font-semibold text-[var(--text-main)]">
                   {weightClassHistory.map((wc, index) => (
@@ -354,7 +355,7 @@ export function OrgFighterModal({
             {methodBreakdown.length > 0 ? (
               <div className="metric-tile rounded-2xl p-3">
                 <p className="broadcast-label text-[11px] text-[var(--text-muted)]">
-                  {L(i18n.language, 'Métodos de Vitória no Evento', 'Winning methods', 'Méthodes de victoire')}
+                  {L(i18n.language, 'Métodos de Vitória no Evento', 'Winning methods', 'Méthodes de victoire', 'Métodos de victoria')}
                 </p>
                 <div className="mt-2 space-y-1.5">
                   {methodBreakdown.map(([method, count]) => {
@@ -381,9 +382,9 @@ export function OrgFighterModal({
             ) : null}
 
             {/* Full Fight History List */}
-            <section aria-label={L(i18n.language, `Lutas no ${org.shortName}`, `${org.shortName} fights`, `Combats ${org.shortName}`)}>
+            <section aria-label={L(i18n.language, `Lutas no ${org.shortName}`, `${org.shortName} fights`, `Combats ${org.shortName}`, `Peleas en ${orgEs(org)}`)}>
               <p className="broadcast-label mb-1.5 text-[11px] text-[var(--text-muted)]">
-                {L(i18n.language, `Histórico no ${org.shortName}`, `${org.shortName} fights`, `Historique ${org.shortName}`)}
+                {L(i18n.language, `Histórico no ${org.shortName}`, `${org.shortName} fights`, `Historique ${org.shortName}`, `Historial en ${orgEs(org)}`)}
               </p>
               {loading ? (
                 <div className="space-y-2">
@@ -394,7 +395,7 @@ export function OrgFighterModal({
                 <p className="rounded-xl border border-[#C8102E]/25 bg-[#C8102E]/8 px-3 py-2 text-sm text-[var(--text-main)]">{error}</p>
               ) : fights.length === 0 ? (
                 <p className="text-sm text-[var(--text-muted)]">
-                  {L(i18n.language, `Nenhuma luta no ${org.shortName} registrada ainda.`, `No ${org.shortName} fights recorded yet.`, `Aucun combat ${org.shortName} enregistré pour l'instant.`)}
+                  {L(i18n.language, `Nenhuma luta no ${org.shortName} registrada ainda.`, `No ${org.shortName} fights recorded yet.`, `Aucun combat ${org.shortName} enregistré pour l'instant.`, `Aún no hay peleas registradas en ${orgEs(org)}.`)}
                 </p>
               ) : (
                 <ul className="space-y-2">
@@ -416,7 +417,7 @@ export function OrgFighterModal({
                 <div className="mb-1.5 flex items-center gap-1.5 text-[var(--text-muted)]">
                   <Sparkles className="h-3.5 w-3.5 text-[#C8102E]" />
                   <p className="broadcast-label text-[11px]">
-                    {L(i18n.language, 'Lutadores similares', 'Similar fighters', 'Combattants similaires')}
+                    {L(i18n.language, 'Lutadores similares', 'Similar fighters', 'Combattants similaires', 'Peleadores similares')}
                   </p>
                 </div>
                 <div className="grid gap-1.5">
@@ -456,7 +457,7 @@ export function OrgFighterModal({
                   onClick={onClose}
                   className="ghost-action inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--text-main)]"
                 >
-                  {L(i18n.language, 'Ver perfil completo no UFC →', 'Also in the UFC: open the UFC profile', 'Voir le profil complet à l\'UFC →')}
+                  {L(i18n.language, 'Ver perfil completo no UFC →', 'Also in the UFC: open the UFC profile', 'Voir le profil complet à l\'UFC →', 'Ver el perfil completo en la UFC →')}
                 </Link>
               ) : null}
 
@@ -467,7 +468,7 @@ export function OrgFighterModal({
                   rel="noreferrer"
                   className="ghost-action inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--text-main)]"
                 >
-                  {L(i18n.language, `Perfil oficial no ${org.sourceName}`, `Profile on ${org.sourceName}`, `Profil officiel sur ${org.sourceName}`)}
+                  {L(i18n.language, `Perfil oficial no ${org.sourceName}`, `Profile on ${org.sourceName}`, `Profil officiel sur ${org.sourceName}`, `Perfil oficial en ${org.sourceName}`)}
                   <ExternalLink className="h-3 w-3" />
                 </a>
               ) : null}
@@ -509,9 +510,9 @@ function OrgCareerTimeline({
   return (
     <div className="metric-tile rounded-2xl p-3">
       <p className="broadcast-label text-[11px] text-[var(--text-muted)]">
-        {L(i18n.language, 'Linha do tempo da carreira', 'Career timeline', 'Chronologie de carrière')}{' '}
+        {L(i18n.language, 'Linha do tempo da carreira', 'Career timeline', 'Chronologie de carrière', 'Trayectoria de la carrera')}{' '}
         <span className="normal-case tracking-normal opacity-80">
-          · {L(i18n.language, 'toque em uma luta para detalhes', 'tap a fight for details', 'touchez un combat pour les détails')}
+          · {L(i18n.language, 'toque em uma luta para detalhes', 'tap a fight for details', 'touchez un combat pour les détails', 'toca una pelea para ver los detalles')}
         </span>
       </p>
       <div className="pill-scroll mt-3 overflow-x-auto pb-1">
@@ -579,14 +580,14 @@ function OrgBoutDetailPanel({
               }`}
             >
               {isWin
-                ? L(i18n.language, 'Vitória', 'Win', 'Victoire')
+                ? L(i18n.language, 'Vitória', 'Win', 'Victoire', 'Victoria')
                 : isLoss
-                  ? L(i18n.language, 'Derrota', 'Loss', 'Défaite')
-                  : L(i18n.language, 'Sem resultado', 'No Contest / Draw', 'Sans résultat')}
+                  ? L(i18n.language, 'Derrota', 'Loss', 'Défaite', 'Derrota')
+                  : L(i18n.language, 'Sem resultado', 'No Contest / Draw', 'Sans résultat', 'Sin resultado / empate')}
             </span>
             {bout.title_fight ? (
               <span className="inline-flex items-center gap-1 bg-[#F2C230] px-2 py-0.5 text-[10px] font-extrabold uppercase text-[#0E0E0E]">
-                <Crown className="h-3 w-3" /> {L(i18n.language, 'Disputa de Cinturão', 'Title Fight', 'Combat de Titre')}
+                <Crown className="h-3 w-3" /> {L(i18n.language, 'Disputa de Cinturão', 'Title Fight', 'Combat de Titre', 'Pelea por el título')}
               </span>
             ) : null}
             {bout.weight_class ? (
@@ -614,14 +615,14 @@ function OrgBoutDetailPanel({
           <p className="mt-0.5 text-xs text-[var(--text-muted)]">
             {bout.event_name}
             {bout.date ? ` · ${formatDate(bout.date, true, i18n.language)}` : ''}
-            {bout.location ? ` · ${bout.location}` : ''}
+            {bout.location ? ` · ${translateHometown(bout.location, i18n.language)}` : ''}
           </p>
         </div>
         <button
           type="button"
           onClick={onClose}
           className="ghost-action grid h-7 w-7 shrink-0 place-items-center rounded-full"
-          aria-label={L(i18n.language, 'Fechar detalhes da luta', 'Close fight details', 'Fermer les détails')}
+          aria-label={L(i18n.language, 'Fechar detalhes da luta', 'Close fight details', 'Fermer les détails', 'Cerrar los detalles de la pelea')}
         >
           <X className="h-3.5 w-3.5" />
         </button>
@@ -662,17 +663,17 @@ function FighterCombatStats({ fighter }: { fighter: OrgFighter }) {
           </div>
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-main)]">
-              {L(i18n.language, 'Métricas de Combate & Golpes', 'Combat & Striking Metrics', 'Métriques de combat & frappes')}
+              {L(i18n.language, 'Métricas de Combate & Golpes', 'Combat & Striking Metrics', 'Métriques de combat & frappes', 'Métricas de combate y golpeo')}
             </h4>
             <p className="text-[10px] text-[var(--text-muted)]">
-              {L(i18n.language, 'Volume de trocação, precisão, defesa e grappling', 'Striking volume, accuracy, defense and grappling', 'Volume de frappe, précision, défense et lutte')}
+              {L(i18n.language, 'Volume de trocação, precisão, defesa e luta no chão', 'Striking volume, accuracy, defense and grappling', 'Volume de frappe, précision, défense et lutte', 'Volumen de golpeo, precisión, defensa y lucha en el suelo')}
             </p>
           </div>
         </div>
         {fighter.win_streak != null && fighter.win_streak > 1 ? (
           <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
             <Flame className="h-3 w-3" />
-            {fighter.win_streak} {L(i18n.language, 'vitórias seguidas', 'win streak', 'victoires consécutives')}
+            {fighter.win_streak} {L(i18n.language, 'vitórias seguidas', 'win streak', 'victoires consécutives', 'victorias seguidas')}
           </span>
         ) : null}
       </div>
@@ -682,7 +683,7 @@ function FighterCombatStats({ fighter }: { fighter: OrgFighter }) {
         <div className="grid grid-cols-3 gap-2">
           <div className="rounded-xl border border-[var(--line-soft)] bg-[var(--surface-1)] p-2 text-center">
             <span className="block text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
-              {L(i18n.language, 'Via Rápida', 'Finish Rate', 'Finitions')}
+              {L(i18n.language, 'Via Rápida', 'Finish Rate', 'Avant la limite', 'Tasa de finalización')}
             </span>
             <span className="font-mono text-base font-extrabold text-[var(--text-main)]">
               {formatPct(fighter.finish_rate)}
@@ -690,7 +691,7 @@ function FighterCombatStats({ fighter }: { fighter: OrgFighter }) {
           </div>
           <div className="rounded-xl border border-[var(--line-soft)] bg-[var(--surface-1)] p-2 text-center">
             <span className="block text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
-              {L(i18n.language, 'Nocautes (KO)', 'KO / TKO', 'K.-O.')}
+              {L(i18n.language, 'Nocautes (KO)', 'KO / TKO', 'K.-O.', 'KO / TKO')}
             </span>
             <span className="font-mono text-base font-extrabold text-[#C8102E]">
               {formatPct(fighter.ko_rate)}
@@ -698,7 +699,7 @@ function FighterCombatStats({ fighter }: { fighter: OrgFighter }) {
           </div>
           <div className="rounded-xl border border-[var(--line-soft)] bg-[var(--surface-1)] p-2 text-center">
             <span className="block text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
-              {L(i18n.language, 'Finalizações', 'Submissions', 'Soumissions')}
+              {L(i18n.language, 'Finalizações', 'Submissions', 'Soumissions', 'Sumisiones')}
             </span>
             <span className="font-mono text-base font-extrabold text-[#38BDF8]">
               {formatPct(fighter.sub_rate)}
@@ -713,14 +714,14 @@ function FighterCombatStats({ fighter }: { fighter: OrgFighter }) {
           <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-[var(--text-main)]">
             <div className="flex items-center gap-1.5 text-[var(--accent-red)]">
               <Zap className="h-3.5 w-3.5" />
-              <span>{L(i18n.language, 'Trocação & Golpes Traumáticos', 'Striking Statistics', 'Statistiques de frappe')}</span>
+              <span>{L(i18n.language, 'Trocação & Golpes Traumáticos', 'Striking Statistics', 'Statistiques de frappe', 'Estadísticas de golpeo')}</span>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2.5 text-xs">
             <div>
               <div className="mb-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-                <span>{L(i18n.language, 'Golpes Conectados / min', 'Strikes Landed / min', 'Coups réussis / min')}</span>
+                <span>{L(i18n.language, 'Golpes Conectados / min', 'Strikes Landed / min', 'Coups réussis / min', 'Golpes conectados / min')}</span>
                 <span className="font-mono font-bold text-[var(--text-main)]">{formatNum(fighter.sig_strikes_landed_per_min)}</span>
               </div>
               <div className="progress-track h-1.5 w-full overflow-hidden rounded-full">
@@ -733,7 +734,7 @@ function FighterCombatStats({ fighter }: { fighter: OrgFighter }) {
 
             <div>
               <div className="mb-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-                <span>{L(i18n.language, 'Precisão de Golpes', 'Striking Accuracy', 'Précision de frappe')}</span>
+                <span>{L(i18n.language, 'Precisão de Golpes', 'Striking Accuracy', 'Précision de frappe', 'Precisión de golpes')}</span>
                 <span className="font-mono font-bold text-[var(--text-main)]">{formatPct(fighter.sig_str_acc)}</span>
               </div>
               <div className="progress-track h-1.5 w-full overflow-hidden rounded-full">
@@ -746,7 +747,7 @@ function FighterCombatStats({ fighter }: { fighter: OrgFighter }) {
 
             <div>
               <div className="mb-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-                <span>{L(i18n.language, 'Golpes Absorvidos / min', 'Strikes Absorbed / min', 'Coups absorbés / min')}</span>
+                <span>{L(i18n.language, 'Golpes Absorvidos / min', 'Strikes Absorbed / min', 'Coups absorbés / min', 'Golpes recibidos / min')}</span>
                 <span className="font-mono font-bold text-[var(--text-main)]">{formatNum(fighter.sig_strikes_absorbed_per_min)}</span>
               </div>
               <div className="progress-track h-1.5 w-full overflow-hidden rounded-full">
@@ -759,7 +760,7 @@ function FighterCombatStats({ fighter }: { fighter: OrgFighter }) {
 
             <div>
               <div className="mb-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-                <span>{L(i18n.language, 'Defesa de Golpes', 'Striking Defense', 'Défense de frappe')}</span>
+                <span>{L(i18n.language, 'Defesa de Golpes', 'Striking Defense', 'Défense de frappe', 'Defensa de golpes')}</span>
                 <span className="font-mono font-bold text-[var(--text-main)]">{formatPct(fighter.striking_defense)}</span>
               </div>
               <div className="progress-track h-1.5 w-full overflow-hidden rounded-full">
@@ -779,14 +780,14 @@ function FighterCombatStats({ fighter }: { fighter: OrgFighter }) {
           <div className="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-[var(--text-main)]">
             <div className="flex items-center gap-1.5 text-[#38BDF8]">
               <Shield className="h-3.5 w-3.5" />
-              <span>{L(i18n.language, 'Grappling & Luta Agarrada', 'Grappling & Takedowns', 'Lutte & sol')}</span>
+              <span>{L(i18n.language, 'Luta no Chão & Quedas', 'Grappling & Takedowns', 'Lutte & sol', 'Lucha en el suelo y derribos')}</span>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2.5 text-xs">
             <div>
               <div className="mb-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-                <span>{L(i18n.language, 'Média Quedas / 15m', 'Takedowns / 15m', 'Amenées / 15m')}</span>
+                <span>{L(i18n.language, 'Média Quedas / 15m', 'Takedowns / 15m', 'Amenées / 15m', 'Derribos / 15 min')}</span>
                 <span className="font-mono font-bold text-[var(--text-main)]">{formatNum(fighter.takedown_avg_per_15min)}</span>
               </div>
               <div className="progress-track h-1.5 w-full overflow-hidden rounded-full">
@@ -799,7 +800,7 @@ function FighterCombatStats({ fighter }: { fighter: OrgFighter }) {
 
             <div>
               <div className="mb-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-                <span>{L(i18n.language, 'Precisão de Quedas', 'Takedown Accuracy', 'Précision amenées')}</span>
+                <span>{L(i18n.language, 'Precisão de Quedas', 'Takedown Accuracy', 'Précision amenées', 'Precisión de derribos')}</span>
                 <span className="font-mono font-bold text-[var(--text-main)]">{formatPct(fighter.takedown_acc)}</span>
               </div>
               <div className="progress-track h-1.5 w-full overflow-hidden rounded-full">
@@ -812,7 +813,7 @@ function FighterCombatStats({ fighter }: { fighter: OrgFighter }) {
 
             <div>
               <div className="mb-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-                <span>{L(i18n.language, 'Defesa de Quedas', 'Takedown Defense', 'Défense amenées')}</span>
+                <span>{L(i18n.language, 'Defesa de Quedas', 'Takedown Defense', 'Défense amenées', 'Defensa de derribos')}</span>
                 <span className="font-mono font-bold text-[var(--text-main)]">{formatPct(fighter.takedown_defense)}</span>
               </div>
               <div className="progress-track h-1.5 w-full overflow-hidden rounded-full">
@@ -825,7 +826,7 @@ function FighterCombatStats({ fighter }: { fighter: OrgFighter }) {
 
             <div>
               <div className="mb-1 flex items-center justify-between text-[11px] text-[var(--text-muted)]">
-                <span>{L(i18n.language, 'Finalizações / 15m', 'Sub. Avg / 15m', 'Tentat. soumission / 15m')}</span>
+                <span>{L(i18n.language, 'Finalizações / 15m', 'Sub. Avg / 15m', 'Tentat. soumission / 15m', 'Sumisiones prom. / 15 min')}</span>
                 <span className="font-mono font-bold text-[var(--text-main)]">{formatNum(fighter.submission_avg_per_15min)}</span>
               </div>
               <div className="progress-track h-1.5 w-full overflow-hidden rounded-full">
@@ -855,10 +856,10 @@ function TitleLine({ fighter, archived = false }: { fighter: OrgFighter; archive
           }`}
         >
           {interim
-            ? L(i18n.language, 'Campeão Interino', 'Interim champion', 'Champion intérimaire')
+            ? L(i18n.language, 'Campeão Interino', 'Interim champion', 'Champion intérimaire', 'Campeón interino')
             : archived
-              ? L(i18n.language, 'Último Campeão', 'Final champion', 'Dernier champion')
-              : L(i18n.language, 'Campeão', 'Champion', 'Champion')}
+              ? L(i18n.language, 'Último Campeão', 'Final champion', 'Dernier champion', 'Último campeón')
+              : L(i18n.language, 'Campeão', 'Champion', 'Champion', 'Campeón')}
         </span>
       ) : null}
       {fighter.ranking ? (
@@ -872,23 +873,23 @@ function TitleLine({ fighter, archived = false }: { fighter: OrgFighter; archive
 
 function Details({ org, fighter }: { org: OrgConfig; fighter: OrgFighter }) {
   const { i18n } = useTranslation()
-  const origin = originLine(fighter)
+  const origin = originLine(fighter, i18n.language)
   const age = fighter.age == null ? null : `${Math.round(fighter.age)}`
   const isArchived = Boolean(org.archived)
   const stats: [string, string | null][] = [
-    [L(i18n.language, 'Cartel Pro', 'Record', 'Palmarès pro'), formatRecord(fighter)],
-    [L(i18n.language, `No ${org.shortName}`, ` ${org.shortName}`, `Chez ${org.shortName}`), fighter.org_record],
-    [L(i18n.language, 'Categoria', 'Division', 'Catégorie'), fighter.division ? getDivisionName(fighter.division, i18n.language) : null],
-    [L(i18n.language, 'Idade', 'Age', 'Âge'), age ? L(i18n.language, `${age} anos`, `${age} years`, `${age} ans`) : null],
-    [L(i18n.language, 'Altura', 'Height', 'Taille'), formatHeight(fighter.height_cm, i18n.language)],
-    [L(i18n.language, 'Envergadura', 'Reach', 'Allonge'), formatReach(fighter.reach_cm, i18n.language)],
-    [L(i18n.language, 'Peso', 'Weight', 'Poids'), formatWeight(fighter.weight_lbs, i18n.language)],
+    [L(i18n.language, 'Cartel Pro', 'Record', 'Palmarès pro', 'Récord'), formatRecord(fighter)],
+    [L(i18n.language, `No ${org.shortName}`, ` ${org.shortName}`, `Chez ${org.shortName}`, `En ${orgEs(org)}`), fighter.org_record],
+    [L(i18n.language, 'Categoria', 'Division', 'Catégorie', 'División'), fighter.division ? getDivisionName(fighter.division, i18n.language) : null],
+    [L(i18n.language, 'Idade', 'Age', 'Âge', 'Edad'), age ? L(i18n.language, `${age} anos`, `${age} years`, `${age} ans`, `${age} años`) : null],
+    [L(i18n.language, 'Altura', 'Height', 'Taille', 'Estatura'), formatHeight(fighter.height_cm, i18n.language)],
+    [L(i18n.language, 'Envergadura', 'Reach', 'Allonge', 'Alcance'), formatReach(fighter.reach_cm, i18n.language)],
+    [L(i18n.language, 'Peso', 'Weight', 'Poids', 'Peso'), formatWeight(fighter.weight_lbs, i18n.language)],
     ...(isArchived
       ? []
       : ([
           [
-            L(i18n.language, 'Status', 'Status', 'Statut'),
-            fighter.is_active ? L(i18n.language, 'Ativo', 'Active', 'Actif') : L(i18n.language, 'Inativo', 'Not fighting', 'Inactif'),
+            L(i18n.language, 'Status', 'Status', 'Statut', 'Estado'),
+            fighter.is_active ? L(i18n.language, 'Ativo', 'Active', 'Actif', 'Activo') : L(i18n.language, 'Inativo', 'Not fighting', 'Inactif', 'Sin pelear'),
           ],
         ] as [string, string | null][])),
   ]
@@ -913,7 +914,7 @@ function Details({ org, fighter }: { org: OrgConfig; fighter: OrgFighter }) {
             <li className="flex items-center gap-1.5">
               <Swords className="h-3.5 w-3.5 shrink-0 text-[var(--accent-red)]" aria-hidden="true" />
               <span>
-                <span className="font-semibold text-[var(--text-main)]">{L(i18n.language, 'Equipe:', 'Camp:', 'Équipe :')}</span> {fighter.camp}
+                <span className="font-semibold text-[var(--text-main)]">{L(i18n.language, 'Equipe:', 'Camp:', 'Équipe :', 'Equipo:')}</span> {fighter.camp}
               </span>
             </li>
           ) : null}

@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import { L, localeTag } from '../i18n/lang'
 import { getDivisionName } from '../shared/data/divisions'
+import { translateHometown } from '../shared/data/fightLabels'
 import { ChampionBelt } from '../shared/components/ChampionBelt'
 import { FighterAvatar } from '../shared/components/FighterAvatar'
 import { FighterProfileModal } from '../shared/components/FighterProfileModal'
@@ -77,9 +78,10 @@ export function Predictor() {
       setError(
         L(
           i18n.language,
-          'Falha na predição. Verifique a conexão com o servidor e tente novamente.',
+          'Falha na previsão. Verifique a conexão com o servidor e tente novamente.',
           'Prediction failed. Check whether the backend is available and try again.',
           'Échec du calcul. Vérifiez que le serveur est accessible et réessayez.',
+          'Falló el pronóstico. Comprueba que el servidor esté disponible e inténtalo de nuevo.',
         ),
       )
     }
@@ -120,7 +122,7 @@ export function Predictor() {
           {
             label: t('predictor.backend', 'Backend'),
             value: isOnline ? t('predictor.onAir', 'On air') : t('header.apiOffline', 'Offline'),
-            note: isOnline ? L(i18n.language, 'Modelo carregado', 'Model loaded', 'Modèle chargé') : L(i18n.language, 'Inacessível', 'Unreachable', 'Injoignable'),
+            note: isOnline ? L(i18n.language, 'Modelo carregado', 'Model loaded', 'Modèle chargé', 'Modelo cargado') : L(i18n.language, 'Inacessível', 'Unreachable', 'Injoignable', 'Inaccesible'),
             alert: !isOnline,
             onlineDot: isOnline,
           },
@@ -150,8 +152,8 @@ export function Predictor() {
               type="button"
               onClick={swapCorners}
               disabled={!nameA && !nameB}
-              title={L(i18n.language, 'Inverter cantos (Vermelho ⇄ Azul)', 'Swap corners (Red ⇄ Blue)', 'Inverser les coins (Rouge ⇄ Bleu)')}
-              aria-label={L(i18n.language, 'Inverter cantos', 'Swap corners', 'Inverser les coins')}
+              title={L(i18n.language, 'Inverter cantos (Vermelho ⇄ Azul)', 'Swap corners (Red ⇄ Blue)', 'Inverser les coins (Rouge ⇄ Bleu)', 'Intercambiar esquinas (Roja ⇄ Azul)')}
+              aria-label={L(i18n.language, 'Inverter cantos', 'Swap corners', 'Inverser les coins', 'Intercambiar esquinas')}
               className={`poster-display group relative grid h-14 w-14 -rotate-6 place-items-center rounded-full border border-[var(--border-default)] bg-[var(--bg-surface-elevated)] text-2xl shadow-sm transition ${
                 nameA || nameB ? 'cursor-pointer hover:rotate-0 hover:scale-105 active:scale-95 text-[var(--text-primary)]' : 'cursor-default text-[var(--text-muted)]'
               }`}
@@ -216,11 +218,11 @@ function Masthead({ dataThrough }: { dataThrough: string | null }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-2 text-[var(--text-secondary)] sm:px-8">
       <span className="text-xs font-bold uppercase tracking-[0.25em]">
-        {L(i18n.language, 'Inteligência de Combate · Mesa de Análise', 'Vektor MMA · Matchup desk', 'Vektor MMA · Table d’analyse')}
+        {L(i18n.language, 'Inteligência de Combate · Mesa de Análise', 'Vektor MMA · Matchup desk', 'Vektor MMA · Table d’analyse', 'Vektor MMA · Mesa de análisis')}
       </span>
       {label ? (
         <span className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">
-          {L(i18n.language, `Resultados até ${label}`, `Results through ${label}`, `Résultats jusqu’au ${label}`)}
+          {L(i18n.language, `Resultados até ${label}`, `Results through ${label}`, `Résultats jusqu’au ${label}`, `Resultados hasta ${label}`)}
         </span>
       ) : null}
     </div>
@@ -267,7 +269,7 @@ function Corner({
     <section className="flex min-w-0 flex-col rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] overflow-hidden shadow-xs">
       <div className={`${block} flex items-center justify-between gap-3 px-4 py-2.5`}>
         <span className="poster-display text-xl sm:text-2xl">
-          {side === 'red' ? L(i18n.language, 'Canto Vermelho', 'Red corner', 'Coin rouge') : L(i18n.language, 'Canto Azul', 'Blue corner', 'Coin bleu')}
+          {side === 'red' ? L(i18n.language, 'Canto Vermelho', 'Red corner', 'Coin rouge', 'Esquina roja') : L(i18n.language, 'Canto Azul', 'Blue corner', 'Coin bleu', 'Esquina azul')}
         </span>
         {fighter ? <span className="truncate text-xs font-bold uppercase tracking-widest">{fighter.division ? getDivisionName(fighter.division, i18n.language) : fighter.stance}</span> : null}
       </div>
@@ -279,8 +281,8 @@ function Corner({
           <FighterSheet fighter={fighter} imageUrl={getFighterImageUrl(fighter.name, imageByName, fighter.image_url)} onOpenProfile={() => onOpenProfile(fighter.name)} />
         ) : (
           <div className="flex flex-1 flex-col items-center justify-center rounded-xl border border-dashed border-[var(--border-default)] bg-[var(--bg-surface-subtle)] px-4 py-10 text-center">
-            <p className="poster-display text-3xl sm:text-4xl text-[var(--text-muted)]">{loading ? '...' : L(i18n.language, 'A definir', 'TBA', 'À définir')}</p>
-            <p className="mt-1 text-xs font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">{L(i18n.language, 'Aguardando lutador', 'To be announced', 'En attente d’un lutteur')}</p>
+            <p className="poster-display text-3xl sm:text-4xl text-[var(--text-muted)]">{loading ? '...' : L(i18n.language, 'A definir', 'TBA', 'À définir', 'Por definir')}</p>
+            <p className="mt-1 text-xs font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">{L(i18n.language, 'Aguardando lutador', 'To be announced', 'En attente d’un combattant', 'Peleador por anunciar')}</p>
           </div>
         )}
       </div>
@@ -291,14 +293,14 @@ function Corner({
 function FighterSheet({ fighter, imageUrl, onOpenProfile }: { fighter: FighterProfile; imageUrl: string | null; onOpenProfile: () => void }) {
   const { i18n } = useTranslation()
   const record = `${fighter.wins ?? 0}-${fighter.losses ?? 0}${fighter.draws ? `-${fighter.draws}` : ''}`
-  const place = fighter.hometown ?? fighter.country
+  const place = translateHometown(fighter.hometown ?? fighter.country, i18n.language)
   const rows: [string, string][] = [
-    [L(i18n.language, 'Idade', 'Age', 'Âge'), fighter.age ? `${fighter.age.toFixed(0)}` : '—'],
-    [L(i18n.language, 'Altura', 'Height', 'Taille'), fighter.height_cm ? `${fighter.height_cm.toFixed(0)} cm` : '—'],
-    [L(i18n.language, 'Envergadura', 'Reach', 'Allonge'), fighter.reach_cm ? `${fighter.reach_cm.toFixed(0)} cm` : '—'],
-    [L(i18n.language, 'Peso', 'Weight', 'Poids'), fighter.weight_lbs ? `${fighter.weight_lbs.toFixed(0)} lb` : '—'],
-    [L(i18n.language, 'Postura', 'Stance', 'Garde'), fighter.stance || '—'],
-    [L(i18n.language, 'Taxa de vitória', 'Win rate', 'Taux de victoire'), fighter.win_rate != null ? `${(fighter.win_rate * 100).toFixed(1)}%` : '—'],
+    [L(i18n.language, 'Idade', 'Age', 'Âge', 'Edad'), fighter.age ? `${fighter.age.toFixed(0)}` : '—'],
+    [L(i18n.language, 'Altura', 'Height', 'Taille', 'Estatura'), fighter.height_cm ? `${fighter.height_cm.toFixed(0)} cm` : '—'],
+    [L(i18n.language, 'Envergadura', 'Reach', 'Allonge', 'Alcance'), fighter.reach_cm ? `${fighter.reach_cm.toFixed(0)} cm` : '—'],
+    [L(i18n.language, 'Peso', 'Weight', 'Poids', 'Peso'), fighter.weight_lbs ? `${fighter.weight_lbs.toFixed(0)} lb` : '—'],
+    [L(i18n.language, 'Postura', 'Stance', 'Garde', 'Guardia'), fighter.stance || '—'],
+    [L(i18n.language, 'Taxa de vitória', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias'), fighter.win_rate != null ? `${(fighter.win_rate * 100).toFixed(1)}%` : '—'],
   ]
 
   return (
@@ -308,7 +310,7 @@ function FighterSheet({ fighter, imageUrl, onOpenProfile }: { fighter: FighterPr
           type="button"
           onClick={onOpenProfile}
           className="shrink-0 cursor-pointer transition hover:scale-105"
-          title={L(i18n.language, `Abrir perfil completo de ${fighter.name}`, `Open ${fighter.name}'s full profile`, `Ouvrir le profil complet de ${fighter.name}`)}
+          title={L(i18n.language, `Abrir perfil completo de ${fighter.name}`, `Open ${fighter.name}'s full profile`, `Ouvrir le profil complet de ${fighter.name}`, `Abrir el perfil completo de ${fighter.name}`)}
         >
           <FighterAvatar name={fighter.name} imageUrl={imageUrl} className="h-24 w-24 sm:h-28 sm:w-28" />
         </button>
@@ -370,25 +372,25 @@ function Scorecard({
         { name: prediction.fighter_b_profile.name, value: prediction.fighter_b_probability, color: 'bg-[var(--accent-blue)]' },
       ]
     : [
-        { name: fighterA?.name ?? L(i18n.language, 'Canto Vermelho', 'Red corner', 'Coin rouge'), value: null, color: 'bg-[var(--accent-red)]' },
-        { name: fighterB?.name ?? L(i18n.language, 'Canto Azul', 'Blue corner', 'Coin bleu'), value: null, color: 'bg-[var(--accent-blue)]' },
+        { name: fighterA?.name ?? L(i18n.language, 'Canto Vermelho', 'Red corner', 'Coin rouge', 'Esquina roja'), value: null, color: 'bg-[var(--accent-red)]' },
+        { name: fighterB?.name ?? L(i18n.language, 'Canto Azul', 'Blue corner', 'Coin bleu', 'Esquina azul'), value: null, color: 'bg-[var(--accent-blue)]' },
       ]
 
   return (
     <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] overflow-hidden shadow-xs">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-4 py-3">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="poster-display text-lg text-[var(--text-primary)]">{L(i18n.language, 'Placar de Probabilidades', 'Official scorecard', 'Carte des probabilités')}</span>
+          <span className="poster-display text-lg text-[var(--text-primary)]">{L(i18n.language, 'Placar de Probabilidades', 'Official scorecard', 'Carte des probabilités', 'Tarjeta oficial')}</span>
           {titleFightInfo?.title_fight ? <TitleFightBadge fight={titleFightInfo} /> : null}
         </div>
-        <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">{L(i18n.language, 'Chances da IA', 'Model odds', 'Cotes du modèle')}</span>
+        <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">{L(i18n.language, 'Chances da IA', 'Model odds', 'Cotes du modèle', 'Probabilidades del modelo')}</span>
       </div>
 
       <div className="relative space-y-4 p-4 sm:p-5">
         {prediction ? (
           <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">
             <div className="min-w-0">
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--accent-red)]">{L(i18n.language, 'Favorito Previsto', 'Projected winner', 'Vainqueur prévu')}</p>
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--accent-red)]">{L(i18n.language, 'Favorito Previsto', 'Projected winner', 'Vainqueur prévu', 'Ganador proyectado')}</p>
               <p className="poster-display mt-1 break-words text-2xl leading-none sm:text-3xl text-[var(--text-primary)]">{prediction.predicted_winner}</p>
             </div>
             <p className="poster-display text-4xl leading-none text-[var(--accent-red)] sm:text-5xl">{formatProbability(prediction.probability)}</p>
@@ -417,7 +419,7 @@ function Scorecard({
           </>
         ) : (
           <div className="flex justify-end pt-2 text-[var(--accent-red)]">
-            <span className="poster-display poster-stamp text-2xl border-[var(--border-default)]">{L(i18n.language, 'Aguardando combate', 'Awaiting bout', 'En attente du combat')}</span>
+            <span className="poster-display poster-stamp text-2xl border-[var(--border-default)]">{L(i18n.language, 'Aguardando combate', 'Awaiting bout', 'En attente du combat', 'Esperando la pelea')}</span>
           </div>
         )}
       </div>
@@ -433,7 +435,7 @@ function Drivers({ factors }: { factors: MainFactor[] }) {
   return (
     <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] overflow-hidden shadow-xs">
       <div className="flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-4 py-3">
-        <span className="poster-display text-lg text-[var(--text-primary)]">{L(i18n.language, 'Fatores Determinantes', 'Why the model leans', 'Pourquoi le modèle penche')}</span>
+        <span className="poster-display text-lg text-[var(--text-primary)]">{L(i18n.language, 'Fatores Determinantes', 'Why the model leans', 'Pourquoi le modèle penche', 'Por qué se inclina el modelo')}</span>
         <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">SHAP</span>
       </div>
 
@@ -455,9 +457,10 @@ function Drivers({ factors }: { factors: MainFactor[] }) {
               <p className="mt-1 text-xs text-[var(--text-muted)]">
                 {L(
                   i18n.language,
-                  `${localizeFeature(factor.feature, true)} favoreceu a previsão para ${factor.impact}.`,
+                  `${localizeFeature(factor.feature, i18n.language)} favoreceu a previsão para ${factor.impact}.`,
                   factor.explanation,
                   `${localizeFeature(factor.feature, i18n.language)} a pesé en faveur de ${factor.impact}.`,
+                  `${localizeFeature(factor.feature, i18n.language)} inclinó el pronóstico a favor de ${factor.impact}.`,
                 )}
               </p>
             </div>
@@ -472,7 +475,7 @@ function Drivers({ factors }: { factors: MainFactor[] }) {
               </div>
             ))}
             <p className="text-sm font-medium leading-6 text-[var(--text-muted)]">
-              {L(i18n.language, 'Simule a luta para ver os fatores que definiram o favoritismo.', 'Score the fight to see the three numbers that pushed the odds, ranked.', 'Calculez le combat pour voir les chiffres qui ont fait pencher les cotes, du plus fort au plus faible.')}
+              {L(i18n.language, 'Simule a luta para ver os fatores que definiram o favoritismo.', 'Score the fight to see the three numbers that pushed the odds, ranked.', 'Calculez le combat pour voir les chiffres qui ont fait pencher les cotes, du plus fort au plus faible.', 'Pronostica la pelea para ver los tres números que movieron las probabilidades, ordenados.')}
             </p>
           </>
         )}
@@ -487,28 +490,28 @@ function TaleOfTape({ fighterA, fighterB }: { fighterA: FighterProfile | null; f
   const { i18n } = useTranslation()
 
   const rows: TapeRow[] = [
-    { label: L(i18n.language, 'Idade', 'Age', 'Âge'), a: fighterA?.age ?? null, b: fighterB?.age ?? null, better: 'none' },
-    { label: L(i18n.language, 'Altura (cm)', 'Height (cm)', 'Taille (cm)'), a: fighterA?.height_cm ?? null, b: fighterB?.height_cm ?? null, better: 'high' },
-    { label: L(i18n.language, 'Envergadura (cm)', 'Reach (cm)', 'Allonge (cm)'), a: fighterA?.reach_cm ?? null, b: fighterB?.reach_cm ?? null, better: 'high' },
-    { label: L(i18n.language, 'Vitórias', 'Wins', 'Victoires'), a: fighterA?.wins ?? null, b: fighterB?.wins ?? null, better: 'high' },
-    { label: L(i18n.language, 'Derrotas', 'Losses', 'Défaites'), a: fighterA?.losses ?? null, b: fighterB?.losses ?? null, better: 'low' },
-    { label: L(i18n.language, 'Taxa de vitória', 'Win rate', 'Taux de victoire'), a: fighterA?.win_rate ?? null, b: fighterB?.win_rate ?? null, better: 'high', pct: true },
-    { label: L(i18n.language, 'Precisão de golpes', 'Striking accuracy', 'Précision des coups'), a: fighterA?.sig_str_acc ?? null, b: fighterB?.sig_str_acc ?? null, better: 'high', pct: true },
-    { label: L(i18n.language, 'Precisão de quedas', 'Takedown accuracy', 'Précision des amenées'), a: fighterA?.takedown_acc ?? null, b: fighterB?.takedown_acc ?? null, better: 'high', pct: true },
+    { label: L(i18n.language, 'Idade', 'Age', 'Âge', 'Edad'), a: fighterA?.age ?? null, b: fighterB?.age ?? null, better: 'none' },
+    { label: L(i18n.language, 'Altura (cm)', 'Height (cm)', 'Taille (cm)', 'Estatura (cm)'), a: fighterA?.height_cm ?? null, b: fighterB?.height_cm ?? null, better: 'high' },
+    { label: L(i18n.language, 'Envergadura (cm)', 'Reach (cm)', 'Allonge (cm)', 'Alcance (cm)'), a: fighterA?.reach_cm ?? null, b: fighterB?.reach_cm ?? null, better: 'high' },
+    { label: L(i18n.language, 'Vitórias', 'Wins', 'Victoires', 'Victorias'), a: fighterA?.wins ?? null, b: fighterB?.wins ?? null, better: 'high' },
+    { label: L(i18n.language, 'Derrotas', 'Losses', 'Défaites', 'Derrotas'), a: fighterA?.losses ?? null, b: fighterB?.losses ?? null, better: 'low' },
+    { label: L(i18n.language, 'Taxa de vitória', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias'), a: fighterA?.win_rate ?? null, b: fighterB?.win_rate ?? null, better: 'high', pct: true },
+    { label: L(i18n.language, 'Precisão de golpes', 'Striking accuracy', 'Précision des coups', 'Precisión de golpes'), a: fighterA?.sig_str_acc ?? null, b: fighterB?.sig_str_acc ?? null, better: 'high', pct: true },
+    { label: L(i18n.language, 'Precisão de quedas', 'Takedown accuracy', 'Précision des amenées', 'Precisión de derribos'), a: fighterA?.takedown_acc ?? null, b: fighterB?.takedown_acc ?? null, better: 'high', pct: true },
   ]
   const ready = Boolean(fighterA && fighterB)
 
   return (
     <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] overflow-hidden shadow-xs">
       <div className="flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-4 py-3">
-        <span className="poster-display text-lg text-[var(--text-primary)]">{L(i18n.language, 'Raio-X dos Lutadores', 'Tale of the tape', 'La fiche comparative')}</span>
-        <span className="hidden text-[11px] font-bold uppercase tracking-[0.2em] sm:inline text-[var(--text-muted)]">{L(i18n.language, 'Destaque = vantagem', 'Highlight = edge', 'Surligné = avantage')}</span>
+        <span className="poster-display text-lg text-[var(--text-primary)]">{L(i18n.language, 'Raio-X dos Lutadores', 'Tale of the tape', 'La fiche comparative', 'Comparativa de peleadores')}</span>
+        <span className="hidden text-[11px] font-bold uppercase tracking-[0.2em] sm:inline text-[var(--text-muted)]">{L(i18n.language, 'Destaque = vantagem', 'Highlight = edge', 'Surligné = avantage', 'Resaltado = ventaja')}</span>
       </div>
 
       <div className="grid grid-cols-[1fr_auto_1fr] border-b border-[var(--border-subtle)] text-center">
-        <span className="poster-display truncate bg-[var(--accent-red)] px-3 py-2 text-base text-white sm:text-lg">{fighterA?.name ?? L(i18n.language, 'Canto Vermelho', 'Red corner', 'Coin rouge')}</span>
+        <span className="poster-display truncate bg-[var(--accent-red)] px-3 py-2 text-base text-white sm:text-lg">{fighterA?.name ?? L(i18n.language, 'Canto Vermelho', 'Red corner', 'Coin rouge', 'Esquina roja')}</span>
         <span className="w-24 shrink-0 sm:w-40" />
-        <span className="poster-display truncate bg-[var(--accent-blue)] px-3 py-2 text-base text-white sm:text-lg">{fighterB?.name ?? L(i18n.language, 'Canto Azul', 'Blue corner', 'Coin bleu')}</span>
+        <span className="poster-display truncate bg-[var(--accent-blue)] px-3 py-2 text-base text-white sm:text-lg">{fighterB?.name ?? L(i18n.language, 'Canto Azul', 'Blue corner', 'Coin bleu', 'Esquina azul')}</span>
       </div>
 
       <div>

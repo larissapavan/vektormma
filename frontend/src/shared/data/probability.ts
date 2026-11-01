@@ -1,3 +1,5 @@
+import { L, uiLang, type UiLang } from '../../i18n/lang'
+
 /**
  * How the model's probabilities are put on screen.
  *
@@ -16,46 +18,46 @@ export function formatProbability(value: number): string {
 
 /** How big the favorite's edge is, in words. `favorite` is the favorite's probability (0.5 to 1). */
 export function edgeLabel(favorite: number, language: string | boolean = false): string {
-  const portuguese = language === true || (typeof language === 'string' && language.startsWith('pt'))
-  const french = typeof language === 'string' && language.startsWith('fr')
-  if (favorite < 0.55) return portuguese ? 'Luta parelha' : french ? 'Combat équilibré' : 'Toss-up'
-  if (favorite < 0.65) return portuguese ? 'Leve vantagem' : french ? 'Léger avantage' : 'Slight edge'
-  if (favorite < 0.8) return portuguese ? 'Vantagem clara' : french ? 'Avantage net' : 'Clear edge'
-  return portuguese ? 'Amplo favoritismo' : french ? 'Large favori' : 'Strong edge'
+  const edge = favorite < 0.55 ? 0 : favorite < 0.65 ? 1 : favorite < 0.8 ? 2 : 3
+  return L(
+    language,
+    ['Luta parelha', 'Leve vantagem', 'Vantagem clara', 'Amplo favoritismo'][edge],
+    ['Toss-up', 'Slight edge', 'Clear edge', 'Strong edge'][edge],
+    ['Combat équilibré', 'Léger avantage', 'Avantage net', 'Large favori'][edge],
+    ['Pelea pareja', 'Ligera ventaja', 'Ventaja clara', 'Amplio favoritismo'][edge],
+  )
+}
+
+type Confidence = 'strong' | 'moderate' | 'competitive'
+
+const PREDICTION_MESSAGES: Record<UiLang, Record<Confidence, (name: string) => string> | null> = {
+  en: null,
+  pt: {
+    strong: (name) => `O modelo aponta amplo favoritismo para ${name} neste confronto.`,
+    moderate: (name) => `O modelo aponta vantagem moderada para ${name} neste confronto.`,
+    competitive: (name) => `O modelo aponta leve vantagem para ${name} em um combate equilibrado.`,
+  },
+  fr: {
+    strong: (name) => `Le modèle donne un large avantage à ${name} pour ce combat.`,
+    moderate: (name) => `Le modèle donne un avantage modéré à ${name} pour ce combat.`,
+    competitive: (name) => `Le modèle donne un léger avantage à ${name} dans un combat serré.`,
+  },
+  es: {
+    strong: (name) => `El modelo da una amplia ventaja a ${name} en este enfrentamiento.`,
+    moderate: (name) => `El modelo da una ventaja moderada a ${name} en este enfrentamiento.`,
+    competitive: (name) => `El modelo da una ligera ventaja a ${name} en una pelea cerrada.`,
+  },
 }
 
 /** Localizes the backend prediction message ("The model gives X a [confidence] edge in this matchup."). */
 export function localizePredictionMessage(message: string | null | undefined, winner: string, language: string | boolean = false): string {
   if (!message) return ''
-  const portuguese = language === true || (typeof language === 'string' && language.startsWith('pt'))
-  const french = typeof language === 'string' && language.startsWith('fr')
-  if (french) {
-    if (message.includes('a strong edge')) return `Le modèle donne un large avantage à ${winner} pour ce combat.`
-    if (message.includes('a moderate edge')) return `Le modèle donne un avantage modéré à ${winner} pour ce combat.`
-    if (message.includes('a competitive edge')) return `Le modèle donne un léger avantage à ${winner} dans un combat serré.`
-    if (message.includes('The model gives')) {
-      return message.replace(/The model gives (.+?) a (\w+) edge in this matchup\./, (_match, name, conf) => {
-        const edge = conf === 'strong' ? 'un large avantage' : conf === 'moderate' ? 'un avantage modéré' : 'un léger avantage'
-        return `Le modèle donne ${edge} à ${name} pour ce combat.`
-      })
-    }
-    return message
-  }
-  if (!portuguese) return message
-  if (message.includes('a strong edge')) {
-    return `O modelo aponta amplo favoritismo para ${winner} neste confronto.`
-  }
-  if (message.includes('a moderate edge')) {
-    return `O modelo aponta vantagem moderada para ${winner} neste confronto.`
-  }
-  if (message.includes('a competitive edge')) {
-    return `O modelo aponta leve vantagem para ${winner} em um combate equilibrado.`
-  }
-  if (message.includes('The model gives')) {
-    return message.replace(/The model gives (.+?) a (\w+) edge in this matchup\./, (_match, name, conf) => {
-      const edge = conf === 'strong' ? 'amplo favoritismo' : conf === 'moderate' ? 'vantagem moderada' : 'leve vantagem'
-      return `O modelo aponta ${edge} para ${name} neste confronto.`
-    })
-  }
-  return message
+  const messages = PREDICTION_MESSAGES[uiLang(language)]
+  if (!messages) return message
+  if (message.includes('a strong edge')) return messages.strong(winner)
+  if (message.includes('a moderate edge')) return messages.moderate(winner)
+  if (message.includes('a competitive edge')) return messages.competitive(winner)
+  return message.replace(/The model gives (.+?) a (\w+) edge in this matchup\./, (_match, name: string, confidence: string) =>
+    (messages[confidence as Confidence] ?? messages.competitive)(name),
+  )
 }

@@ -1,50 +1,61 @@
-import { localeTag, uiLang } from '../../i18n/lang'
+import { L, localeTag, uiLang, type UiLang } from '../../i18n/lang'
 import type { OrgFighter, OrgFightResult } from '../types/api'
+import { localizeCountryName, translateHometown } from './fightLabels'
 
-const METHOD_NAMES_EN: Record<string, string> = {
-  'U-DEC': 'Unanimous Decision',
-  'S-DEC': 'Split Decision',
-  'M-DEC': 'Majority Decision',
-  DEC: 'Decision',
-  'KO/TKO': 'Knockout',
-  SUB: 'Submission',
-  DQ: 'Disqualification',
-  'NO CONTEST': 'No Contest',
-  Draw: 'Draw',
-  Walkover: 'Walkover',
-}
-
-const METHOD_NAMES_PT: Record<string, string> = {
-  'U-DEC': 'Decisão Unânime',
-  'S-DEC': 'Decisão Dividida',
-  'M-DEC': 'Decisão Majoritária',
-  DEC: 'Decisão',
-  'KO/TKO': 'Nocaute (KO/TKO)',
-  SUB: 'Finalização',
-  DQ: 'Desqualificação (DQ)',
-  'NO CONTEST': 'Sem Resultado (NC)',
-  Draw: 'Empate',
-  Walkover: 'W.O.',
-}
-
-const METHOD_NAMES_FR: Record<string, string> = {
-  'U-DEC': 'Décision unanime',
-  'S-DEC': 'Décision partagée',
-  'M-DEC': 'Décision majoritaire',
-  DEC: 'Décision',
-  'KO/TKO': 'KO/TKO',
-  SUB: 'Soumission',
-  DQ: 'Disqualification',
-  'NO CONTEST': 'Sans résultat (NC)',
-  Draw: 'Nul',
-  Walkover: 'Forfait',
+const METHOD_NAMES: Record<UiLang, Record<string, string>> = {
+  en: {
+    'U-DEC': 'Unanimous Decision',
+    'S-DEC': 'Split Decision',
+    'M-DEC': 'Majority Decision',
+    DEC: 'Decision',
+    'KO/TKO': 'Knockout',
+    SUB: 'Submission',
+    DQ: 'Disqualification',
+    'NO CONTEST': 'No Contest',
+    Draw: 'Draw',
+    Walkover: 'Walkover',
+  },
+  pt: {
+    'U-DEC': 'Decisão Unânime',
+    'S-DEC': 'Decisão Dividida',
+    'M-DEC': 'Decisão Majoritária',
+    DEC: 'Decisão',
+    'KO/TKO': 'Nocaute (KO/TKO)',
+    SUB: 'Finalização',
+    DQ: 'Desqualificação (DQ)',
+    'NO CONTEST': 'Sem Resultado (NC)',
+    Draw: 'Empate',
+    Walkover: 'W.O.',
+  },
+  fr: {
+    'U-DEC': 'Décision unanime',
+    'S-DEC': 'Décision partagée',
+    'M-DEC': 'Décision majoritaire',
+    DEC: 'Décision',
+    'KO/TKO': 'KO/TKO',
+    SUB: 'Soumission',
+    DQ: 'Disqualification',
+    'NO CONTEST': 'Sans résultat (NC)',
+    Draw: 'Nul',
+    Walkover: 'Forfait',
+  },
+  es: {
+    'U-DEC': 'Decisión unánime',
+    'S-DEC': 'Decisión dividida',
+    'M-DEC': 'Decisión mayoritaria',
+    DEC: 'Decisión',
+    'KO/TKO': 'Nocaut (KO/TKO)',
+    SUB: 'Sumisión',
+    DQ: 'Descalificación (DQ)',
+    'NO CONTEST': 'Sin resultado (NC)',
+    Draw: 'Empate',
+    Walkover: 'Incomparecencia',
+  },
 }
 
 export function formatMethod(method: string | null, detail?: string | null, language: string | boolean = false) {
   if (!method) return null
-  const lang = uiLang(language)
-  const map = lang === 'pt' ? METHOD_NAMES_PT : lang === 'fr' ? METHOD_NAMES_FR : METHOD_NAMES_EN
-  const label = map[method] ?? method
+  const label = METHOD_NAMES[uiLang(language)][method] ?? method
   return detail ? `${label} (${detail})` : label
 }
 
@@ -56,8 +67,7 @@ export function fightSummary(fight: Pick<OrgFightResult, 'method' | 'method_deta
 }
 
 export function formatDate(date: string | null, withYear = true, language: string | boolean = false) {
-  const lang = uiLang(language)
-  if (!date) return lang === 'pt' ? 'Data a definir' : lang === 'fr' ? 'Date à confirmer' : 'Date unknown'
+  if (!date) return L(language, 'Data a definir', 'Date unknown', 'Date à confirmer', 'Fecha por definir')
   const parsed = new Date(`${date}T00:00:00`)
   if (Number.isNaN(parsed.getTime())) return date
   return parsed.toLocaleDateString(localeTag(language), { year: withYear ? 'numeric' : undefined, month: 'short', day: 'numeric' })
@@ -110,7 +120,7 @@ export function compareDivisions(a: string, b: string) {
 }
 
 /** Where the fighter lives and trains, without repeating the same place twice. */
-export function originLine(fighter: Pick<OrgFighter, 'hometown' | 'fighting_out_of' | 'country'>) {
+export function originLine(fighter: Pick<OrgFighter, 'hometown' | 'fighting_out_of' | 'country'>, language: string | boolean = false) {
   const places = [fighter.hometown, fighter.fighting_out_of].filter((place, index, all): place is string => Boolean(place) && all.indexOf(place) === index)
-  return places.length ? places.join(' · ') : (fighter.country ?? null)
+  return places.length ? places.map((place) => translateHometown(place, language)).join(' · ') : (fighter.country ? localizeCountryName(fighter.country, language) : null)
 }

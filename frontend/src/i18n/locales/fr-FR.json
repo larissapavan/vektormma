@@ -15,7 +15,7 @@
     "matchup": "Duel"
   },
   "header": {
-    "matchupAnalytics": "Analytique des Combats",
+    "matchupAnalytics": "Analyse des Combats",
     "fightIntelligence": "Vektor MMA",
     "apiLive": "En direct",
     "apiOffline": "Hors ligne",
@@ -23,27 +23,29 @@
     "apiLiveTitle": "API en ligne et modèle chargé",
     "apiOfflineTitle": "API hors ligne",
     "apiWakingTitle": "Démarrage du serveur API...",
-    "searchPlaceholder": "Chercher combattant...",
+    "searchPlaceholder": "Rechercher un combattant...",
     "themeLight": "Clair",
     "themeDark": "Sombre",
     "switchTheme": "Passer en {{theme}}",
     "github": "GitHub",
-    "openMenu": "Ouvrir menu",
-    "closeMenu": "Fermer menu"
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu"
   },
   "language": {
     "switch": "Changer de langue",
     "pt": "PT",
     "en": "EN",
     "fr": "FR",
+    "es": "ES",
     "ptLong": "Portugais",
     "enLong": "Anglais",
-    "frLong": "Français"
+    "frLong": "Français",
+    "esLong": "Espagnol"
   },
   "landing": {
     "eyebrow": "Vektor MMA",
     "title": "Choisir une Organisation",
-    "description": "Statistiques, classements et résultats officiels. Prévisions de victoire par machine learning.",
+    "description": "Statistiques, classements et résultats officiels. Prévisions de victoire par apprentissage automatique.",
     "footerNotice": "Changez d’organisation à tout moment en haut. Projet indépendant, sans affiliation officielle.",
     "winPredictions": "Prédictions de victoire",
     "archive": "Archives historiques",
@@ -60,16 +62,16 @@
     },
     "taglines": {
       "ufc": "Statistiques, classements et prévisions de victoire par IA.",
-      "pfl": "Profils d’athlètes, événements officiels et classements de la ligue.",
+      "pfl": "Profils de combattants, événements officiels et classements de la ligue.",
       "one": "MMA, Muay Thai en gants 4oz, champions du monde et prévisions par IA.",
       "bellator": "Archives historiques 2009–2023 : combattants, événements et champions."
     }
   },
   "footer": {
-    "tagline": "Vektor MMA • Télémétrie et prédictions en sports de combat",
+    "tagline": "Vektor MMA • Télémétrie et prévisions en sports de combat",
     "dataUpTo": "Données jusqu’au {{date}}",
     "disclaimer": "Projet personnel indépendant, sans affiliation avec {{org}}",
-    "rssFeed": "Flux RSS : picks et résultats"
+    "rssFeed": "Flux RSS : pronostics et résultats"
   },
   "common": {
     "loading": "Chargement...",
@@ -97,7 +99,7 @@
     "referee": "Arbitre",
     "winner": "Vainqueur",
     "scheduledRounds": "Rounds prévus",
-    "viewProfile": "Voir Profil",
+    "viewProfile": "Voir le profil",
     "noResults": "Aucun résultat trouvé."
   },
   "home": {
@@ -107,10 +109,10 @@
     "restOfCard": "Reste de la carte • {{count}} combats",
     "restOfCard_one": "Reste de la carte • 1 combat",
     "trending": "Tendances",
-    "poundForPound": "Toutes catégories",
+    "poundForPound": "Livre pour livre",
     "latestHeadlines": "Derniers titres",
     "winStreak": "série de victoires",
-    "finishRate": "taux de finish",
+    "finishRate": "taux de victoires avant la limite",
     "predictedWinner": "Vainqueur prévu",
     "winProbability": "Probabilité de victoire"
   },
@@ -126,7 +128,7 @@
     "active": "actif",
     "redCorner": "Coin Rouge",
     "blueCorner": "Coin Bleu",
-    "searchPlaceholder": "Chercher combattant...",
+    "searchPlaceholder": "Rechercher un combattant...",
     "predictMatchup": "Prédire le Combat",
     "predicting": "Prédiction en cours...",
     "swap": "Inverser les coins",
@@ -140,7 +142,7 @@
   "fighters": {
     "title": "Combattants",
     "subtitle": "Consultez les combattants par catégorie, palmarès et statistiques.",
-    "search": "Chercher combattant ou surnom...",
+    "search": "Rechercher un combattant ou un surnom...",
     "all": "Tous",
     "activeOnly": "Effectif Actif",
     "former": "Historique",
@@ -149,10 +151,10 @@
     "division": "Divisions",
     "lastFight": "Dernier Combat",
     "noFightersFound": "Aucun combattant trouvé.",
-    "viewProfile": "Voir Profil",
+    "viewProfile": "Voir le profil",
     "stats": "Statistiques",
     "strikes": "Coups Sig. / Min",
-    "takedowns": "Amenées au sol / 15m"
+    "takedowns": "Amenées au sol / 15 min"
   },
   "events": {
     "eyebrow": "Archives des Événements",
@@ -170,31 +172,31 @@
     "noEventsFound": "Aucun événement trouvé.",
     "noEventsSub": "Ajustez vos filtres de recherche.",
     "pick": "Pronostic",
-    "modelCall": "Model Call",
+    "modelCall": "Avis du modèle",
     "fights": "combats",
     "bouts": "combats",
     "simulateCard": "Simulateur de Résultats (Vous vs IA)",
     "simulatorTitle": "Simulateur d'Événements — Vous vs IA",
     "agreement": "Taux de Concordance",
     "shareWhatsApp": "Partager sur WhatsApp",
-    "copySummary": "Copier les Picks"
+    "copySummary": "Copier les pronostics"
   },
   "rankings": {
-    "eyebrow": "Rankings Officiels",
-    "title": "Rankings par Division & P4P",
-    "description": "Rankings officiels avec taux de victoire et historique récent.",
+    "eyebrow": "Classements officiels",
+    "title": "Classements par division et livre pour livre",
+    "description": "Classements officiels avec taux de victoire et historique récent.",
     "categoryRanking": "Divisions",
-    "p4p": "P4P (Toutes Catégories)",
+    "p4p": "Livre pour livre (P4P)",
     "eloRating": "Classement Elo",
-    "eloSubtitle": "Rating dynamique calculé combat par combat dans l’historique officiel.",
+    "eloSubtitle": "Cote dynamique calculée combat par combat dans l’historique officiel.",
     "allTime": "Historique Global",
-    "activeOnly": "Roster Actif",
+    "activeOnly": "Effectif Actif",
     "elo": "Classement Elo",
     "peakElo": "Pic Elo",
     "allDivisions": "Toutes les Divisions",
     "division": "Division",
     "champion": "Champion",
-    "rankingsUnavailable": "Rankings indisponibles actuellement."
+    "rankingsUnavailable": "Classements indisponibles actuellement."
   },
   "champions": {
     "eyebrow": "Historique des Combats de Titre",
@@ -215,7 +217,7 @@
     "title": "Livre des Records",
     "description": "Leaders historiques dans 32 statistiques officielles de combat.",
     "blurbs": {
-      "Fights": "Victoires, finish, séries et titres sur toute une carrière.",
+      "Fights": "Victoires, finalisations avant la limite, séries et titres sur toute une carrière.",
       "Time": "La durée des combats et le temps passé en contrôle.",
       "Striking": "Coups significatifs, précision, défense et knockdowns.",
       "Grappling": "Amenées, défense d'amenée et tentatives de soumission."
@@ -224,12 +226,12 @@
   "gyms": {
     "eyebrow": "Centres d'Entraînement",
     "title": "Salles & Équipes",
-    "description": "Consultez une salle pour voir les partenaires d’entraînement, champions et athlètes affiliés.",
+    "description": "Consultez une salle pour voir les partenaires d’entraînement, champions et combattants affiliés.",
     "totalGyms": "Salles",
-    "withOrgFighters": "Avec athlètes au roster",
-    "fightersPlaced": "Athlètes répertoriés",
+    "withOrgFighters": "Avec des combattants à l’effectif",
+    "fightersPlaced": "Combattants répertoriés",
     "searchPlaceholder": "Chercher salle ou équipe...",
-    "mostFighters": "Plus d'athlètes",
+    "mostFighters": "Plus de combattants",
     "biggestRoster": "Plus grand effectif",
     "mostChampions": "Plus de champions",
     "name": "Nom",
@@ -239,26 +241,26 @@
   "trackRecord": {
     "eyebrow": "Bilan du modèle",
     "title": "Précision & Historique",
-    "description": "Chaque pick est enregistré avant le combat et audité avec les résultats officiels. Aucun réajustement.",
-    "picksLogged": "Picks enregistrés",
+    "description": "Chaque pronostic est enregistré avant le combat et vérifié avec les résultats officiels. Aucun réajustement.",
+    "picksLogged": "Pronostics enregistrés",
     "settled": "Terminés",
     "waiting": "En attente",
-    "liveAccuracy": "Précision live",
+    "liveAccuracy": "Précision en direct",
     "recentFights": "Combats récents",
     "reported": "Test rapporté",
     "waitingTitle": "En attente de résultats",
     "howMeasured": "Fonctionnement",
     "recentResults": "Résultats Récents",
-    "biggestMisses": "Plus Grands Écarts",
-    "biggestMissesNote": "Picks les plus confiants non confirmés.",
-    "syncButton": "Sync Résultats",
+    "biggestMisses": "Plus Grosses Erreurs",
+    "biggestMissesNote": "Les pronostics les plus confiants qui se sont révélés faux.",
+    "syncButton": "Synchroniser les résultats",
     "syncing": "Synchronisation...",
-    "syncSuccess": "Sync réussi : {{settled}} terminés, {{logged}} enregistrés.",
+    "syncSuccess": "Synchronisation terminée : {{settled}} terminés, {{logged}} enregistrés.",
     "syncError": "Erreur lors de la synchronisation avec le serveur."
   },
   "headToHead": {
     "eyebrow": "Face-à-Face",
-    "title": "Historique Head-to-Head",
+    "title": "Historique des face-à-face",
     "description": "Choisissez deux combattants pour voir les duels précédents, vainqueurs, méthode et round.",
     "fighterA": "Combattant A",
     "fighterB": "Combattant B",
@@ -276,7 +278,7 @@
     "who": "Qui fait ce site",
     "whoText1": "Ce projet est construit et maintenu de façon entièrement indépendante par Larissa Pavan.",
     "whoText2": "Il n'a aucune affiliation, partenariat, sponsoring ni aval de l'UFC, de Zuffa LLC, de TKO, de la Professional Fighters League (PFL), du Bellator MMA, d'ESPN, de FightHub, de Wikipédia ou de toute autre organisation citée.",
-    "whoText3": "Toutes les marques, les noms de lutteurs et les photos appartiennent à leurs titulaires. Ils sont utilisés ici uniquement à titre informatif et d'étude.",
+    "whoText3": "Toutes les marques, les noms des combattants et les photos appartiennent à leurs titulaires. Ils sont utilisés ici uniquement à titre informatif et d’étude.",
     "dataAndSystem": "Données et système",
     "disclaimer": "Avertissement important",
     "disclaimerText1": "Les pronostics sont des estimations statistiques, faites par hobby et pour l'étude. Ils ne garantissent aucun résultat et ne constituent pas un conseil de pari.",
@@ -288,13 +290,13 @@
   "dataIntelligence": {
     "eyebrow": "Ingénierie des Données & Télémétrie",
     "title": "Des Données Brutes à l’Intelligence de Combat",
-    "description": "Comment les données officielles de l’UFC, du PFL, du ONE Championship et des archives historiques sont collectées, nettoyées et transformées en variables prédictives pour le modèle de machine learning.",
+    "description": "Comment les données officielles de l’UFC, du PFL, du ONE Championship et des archives historiques sont collectées, nettoyées et transformées en variables prédictives pour le modèle d’apprentissage automatique.",
     "lastUpdate": "Dernière mise à jour",
     "fighters": "Combattants Catalogués",
     "events": "Événements Suivis",
     "fights": "Combats Traités",
     "pipelineTitle": "Architecture de la Chaîne de Données",
-    "pipelineDesc": "Chaque prévision repose sur des statistiques réelles collectées combat par combat, normalisées entre plusieurs organisations et converties en 46 variables ML."
+    "pipelineDesc": "Chaque prévision repose sur des statistiques réelles collectées combat par combat, normalisées entre plusieurs organisations et converties en 46 variables pour le modèle."
   },
   "model": {
     "eyebrow": "Le modèle",
@@ -310,7 +312,7 @@
   "matchup": {
     "eyebrow": "Analyse de Combat",
     "title": "Analyse du Combat",
-    "description": "Striking, grappling et biométrie des deux combattants, plus les facteurs décisifs du modèle.",
+    "description": "Frappe, lutte au sol et biométrie des deux combattants, plus les facteurs décisifs du modèle.",
     "analyze": "Analyser le Combat",
     "analyzing": "Analyse en cours...",
     "radar": "Profil Radar",
@@ -325,11 +327,11 @@
     "careerTimeline": "Parcours",
     "yearlyTrends": "Tendances annuelles",
     "weightHistory": "Historique des catégories",
-    "favoriteMethods": "Méthodes de finish favorites",
+    "favoriteMethods": "Méthodes de victoire favorites",
     "close": "Fermer le profil de performance",
-    "noUfcFights": "Ce lutteur n'a encore aucun combat UFC enregistré.",
+    "noUfcFights": "Ce combattant n’a encore aucun combat UFC enregistré.",
     "eloRating": "Elo",
     "peakElo": "Elo record",
-    "p4pRank": "Rang Elo toutes catégories"
+    "p4pRank": "Rang Elo livre pour livre"
   }
 }

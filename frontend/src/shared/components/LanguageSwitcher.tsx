@@ -10,6 +10,7 @@ const LANGUAGES = [
   { id: 'pt-BR', code: 'PT', label: 'Português', titleKey: 'language.ptLong' },
   { id: 'en-US', code: 'EN', label: 'English', titleKey: 'language.enLong' },
   { id: 'fr-FR', code: 'FR', label: 'Français', titleKey: 'language.frLong' },
+  { id: 'es-419', code: 'ES', label: 'Español', titleKey: 'language.esLong' },
 ] as const
 
 type LanguageSwitcherProps = {

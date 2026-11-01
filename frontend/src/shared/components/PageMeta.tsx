@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { L, uiLang } from '../../i18n/lang'
+import { L, uiLang, type UiLang } from '../../i18n/lang'
 
 const SITE = 'Vektor MMA'
 const DEFAULT_DESCRIPTION =
@@ -57,15 +57,15 @@ const PAGES_PT: Record<string, { title: string; description: string }> = {
   '/home': { title: 'UFC', description: 'Próximos eventos do UFC com previsões da IA, momentos dos atletas e notícias.' },
   '/predictor': { title: 'Simulador de Lutas', description: 'Escolha dois lutadores do UFC e receba a probabilidade de vitória e fatores decisivos.' },
   '/head-to-head': { title: 'Confronto Direto', description: 'Histórico de combates entre atletas do UFC, métodos de vitória e oponentes em comum.' },
-  '/matchup-intelligence': { title: 'Análise de Confronto', description: 'Números detalhados de trocação, chão e dados físicos com explicabilidade da IA.' },
+  '/matchup-intelligence': { title: 'Análise de Confronto', description: 'Números detalhados de trocação, luta no chão e dados físicos, com a explicação da IA.' },
   '/fighters': { title: 'Lutadores', description: 'Perfis completos de atletas do UFC por categoria: cartel, histórico e lutadores similares.' },
   '/events': { title: 'Eventos', description: 'Arquivo histórico de eventos do UFC com resultados oficiais e próximos cards.' },
   '/rankings': { title: 'Rankings', description: 'Rankings oficiais do UFC por categoria e peso por peso com fotos dos atletas.' },
   '/champions': { title: 'Campeões', description: 'Campeões atuais do UFC, maiores reinados da história e recordistas de cinturão.' },
-  '/record-book': { title: 'Livro dos Recordes', description: 'Líderes históricos de todas as 32 estatísticas oficiais do UFC: lutas, tempo, trocação e grappling.' },
+  '/record-book': { title: 'Livro dos Recordes', description: 'Líderes históricos de todas as 32 estatísticas oficiais do UFC: lutas, tempo, trocação e luta no chão.' },
   '/about': { title: 'Sobre o Projeto', description: 'Projeto pessoal independente de Larissa Pavan, fontes de dados e metodologia.' },
   '/data': { title: 'Dados', description: 'Como os dados brutos de lutas são tratados para alimentar o modelo preditivo.' },
-  '/model': { title: 'Sistema e IA', description: 'O modelo preditivo de machine learning, métricas de precisão e calibração.' },
+  '/model': { title: 'Sistema e IA', description: 'O modelo preditivo de aprendizado de máquina, métricas de precisão e calibração.' },
   '/track-record': { title: 'Histórico de Palpites', description: 'Desempenho dos palpites da IA em lutas reais: registrados antes do card e checados após o evento.' },
   '/pfl': { title: 'PFL', description: 'Professional Fighters League: próximos eventos, campeões e resultados.' },
   '/pfl/fighters': { title: 'Lutadores da PFL', description: 'Perfis de atletas da PFL: cartel, medidas, equipes e histórico.' },
@@ -85,19 +85,19 @@ const PAGES_PT: Record<string, { title: string; description: string }> = {
   '/one/rankings': { title: 'Rankings do ONE Championship', description: 'Rankings oficiais do ONE Championship por categoria e peso por peso.' },
   '/one/champions': { title: 'Campeões do ONE Championship', description: 'Campeões mundiais atuais do ONE Championship, histórico por categoria e maiores campeões.' },
   '/one/gyms': { title: 'Academias do ONE Championship', description: 'Onde os atletas do ONE Championship treinam: equipes e academias.' },
-  '/about-model': { title: 'Sobre o Modelo de IA', description: 'Projeto full-stack de IA aplicada: pipeline de dados, modelo preditivo e API.' },
+  '/about-model': { title: 'Sobre o Modelo de IA', description: 'Projeto completo de IA aplicada: fluxo de dados, modelo preditivo e API.' },
 }
 
 const PAGES_FR: Record<string, { title: string; description: string }> = {
   '/home': { title: 'UFC', description: 'La prochaine carte UFC avec les pronostics du modèle, qui enchaîne les victoires, et les derniers titres.' },
   '/predictor': { title: 'Prédire un combat', description: 'Choisissez deux combattants UFC et obtenez une probabilité de victoire avec les stats qui l\'ont produite.' },
   '/head-to-head': { title: 'Historique face à face', description: 'Chaque fois que deux combattants UFC se sont affrontés, qui a gagné et comment, plus leurs adversaires communs.' },
-  '/matchup-intelligence': { title: 'Analyse de confrontation', description: 'Chiffres de striking, de grappling et physiques pour deux combattants UFC, et les facteurs que le modèle a le plus pesés.' },
+  '/matchup-intelligence': { title: 'Analyse de confrontation', description: 'Chiffres de frappe, de lutte au sol et physiques pour deux combattants UFC, et les facteurs que le modèle a le plus pesés.' },
   '/fighters': { title: 'Combattants', description: 'Profils des combattants UFC par catégorie : palmarès, chronologie, origines et combattants similaires.' },
   '/events': { title: 'Événements', description: 'Les archives complètes des événements UFC avec résultats, plus les prochaines cartes et les pronostics du modèle.' },
   '/rankings': { title: 'Classements', description: 'Les classements officiels UFC par catégorie et livre pour livre, avec les photos des combattants.' },
   '/champions': { title: 'Champions', description: 'Champions UFC actuels, les plus grands règnes et les records de combats de titre, y compris les champions de plusieurs catégories.' },
-  '/record-book': { title: 'Livre des records', description: 'Les leaders historiques de l\'UFC sur 32 statistiques : combats, temps, striking et grappling.' },
+  '/record-book': { title: 'Livre des records', description: 'Les leaders historiques de l\'UFC sur 32 statistiques : combats, temps, frappe et lutte au sol.' },
   '/about': { title: 'À propos', description: 'Qui fait ce site, d\'où viennent les données et quelles sont leurs limites.' },
   '/data': { title: 'Données', description: 'Comment les données brutes UFC deviennent le jeu de données à partir duquel le modèle prédit.' },
   '/model': { title: 'Système', description: 'Le modèle de prévision, comment il a été entraîné et comment il se compare à des modèles plus simples.' },
@@ -120,7 +120,61 @@ const PAGES_FR: Record<string, { title: string; description: string }> = {
   '/one/rankings': { title: 'Classements ONE Championship', description: 'Classements officiels ONE Championship par catégorie et livre pour livre.' },
   '/one/champions': { title: 'Champions ONE Championship', description: 'Champions actuels de ONE Championship, lignée par catégorie et plus grands champions.' },
   '/one/gyms': { title: 'Salles ONE Championship', description: 'Où s\'entraînent les combattants ONE Championship : chaque salle et équipe.' },
-  '/about-model': { title: 'À propos du modèle', description: 'Un projet d\'IA appliquée full-stack : pipeline de données, modèle et API.' },
+  '/about-model': { title: 'À propos du modèle', description: 'Un projet complet d\'IA appliquée : chaîne de données, modèle et API.' },
+}
+
+const DEFAULT_DESCRIPTION_ES =
+  'Estadísticas, ranking y resultados de la UFC, la PFL, ONE Championship y el archivo de Bellator, más pronósticos de victoria de la UFC con las razones detrás de cada uno.'
+
+const GYM_DETAIL_ES = { title: 'Gimnasio', description: 'Quién entrena en este gimnasio: sus peleadores, campeones y récords.' }
+
+const PAGES_ES: Record<string, { title: string; description: string }> = {
+  '/home': { title: 'UFC', description: 'La próxima cartelera de la UFC con los pronósticos del modelo, quién está en racha y las últimas noticias.' },
+  '/predictor': { title: 'Pronosticar una pelea', description: 'Elige a dos peleadores de la UFC y obtén una probabilidad de victoria con las estadísticas que la explican.' },
+  '/head-to-head': { title: 'Historial cara a cara', description: 'Cada vez que dos peleadores de la UFC se han enfrentado, quién ganó y cómo, más sus rivales en común.' },
+  '/matchup-intelligence': { title: 'Análisis del enfrentamiento', description: 'Números de golpeo, lucha en el suelo y físicos de dos peleadores de la UFC, y los factores que más pesó el modelo.' },
+  '/fighters': { title: 'Peleadores', description: 'Perfiles de peleadores de la UFC por división de peso: récords, trayectoria, orígenes y peleadores similares.' },
+  '/events': { title: 'Eventos', description: 'El archivo completo de eventos de la UFC con resultados, más las próximas carteleras y los pronósticos del modelo.' },
+  '/rankings': { title: 'Ranking', description: 'El ranking oficial de la UFC por división y libra por libra, con fotos de los peleadores.' },
+  '/champions': { title: 'Campeones', description: 'Campeones actuales de la UFC, los mejores reinados y los récords de peleas por el título, incluidos los campeones en varias divisiones.' },
+  '/record-book': { title: 'Libro de récords', description: 'Los líderes históricos de carrera de la UFC en 32 estadísticas: peleas, tiempo, golpeo y lucha en el suelo.' },
+  '/about': { title: 'Acerca de', description: 'Quién lo desarrolla, de dónde vienen los datos y cuáles son sus límites.' },
+  '/data': { title: 'Datos', description: 'Cómo los datos en bruto de la UFC se convierten en el conjunto de datos con el que predice el modelo.' },
+  '/model': { title: 'Sistema', description: 'El modelo de pronóstico, cómo se entrenó y cómo se compara con otros más simples.' },
+  '/track-record': { title: 'Historial de aciertos', description: 'Cómo resisten los pronósticos del modelo frente a peleas reales: guardados antes del evento y verificados después.' },
+  '/pfl': { title: 'PFL', description: 'Professional Fighters League: la próxima cartelera, los campeones y los últimos resultados.' },
+  '/pfl/fighters': { title: 'Peleadores de la PFL', description: 'Perfiles de peleadores de la PFL: récords, medidas, campamentos y cada pelea.' },
+  '/pfl/events': { title: 'Eventos de la PFL', description: 'El archivo completo de eventos de la PFL con resultados, más las próximas carteleras.' },
+  '/gyms': { title: 'Gimnasios', description: 'Dónde entrenan los peleadores de la UFC: cada gimnasio y equipo con sus peleadores, campeones y récords.' },
+  '/pfl/gyms': { title: 'Gimnasios de la PFL', description: 'Dónde entrenan los peleadores de la PFL: cada gimnasio y equipo con sus peleadores y récords.' },
+  '/pfl/champions': { title: 'Campeones de la PFL', description: 'Campeones actuales de la PFL, linaje completo de títulos por división y mejores campeones.' },
+  '/bellator': { title: 'Bellator', description: 'El archivo de Bellator: cada evento de 2009 a 2023, sus peleadores y los campeones con los que terminó.' },
+  '/bellator/fighters': { title: 'Peleadores de Bellator', description: 'Perfiles de peleadores de Bellator: récords, medidas, campamentos y cada pelea.' },
+  '/bellator/events': { title: 'Eventos de Bellator', description: 'Cada evento de Bellator de 2009 a 2023 con sus resultados.' },
+  '/bellator/gyms': { title: 'Gimnasios de Bellator', description: 'Dónde entrenaban los peleadores de Bellator: cada gimnasio y equipo con sus peleadores.' },
+  '/bellator/champions': { title: 'Campeones de Bellator', description: 'Últimos campeones de Bellator a fines de 2023, linaje completo 2009–2023 por división y mejores campeones.' },
+  '/pfl/rankings': { title: 'Ranking de la PFL', description: 'El ranking oficial de la PFL por división y libra por libra.' },
+  '/one': { title: 'ONE Championship', description: 'ONE Championship: próximas carteleras, campeones mundiales, resultados oficiales y ranking.' },
+  '/one/fighters': { title: 'Peleadores de ONE Championship', description: 'Perfiles de peleadores de ONE Championship: récords, medidas, campamentos y cada combate.' },
+  '/one/events': { title: 'Eventos de ONE Championship', description: 'Archivo completo de eventos de ONE Championship con resultados, más las próximas carteleras.' },
+  '/one/rankings': { title: 'Ranking de ONE Championship', description: 'Ranking oficial de ONE Championship por división y libra por libra.' },
+  '/one/champions': { title: 'Campeones de ONE Championship', description: 'Campeones actuales de ONE Championship, linaje por división y mejores campeones.' },
+  '/one/gyms': { title: 'Gimnasios de ONE Championship', description: 'Dónde entrenan los peleadores de ONE Championship: cada gimnasio y equipo.' },
+  '/about-model': { title: 'Acerca del modelo', description: 'Un proyecto completo de IA aplicada: flujo de datos, modelo y API.' },
+}
+
+const PAGE_TABLES: Record<UiLang, Record<string, { title: string; description: string }>> = {
+  en: PAGES,
+  pt: PAGES_PT,
+  fr: PAGES_FR,
+  es: PAGES_ES,
+}
+
+const GYM_DETAILS: Record<UiLang, { title: string; description: string }> = {
+  en: GYM_DETAIL,
+  pt: GYM_DETAIL_PT,
+  fr: GYM_DETAIL_FR,
+  es: GYM_DETAIL_ES,
 }
 
 function setMeta(selector: string, value: string) {
@@ -135,11 +189,11 @@ export function PageMeta() {
 
   useEffect(() => {
     const path = pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname
-    const pageMap = lang === 'pt' ? PAGES_PT : lang === 'fr' ? PAGES_FR : PAGES
-    const gymFallback = lang === 'pt' ? GYM_DETAIL_PT : lang === 'fr' ? GYM_DETAIL_FR : GYM_DETAIL
+    const pageMap = PAGE_TABLES[lang]
+    const gymFallback = GYM_DETAILS[lang]
     const page = pageMap[path] ?? (GYM_PAGE.test(path) ? gymFallback : undefined)
-    const title = page ? `${page.title} · ${SITE}` : path === '/' ? SITE : `${L(i18n.language, 'Página não encontrada', 'Page not found', 'Page introuvable')} · ${SITE}`
-    const description = page?.description ?? L(i18n.language, DEFAULT_DESCRIPTION_PT, DEFAULT_DESCRIPTION, DEFAULT_DESCRIPTION_FR)
+    const title = page ? `${page.title} · ${SITE}` : path === '/' ? SITE : `${L(i18n.language, 'Página não encontrada', 'Page not found', 'Page introuvable', 'Página no encontrada')} · ${SITE}`
+    const description = page?.description ?? L(i18n.language, DEFAULT_DESCRIPTION_PT, DEFAULT_DESCRIPTION, DEFAULT_DESCRIPTION_FR, DEFAULT_DESCRIPTION_ES)
 
     document.title = title
     setMeta('meta[name="description"]', description)

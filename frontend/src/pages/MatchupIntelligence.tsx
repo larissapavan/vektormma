@@ -137,7 +137,7 @@ export function MatchupIntelligence() {
   return (
     <div className="space-y-6 sm:space-y-8">
       {eventName && fighterAName && fighterBName ? (
-        <nav aria-label={L(i18n.language, 'Navegação estrutural', 'Breadcrumb', 'Fil d’Ariane')}>
+        <nav aria-label={L(i18n.language, 'Navegação estrutural', 'Breadcrumb', 'Fil d’Ariane', 'Ruta de navegación')}>
           <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold">
             <li>
               <Link to={`/events?q=${encodeURIComponent(eventName)}`} className="text-[var(--accent-red)] underline decoration-[var(--accent-red)] underline-offset-4">
@@ -176,8 +176,8 @@ export function MatchupIntelligence() {
               type="button"
               onClick={swapCorners}
               disabled={!fighterAName && !fighterBName}
-              title={L(i18n.language, 'Inverter cantos (Vermelho ⇄ Azul)', 'Swap corners (Red ⇄ Blue)', 'Inverser les coins (Rouge ⇄ Bleu)')}
-              aria-label={L(i18n.language, 'Inverter cantos', 'Swap corners', 'Inverser les coins')}
+              title={L(i18n.language, 'Inverter cantos (Vermelho ⇄ Azul)', 'Swap corners (Red ⇄ Blue)', 'Inverser les coins (Rouge ⇄ Bleu)', 'Intercambiar esquinas (Roja ⇄ Azul)')}
+              aria-label={L(i18n.language, 'Inverter cantos', 'Swap corners', 'Inverser les coins', 'Intercambiar esquinas')}
               className="ghost-action inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--text-muted)] transition hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
             >
               <ArrowLeftRight className="h-4 w-4" />
@@ -217,14 +217,14 @@ export function MatchupIntelligence() {
             <div className="flex items-end justify-between gap-3">
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Probabilidade do Modelo', 'Model odds', 'Cotes du modèle')}</p>
+                  <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Probabilidade do Modelo', 'Model odds', 'Cotes du modèle', 'Probabilidad del modelo')}</p>
                   {titleFightInfo?.title_fight ? <TitleFightBadge fight={titleFightInfo} /> : null}
                 </div>
                 <h2 className="mt-0.5 text-xl font-black uppercase tracking-[0.03em] text-[var(--text-main)] sm:text-2xl">{t('predictor.winningChance')}</h2>
               </div>
               <CopyLinkButton
                 href={`/matchup-intelligence?a=${encodeURIComponent(fighterAName)}&b=${encodeURIComponent(fighterBName)}`}
-                label={L(i18n.language, 'Copiar link do combate', 'Copy matchup link', 'Copier le lien du combat')}
+                label={L(i18n.language, 'Copiar link do combate', 'Copy matchup link', 'Copier le lien du combat', 'Copiar enlace del enfrentamiento')}
               />
             </div>
 
@@ -234,7 +234,7 @@ export function MatchupIntelligence() {
                   type="button"
                   onClick={() => setProfileName(fighterA.name)}
                   className="flex min-w-0 cursor-pointer items-center gap-2.5 text-left transition hover:opacity-85"
-                  title={L(i18n.language, `Ver perfil de ${fighterA.name}`, `View ${fighterA.name}'s profile`, `Voir le profil de ${fighterA.name}`)}
+                  title={L(i18n.language, `Ver perfil de ${fighterA.name}`, `View ${fighterA.name}'s profile`, `Voir le profil de ${fighterA.name}`, `Ver el perfil de ${fighterA.name}`)}
                 >
                   <FighterAvatar
                     name={fighterA.name}
@@ -260,7 +260,7 @@ export function MatchupIntelligence() {
                   type="button"
                   onClick={() => setProfileName(fighterB.name)}
                   className="flex min-w-0 cursor-pointer flex-row-reverse items-center gap-2.5 text-right transition hover:opacity-85"
-                  title={L(i18n.language, `Ver perfil de ${fighterB.name}`, `View ${fighterB.name}'s profile`, `Voir le profil de ${fighterB.name}`)}
+                  title={L(i18n.language, `Ver perfil de ${fighterB.name}`, `View ${fighterB.name}'s profile`, `Voir le profil de ${fighterB.name}`, `Ver el perfil de ${fighterB.name}`)}
                 >
                   <FighterAvatar
                     name={fighterB.name}
@@ -284,7 +284,7 @@ export function MatchupIntelligence() {
 
             <div className="mt-4">
               {analyzing || !showResults || !fighterA || !fighterB || !prediction ? (
-                <LoadingSkeleton className="h-[120px]" label={L(i18n.language, 'Carregando probabilidade de vitória', 'Loading win probability', 'Chargement de la probabilité de victoire')} />
+                <LoadingSkeleton className="h-[120px]" label={L(i18n.language, 'Carregando probabilidade de vitória', 'Loading win probability', 'Chargement de la probabilité de victoire', 'Cargando la probabilidad de victoria')} />
               ) : (
                 <WinProbabilityBar
                   showNames={false}
@@ -320,36 +320,36 @@ export function MatchupIntelligence() {
 
               <section className="grid gap-3 lg:grid-cols-3">
                 <StatComparisonCard
-                  title={L(i18n.language, 'Trocação', 'Striking', 'Frappe')}
+                  title={L(i18n.language, 'Trocação', 'Striking', 'Frappe', 'Golpeo')}
                   icon={Swords}
                   fighterA={fighterA}
                   fighterB={fighterB}
                   rows={[
-                    { label: L(i18n.language, 'Precisão', 'Accuracy', 'Précision'), key: 'sig_str_acc', format: formatPercent },
-                    { label: L(i18n.language, 'Golpes Conectados', 'Sig. Strikes', 'Coups sign.'), key: 'sig_strikes_landed_per_min', format: formatPerMin },
-                    { label: L(i18n.language, 'Defesa', 'Defense', 'Défense'), key: 'striking_defense', format: formatPercent },
+                    { label: L(i18n.language, 'Precisão', 'Accuracy', 'Précision', 'Precisión'), key: 'sig_str_acc', format: formatPercent },
+                    { label: L(i18n.language, 'Golpes Conectados', 'Sig. Strikes', 'Coups sign.', 'Golpes sig.'), key: 'sig_strikes_landed_per_min', format: formatPerMin },
+                    { label: L(i18n.language, 'Defesa', 'Defense', 'Défense', 'Defensa'), key: 'striking_defense', format: formatPercent },
                   ]}
                 />
                 <StatComparisonCard
-                  title={L(i18n.language, 'Luta Agarrada', 'Grappling', 'Lutte')}
+                  title={L(i18n.language, 'Luta no Chão', 'Grappling', 'Lutte', 'Lucha en el suelo')}
                   icon={Target}
                   fighterA={fighterA}
                   fighterB={fighterB}
                   rows={[
-                    { label: L(i18n.language, 'Precisão de Quedas', 'TD Accuracy', 'Précision des amenées'), key: 'takedown_acc', format: formatPercent },
-                    { label: L(i18n.language, 'Defesa de Quedas', 'TD Defense', 'Défense des amenées'), key: 'takedown_defense', format: formatPercent },
-                    { label: L(i18n.language, 'Tentativas de Finalização', 'Sub Attempts', 'Tentatives de soumission'), key: 'submission_avg_per_15min', format: formatPlainNumber },
+                    { label: L(i18n.language, 'Precisão de Quedas', 'TD Accuracy', 'Précision des amenées', 'Precisión de derribos'), key: 'takedown_acc', format: formatPercent },
+                    { label: L(i18n.language, 'Defesa de Quedas', 'TD Defense', 'Défense des amenées', 'Defensa de derribos'), key: 'takedown_defense', format: formatPercent },
+                    { label: L(i18n.language, 'Tentativas de Finalização', 'Sub Attempts', 'Tentatives de soumission', 'Intentos de sumisión'), key: 'submission_avg_per_15min', format: formatPlainNumber },
                   ]}
                 />
                 <StatComparisonCard
-                  title={L(i18n.language, 'Atributos Físicos', 'Physical', 'Physique')}
+                  title={L(i18n.language, 'Atributos Físicos', 'Physical', 'Physique', 'Atributos físicos')}
                   icon={Ruler}
                   fighterA={fighterA}
                   fighterB={fighterB}
                   rows={[
-                    { label: L(i18n.language, 'Altura', 'Height', 'Taille'), key: 'height_cm', format: (v) => formatHeight(v, i18n.language) },
-                    { label: L(i18n.language, 'Envergadura', 'Reach', 'Allonge'), key: 'reach_cm', format: (v) => formatReach(v, i18n.language) },
-                    { label: L(i18n.language, 'Idade', 'Age', 'Âge'), key: 'age', format: formatAge, higherIsBetter: false },
+                    { label: L(i18n.language, 'Altura', 'Height', 'Taille', 'Estatura'), key: 'height_cm', format: (v) => formatHeight(v, i18n.language) },
+                    { label: L(i18n.language, 'Envergadura', 'Reach', 'Allonge', 'Alcance'), key: 'reach_cm', format: (v) => formatReach(v, i18n.language) },
+                    { label: L(i18n.language, 'Idade', 'Age', 'Âge', 'Edad'), key: 'age', format: formatAge, higherIsBetter: false },
                   ]}
                 />
               </section>
@@ -379,9 +379,10 @@ export function MatchupIntelligence() {
           <p className="text-sm leading-6 text-[var(--text-muted)]">
             {L(
               i18n.language,
-              'Selecione dois lutadores e execute a análise para ver a comparação de trocação, luta agarrada, dados físicos e os fatores SHAP que explicam a previsão do modelo.',
+              'Selecione dois lutadores e execute a análise para ver a comparação de trocação, luta no chão, dados físicos e os fatores SHAP que explicam a previsão do modelo.',
               "Select two fighters and run the analysis to see the striking, grappling and physical breakdown, plus the key factors behind the model's read on this matchup.",
-              'Choisissez deux lutteurs et lancez l’analyse pour voir la frappe, la lutte, le physique et les facteurs SHAP qui expliquent la lecture du modèle.',
+              'Choisissez deux combattants et lancez l’analyse pour voir la frappe, la lutte au sol, le physique et les facteurs SHAP qui expliquent la lecture du modèle.',
+              'Selecciona a dos peleadores y ejecuta el análisis para ver el desglose de golpeo, lucha en el suelo y físico, además de los factores SHAP que explican la lectura del modelo.',
             )}
           </p>
         </section>
@@ -402,16 +403,16 @@ export function MatchupIntelligence() {
 function MatchupAnalysisSkeleton({ includeOdds = true }: { includeOdds?: boolean }) {
   const { i18n } = useTranslation()
   return (
-    <div className="space-y-3" role="status" aria-label={L(i18n.language, 'Analisando confronto', 'Analyzing matchup', 'Analyse du combat')}>
-      {includeOdds ? <LoadingSkeleton className="h-[180px] rounded-[20px]" label={L(i18n.language, 'Carregando probabilidade de vitória', 'Loading win probability', 'Chargement de la probabilité de victoire')} /> : null}
-      <LoadingSkeleton className="h-[340px] rounded-[20px]" label={L(i18n.language, 'Carregando gráfico de radar', 'Loading radar chart', 'Chargement du graphique radar')} />
+    <div className="space-y-3" role="status" aria-label={L(i18n.language, 'Analisando confronto', 'Analyzing matchup', 'Analyse du combat', 'Analizando el enfrentamiento')}>
+      {includeOdds ? <LoadingSkeleton className="h-[180px] rounded-[20px]" label={L(i18n.language, 'Carregando probabilidade de vitória', 'Loading win probability', 'Chargement de la probabilité de victoire', 'Cargando la probabilidad de victoria')} /> : null}
+      <LoadingSkeleton className="h-[340px] rounded-[20px]" label={L(i18n.language, 'Carregando gráfico de radar', 'Loading radar chart', 'Chargement du graphique radar', 'Cargando el gráfico de radar')} />
       <div className="grid gap-3 lg:grid-cols-3">
         <LoadingSkeleton className="h-[180px] rounded-[20px]" />
         <LoadingSkeleton className="h-[180px] rounded-[20px]" />
         <LoadingSkeleton className="h-[180px] rounded-[20px]" />
       </div>
-      <LoadingSkeleton className="h-[220px] rounded-[20px]" label={L(i18n.language, 'Carregando fatores do confronto', 'Loading matchup factors', 'Chargement des facteurs du combat')} />
-      <LoadingSkeleton className="h-[260px] rounded-[20px]" label={L(i18n.language, 'Carregando lutas recentes', 'Loading recent fights', 'Chargement des combats récents')} />
+      <LoadingSkeleton className="h-[220px] rounded-[20px]" label={L(i18n.language, 'Carregando fatores do confronto', 'Loading matchup factors', 'Chargement des facteurs du combat', 'Cargando los factores del enfrentamiento')} />
+      <LoadingSkeleton className="h-[260px] rounded-[20px]" label={L(i18n.language, 'Carregando lutas recentes', 'Loading recent fights', 'Chargement des combats récents', 'Cargando las peleas recientes')} />
     </div>
   )
 }

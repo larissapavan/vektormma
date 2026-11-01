@@ -61,6 +61,7 @@ export function WinProbabilityBar({
           `Probabilidade de vitória: ${pctA}% ${nameA}, ${pctB}% ${nameB}`,
           `Win probability ${pctA} percent ${nameA}, ${pctB} percent ${nameB}`,
           `Probabilité de victoire : ${pctA} % ${nameA}, ${pctB} % ${nameB}`,
+          `Probabilidad de victoria: ${pctA} % ${nameA}, ${pctB} % ${nameB}`,
         )}
       >
         <div className={`h-full ${winnerIsA ? 'bg-[var(--accent-red)]' : 'bg-[var(--text-muted)]'}`} style={{ width: `${pctA}%` }} />
@@ -69,7 +70,7 @@ export function WinProbabilityBar({
 
       {predictedWinner ? (
         <p className={`mt-2 text-center text-[var(--text-muted)] ${compact ? 'text-xs' : 'text-sm'}`}>
-          {L(i18n.language, 'Modelo favorece ', 'Model favors ', 'Le modèle favorise ')}
+          {L(i18n.language, 'Modelo favorece ', 'Model favors ', 'Le modèle favorise ', 'El modelo favorece a ')}
           <span className="font-semibold text-[var(--text-main)]">{predictedWinner}</span>
           <span> · {edgeLabel(Math.max(probabilityA, probabilityB), i18n.language).toLowerCase()}</span>
         </p>

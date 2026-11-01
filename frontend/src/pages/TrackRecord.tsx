@@ -5,6 +5,7 @@ import { CalendarClock, Check, RefreshCw, Scale, Target, X } from 'lucide-react'
 import { L, localeTag, uiLang } from '../i18n/lang'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { SectionHeading } from '../shared/components/SectionHeading'
+import { localizeApiText } from '../shared/data/apiText'
 import { shownMetrics } from '../shared/data/modelAccuracy'
 import { useModelInfo } from '../shared/hooks/useModelInfo'
 import { useTrackRecord } from '../shared/hooks/useTrackRecord'
@@ -37,9 +38,10 @@ export function TrackRecord() {
       const res = await syncTrackRecord()
       const msg = L(
         i18n.language,
-        `Sincronização concluída: ${res.settled_count} lutas liquidadas, ${res.new_logged_count} novas lutas registradas. Total liquidadas: ${res.total_resolved}.`,
+        `Sincronização concluída: ${res.settled_count} lutas resolvidas, ${res.new_logged_count} novas lutas registradas. Total resolvidas: ${res.total_resolved}.`,
         `Sync complete: ${res.settled_count} fights settled, ${res.new_logged_count} new logged. Total settled: ${res.total_resolved}.`,
         `Synchronisation terminée : ${res.settled_count} combats réglés, ${res.new_logged_count} nouveaux enregistrés. Total réglé : ${res.total_resolved}.`,
+        `Sincronización completa: ${res.settled_count} peleas resueltas, ${res.new_logged_count} nuevas registradas. Total resueltas: ${res.total_resolved}.`,
       )
       setSyncMessage({ type: 'success', text: msg })
       await reload()
@@ -47,7 +49,7 @@ export function TrackRecord() {
       console.error(err)
       setSyncMessage({
         type: 'error',
-        text: L(i18n.language, 'Falha ao sincronizar resultados com o servidor.', 'Failed to sync results with the server.', 'Échec de la synchronisation des résultats avec le serveur.'),
+        text: L(i18n.language, 'Falha ao sincronizar resultados com o servidor.', 'Failed to sync results with the server.', 'Échec de la synchronisation des résultats avec le serveur.', 'No se pudieron sincronizar los resultados con el servidor.'),
       })
     } finally {
       setSyncing(false)
@@ -92,29 +94,30 @@ export function TrackRecord() {
         <LoadingSkeleton className="h-[220px]" />
       ) : data ? (
         <>
-          <section className="grid grid-cols-2 gap-2.5 lg:grid-cols-4" aria-label={L(i18n.language, 'Resumo de desempenho', 'Summary', 'Résumé')}>
+          <section className="grid grid-cols-2 gap-2.5 lg:grid-cols-4" aria-label={L(i18n.language, 'Resumo de desempenho', 'Summary', 'Résumé', 'Resumen de rendimiento')}>
             <Tile label={t('trackRecord.picksLogged')} value={`${data.logged}`} />
             <Tile label={t('trackRecord.settled')} value={`${data.resolved}`} hint={data.pending ? `${data.pending} ${t('trackRecord.waiting')}` : undefined} />
-            <Tile label={t('trackRecord.liveAccuracy')} value={percent(data.accuracy)} hint={data.resolved ? L(i18n.language, `${data.correct} de ${data.resolved}`, `${data.correct} of ${data.resolved}`, `${data.correct} sur ${data.resolved}`) : L(i18n.language, 'após o primeiro card', 'after the first card', 'après la première carte')} />
+            <Tile label={t('trackRecord.liveAccuracy')} value={percent(data.accuracy)} hint={data.resolved ? L(i18n.language, `${data.correct} de ${data.resolved}`, `${data.correct} of ${data.resolved}`, `${data.correct} sur ${data.resolved}`, `${data.correct} de ${data.resolved}`) : L(i18n.language, 'após o primeiro card', 'after the first card', 'après la première carte', 'después de la primera cartelera')} />
             <Tile label={shown.source === 'recent' ? t('trackRecord.recentFights') : t('trackRecord.reported')} value={percent(shown.accuracy)} hint={shown.source === 'recent' ? `${shown.caption}` : undefined} />
           </section>
 
           {data.resolved === 0 ? <WaitingCard data={data} /> : null}
 
           {data.bands.length ? (
-            <CalibrationCard title={L(i18n.language, 'Calibração ao Vivo: taxa real de acerto por faixa de confiança', 'Live picks: when the model says X%, how often is it right?', 'Pronostics en direct : quand le modèle dit X %, à quelle fréquence a-t-il raison ?')} bands={data.bands} />
+            <CalibrationCard title={L(i18n.language, 'Calibração ao Vivo: taxa real de acerto por faixa de confiança', 'Live picks: when the model says X%, how often is it right?', 'Pronostics en direct : quand le modèle dit X %, à quelle fréquence a-t-il raison ?', 'Pronósticos en vivo: cuando el modelo dice X %, ¿con qué frecuencia acierta?')} bands={data.bands} />
           ) : null}
 
           {modelInfo?.recent_evaluation?.baselines?.length ? <BaselineCard evaluation={modelInfo.recent_evaluation} /> : null}
 
           {modelInfo?.recent_evaluation?.calibration?.length ? (
             <CalibrationCard
-              title={L(i18n.language, 'Calibração no Backtest Histórico', 'Back-test: when the model says X%, how often is it right?', 'Contrôle historique : quand le modèle dit X %, à quelle fréquence a-t-il raison ?')}
+              title={L(i18n.language, 'Calibração no Teste Retrospectivo Histórico', 'Back-test: when the model says X%, how often is it right?', 'Contrôle historique : quand le modèle dit X %, à quelle fréquence a-t-il raison ?', 'Prueba retrospectiva: cuando el modelo dice X %, ¿con qué frecuencia acierta?')}
               note={L(
                 i18n.language,
                 `Validação estatística em ${modelInfo.recent_evaluation.fights.toLocaleString('pt-BR')} combates recentes.`,
                 `The same check on ${modelInfo.recent_evaluation.fights.toLocaleString('en-US')} recent fights.`,
                 `Le même contrôle sur ${modelInfo.recent_evaluation.fights.toLocaleString(localeTag(i18n.language))} combats récents.`,
+                `La misma verificación con ${modelInfo.recent_evaluation.fights.toLocaleString('es-419')} peleas recientes.`,
               )}
               bands={modelInfo.recent_evaluation.calibration}
             />
@@ -130,10 +133,10 @@ export function TrackRecord() {
           <section className="surface-card rounded-[20px] p-3 sm:p-4">
             <h2 className="broadcast-label text-xs text-[var(--text-main)]">{t('trackRecord.howMeasured')}</h2>
             <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm leading-6 text-[var(--text-main)] marker:text-[#C8102E]">
-              <li>{L(i18n.language, 'Cada combate anunciado tem seu palpite e probabilidade registrados antes do card, utilizando apenas os números históricos dos lutadores até aquela data.', "The daily update saves the model's pick and confidence for every announced fight, using each fighter's numbers that day.", 'La mise à jour quotidienne enregistre le choix et la confiance du modèle pour chaque combat annoncé, avec les chiffres de chaque lutteur ce jour-là.')}</li>
-              <li>{L(i18n.language, 'Assim que o evento termina, o resultado oficial é confrontado com o palpite prévio. Empates e lutas sem resultado (No Contest) são desconsiderados.', 'After the event the result is matched to the saved pick. Draws and no contests count for neither side.', 'Après l’événement, le résultat est rapproché du choix enregistré. Les nuls et les sans-décision ne comptent pour personne.')}</li>
-              <li>{L(i18n.language, 'As previsões ao vivo são o teste definitivo de desempenho no mundo real, sem qualquer viés retrospectivo.', 'Live picks are the true measure of predictive skill, evaluated strictly forward in time.', 'Les pronostics en direct sont la vraie mesure du modèle, évalués strictement vers l’avenir.')}</li>
-              {data.earlier_model_note ? <li>{data.earlier_model_note}</li> : null}
+              <li>{L(i18n.language, 'Cada combate anunciado tem seu palpite e probabilidade registrados antes do card, utilizando apenas os números históricos dos lutadores até aquela data.', "The daily update saves the model's pick and confidence for every announced fight, using each fighter's numbers that day.", 'La mise à jour quotidienne enregistre le choix et la confiance du modèle pour chaque combat annoncé, avec les chiffres de chaque combattant ce jour-là.', 'La actualización diaria guarda el pronóstico y la confianza del modelo para cada pelea anunciada, con los números que tenía cada peleador ese día.')}</li>
+              <li>{L(i18n.language, 'Assim que o evento termina, o resultado oficial é confrontado com o palpite prévio. Empates e lutas sem resultado são desconsiderados.', 'After the event the result is matched to the saved pick. Draws and no contests count for neither side.', 'Après l’événement, le résultat est rapproché du choix enregistré. Les nuls et les sans-décision ne comptent pour personne.', 'Después del evento, el resultado se cruza con el pronóstico guardado. Los empates y las peleas sin resultado no cuentan para ningún lado.')}</li>
+              <li>{L(i18n.language, 'As previsões ao vivo são o teste definitivo de desempenho no mundo real, sem qualquer viés retrospectivo.', 'Live picks are the true measure of predictive skill, evaluated strictly forward in time.', 'Les pronostics en direct sont la vraie mesure du modèle, évalués strictement vers l’avenir.', 'Los pronósticos en vivo son la verdadera medida de la capacidad predictiva, evaluados estrictamente hacia adelante en el tiempo.')}</li>
+              {data.earlier_model_note ? <li>{localizeApiText(data.earlier_model_note, i18n.language)}</li> : null}
             </ul>
           </section>
         </>
@@ -167,9 +170,10 @@ function WaitingCard({ data }: { data: NonNullable<ReturnType<typeof useTrackRec
                 `${data.pending} palpites gravados aguardando a realização das lutas${data.next_event ? `, começando por ${data.next_event.name} em ${formatDate(data.next_event.date, i18n.language)}` : ''}.`,
                 `${data.pending} picks are saved and waiting for their fights${data.next_event ? `, starting with ${data.next_event.name} on ${formatDate(data.next_event.date, i18n.language)}` : ''}.`,
                 `${data.pending} pronostics sont enregistrés et attendent leurs combats${data.next_event ? `, à commencer par ${data.next_event.name} le ${formatDate(data.next_event.date, i18n.language)}` : ''}.`,
+                `${data.pending} pronósticos están guardados y esperan sus peleas${data.next_event ? `, empezando por ${data.next_event.name} el ${formatDate(data.next_event.date, i18n.language)}` : ''}.`,
               )
-            : L(i18n.language, 'Nenhum palpite foi salvo ainda.', 'No picks have been saved yet.', 'Aucun pronostic n’a encore été enregistré.')}{' '}
-          {data.tracking_since ? L(i18n.language, `Rastreamento iniciado em ${formatDate(data.tracking_since, i18n.language)}.`, `Tracking began on ${formatDate(data.tracking_since, i18n.language)}.`, `Le suivi a commencé le ${formatDate(data.tracking_since, i18n.language)}.`) : ''}
+            : L(i18n.language, 'Nenhum palpite foi salvo ainda.', 'No picks have been saved yet.', 'Aucun pronostic n’a encore été enregistré.', 'Todavía no se ha guardado ningún pronóstico.')}{' '}
+          {data.tracking_since ? L(i18n.language, `Rastreamento iniciado em ${formatDate(data.tracking_since, i18n.language)}.`, `Tracking began on ${formatDate(data.tracking_since, i18n.language)}.`, `Le suivi a commencé le ${formatDate(data.tracking_since, i18n.language)}.`, `El seguimiento comenzó el ${formatDate(data.tracking_since, i18n.language)}.`) : ''}
         </p>
       </div>
     </section>
@@ -191,11 +195,11 @@ function CalibrationCard({ title, note, bands }: { title: string; note?: string;
         {bands.map((band) => (
           <li key={band.label}>
             <div className="flex items-baseline justify-between gap-2 text-sm text-[var(--text-main)]">
-              <span className="font-bold">{L(i18n.language, 'Faixa de Confiança', 'Confidence', 'Confiance')} {band.label}</span>
-              <span className="theme-muted text-xs">{band.fights} {lang === 'pt' ? 'lutas' : lang === 'fr' ? (band.fights === 1 ? 'combat' : 'combats') : (band.fights === 1 ? 'fight' : 'fights')}</span>
+              <span className="font-bold">{L(i18n.language, 'Faixa de Confiança', 'Confidence', 'Confiance', 'Confianza')} {band.label}</span>
+              <span className="theme-muted text-xs">{band.fights} {L(lang, 'lutas', band.fights === 1 ? 'fight' : 'fights', band.fights === 1 ? 'combat' : 'combats', band.fights === 1 ? 'pelea' : 'peleas')}</span>
             </div>
-            <Bar label={L(i18n.language, 'Probabilidade média projetada', 'Model said', 'Le modèle disait')} value={band.average_confidence} tone="muted" />
-            <Bar label={L(i18n.language, 'Taxa real de acerto', 'Actually right', 'Réellement juste')} value={band.accuracy} tone="strong" />
+            <Bar label={L(i18n.language, 'Probabilidade média projetada', 'Model said', 'Le modèle disait', 'El modelo decía')} value={band.average_confidence} tone="muted" />
+            <Bar label={L(i18n.language, 'Taxa real de acerto', 'Actually right', 'Réellement juste', 'Acierto real')} value={band.accuracy} tone="strong" />
           </li>
         ))}
       </ul>
@@ -207,8 +211,8 @@ function BaselineCard({ evaluation }: { evaluation: RecentEvaluation }) {
   const { i18n } = useTranslation()
 
   const rows = [
-    { label: L(i18n.language, 'Modelo de IA (UFC Predictor)', 'The model', 'Le modèle'), accuracy: evaluation.accuracy, strong: true },
-    ...(evaluation.baselines ?? []).map((rule) => ({ label: rule.label, accuracy: rule.accuracy, strong: false })),
+    { label: L(i18n.language, 'Modelo de IA (UFC Predictor)', 'The model', 'Le modèle', 'El modelo'), accuracy: evaluation.accuracy, strong: true },
+    ...(evaluation.baselines ?? []).map((rule) => ({ label: localizeApiText(rule.label, i18n.language), accuracy: rule.accuracy, strong: false })),
   ].sort((a, b) => b.accuracy - a.accuracy)
 
   return (
@@ -216,7 +220,7 @@ function BaselineCard({ evaluation }: { evaluation: RecentEvaluation }) {
       <div className="flex items-center gap-2">
         <Scale className="h-4 w-4 text-[#C8102E]" />
         <h2 className="broadcast-label text-xs text-[var(--text-main)]">
-          {L(i18n.language, 'Supera métodos estatísticos tradicionais?', 'Does it beat simple rules?', 'Bat-il les règles simples ?')}
+          {L(i18n.language, 'Supera métodos estatísticos tradicionais?', 'Does it beat simple rules?', 'Bat-il les règles simples ?', '¿Supera a las reglas simples?')}
         </h2>
       </div>
       <p className="theme-muted mt-0.5 text-xs">
@@ -225,6 +229,7 @@ function BaselineCard({ evaluation }: { evaluation: RecentEvaluation }) {
           `Acurácia nas mesmas ${evaluation.fights.toLocaleString('pt-BR')} lutas recentes. O modelo só agrega valor real se superar estas referências clássicas.`,
           `Accuracy on the same ${evaluation.fights.toLocaleString('en-US')} recent fights. A model is only worth something if it beats these.`,
           `Précision sur les mêmes ${evaluation.fights.toLocaleString(localeTag(i18n.language))} combats récents. Un modèle n’a d’intérêt que s’il bat ces repères.`,
+          `Precisión en las mismas ${evaluation.fights.toLocaleString('es-419')} peleas recientes. Un modelo solo vale algo si supera estas referencias.`,
         )}
       </p>
       <ul className="mt-3 grid gap-2">
@@ -268,7 +273,7 @@ function FightList({ title, note, fights }: { title: string; note?: string; figh
           <li key={`${fight.event_date}-${fight.fighter_1}-${fight.fighter_2}`} className="metric-tile flex items-center gap-3 px-3 py-2.5">
             <span
               className={`grid h-7 w-7 shrink-0 place-items-center ${fight.correct ? 'bg-[var(--rule)] text-[var(--card-bg)]' : 'bg-[#C8102E] text-white'}`}
-              title={fight.correct ? L(i18n.language, 'Acerto', 'Right', 'Juste') : L(i18n.language, 'Erro', 'Wrong', 'Faux')}
+              title={fight.correct ? L(i18n.language, 'Acerto', 'Right', 'Juste', 'Acierto') : L(i18n.language, 'Erro', 'Wrong', 'Faux', 'Error')}
             >
               {fight.correct ? <Check className="h-4 w-4" /> : <X className="h-4 w-4" />}
             </span>
@@ -277,7 +282,7 @@ function FightList({ title, note, fights }: { title: string; note?: string; figh
                 {fight.fighter_1} <span className="font-normal">vs.</span> {fight.fighter_2}
               </p>
               <p className="theme-muted text-xs leading-5">
-                {L(i18n.language, 'Previu', 'Picked', 'A choisi')} {fight.predicted_winner} ({percent(fight.confidence)}) · {L(i18n.language, 'vencedor', 'won by', 'vainqueur')} {fight.winner ?? '—'} · {formatDate(fight.event_date, i18n.language)}
+                {L(i18n.language, 'Previu', 'Picked', 'A choisi', 'Pronosticó')} {fight.predicted_winner} ({percent(fight.confidence)}) · {L(i18n.language, 'vencedor', 'won by', 'vainqueur', 'ganador')} {fight.winner ?? '—'} · {formatDate(fight.event_date, i18n.language)}
               </p>
             </div>
           </li>

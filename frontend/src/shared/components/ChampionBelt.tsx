@@ -9,7 +9,7 @@ import { L } from '../../i18n/lang'
  */
 export function ChampionBelt({ className = 'h-[18px] w-9' }: { className?: string }) {
   const { i18n } = useTranslation()
-  const label = L(i18n.language, 'Campeão Atual', 'Current Champion', 'Champion actuel')
+  const label = L(i18n.language, 'Campeão Atual', 'Current Champion', 'Champion actuel', 'Campeón actual')
 
   return (
     <svg viewBox="0 0 48 24" role="img" aria-label={label} className={`shrink-0 ${className}`}>

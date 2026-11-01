@@ -864,11 +864,11 @@ export function LoadingBout({ apiReady = false, onDone }: LoadingBoutProps) {
 
   const punchLabel = t('common.boutPunch')
   const kickLabel = t('common.boutKick')
-  const counterLabel = L(i18n.language, 'CONTRA-GOLPE!', 'COUNTER!', 'CONTRE !')
-  const missLabel = L(i18n.language, 'ERROU', 'MISS', 'RATÉ')
-  const youLabel = L(i18n.language, 'VOCÊ', 'YOU', 'VOUS')
+  const counterLabel = L(i18n.language, 'CONTRA-GOLPE!', 'COUNTER!', 'CONTRE !', '¡CONTRAGOLPE!')
+  const missLabel = L(i18n.language, 'ERROU', 'MISS', 'RATÉ', 'FALLO')
+  const youLabel = L(i18n.language, 'VOCÊ', 'YOU', 'VOUS', 'TÚ')
   const cpuLabel = 'CPU'
-  const restartLabel = L(i18n.language, 'NOVA LUTA', 'NEW BOUT', 'NOUVEAU COMBAT')
+  const restartLabel = L(i18n.language, 'NOVA LUTA', 'NEW BOUT', 'NOUVEAU COMBAT', 'NUEVA PELEA')
 
   const labelsRef = useRef<BoutLabels>({
     restart: restartLabel,

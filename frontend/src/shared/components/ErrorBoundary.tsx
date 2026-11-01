@@ -33,7 +33,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               <AlertTriangle className="h-6 w-6" />
             </div>
             <h1 className="mt-3 text-2xl font-bold uppercase tracking-[0.03em] text-[#FFFFFF]">
-              {L(language, 'Algo deu errado', 'Something went wrong', 'Un problème est survenu')}
+              {L(language, 'Algo deu errado', 'Something went wrong', 'Un problème est survenu', 'Algo salió mal')}
             </h1>
             <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
               {L(
@@ -41,6 +41,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 'Um erro inesperado interrompeu esta página. Recarregar geralmente resolve.',
                 'An unexpected error interrupted this page. Reloading usually fixes it.',
                 'Une erreur inattendue a interrompu cette page. Recharger règle en général le problème.',
+                'Un error inesperado interrumpió esta página. Recargar suele solucionarlo.',
               )}
             </p>
             <button
@@ -49,7 +50,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               className="primary-action mx-auto mt-4 inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-white"
             >
               <RotateCcw className="h-4 w-4" />
-              {L(language, 'Recarregar página', 'Reload page', 'Recharger la page')}
+              {L(language, 'Recarregar página', 'Reload page', 'Recharger la page', 'Recargar la página')}
             </button>
           </div>
         </div>

@@ -6,6 +6,7 @@ import { L } from '../i18n/lang'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { MetricsNote } from '../shared/components/MetricsNote'
 import { SectionHeading } from '../shared/components/SectionHeading'
+import { baselineName, localizeApiText } from '../shared/data/apiText'
 import { shownMetrics } from '../shared/data/modelAccuracy'
 import { useModelInfo } from '../shared/hooks/useModelInfo'
 
@@ -18,7 +19,7 @@ export function Model() {
     modelInfo == null
       ? []
       : Object.entries(modelInfo.baseline_metrics).map(([key, value]) => ({
-          name: key.replaceAll('_', ' '),
+          name: baselineName(key, i18n.language),
           accuracy: Number(value.accuracy.toFixed(3)),
           rocAuc: Number(value.roc_auc.toFixed(3)),
         }))
@@ -52,9 +53,9 @@ export function Model() {
         <>
           <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             <MetricCard label={t('model.modelCard')} value={modelInfo.model_name} />
-            <MetricCard label={`${L(i18n.language, 'Acurácia', 'Accuracy', 'Précision')} (${shown.caption})`} value={shown.accuracy != null ? `${(shown.accuracy * 100).toFixed(1)}%` : '—'} />
+            <MetricCard label={`${L(i18n.language, 'Acurácia', 'Accuracy', 'Précision', 'Precisión')} (${shown.caption})`} value={shown.accuracy != null ? `${(shown.accuracy * 100).toFixed(1)}%` : '—'} />
             <MetricCard label={t('model.rocAuc')} value={shown.rocAuc != null ? shown.rocAuc.toFixed(3) : '—'} />
-            <MetricCard label="Log Loss" value={shown.logLoss != null ? shown.logLoss.toFixed(3) : '—'} />
+            <MetricCard label={L(i18n.language, 'Perda logarítmica', 'Log loss', 'Perte logarithmique', 'Pérdida logarítmica')} value={shown.logLoss != null ? shown.logLoss.toFixed(3) : '—'} />
           </section>
 
           <MetricsNote note={modelInfo.metrics_note} />
@@ -62,9 +63,9 @@ export function Model() {
           <section className="grid gap-3 xl:grid-cols-[1fr_1fr]">
             <article className="surface-card rounded-[20px] p-3 sm:p-4">
               <SectionHeading
-                eyebrow={L(i18n.language, 'Comparação com baselines', 'Baseline comparison', 'Comparaison aux références')}
+                eyebrow={L(i18n.language, 'Comparação com referências', 'Baseline comparison', 'Comparaison aux références', 'Comparación con referencias')}
                 title={t('model.baselines')}
-                description={L(i18n.language, 'Testado contra modelos lineares simples para garantir que a abordagem traz ganho preditivo real.', "As reported in the model's file, it was tested against simpler models, and gradient boosting had the best accuracy and log loss.", "Comme indiqué dans le fichier du modèle, il a été comparé à des modèles plus simples, et le gradient boosting obtenait la meilleure précision et la meilleure log loss.")}
+                description={L(i18n.language, 'Testado contra modelos lineares simples para garantir que a abordagem traz ganho preditivo real.', "As reported in the model's file, it was tested against simpler models, and gradient boosting had the best accuracy and log loss.", 'Comme indiqué dans le fichier du modèle, il a été comparé à des modèles plus simples, et le gradient boosting obtenait la meilleure précision et la plus faible perte logarithmique.', 'Según consta en el archivo del modelo, se probó contra modelos más simples, y el gradient boosting obtuvo la mejor precisión y la menor pérdida logarítmica.')}
               />
               <div className="mt-3 h-[210px] min-w-0 sm:h-[250px]">
                 <ResponsiveContainer width="100%" height="100%" minWidth={280}>
@@ -89,9 +90,9 @@ export function Model() {
 
             <article className="surface-card rounded-[20px] p-3 sm:p-4">
               <SectionHeading
-                eyebrow={L(i18n.language, 'Engenharia de features', 'Feature design', 'Conception des variables')}
+                eyebrow={L(i18n.language, 'Engenharia de variáveis', 'Feature design', 'Conception des variables', 'Diseño de variables')}
                 title={t('model.featureImportance')}
-                description={L(i18n.language, 'Diferenças de idade, envergadura, histórico e taxas de golpes e quedas.', 'Mostly the difference between the two fighters: age, reach, record, striking and takedown accuracy.', 'Surtout l’écart entre les deux lutteurs : âge, allonge, palmarès, précision des coups et des amenées au sol.')}
+                description={L(i18n.language, 'Diferenças de idade, envergadura, histórico e taxas de golpes e quedas.', 'Mostly the difference between the two fighters: age, reach, record, striking and takedown accuracy.', 'Surtout l’écart entre les deux combattants : âge, allonge, palmarès, précision des coups et des amenées au sol.', 'Sobre todo la diferencia entre los dos peleadores: edad, alcance, récord, precisión de golpes y de derribos.')}
               />
               <div className="mt-3 h-[210px] min-w-0 sm:h-[250px]">
                 <ResponsiveContainer width="100%" height="100%" minWidth={280}>
@@ -117,9 +118,9 @@ export function Model() {
           <section className="grid gap-3 xl:grid-cols-[0.95fr_1.05fr]">
             <article className="surface-card rounded-[20px] p-3 sm:p-4">
               <SectionHeading
-                eyebrow={L(i18n.language, 'Arquitetura do sistema', 'System design', 'Conception du système')}
-                title={L(i18n.language, 'Do dado bruto ao site', 'From data to this site', 'Des données à ce site')}
-                description={L(i18n.language, 'Os dados são limpos, transformados em atributos e servidos via API.', 'Fight data is cleaned, turned into features and served by the API to this site.', 'Les données de combat sont nettoyées, transformées en variables et servies par l’API à ce site.')}
+                eyebrow={L(i18n.language, 'Arquitetura do sistema', 'System design', 'Conception du système', 'Diseño del sistema')}
+                title={L(i18n.language, 'Do dado bruto ao site', 'From data to this site', 'Des données à ce site', 'De los datos a este sitio')}
+                description={L(i18n.language, 'Os dados são limpos, transformados em atributos e servidos via API.', 'Fight data is cleaned, turned into features and served by the API to this site.', 'Les données de combat sont nettoyées, transformées en variables et servies par l’API à ce site.', 'Los datos de las peleas se limpian, se convierten en variables y la API los sirve a este sitio.')}
               />
               <div className="mt-3 space-y-2">
                 {modelInfo.highlights.map((item) => (
@@ -130,7 +131,7 @@ export function Model() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.35 }}
                   >
-                    {item}
+                    {localizeApiText(item, i18n.language)}
                   </motion.div>
                 ))}
               </div>
@@ -138,20 +139,20 @@ export function Model() {
 
             <article className="surface-card rounded-[20px] p-3 sm:p-4">
               <SectionHeading
-                eyebrow={L(i18n.language, 'Limitações', 'Limitations', 'Limites')}
-                title={L(i18n.language, 'O que o modelo não prevê', "What it can't do", 'Ce qu’il ne peut pas faire')}
-                description={L(i18n.language, 'Fatores intangíveis e limites da abordagem estatística.', 'Where the model falls short.', 'Là où le modèle atteint ses limites.')}
+                eyebrow={L(i18n.language, 'Limitações', 'Limitations', 'Limites', 'Limitaciones')}
+                title={L(i18n.language, 'O que o modelo não prevê', "What it can't do", 'Ce qu’il ne peut pas faire', 'Lo que no puede hacer')}
+                description={L(i18n.language, 'Fatores intangíveis e limites da abordagem estatística.', 'Where the model falls short.', 'Là où le modèle atteint ses limites.', 'Dónde se queda corto el modelo.')}
               />
               <div className="mt-3 rounded-2xl border border-[#C8102E]/18 bg-[#C8102E]/8 p-3">
                 <ul className="space-y-2 text-xs leading-5 text-[#FFFFFF]">
                   {modelInfo.limitations.map((item) => (
-                    <li key={item}>• {item}</li>
+                    <li key={item}>• {localizeApiText(item, i18n.language)}</li>
                   ))}
                 </ul>
               </div>
               <div className="mt-3 grid grid-cols-2 gap-2.5">
-                <MetricCard label="API status" value={health?.model_loaded ? L(i18n.language, 'Online', 'Online', 'En ligne') : L(i18n.language, 'Offline', 'Offline', 'Hors ligne')} compact />
-                <MetricCard label={L(i18n.language, 'Lutadores no modelo', 'Fighters loaded', 'Lutteurs chargés')} value={`${health?.fighters_loaded ?? 0}`} compact />
+                <MetricCard label="API status" value={health?.model_loaded ? L(i18n.language, 'Online', 'Online', 'En ligne', 'En línea') : L(i18n.language, 'Offline', 'Offline', 'Hors ligne', 'Sin conexión')} compact />
+                <MetricCard label={L(i18n.language, 'Lutadores no modelo', 'Fighters loaded', 'Combattants chargés', 'Peleadores cargados')} value={`${health?.fighters_loaded ?? 0}`} compact />
               </div>
             </article>
           </section>

@@ -117,7 +117,7 @@ export function EditorialHeadToHeadSimulator({
         <div className="flex items-center gap-2">
           <span className="h-2 w-2 rounded-full bg-[#E11D48] animate-pulse" />
           <span className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-[var(--text-muted)]">
-            {L(i18n.language, 'SIMULADOR DE COMBATE // TALE OF THE TAPE EDITORIAL', 'FIGHT SIMULATOR // EDITORIAL TALE OF THE TAPE', 'SIMULATEUR DE COMBAT // TALE OF THE TAPE ÉDITORIAL')}
+            {L(i18n.language, 'SIMULADOR DE COMBATE // COMPARATIVO EDITORIAL', 'FIGHT SIMULATOR // EDITORIAL TALE OF THE TAPE', 'SIMULATEUR DE COMBAT // FICHE COMPARATIVE ÉDITORIALE', 'SIMULADOR DE PELEA // COMPARATIVA EDITORIAL')}
           </span>
         </div>
 
@@ -128,7 +128,7 @@ export function EditorialHeadToHeadSimulator({
             className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)] dark:border-white/15 dark:bg-white/5 dark:text-zinc-300 dark:hover:bg-white/10 dark:hover:text-white transition cursor-pointer"
           >
             <ArrowLeftRight className="h-3.5 w-3.5" />
-            <span>{L(i18n.language, 'Inverter Cantos', 'Swap Corners', 'Inverser les Coins')}</span>
+            <span>{L(i18n.language, 'Inverter Cantos', 'Swap Corners', 'Inverser les Coins', 'Intercambiar esquinas')}</span>
           </button>
         </div>
       </div>
@@ -144,11 +144,11 @@ export function EditorialHeadToHeadSimulator({
         >
           <div className="flex items-center gap-2">
             <span className="rounded bg-[#E11D48] px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-white">
-              {L(i18n.language, 'CÓRNER VERMELHO', 'CORNER RED', 'COIN ROUGE')}
+              {L(i18n.language, 'CÓRNER VERMELHO', 'CORNER RED', 'COIN ROUGE', 'ESQUINA ROJA')}
             </span>
             {profileA?.belt && (
               <span className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase text-[#fbbf24]">
-                <Trophy className="h-3 w-3" /> {L(i18n.language, 'CAMPEÃO', 'CHAMPION', 'CHAMPION')}
+                <Trophy className="h-3 w-3" /> {L(i18n.language, 'CAMPEÃO', 'CHAMPION', 'CHAMPION', 'CAMPEÓN')}
               </span>
             )}
           </div>
@@ -172,7 +172,7 @@ export function EditorialHeadToHeadSimulator({
           </button>
 
           <p className="font-mono text-xs text-zinc-400">
-            {getDivisionName(profileA?.division, i18n.language) || 'UFC'} • {profileA?.wins ?? 0}{L(i18n.language, 'V', 'W', 'V')} - {profileA?.losses ?? 0}{L(i18n.language, 'D', 'L', 'D')}
+            {getDivisionName(profileA?.division, i18n.language) || 'UFC'} • {profileA?.wins ?? 0}{L(i18n.language, 'V', 'W', 'V', 'V')} - {profileA?.losses ?? 0}{L(i18n.language, 'D', 'L', 'D', 'D')}
           </p>
 
           {/* Cutout Hero Image */}
@@ -216,8 +216,8 @@ export function EditorialHeadToHeadSimulator({
 
             <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-medium">
               {predicting
-                ? L(i18n.language, 'CALCULANDO MOTOR SHAP...', 'CALCULATING SHAP ENGINE...', 'CALCUL DU MOTEUR SHAP...')
-                : L(i18n.language, '● MOTOR v2.4 // PROBABILIDADE SHAP', '● ENGINE v2.4 // SHAP PROBABILITY', '● MOTEUR v2.4 // PROBABILITÉ SHAP')}
+                ? L(i18n.language, 'CALCULANDO MOTOR SHAP...', 'CALCULATING SHAP ENGINE...', 'CALCUL DU MOTEUR SHAP...', 'CALCULANDO MOTOR SHAP...')
+                : L(i18n.language, '● MOTOR v2.4 // PROBABILIDADE SHAP', '● ENGINE v2.4 // SHAP PROBABILITY', '● MOTEUR v2.4 // PROBABILITÉ SHAP', '● MOTOR v2.4 // PROBABILIDAD SHAP')}
             </p>
 
             {/* Prediction Indicator */}
@@ -225,7 +225,7 @@ export function EditorialHeadToHeadSimulator({
               <div className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/60 px-3 py-1 shadow-md">
                 <Sparkles className="h-3 w-3 text-[#fbbf24]" />
                 <span className="font-mono text-[11px] font-medium tracking-widest uppercase text-white truncate max-w-[140px]">
-                  {L(i18n.language, 'FAVORITO:', 'FAVORITE:', 'FAVORI :')} {prediction.predicted_winner.split(' ').pop()}
+                  {L(i18n.language, 'FAVORITO:', 'FAVORITE:', 'FAVORI :', 'FAVORITO:')} {prediction.predicted_winner.split(' ').pop()}
                 </span>
               </div>
             )}
@@ -242,11 +242,11 @@ export function EditorialHeadToHeadSimulator({
           <div className="flex items-center gap-2">
             {profileB?.belt && (
               <span className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase text-[#fbbf24]">
-                <Trophy className="h-3 w-3" /> {L(i18n.language, 'CAMPEÃO', 'CHAMPION', 'CHAMPION')}
+                <Trophy className="h-3 w-3" /> {L(i18n.language, 'CAMPEÃO', 'CHAMPION', 'CHAMPION', 'CAMPEÓN')}
               </span>
             )}
             <span className="rounded bg-[#2563EB] px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-white">
-              {L(i18n.language, 'CÓRNER AZUL', 'CORNER BLUE', 'COIN BLEU')}
+              {L(i18n.language, 'CÓRNER AZUL', 'CORNER BLUE', 'COIN BLEU', 'ESQUINA AZUL')}
             </span>
           </div>
 
@@ -269,7 +269,7 @@ export function EditorialHeadToHeadSimulator({
           </button>
 
           <p className="font-mono text-xs text-zinc-400">
-            {getDivisionName(profileB?.division, i18n.language) || 'UFC'} • {profileB?.wins ?? 0}{L(i18n.language, 'V', 'W', 'V')} - {profileB?.losses ?? 0}{L(i18n.language, 'D', 'L', 'D')}
+            {getDivisionName(profileB?.division, i18n.language) || 'UFC'} • {profileB?.wins ?? 0}{L(i18n.language, 'V', 'W', 'V', 'V')} - {profileB?.losses ?? 0}{L(i18n.language, 'D', 'L', 'D', 'D')}
           </p>
 
           {/* Cutout Hero Image */}
@@ -292,7 +292,7 @@ export function EditorialHeadToHeadSimulator({
       {/* COMPARATIVE METRIC BARS */}
       <div className="relative z-10 mt-8 space-y-4 pt-5 border-t border-[var(--border-subtle)] dark:border-white/10">
         <h4 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-zinc-400 text-center">
-          {L(i18n.language, 'ANÁLISE COMPARATIVA DE VOLUME E DEFESA', 'COMPARATIVE VOLUME & DEFENSE ANALYSIS', 'ANALYSE COMPARATIVE DES VOLUMES ET DE LA DÉFENSE')}
+          {L(i18n.language, 'ANÁLISE COMPARATIVA DE VOLUME E DEFESA', 'COMPARATIVE VOLUME & DEFENSE ANALYSIS', 'ANALYSE COMPARATIVE DES VOLUMES ET DE LA DÉFENSE', 'ANÁLISIS COMPARATIVO DE VOLUMEN Y DEFENSA')}
         </h4>
 
         {/* Striking Volume (SLpM) */}
@@ -302,19 +302,21 @@ export function EditorialHeadToHeadSimulator({
             'Golpes Significativos Conectados / Min (SLpM)',
             'Significant Strikes Landed / Min (SLpM)',
             'Coups Significatifs Réussis / Min (SLpM)',
+            'Golpes significativos conectados / min (SLpM)',
           )}
           valA={profileA?.sig_strikes_landed_per_min ?? 4.2}
           valB={profileB?.sig_strikes_landed_per_min ?? 3.8}
-          unit={` ${L(i18n.language, 'golpes', 'strikes', 'coups')}`}
+          unit={` ${L(i18n.language, 'golpes', 'strikes', 'coups', 'golpes')}`}
         />
 
         {/* Striking Accuracy */}
         <ComparativeBar
           label={L(
             i18n.language,
-            'Precisão de Golpes (Strike Accuracy %)',
+            'Precisão de Golpes (%)',
             'Striking Accuracy (Strike Accuracy %)',
             'Précision des Coups (Précision %)',
+            'Precisión de golpes (%)',
           )}
           valA={Math.round((profileA?.sig_str_acc ?? 0.5) * 100)}
           valB={Math.round((profileB?.sig_str_acc ?? 0.48) * 100)}
@@ -328,6 +330,7 @@ export function EditorialHeadToHeadSimulator({
             'Defesa de Quedas (TDD %)',
             'Takedown Defense (TDD %)',
             'Défense d’Amenées au Sol (TDD %)',
+            'Defensa de derribos (TDD %)',
           )}
           valA={Math.round((profileA?.takedown_defense ?? 0.75) * 100)}
           valB={Math.round((profileB?.takedown_defense ?? 0.72) * 100)}
@@ -337,21 +340,21 @@ export function EditorialHeadToHeadSimulator({
         {/* Physical measurements info row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-4">
           <MeasurementCard
-            label={L(i18n.language, 'Envergadura A', 'Reach A', 'Allonge A')}
+            label={L(i18n.language, 'Envergadura A', 'Reach A', 'Allonge A', 'Alcance A')}
             val={`${Math.round(profileA?.reach_cm ?? 180)} cm`}
           />
           <MeasurementCard
-            label={L(i18n.language, 'Diferencial de Alcance', 'Reach Advantage', 'Écart d’Allonge')}
+            label={L(i18n.language, 'Diferencial de Alcance', 'Reach Advantage', 'Écart d’Allonge', 'Ventaja de alcance')}
             val={`${reachDiff >= 0 ? '+' : ''}${Math.round(reachDiff)} cm`}
             highlight={reachDiff !== 0}
           />
           <MeasurementCard
-            label={L(i18n.language, 'Envergadura B', 'Reach B', 'Allonge B')}
+            label={L(i18n.language, 'Envergadura B', 'Reach B', 'Allonge B', 'Alcance B')}
             val={`${Math.round(profileB?.reach_cm ?? 180)} cm`}
           />
           <MeasurementCard
-            label={L(i18n.language, 'Diferença de Idade', 'Age Difference', 'Écart d’Âge')}
-            val={`${ageDiff >= 0 ? '+' : ''}${Math.round(ageDiff)} ${L(i18n.language, 'anos', 'yrs', 'ans')}`}
+            label={L(i18n.language, 'Diferença de Idade', 'Age Difference', 'Écart d’Âge', 'Diferencia de edad')}
+            val={`${ageDiff >= 0 ? '+' : ''}${Math.round(ageDiff)} ${L(i18n.language, 'anos', 'yrs', 'ans', 'años')}`}
           />
         </div>
       </div>
@@ -369,8 +372,8 @@ export function EditorialHeadToHeadSimulator({
               <div className="flex items-center justify-between border-b border-[var(--border-subtle)] dark:border-white/10 pb-4">
                 <h3 className="text-lg font-black uppercase text-[var(--text-primary)] dark:text-white">
                   {selectingCorner === 'a'
-                    ? L(i18n.language, 'Selecionar Canto Vermelho', 'Select Red Corner', 'Sélectionner le Coin Rouge')
-                    : L(i18n.language, 'Selecionar Canto Azul', 'Select Blue Corner', 'Sélectionner le Coin Bleu')}
+                    ? L(i18n.language, 'Selecionar Canto Vermelho', 'Select Red Corner', 'Sélectionner le Coin Rouge', 'Seleccionar esquina roja')
+                    : L(i18n.language, 'Selecionar Canto Azul', 'Select Blue Corner', 'Sélectionner le Coin Bleu', 'Seleccionar esquina azul')}
                 </h3>
                 <button
                   type="button"
@@ -388,7 +391,7 @@ export function EditorialHeadToHeadSimulator({
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder={L(i18n.language, 'Buscar atleta pelo nome...', 'Search fighter by name...', 'Rechercher un athlète...')}
+                    placeholder={L(i18n.language, 'Buscar atleta pelo nome...', 'Search fighter by name...', 'Rechercher un athlète...', 'Buscar peleador por nombre...')}
                     className="w-full rounded-xl border border-[var(--border-default)] dark:border-white/15 bg-[var(--bg-surface-subtle)] dark:bg-white/5 py-2.5 pl-10 pr-4 text-sm text-[var(--text-primary)] dark:text-white placeholder-[var(--text-muted)] focus:border-[#E11D48] focus:outline-none"
                     autoFocus
                   />
@@ -405,11 +408,11 @@ export function EditorialHeadToHeadSimulator({
                       <div>
                         <p className="font-bold text-[var(--text-primary)] dark:text-white text-sm">{f.name}</p>
                         <p className="text-xs text-zinc-400 font-mono">
-                          {getDivisionName(f.division, i18n.language) || 'UFC'} • {f.wins}{L(i18n.language, 'V', 'W', 'V')} - {f.losses}{L(i18n.language, 'D', 'L', 'D')}
+                          {getDivisionName(f.division, i18n.language) || 'UFC'} • {f.wins}{L(i18n.language, 'V', 'W', 'V', 'V')} - {f.losses}{L(i18n.language, 'D', 'L', 'D', 'D')}
                         </p>
                       </div>
                       <span className="font-mono text-xs text-zinc-500">
-                        {L(i18n.language, 'Selecionar', 'Select', 'Sélectionner')}
+                        {L(i18n.language, 'Selecionar', 'Select', 'Sélectionner', 'Seleccionar')}
                       </span>
                     </button>
                   ))}

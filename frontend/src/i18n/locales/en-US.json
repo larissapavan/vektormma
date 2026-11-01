@@ -36,9 +36,11 @@
     "pt": "PT",
     "en": "EN",
     "fr": "FR",
+    "es": "ES",
     "ptLong": "Portuguese",
     "enLong": "English",
-    "frLong": "French"
+    "frLong": "French",
+    "esLong": "Spanish"
   },
   "landing": {
     "eyebrow": "Vektor MMA",

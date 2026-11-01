@@ -102,13 +102,13 @@ export function FighterSearch() {
           setOpen(!open)
         }}
         className="inline-flex h-7.5 sm:h-8 items-center justify-center gap-1.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-2 sm:px-2.5 text-xs transition cursor-pointer text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-default)] hover:bg-[var(--bg-surface-hover)]"
-        aria-label={L(i18n.language, 'Buscar lutadores', 'Search fighters', 'Chercher des combattants')}
+        aria-label={L(i18n.language, 'Buscar lutadores', 'Search fighters', 'Chercher des combattants', 'Buscar peleadores')}
         aria-expanded={open}
-        title={L(i18n.language, 'Buscar lutadores (pressione / ou ⌘K)', 'Search fighters (press / or ⌘K)', 'Chercher des combattants (appuyez sur / ou ⌘K)')}
+        title={L(i18n.language, 'Buscar lutadores (pressione / ou ⌘K)', 'Search fighters (press / or ⌘K)', 'Chercher des combattants (appuyez sur / ou ⌘K)', 'Buscar peleadores (presiona / o ⌘K)')}
       >
         <Search className="h-3.5 w-3.5" />
         <span className="hidden xl:inline text-[11px] font-normal text-[var(--text-muted)]">
-          {L(i18n.language, 'Buscar...', 'Search...', 'Chercher...')}
+          {L(i18n.language, 'Buscar...', 'Search...', 'Chercher...', 'Buscar...')}
         </span>
         <kbd className="hidden md:inline-block rounded px-1 py-0.2 font-mono text-[9px] bg-[var(--bg-surface-hover)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
           ⌘K
@@ -127,8 +127,8 @@ export function FighterSearch() {
                 setActive(0)
               }}
               onKeyDown={onKeyDown}
-              placeholder={L(i18n.language, 'Buscar lutador por nome...', 'Find a fighter by name', 'Chercher un combattant par nom...')}
-              aria-label={L(i18n.language, 'Buscar lutador por nome', 'Find a fighter by name', 'Chercher un combattant par nom')}
+              placeholder={L(i18n.language, 'Buscar lutador por nome...', 'Find a fighter by name', 'Chercher un combattant par nom...', 'Buscar un peleador por nombre...')}
+              aria-label={L(i18n.language, 'Buscar lutador por nome', 'Find a fighter by name', 'Chercher un combattant par nom', 'Buscar un peleador por nombre')}
               role="combobox"
               aria-expanded={results.length > 0}
               aria-controls="fighter-search-results"
@@ -138,7 +138,7 @@ export function FighterSearch() {
             <button
               type="button"
               onClick={close}
-              aria-label={L(i18n.language, 'Fechar busca', 'Close search', 'Fermer la recherche')}
+              aria-label={L(i18n.language, 'Fechar busca', 'Close search', 'Fermer la recherche', 'Cerrar la búsqueda')}
               className="inline-flex h-7 w-7 items-center justify-center rounded-md transition text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)] cursor-pointer"
             >
               <X className="h-3.5 w-3.5" />
@@ -183,12 +183,12 @@ export function FighterSearch() {
               </ul>
             ) : (
               <p className="mt-2 px-2 py-3 text-center text-xs text-[var(--text-muted)]">
-                {L(i18n.language, `Nenhum atleta encontrado para “${text.trim()}”.`, `No fighter matches “${text.trim()}”.`, `Aucun athlète trouvé pour « ${text.trim()} ».`)}
+                {L(i18n.language, `Nenhum atleta encontrado para “${text.trim()}”.`, `No fighter matches “${text.trim()}”.`, `Aucun athlète trouvé pour « ${text.trim()} ».`, `Ningún peleador coincide con “${text.trim()}”.`)}
               </p>
             )
           ) : (
             <p className="mt-2 px-2 py-3 text-center text-xs text-[var(--text-muted)]">
-              {L(i18n.language, 'Digite o nome do lutador...', 'Start typing a fighter name...', 'Tapez le nom du combattant...')}
+              {L(i18n.language, 'Digite o nome do lutador...', 'Start typing a fighter name...', 'Tapez le nom du combattant...', 'Escribe el nombre de un peleador...')}
             </p>
           )}
         </div>

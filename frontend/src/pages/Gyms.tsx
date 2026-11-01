@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { ChevronRight, Crown, Search } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-import { L, localeTag } from '../i18n/lang'
+import { L, localeTag, uiLang } from '../i18n/lang'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { SectionHeading } from '../shared/components/SectionHeading'
-import { orgPath } from '../shared/data/orgs'
+import { orgEs, orgPath } from '../shared/data/orgs'
 import { useGyms } from '../shared/hooks/useGyms'
 import { useOrg } from '../shared/hooks/useOrg'
 import { normalizeFighterName } from '../shared/hooks/useFighterImages'
@@ -53,7 +53,7 @@ export function Gyms() {
           <SectionHeading
             level={1}
             eyebrow={t('gyms.eyebrow')}
-            title={`${org.shortName} ${t('gyms.title')}`}
+            title={uiLang(i18n.language) === 'es' ? `${t('gyms.title')} de ${orgEs(org)}` : `${org.shortName} ${t('gyms.title')}`}
             description={t('gyms.description')}
           />
           <div className="grid gap-2 sm:grid-cols-3">
@@ -73,14 +73,14 @@ export function Gyms() {
                 reset()
               }}
               placeholder={t('gyms.searchPlaceholder')}
-              aria-label={L(i18n.language, 'Buscar academias', 'Search gyms', 'Rechercher des salles')}
+              aria-label={L(i18n.language, 'Buscar academias', 'Search gyms', 'Rechercher des salles', 'Buscar gimnasios')}
               className="theme-text w-full bg-transparent outline-none placeholder:text-[var(--text-muted)]"
             />
           </div>
           <select
             value={sort}
             onChange={(event) => setSort(event.target.value as Sort)}
-            aria-label={L(i18n.language, 'Ordenar academias', 'Sort gyms', 'Trier les salles')}
+            aria-label={L(i18n.language, 'Ordenar academias', 'Sort gyms', 'Trier les salles', 'Ordenar gimnasios')}
             className="soft-input theme-text rounded-xl px-3 py-2.5 text-sm outline-none"
           >
             <option value="org">{t('gyms.mostFighters')}</option>
@@ -88,7 +88,7 @@ export function Gyms() {
             <option value="champions">{t('gyms.mostChampions')}</option>
             <option value="name">{t('gyms.name')}</option>
           </select>
-          <div role="group" aria-label={L(i18n.language, 'Filtrar academias', 'Which gyms', 'Quelles salles')} className="inline-flex border-2 border-[var(--rule)] bg-[var(--card-bg)]">
+          <div role="group" aria-label={L(i18n.language, 'Filtrar academias', 'Which gyms', 'Quelles salles', 'Qué gimnasios')} className="inline-flex border-2 border-[var(--rule)] bg-[var(--card-bg)]">
             {(['org', 'all'] as const).map((value) => (
               <button
                 key={value}
@@ -125,9 +125,10 @@ export function Gyms() {
               `Exibindo ${Math.min(shown, matches.length).toLocaleString('pt-BR')} de ${matches.length.toLocaleString('pt-BR')}`,
               `Showing ${Math.min(shown, matches.length).toLocaleString('en-US')} of ${matches.length.toLocaleString('en-US')}`,
               `Affichage de ${Math.min(shown, matches.length).toLocaleString(localeTag(i18n.language))} sur ${matches.length.toLocaleString(localeTag(i18n.language))}`,
+              `Mostrando ${Math.min(shown, matches.length).toLocaleString('es-419')} de ${matches.length.toLocaleString('es-419')}`,
             )}
           </p>
-          <ul aria-label={L(i18n.language, 'Academias', 'Gyms', 'Salles')} className="grid gap-2.5 md:grid-cols-2">
+          <ul aria-label={L(i18n.language, 'Academias', 'Gyms', 'Salles', 'Gimnasios')} className="grid gap-2.5 md:grid-cols-2">
             {matches.slice(0, shown).map((gym) => (
               <li key={gym.slug}>
                 <GymRow gym={gym} orgName={org.shortName} to={`${orgPath(org, 'gyms')}/${gym.slug}`} inOrg={inOrg(gym)} />
@@ -140,7 +141,7 @@ export function Gyms() {
               onClick={() => setShown((count) => count + PAGE_SIZE)}
               className="ghost-action mx-auto block px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-main)]"
             >
-              {L(i18n.language, 'Mostrar mais academias', 'Show more gyms', 'Afficher plus de salles')}
+              {L(i18n.language, 'Mostrar mais academias', 'Show more gyms', 'Afficher plus de salles', 'Mostrar más gimnasios')}
             </button>
           ) : null}
         </section>
@@ -174,13 +175,13 @@ function GymRow({ gym, orgName, to, inOrg }: { gym: GymSummary; orgName: string;
         <span className="block truncate text-base font-bold text-[var(--text-main)]">{gym.name}</span>
         <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[var(--text-muted)]">
           <span>
-            <span className="font-semibold text-[var(--text-main)]">{inOrg}</span> {orgName} {inOrg === 1 ? L(i18n.language, 'lutador', 'fighter', 'lutteur') : L(i18n.language, 'lutadores', 'fighters', 'lutteurs')}
+            <span className="font-semibold text-[var(--text-main)]">{inOrg}</span> {orgName} {inOrg === 1 ? L(i18n.language, 'lutador', 'fighter', 'combattant', 'peleador') : L(i18n.language, 'lutadores', 'fighters', 'combattants', 'peleadores')}
           </span>
-          <span>{gym.fighters_count} {L(i18n.language, 'atletas', 'listed', 'inscrits')}</span>
+          <span>{gym.fighters_count} {L(i18n.language, 'atletas', 'listed', 'inscrits', 'registrados')}</span>
           {gym.champions > 0 ? (
             <span className="inline-flex items-center gap-1 border-2 border-[var(--rule)] bg-[#F2C230] px-1.5 py-px text-[11px] font-bold uppercase leading-4 tracking-[0.08em] text-[#0E0E0E]">
               <Crown className="h-3 w-3" aria-hidden="true" />
-              {gym.champions} {gym.champions === 1 ? L(i18n.language, 'campeão', 'champion', 'champion') : L(i18n.language, 'campeões', 'champions', 'champions')}
+              {gym.champions} {gym.champions === 1 ? L(i18n.language, 'campeão', 'champion', 'champion', 'campeón') : L(i18n.language, 'campeões', 'champions', 'champions', 'campeones')}
             </span>
           ) : null}
         </span>

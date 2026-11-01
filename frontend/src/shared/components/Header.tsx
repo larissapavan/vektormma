@@ -92,7 +92,7 @@ export function Header() {
           <div className="flex min-w-0 flex-1 items-center gap-3 xl:gap-8">
             <Link
               to={LANDING_PATH}
-              aria-label={L(i18n.language, 'Vektor MMA • Início', 'Vektor MMA home', 'Vektor MMA • Accueil')}
+              aria-label={L(i18n.language, 'Vektor MMA • Início', 'Vektor MMA home', 'Vektor MMA • Accueil', 'Vektor MMA • Inicio')}
               className="flex shrink-0 items-center gap-2 sm:gap-2.5 transition opacity-95 hover:opacity-100 min-w-0"
             >
               <BrandMark className="h-7 w-7 xs:h-8 xs:w-8 sm:h-9 sm:w-9 shrink-0 drop-shadow-sm" />
@@ -109,7 +109,7 @@ export function Header() {
             {/* Center-Left: Desktop Navigation com Indicador Neon Ancorado na Borda */}
             {landing || isAbout ? (
               <nav
-                aria-label={L(i18n.language, 'Navegação principal', 'Main navigation', 'Navigation principale')}
+                aria-label={L(i18n.language, 'Navegação principal', 'Main navigation', 'Navigation principale', 'Navegación principal')}
                 className="min-w-0 flex-1 overflow-x-auto no-scrollbar overscroll-x-contain"
               >
                 <div className="flex h-14 min-w-max shrink-0 items-center gap-1 whitespace-nowrap sm:h-16 sm:gap-2">
@@ -123,7 +123,7 @@ export function Header() {
                   }}
                   className="relative flex h-full shrink-0 items-center px-2.5 text-xs font-bold whitespace-nowrap text-[var(--text-secondary)] transition duration-200 hover:text-[var(--text-primary)] dark:hover:text-white sm:px-3 xl:text-[13px]"
                 >
-                  <span>{L(i18n.language, 'Organizações', 'Organizations', 'Organisations')}</span>
+                  <span>{L(i18n.language, 'Organizações', 'Organizations', 'Organisations', 'Organizaciones')}</span>
                   {landing && !isAbout && pathname === '/' && (
                     <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#FF2E54] rounded-full shadow-[0_0_12px_#FF2E54,0_0_4px_#FF2E54]" />
                   )}
@@ -140,7 +140,7 @@ export function Header() {
                 >
                   {({ isActive }) => (
                     <>
-                      <span>{L(i18n.language, 'Sistema ML', 'ML System', 'Système ML')}</span>
+                      <span>{L(i18n.language, 'Sistema de IA', 'ML System', 'Système d’IA', 'Sistema de IA')}</span>
                       {isActive && (
                         <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#FF2E54] rounded-full shadow-[0_0_12px_#FF2E54,0_0_4px_#FF2E54]" />
                       )}
@@ -159,7 +159,7 @@ export function Header() {
                 >
                   {({ isActive }) => (
                     <>
-                      <span>{L(i18n.language, 'Acurácia', 'Track Record', 'Historique')}</span>
+                      <span>{L(i18n.language, 'Acurácia', 'Track Record', 'Historique', 'Historial')}</span>
                       {isActive && (
                         <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#FF2E54] rounded-full shadow-[0_0_12px_#FF2E54,0_0_4px_#FF2E54]" />
                       )}
@@ -189,7 +189,7 @@ export function Header() {
               </nav>
             ) : (
               <nav
-                aria-label={L(i18n.language, 'Navegação principal', 'Main navigation', 'Navigation principale')}
+                aria-label={L(i18n.language, 'Navegação principal', 'Main navigation', 'Navigation principale', 'Navegación principal')}
                 className="hidden lg:flex items-center h-14 sm:h-16 gap-1 sm:gap-2"
               >
                 {navItems.map((item) => {
@@ -259,8 +259,8 @@ export function Header() {
                   }
                 }}
                 className="hidden md:inline-flex h-7.5 w-7.5 sm:h-8 sm:w-8 items-center justify-center rounded-lg transition cursor-pointer text-[var(--text-secondary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)] dark:hover:text-white"
-                aria-label="Toggle Fullscreen"
-                title={L(i18n.language, 'Alternar tela cheia', 'Toggle fullscreen', 'Plein écran')}
+                aria-label={L(i18n.language, 'Alternar tela cheia', 'Toggle fullscreen', 'Plein écran', 'Pantalla completa')}
+                title={L(i18n.language, 'Alternar tela cheia', 'Toggle fullscreen', 'Plein écran', 'Pantalla completa')}
               >
                 <Maximize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </button>
@@ -287,7 +287,7 @@ export function Header() {
         {!landing && !isAbout && (
           <div className="lg:hidden min-w-0 border-t border-[var(--border-subtle)] px-2 py-1 overflow-x-auto no-scrollbar overscroll-x-contain">
             <nav
-              aria-label={L(i18n.language, 'Navegação móvel', 'Mobile navigation', 'Navigation mobile')}
+              aria-label={L(i18n.language, 'Navegação móvel', 'Mobile navigation', 'Navigation mobile', 'Navegación móvil')}
               className="flex items-center gap-1 w-max"
             >
               {navItems.map((item) => {

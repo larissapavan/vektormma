@@ -13,7 +13,8 @@ import { L, localeTag } from '../../i18n/lang'
 import { getDivisionName } from '../../shared/data/divisions'
 import { buildDivisionReigns } from '../../shared/data/orgChampions'
 import { compareDivisions, formatDate, formatRecord } from '../../shared/data/orgFormat'
-import { orgPath, type OrgConfig } from '../../shared/data/orgs'
+import { orgEs, orgPath, type OrgConfig } from '../../shared/data/orgs'
+import { translateHometown } from '../../shared/data/fightLabels'
 import { useGyms } from '../../shared/hooks/useGyms'
 import { useOrg } from '../../shared/hooks/useOrg'
 import { useOrgEvents, useOrgFighters, useOrgRankings, useOrgUpcomingEvents } from '../../shared/hooks/useOrgData'
@@ -105,7 +106,7 @@ export function OrgHome() {
             <SectionHeading
               level={1}
               eyebrow={isArchived ? `${org.name} • Archive (2009–2023)` : org.name}
-              title={L(i18n.language, `${org.shortName} • Vektor MMA`, `${org.shortName} Vektor MMA`, `${org.shortName} • Vektor MMA`)}
+              title={L(i18n.language, `${org.shortName} • Vektor MMA`, `${org.shortName} Vektor MMA`, `${org.shortName} • Vektor MMA`, `${org.shortName} • Vektor MMA`)}
               description={t(`landing.taglines.${org.id}`, { defaultValue: org.tagline })}
             />
             <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -114,7 +115,7 @@ export function OrgHome() {
                   to={orgPath(org, 'predictor')}
                   className="primary-action inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-white"
                 >
-                  {L(i18n.language, 'Simular Combate', 'Predict a fight', 'Prédire un combat')}
+                  {L(i18n.language, 'Simular Combate', 'Predict a fight', 'Prédire un combat', 'Pronosticar una pelea')}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               ) : null}
@@ -122,38 +123,38 @@ export function OrgHome() {
                 to={orgPath(org, 'events')}
                 className="ghost-action theme-text inline-flex items-center justify-center rounded-full px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.14em]"
               >
-                {L(i18n.language, 'Ver Eventos', 'See fight cards', 'Voir les événements')}
+                {L(i18n.language, 'Ver Eventos', 'See fight cards', 'Voir les événements', 'Ver carteleras')}
               </Link>
             </div>
           </div>
           <div className={`grid gap-2 ${isArchived ? 'sm:grid-cols-4' : 'sm:grid-cols-3'}`}>
             <Tile
-              label={L(i18n.language, 'Lutadores', 'Fighters', 'Combattants')}
+              label={L(i18n.language, 'Lutadores', 'Fighters', 'Combattants', 'Peleadores')}
               value={fighters.length.toLocaleString(localeTag(i18n.language))}
               note={
                 isArchived
-                  ? L(i18n.language, 'acervo 2009–2023', 'archive 2009–2023', 'archives 2009–2023')
-                  : `${activeCount.toLocaleString(localeTag(i18n.language))} ${L(i18n.language, 'ativos', 'active', 'actifs')}`
+                  ? L(i18n.language, 'acervo 2009–2023', 'archive 2009–2023', 'archives 2009–2023', 'archivo 2009–2023')
+                  : `${activeCount.toLocaleString(localeTag(i18n.language))} ${L(i18n.language, 'ativos', 'active', 'actifs', 'activos')}`
               }
             />
             {isArchived ? (
               <Tile
-                label={L(i18n.language, 'Academias', 'Gyms', 'Salles')}
+                label={L(i18n.language, 'Academias', 'Gyms', 'Salles', 'Gimnasios')}
                 value={orgGymsCount.toLocaleString(localeTag(i18n.language))}
-                note={L(i18n.language, 'academias mapeadas', 'gyms tracked', 'salles répertoriées')}
+                note={L(i18n.language, 'academias mapeadas', 'gyms tracked', 'salles répertoriées', 'gimnasios registrados')}
               />
             ) : null}
             <Tile
-              label={L(i18n.language, 'Eventos', 'Events', 'Événements')}
+              label={L(i18n.language, 'Eventos', 'Events', 'Événements', 'Eventos')}
               value={past.events.length.toLocaleString(localeTag(i18n.language))}
               note={isArchived ? 'Bellator 1 – 301' : undefined}
             />
             <Tile
-              label={L(i18n.language, 'Combates', 'Fights', 'Combats')}
+              label={L(i18n.language, 'Combates', 'Fights', 'Combats', 'Peleas')}
               value={fightCount.toLocaleString(localeTag(i18n.language))}
               note={
                 isArchived && totalReignsCount > 0
-                  ? `${totalReignsCount} ${L(i18n.language, 'reinados de título', 'title reigns', 'règnes de titre')}`
+                  ? `${totalReignsCount} ${L(i18n.language, 'reinados de título', 'title reigns', 'règnes de titre', 'reinados de título')}`
                   : undefined
               }
             />
@@ -168,26 +169,27 @@ export function OrgHome() {
             'O Bellator realizou seu último evento em 2023 e foi absorvido pela PFL, portanto este é um arquivo histórico: os dados aqui não são mais atualizados.',
             org.archived ?? 'Archive 2009–2023. Bellator held its last event in 2023.',
             "Le Bellator a organisé son dernier événement en 2023 avant d'être absorbé par la PFL : il s'agit donc d'archives historiques qui ne sont plus mises à jour.",
+            'Bellator realizó su último evento en 2023 y fue absorbido por la PFL, así que este es un archivo histórico: los datos ya no se actualizan.',
           )}
         </p>
       ) : null}
 
       {isArchived ? (
-        <section aria-label="Archive sections" className="space-y-3">
+        <section aria-label={L(i18n.language, 'Seções do arquivo', 'Archive sections', 'Sections d’archive', 'Secciones del archivo')} className="space-y-3">
           <SectionHeading
-            eyebrow={L(i18n.language, 'Seções do Arquivo', 'Archive sections', "Sections d'archive")}
-            title={L(i18n.language, 'Navegue pelo Arquivo Histórico', 'Explore the archive', "Explorer l'archive")}
+            eyebrow={L(i18n.language, 'Seções do Arquivo', 'Archive sections', "Sections d'archive", 'Secciones del archivo')}
+            title={L(i18n.language, 'Navegue pelo Arquivo Histórico', 'Explore the archive', "Explorer l'archive", 'Explora el archivo histórico')}
           />
           <div className="grid gap-3 sm:grid-cols-3">
             <Link to={orgPath(org, 'events')} className="surface-card rounded-2xl p-4 transition hover:bg-[var(--bg-surface-hover)]">
-              <span className="text-sm font-bold">{L(i18n.language, 'Eventos', 'Events', 'Événements')}</span>
+              <span className="text-sm font-bold">{L(i18n.language, 'Eventos', 'Events', 'Événements', 'Eventos')}</span>
             </Link>
             <Link to={orgPath(org, 'fighters')} className="surface-card rounded-2xl p-4 transition hover:bg-[var(--bg-surface-hover)]">
-              <span className="text-sm font-bold">{L(i18n.language, 'Lutadores', 'Fighters', 'Combattants')}</span>
+              <span className="text-sm font-bold">{L(i18n.language, 'Lutadores', 'Fighters', 'Combattants', 'Peleadores')}</span>
             </Link>
             {org.hasChampions ? (
               <Link to={orgPath(org, 'champions')} className="surface-card rounded-2xl p-4 transition hover:bg-[var(--bg-surface-hover)]">
-                <span className="text-sm font-bold">{L(i18n.language, 'Campeões', 'Champions', 'Champions')}</span>
+                <span className="text-sm font-bold">{L(i18n.language, 'Campeões', 'Champions', 'Champions', 'Campeones')}</span>
               </Link>
             ) : null}
           </div>
@@ -195,9 +197,9 @@ export function OrgHome() {
       ) : null}
 
       {!isArchived && nextEvent ? (
-        <section aria-label="Next event" className="space-y-3">
+        <section aria-label={L(i18n.language, 'Próximo evento', 'Next event', 'Prochain événement', 'Próximo evento')} className="space-y-3">
           <SectionHeading
-            eyebrow={L(i18n.language, 'Próximo Evento', 'Next card', 'Prochain événement')}
+            eyebrow={L(i18n.language, 'Próximo Evento', 'Next card', 'Prochain événement', 'Próxima cartelera')}
             title={nextEvent.name}
           />
           {upcoming.loading ? (
@@ -208,15 +210,16 @@ export function OrgHome() {
         </section>
       ) : null}
 
-      <section aria-label="Champions" className="space-y-3">
+      <section aria-label={L(i18n.language, 'Campeões', 'Champions', 'Champions', 'Campeones')} className="space-y-3">
         <div className="flex flex-wrap items-end justify-between gap-2">
           <SectionHeading
-            eyebrow={L(i18n.language, isArchived ? 'Últimos Campeões (2023)' : 'Cinturões', isArchived ? 'Final champions (2023)' : 'Titles', isArchived ? 'Derniers champions (2023)' : 'Ceintures')}
+            eyebrow={L(i18n.language, isArchived ? 'Últimos Campeões (2023)' : 'Cinturões', isArchived ? 'Final champions (2023)' : 'Titles', isArchived ? 'Derniers champions (2023)' : 'Ceintures', isArchived ? 'Últimos campeones (2023)' : 'Cinturones')}
             title={L(
               i18n.language,
               isArchived ? `Últimos Campeões do ${org.shortName}` : `Campeões do ${org.shortName}`,
               isArchived ? `Final ${org.shortName} champions` : `${org.shortName} champions`,
               isArchived ? `Derniers champions ${org.shortName}` : `Champions ${org.shortName}`,
+              isArchived ? `Últimos campeones de ${orgEs(org)}` : `Campeones de ${orgEs(org)}`,
             )}
             description={
               isArchived
@@ -225,6 +228,7 @@ export function OrgHome() {
                     'Atletas que detinham o cinturão linear de cada categoria no encerramento das atividades do Bellator em novembro de 2023.',
                     'The fighters holding each division’s belt when Bellator held its final event in November 2023.',
                     'Les combattants qui détenaient la ceinture de chaque catégorie lors de la fermeture du Bellator fin 2023.',
+                    'Los peleadores que tenían el cinturón de cada división cuando Bellator realizó su último evento en noviembre de 2023.',
                   )
                 : undefined
             }
@@ -234,7 +238,7 @@ export function OrgHome() {
               to={orgPath(org, 'champions')}
               className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-main)] underline decoration-2 underline-offset-4 hover:bg-[#F2C230] hover:text-[#0E0E0E]"
             >
-              {L(i18n.language, 'Seção completa de Campeões', 'Full champions section', 'Section complète des champions')}
+              {L(i18n.language, 'Seção completa de Campeões', 'Full champions section', 'Section complète des champions', 'Sección completa de campeones')}
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           ) : null}
@@ -257,27 +261,29 @@ export function OrgHome() {
           </ul>
         ) : (
           <p className="text-sm text-[var(--text-muted)]">
-            {L(i18n.language, 'Lista de campeões indisponível no momento.', 'Champions are not available yet.', 'La liste des champions n\'est pas encore disponible.')}
+            {L(i18n.language, 'Lista de campeões indisponível no momento.', 'Champions are not available yet.', 'La liste des champions n\'est pas encore disponible.', 'La lista de campeones aún no está disponible.')}
           </p>
         )}
       </section>
 
       {isArchived ? (
-        <section aria-label="Title history" className="space-y-4">
+        <section aria-label={L(i18n.language, 'Histórico de títulos', 'Title history', 'Historique des titres', 'Historial de títulos')} className="space-y-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <SectionHeading
-              eyebrow={L(i18n.language, 'Linhagem Completa (2009–2023)', 'Complete Lineage (2009–2023)', 'Lignée complète (2009–2023)')}
+              eyebrow={L(i18n.language, 'Linhagem Completa (2009–2023)', 'Complete Lineage (2009–2023)', 'Lignée complète (2009–2023)', 'Linaje completo (2009–2023)')}
               title={L(
                 i18n.language,
                 'Histórico de Campeões por Categoria',
                 'Championship history by division',
                 'Historique des champions par catégorie',
+                'Historial de campeonatos por división',
               )}
               description={L(
                 i18n.language,
                 'Todos os reinados e defesas de cinturão de cada divisão do Bellator, do campeão inaugural até o encerramento em 2023.',
                 'Every title reign and successful defense across each Bellator weight class from 2009 to 2023.',
                 'Tous les règnes et défenses de titre dans chaque catégorie du Bellator de 2009 à 2023.',
+                'Cada reinado y cada defensa exitosa del título en todas las divisiones de Bellator de 2009 a 2023.',
               )}
             />
           </div>
@@ -285,7 +291,7 @@ export function OrgHome() {
           {historyDivisions.length > 1 ? (
             <div
               role="group"
-              aria-label={L(i18n.language, 'Filtrar histórico por categoria', 'Filter title history by division', 'Filtrer par catégorie')}
+              aria-label={L(i18n.language, 'Filtrar histórico por categoria', 'Filter title history by division', 'Filtrer par catégorie', 'Filtrar el historial de títulos por división')}
               className="chip-scroll flex w-full max-w-full items-center gap-2 overflow-x-auto pb-1"
             >
               {historyDivisions.map((div) => {
@@ -335,8 +341,8 @@ export function OrgHome() {
       ) : null}
 
       {!isArchived && latestEvent ? (
-        <section aria-label="Latest results" className="space-y-3">
-          <SectionHeading eyebrow={L(i18n.language, 'Últimos Resultados', 'Latest results', 'Derniers résultats')} title={latestEvent.name} />
+        <section aria-label={L(i18n.language, 'Últimos resultados', 'Latest results', 'Derniers résultats', 'Últimos resultados')} className="space-y-3">
+          <SectionHeading eyebrow={L(i18n.language, 'Últimos Resultados', 'Latest results', 'Derniers résultats', 'Últimos resultados')} title={latestEvent.name} />
           <EventPanel org={org} event={latestEvent} limit={LATEST_RESULTS} onOpenFighter={setProfileName} />
         </section>
       ) : null}
@@ -348,16 +354,18 @@ export function OrgHome() {
               `Arquivo histórico compilado a partir de ${org.sourceName === 'ESPN and Wikipedia' ? 'ESPN e Wikipedia' : org.sourceName}.`,
               `Archive built from ${org.sourceName}.`,
               `Archives historiques compilées à partir d'${org.sourceName === 'ESPN and Wikipedia' ? 'ESPN et Wikipédia' : org.sourceName}.`,
+              `Archivo histórico compilado a partir de ${org.sourceName === 'ESPN and Wikipedia' ? 'ESPN y Wikipedia' : org.sourceName}.`,
             )
-          : L(i18n.language, `Dados oficiais via ${org.sourceName}, sincronizados diariamente.`, `Data from ${org.sourceName}, refreshed daily.`, `Données officielles via ${org.sourceName}, synchronisées chaque jour.`)}{' '}
+          : L(i18n.language, `Dados oficiais via ${org.sourceName}, sincronizados diariamente.`, `Data from ${org.sourceName}, refreshed daily.`, `Données officielles via ${org.sourceName}, synchronisées chaque jour.`, `Datos oficiales de ${org.sourceName}, actualizados a diario.`)}{' '}
         {L(
           i18n.language,
           'As previsões da IA e o histórico detalhado estão focados no UFC atualmente, onde o modelo preditivo foi validado.',
           'Predictions, head-to-head and the track record are UFC-only for now: the model is trained on UFC fights.',
           'Les prévisions, le face-à-face et le bilan des pronostics restent pour l\'instant limités à l\'UFC : le modèle est entraîné sur des combats UFC.',
+          'Los pronósticos, el cara a cara y el historial de aciertos son solo de la UFC por ahora: el modelo se entrena con peleas de la UFC.',
         )}{' '}
         <Link to="/predictor" className="font-semibold underline decoration-2 underline-offset-2 hover:bg-[#F2C230] hover:text-[#0E0E0E]">
-          {L(i18n.language, 'Simular lutas no UFC →', 'Try the UFC predictor', 'Simuler des combats UFC →')}
+          {L(i18n.language, 'Simular lutas no UFC →', 'Try the UFC predictor', 'Simuler des combats UFC →', 'Probar el pronosticador de la UFC →')}
         </Link>
       </p>
 
@@ -405,7 +413,7 @@ function EventPanel({
         {event.location ? (
           <span className="inline-flex items-center gap-1.5">
             <MapPin className="h-3.5 w-3.5" />
-            {event.location}
+            {translateHometown(event.location, i18n.language)}
           </span>
         ) : null}
       </div>
@@ -419,8 +427,8 @@ function EventPanel({
         className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-main)] underline decoration-2 underline-offset-4 hover:bg-[#F2C230] hover:text-[#0E0E0E]"
       >
         {event.fight_count > fights.length
-          ? L(i18n.language, `Card completo (${event.fight_count} lutas)`, `Full card (${event.fight_count} fights)`, `Carte complète (${event.fight_count} combats)`)
-          : L(i18n.language, 'Ver card completo', 'Open the card', 'Voir la carte complète')}
+          ? L(i18n.language, `Card completo (${event.fight_count} lutas)`, `Full card (${event.fight_count} fights)`, `Carte complète (${event.fight_count} combats)`, `Cartelera completa (${event.fight_count} peleas)`)
+          : L(i18n.language, 'Ver card completo', 'Open the card', 'Voir la carte complète', 'Ver la cartelera completa')}
         <ArrowRight className="h-3.5 w-3.5" />
       </Link>
     </div>
@@ -461,19 +469,19 @@ function ChampionTile({
             <p className="mt-0.5 text-[11px] text-[var(--text-muted)]">
               {record ? <span className="font-semibold text-[var(--text-main)]">{record}</span> : null}
               {record && archived ? ' · ' : ''}
-              {archived ? L(i18n.language, 'Último campeão', 'Final champion', 'Dernier champion') : null}
+              {archived ? L(i18n.language, 'Último campeão', 'Final champion', 'Dernier champion', 'Último campeón') : null}
             </p>
           </>
         ) : (
           <p className="mt-0.5 text-sm font-bold text-[var(--text-muted)]">
             {archived
-              ? L(i18n.language, 'Desativado / Vago', 'Inactive / Vacant', 'Inactif / Vacant')
-              : L(i18n.language, 'Cinturão Vago', 'Vacant', 'Ceinture vacante')}
+              ? L(i18n.language, 'Desativado / Vago', 'Inactive / Vacant', 'Inactif / Vacant', 'Desactivado / Vacante')
+              : L(i18n.language, 'Cinturão Vago', 'Vacant', 'Ceinture vacante', 'Cinturón vacante')}
           </p>
         )}
         {interim ? (
           <button type="button" onClick={() => onOpen(interim.fighter)} className="block max-w-full truncate text-left text-xs text-[var(--text-muted)] underline decoration-2 underline-offset-2">
-            {L(i18n.language, 'Interino', 'Interim', 'Intérimaire')}: {interim.fighter}
+            {L(i18n.language, 'Interino', 'Interim', 'Intérimaire', 'Interino')}: {interim.fighter}
           </button>
         ) : null}
       </div>
