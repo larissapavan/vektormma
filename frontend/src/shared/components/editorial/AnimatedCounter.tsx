@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useInView } from 'framer-motion'
+import { useInView, useReducedMotion } from 'framer-motion'
 
 interface AnimatedCounterProps {
   value: number
@@ -10,6 +10,11 @@ interface AnimatedCounterProps {
   className?: string
 }
 
+/**
+ * Counts up to `value` once it scrolls into view. Screen readers get the final number right away (the counting text is
+ * hidden from them), people who ask for less motion see it without the count, and a changed `value` (the figure arriving
+ * from the API) continues from what is on screen instead of restarting at zero.
+ */
 export function AnimatedCounter({
   value,
   decimals = 0,
@@ -20,41 +25,56 @@ export function AnimatedCounter({
 }: AnimatedCounterProps) {
   const [displayValue, setDisplayValue] = useState(0)
   const ref = useRef<HTMLSpanElement>(null)
+  const shown = useRef(0)
   const isInView = useInView(ref, { once: true, margin: '-40px' })
+  const reduceMotion = useReducedMotion()
 
   useEffect(() => {
     if (!isInView) return
+    if (reduceMotion) {
+      shown.current = value
+      setDisplayValue(value)
+      return
+    }
 
+    const from = shown.current
     let startTime: number | null = null
     let animationFrame: number
 
     const step = (timestamp: number) => {
-      if (!startTime) startTime = timestamp
+      if (startTime === null) startTime = timestamp
       const progress = Math.min((timestamp - startTime) / (duration * 1000), 1)
       // Ease out cubic
       const easeProgress = 1 - Math.pow(1 - progress, 3)
-      const current = easeProgress * value
-
-      setDisplayValue(current)
+      shown.current = from + (value - from) * easeProgress
+      setDisplayValue(shown.current)
 
       if (progress < 1) {
         animationFrame = requestAnimationFrame(step)
       } else {
+        shown.current = value
         setDisplayValue(value)
       }
     }
 
     animationFrame = requestAnimationFrame(step)
     return () => cancelAnimationFrame(animationFrame)
-  }, [isInView, value, duration])
+  }, [isInView, value, duration, reduceMotion])
 
-  const formatted = decimals > 0 ? displayValue.toFixed(decimals) : Math.round(displayValue).toString()
+  const format = (n: number) => (decimals > 0 ? n.toFixed(decimals) : Math.round(n).toString())
 
   return (
     <span ref={ref} className={`tabular-nums ${className}`}>
-      {prefix}
-      {formatted}
-      {suffix}
+      <span className="sr-only">
+        {prefix}
+        {format(value)}
+        {suffix}
+      </span>
+      <span aria-hidden="true">
+        {prefix}
+        {format(displayValue)}
+        {suffix}
+      </span>
     </span>
   )
 }

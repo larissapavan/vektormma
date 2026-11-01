@@ -1,6 +1,6 @@
 # UFC Historical Fight Dataset (1993–2026)
 
-Every UFC event, fight and fighter from the first card in November 1993 through October 2026, plus current rankings, title reigns and upcoming cards. It is the data behind [Fight Intelligence](https://fight-intelligence.vercel.app/), a UFC analytics and fight-prediction site.
+Every UFC event, fight and fighter from the first card in November 1993 through October 2026, plus current rankings, title reigns and upcoming cards. It is the data behind [Vektor MMA](https://www.vektormma.com/), a UFC analytics and fight-prediction site.
 
 - **Events:** 794, from 1993-11-12 to 2026-10-10
 - **Fights:** about 8,900
@@ -69,4 +69,4 @@ This is an independent project, not affiliated with or endorsed by the UFC, Zuff
 
 ## Author
 
-Made by Larissa Pavan · [GitHub](https://github.com/larissapavan) · [Fight Intelligence](https://fight-intelligence.vercel.app/)
+Made by Larissa Pavan · [GitHub](https://github.com/larissapavan) · [Vektor MMA](https://www.vektormma.com/)

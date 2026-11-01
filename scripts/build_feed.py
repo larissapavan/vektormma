@@ -22,7 +22,7 @@ if __package__ in (None, ""):
 
 from backend.app.services.track_record_service import load_log
 
-SITE = "https://fight-intelligence.vercel.app"
+SITE = "https://www.vektormma.com"
 OUTPUT_PATH = Path(__file__).resolve().parent.parent / "frontend" / "public" / "feed.xml"
 ITEM_LIMIT = 20
 ATOM = "http://www.w3.org/2005/Atom"
@@ -77,7 +77,7 @@ def build_feed(log: pd.DataFrame, now: datetime | None = None) -> bytes:
     ET.register_namespace("atom", ATOM)
     rss = ET.Element("rss", version="2.0")
     channel = ET.SubElement(rss, "channel")
-    ET.SubElement(channel, "title").text = "Fight Intelligence: picks and results"
+    ET.SubElement(channel, "title").text = "Vektor MMA: picks and results"
     ET.SubElement(channel, "link").text = SITE
     ET.SubElement(channel, "description").text = (
         "The model's pick for every announced UFC fight, saved before the card, and how it did once the results were in. "
