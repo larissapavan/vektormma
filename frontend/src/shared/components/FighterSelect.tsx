@@ -8,6 +8,7 @@ import { FighterAvatar } from './FighterAvatar'
 import { getFighterImageUrl, normalizeFighterName, useFighterImages } from '../hooks/useFighterImages'
 import type { FighterProfile, Opponent } from '../types/api'
 import { L } from '../../i18n/lang'
+import { photoRightsText, usePhotoCredit } from '../hooks/usePhotoCredit'
 import { getDivisionName } from '../data/divisions'
 import { translateStance } from '../data/fightLabels'
 
@@ -420,6 +421,8 @@ function PickerAvatar({
   imageUrl?: string | null
   large?: boolean
 }) {
+  const { i18n } = useTranslation()
+  const credit = usePhotoCredit(imageUrl)
   const imageKey = `${fighter?.name ?? ''}:${imageUrl ?? ''}`
   const [imageState, setImageState] = useState({ key: '', failed: false, loaded: false })
   const failed = imageState.key === imageKey && imageState.failed
@@ -429,7 +432,7 @@ function PickerAvatar({
   const toneClass = corner === 'red' ? 'from-[#C8102E]/30' : 'from-[#2F5FA8]/30'
 
   return (
-    <span className={`relative grid shrink-0 place-items-center overflow-hidden rounded-2xl border border-[var(--line-soft)] bg-gradient-to-br ${toneClass} to-[var(--avatar-bg)] ${sizeClass}`}>
+    <span title={credit ? photoRightsText(credit, i18n.language) : undefined} className={`relative grid shrink-0 place-items-center overflow-hidden rounded-2xl border border-[var(--line-soft)] bg-gradient-to-br ${toneClass} to-[var(--avatar-bg)] ${sizeClass}`}>
       {imgUrl && !failed ? (
         <img
           src={imgUrl}

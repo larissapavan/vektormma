@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Response
 
 from backend.app.dependencies import PredictionServiceGetter, get_prediction_service
 from backend.app.schemas.data_info import DataInfoResponse
+from backend.app.schemas.fighters import PhotoCredits
 from backend.app.schemas.model_info import HealthResponse, ModelInfoResponse
 from backend.app.services.catalog_service import (
     get_latest_fight_date,
@@ -11,6 +12,7 @@ from backend.app.services.catalog_service import (
     list_fighters,
 )
 from backend.app.services.data_info_service import get_data_info
+from backend.app.services.photo_credit_service import photo_credits
 from backend.app.services.prediction_service import PredictionService
 from backend.app.utils.constants import SYSTEM_TAGLINE
 
@@ -59,6 +61,12 @@ def build_meta_router(
         if service is None:
             raise HTTPException(status_code=503, detail="Prediction service not initialized")
         return ModelInfoResponse(**service.model_info())
+
+    @router.get("/photo-credits", response_model=PhotoCredits)
+    def photo_credit_list(response: Response) -> PhotoCredits:
+        """Which stored photos belong to a third party and must carry a credit line."""
+        response.headers["Cache-Control"] = "public, max-age=3600"
+        return PhotoCredits(credits=photo_credits())
 
     @router.get("/data-info", response_model=DataInfoResponse)
     def data_info() -> DataInfoResponse:

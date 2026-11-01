@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+
+import { photoRightsText, usePhotoCredit } from '../hooks/usePhotoCredit'
 
 type FighterAvatarProps = {
   name: string
@@ -10,7 +13,9 @@ type FighterAvatarProps = {
 
 /** Square headshot thumbnail with an initials fallback on a dark background. */
 export function FighterAvatar({ name, imageUrl, className = 'h-14 w-14', highlight = false }: FighterAvatarProps) {
+  const { i18n } = useTranslation()
   const [failedUrl, setFailedUrl] = useState<string | null>(null)
+  const credit = usePhotoCredit(imageUrl)
   const showImage = Boolean(imageUrl) && failedUrl !== imageUrl
   const initials = name
     .split(/\s+/)
@@ -21,6 +26,7 @@ export function FighterAvatar({ name, imageUrl, className = 'h-14 w-14', highlig
 
   return (
     <span
+      title={credit && imageUrl && failedUrl !== imageUrl ? photoRightsText(credit, i18n.language) : undefined}
       className={`relative grid ${className} shrink-0 place-items-center overflow-hidden rounded-lg border-2 bg-[var(--avatar-bg)] ${
         highlight
           ? 'border-[#F2C230] shadow-[2px_2px_0_#0E0E0E]'

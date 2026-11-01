@@ -47,6 +47,11 @@ export const getFighters = async () => {
   return response.data
 }
 
+export const getPhotoCredits = async () => {
+  const response = await api.get<{ credits: Record<string, string[]> }>('/photo-credits')
+  return response.data
+}
+
 export const getEvents = async () => {
   const response = await api.get<EventSummary[]>('/events')
   return response.data

@@ -43,6 +43,7 @@ import { formatPercent } from '../shared/data/fightLabels'
 import { isKnownActive, isKnownRetired } from '../shared/data/fighterStatusOverrides'
 import { useFighters } from '../shared/hooks/useFighters'
 import { getFighterImageUrl, useFighterImages, type FighterImageRecord } from '../shared/hooks/useFighterImages'
+import { photoRightsText, usePhotoCredit } from '../shared/hooks/usePhotoCredit'
 import type { FighterProfile } from '../shared/types/api'
 
 type UfcStatus = 'active' | 'former' | 'never'
@@ -806,6 +807,8 @@ function FighterPortrait({
   imageUrl?: string
   tone: DivisionGroup['tone']
 }) {
+  const { i18n } = useTranslation()
+  const credit = usePhotoCredit(imageUrl)
   const imageKey = `${fighter.name}:${imageUrl ?? ''}`
   const [imageState, setImageState] = useState({ key: '', failed: false, loaded: false })
   const imageFailed = imageState.key === imageKey && imageState.failed
@@ -826,7 +829,7 @@ function FighterPortrait({
   const showImage = Boolean(imageUrl && !imageFailed)
 
   return (
-    <div className={`relative h-[86px] w-[70px] overflow-hidden rounded-2xl border max-sm:h-[118px] max-sm:w-24 border-[var(--line-soft)] bg-gradient-to-br ${toneClass}`}>
+    <div title={credit ? photoRightsText(credit, i18n.language) : undefined} className={`relative h-[86px] w-[70px] overflow-hidden rounded-2xl border max-sm:h-[118px] max-sm:w-24 border-[var(--line-soft)] bg-gradient-to-br ${toneClass}`}>
       {showImage ? (
         <img
           src={imageUrl}

@@ -15,6 +15,7 @@ import { useFighters } from '../hooks/useFighters'
 import { useUpcomingPicks } from '../hooks/useUpcomingPicks'
 import { getFighterPerformance } from '../services/api'
 import type { FighterPerformance, FightRecord, UpcomingBout } from '../types/api'
+import { PhotoCredit } from './PhotoCredit'
 
 
 function resolveFightDivision(fight: FightRecord, fallbackDivision?: string | null): string | null {
@@ -400,6 +401,8 @@ export function FighterProfileModal({
               <div className="absolute inset-0 bg-gradient-to-t from-[#08090C] via-[#08090C]/50 to-transparent" />
               <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-transparent via-[#08090C]/25 to-[#08090C]" />
             </div>
+
+            <PhotoCredit imageUrl={imageUrl} className="left-2 top-4" />
 
             {/* Tipografia Display Monumental, Badges Oficiais e Assinatura */}
             <div className="relative z-10 space-y-2.5 pb-1">

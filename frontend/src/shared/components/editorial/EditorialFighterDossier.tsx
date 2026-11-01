@@ -23,6 +23,7 @@ import { getFighterImageUrl, useFighterImages } from '../../hooks/useFighterImag
 import { useFighters } from '../../hooks/useFighters'
 import { getFighterPerformance, predictFight } from '../../services/api'
 import type { FighterPerformance, PredictionResponse } from '../../types/api'
+import { PhotoCredit } from '../PhotoCredit'
 
 interface EditorialFighterDossierProps {
   initialFighterName: string
@@ -443,6 +444,7 @@ export function EditorialFighterDossier({
                 {/* Visual Halo / Glow */}
                 <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#c8102e]/30 via-transparent to-[#f59e0b]/20 blur-2xl opacity-60" />
 
+                <PhotoCredit imageUrl={primaryImageUrl} className="right-0 bottom-6" />
                 {primaryImageUrl ? (
                   <img
                     src={primaryImageUrl}

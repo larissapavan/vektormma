@@ -70,3 +70,9 @@ class FighterSummary(BaseModel):
     elo_rank: int | None = None
     next_fight: UpcomingBout | None = None
     upcoming_fights: list[UpcomingBout] = []
+
+
+class PhotoCredits(BaseModel):
+    """Credit line (for example "ESPN") -> the photo addresses it goes on, without the ?v= version."""
+
+    credits: dict[str, list[str]]

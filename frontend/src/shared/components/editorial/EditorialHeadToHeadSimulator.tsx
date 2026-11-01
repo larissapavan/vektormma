@@ -15,6 +15,7 @@ import { getDivisionName } from '../../data/divisions'
 import { getFighterImageUrl, useFighterImages } from '../../hooks/useFighterImages'
 import { useFighters } from '../../hooks/useFighters'
 import { usePrediction } from '../../hooks/usePrediction'
+import { PhotoCredit } from '../PhotoCredit'
 
 interface EditorialHeadToHeadSimulatorProps {
   initialFighterA?: string
@@ -177,6 +178,7 @@ export function EditorialHeadToHeadSimulator({
 
           {/* Cutout Hero Image */}
           <div className="relative h-44 w-44 sm:h-52 sm:w-52 overflow-hidden rounded-2xl border border-[var(--border-subtle)] dark:border-white/10 bg-gradient-to-t from-[var(--bg-surface-hover)] to-transparent dark:from-black/80 dark:via-white/5 p-2">
+            <PhotoCredit imageUrl={imgA} className="left-1 top-2" />
             {imgA ? (
               <img
                 src={imgA}
@@ -274,6 +276,7 @@ export function EditorialHeadToHeadSimulator({
 
           {/* Cutout Hero Image */}
           <div className="relative h-44 w-44 sm:h-52 sm:w-52 overflow-hidden rounded-2xl border border-[var(--border-subtle)] dark:border-white/10 bg-gradient-to-t from-[var(--bg-surface-hover)] to-transparent dark:from-black/80 dark:via-white/5 p-2">
+            <PhotoCredit imageUrl={imgB} className="left-1 top-2" />
             {imgB ? (
               <img
                 src={imgB}
