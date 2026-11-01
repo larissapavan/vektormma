@@ -50,6 +50,7 @@ describe('PhotoCredit', () => {
     expect([photoCreditText('ESPN', 'pt-BR'), photoCreditText('ESPN', 'en-US'), photoCreditText('ESPN', 'fr-FR'), photoCreditText('ESPN', 'es-419')]).toEqual([
       'Foto: ESPN', 'Photo: ESPN', 'Photo : ESPN', 'Foto: ESPN',
     ])
+    expect(photoCreditText('UFC', 'pt-BR')).toBe('Foto: UFC')
     expect(photoRightsText('ESPN', 'fr-FR')).toBe('Image © ESPN. Tous droits réservés.')
     expect(photoRightsText('ESPN', 'es-419')).toBe('Imagen © ESPN. Todos los derechos reservados.')
   })

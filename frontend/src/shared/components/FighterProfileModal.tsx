@@ -16,6 +16,7 @@ import { useUpcomingPicks } from '../hooks/useUpcomingPicks'
 import { getFighterPerformance } from '../services/api'
 import type { FighterPerformance, FightRecord, UpcomingBout } from '../types/api'
 import { PhotoCredit } from './PhotoCredit'
+import { SeasonTimeline, type TimelineEra } from './SeasonTimeline'
 
 
 function resolveFightDivision(fight: FightRecord, fallbackDivision?: string | null): string | null {
@@ -41,16 +42,6 @@ function resolveFightDivision(fight: FightRecord, fallbackDivision?: string | nu
     if (raw.includes('heavy') || raw.includes('cruiser')) return 'Heavyweight'
   }
   return fallbackDivision || null
-}
-
-interface TimelineEra {
-  year: number
-  label: string
-  milestone?: string
-  fights: FightRecord[]
-  wins: number
-  losses: number
-  hasTitleFight: boolean
 }
 
 export function FighterProfileModal({
@@ -111,7 +102,6 @@ export function FighterProfileModal({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedEra, setSelectedEra] = useState<TimelineEra | null>(null)
-  const [hoveredEra, setHoveredEra] = useState<TimelineEra | null>(null)
 
   const getUpcomingPick = useUpcomingPicks()
 
@@ -818,7 +808,7 @@ export function FighterProfileModal({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.98 }}
               transition={{ duration: 0.22, ease: 'easeOut' }}
-              className="absolute bottom-[68px] sm:bottom-[78px] left-2 right-2 sm:left-6 sm:right-6 lg:left-auto lg:right-8 lg:w-[620px] z-40 rounded-2xl border border-white/15 bg-[#0C0D14]/98 p-3 sm:p-5 shadow-[0_25px_70px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col max-h-[75vh] sm:max-h-[440px]"
+              className="absolute bottom-[150px] sm:bottom-[166px] left-2 right-2 sm:left-6 sm:right-6 lg:left-auto lg:right-8 lg:w-[620px] z-40 rounded-2xl border border-white/15 bg-[#0C0D14]/98 p-3 sm:p-5 shadow-[0_25px_70px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col max-h-[calc(100%_-_170px)] sm:max-h-[min(440px,calc(100%_-_186px))]"
             >
               {/* Top Bar: Ano, Balanço, Milestones e Navegação */}
               <div className="flex items-center justify-between border-b border-white/10 pb-2.5 sm:pb-3 mb-2.5 sm:mb-3 shrink-0 gap-2">
@@ -1017,139 +1007,12 @@ export function FighterProfileModal({
               {L(i18n.language, 'Sem histórico de temporadas registrado.', 'No seasonal career history recorded.', 'Aucun historique de saisons enregistré.', 'No hay historial de temporadas registrado.')}
             </p>
           ) : (
-            <div className="relative flex items-center gap-8 sm:gap-12 overflow-x-auto no-scrollbar py-2">
-              {/* Linha horizontal contínua de fundo */}
-              <div className="absolute top-1/2 left-0 right-0 h-px bg-white/10 -translate-y-1/2 pointer-events-none" />
-
-              {timelineEras.map((era) => {
-                const isHovered = hoveredEra?.year === era.year
-                const isSelected = selectedEra?.year === era.year
-                const hasTitle = era.hasTitleFight
-                const allWins = era.wins > 0 && era.losses === 0
-
-                return (
-                  <div
-                    key={era.year}
-                    className="relative z-10 flex flex-col items-center cursor-pointer group shrink-0"
-                    onMouseEnter={() => setHoveredEra(era)}
-                    onMouseLeave={() => setHoveredEra(null)}
-                    onClick={() => setSelectedEra((prev) => (prev?.year === era.year ? null : era))}
-                  >
-                    {/* Tooltip flutuante sutil ao passar o mouse */}
-                    <AnimatePresence>
-                      {isHovered && (
-                        <motion.div
-                          className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-64 sm:w-72 rounded-xl border border-white/15 bg-[#0C0D14]/95 p-3.5 shadow-2xl backdrop-blur-xl z-50 pointer-events-auto text-left"
-                          initial={{ opacity: 0, y: 6, scale: 0.96 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 4, scale: 0.96 }}
-                          transition={{ duration: 0.15 }}
-                        >
-                          <div className="flex items-center justify-between border-b border-white/10 pb-2 mb-2">
-                            <span className="font-display font-extrabold text-sm text-white">
-                              {era.year} • {era.fights.length} {era.fights.length === 1 ? L(i18n.language, 'Luta', 'Bout', 'Combat', 'Pelea') : L(i18n.language, 'Lutas', 'Bouts', 'Combats', 'Peleas')}
-                            </span>
-                            <span className="font-mono text-xs text-neutral-300 font-bold">
-                              {era.wins}{L(i18n.language, 'V', 'W', 'V', 'V')} - {era.losses}{L(i18n.language, 'D', 'L', 'D', 'D')}
-                            </span>
-                          </div>
-
-                          {era.milestone && (
-                            <div className="mb-2 inline-flex items-center gap-1 rounded bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 font-mono text-[10px] font-bold text-amber-400 uppercase tracking-wider">
-                              <Trophy className="h-3 w-3" />
-                              <span>{era.milestone}</span>
-                            </div>
-                          )}
-
-                          <div className="space-y-1.5 max-h-40 overflow-y-auto no-scrollbar">
-                            {era.fights.slice(0, 5).map((fight, idx) => {
-                              const isWin = fight.result === 'win'
-                              return (
-                                <div key={idx} className="flex items-center justify-between text-[11px] gap-2">
-                                  <div className="flex items-center gap-1.5 min-w-0">
-                                    <span
-                                      className={`h-4 w-4 shrink-0 rounded flex items-center justify-center font-mono font-bold text-[9px] ${
-                                        isWin ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'
-                                      }`}
-                                    >
-                                      {isWin ? L(i18n.language, 'V', 'W', 'V', 'V') : L(i18n.language, 'D', 'L', 'D', 'D')}
-                                    </span>
-                                    <button
-                                      type="button"
-                                      onClick={(e) => {
-                                        e.stopPropagation()
-                                        onSelectFighter(fight.opponent)
-                                      }}
-                                      className="truncate text-neutral-200 font-medium hover:text-white hover:underline transition cursor-pointer text-left"
-                                      title={L(i18n.language, `Ver perfil de ${fight.opponent}`, `View profile of ${fight.opponent}`, `Voir le profil de ${fight.opponent}`, `Ver el perfil de ${fight.opponent}`)}
-                                    >
-                                      {fight.opponent}
-                                    </button>
-                                  </div>
-                                  <span className="font-mono text-[10px] text-neutral-400 shrink-0">
-                                    {(() => {
-                                      const m = (fight.method || '').toLowerCase()
-                                      if (m.includes('sub')) return L(i18n.language, 'FINALIZ.', 'SUB', 'SOUM.', 'SUM.')
-                                      if (m.includes('ko') || m.includes('tko')) return 'KO/TKO'
-                                      return L(i18n.language, 'DEC', 'DEC', 'DÉC', 'DEC')
-                                    })()}
-                                  </span>
-                                </div>
-                              )
-                            })}
-                            {era.fights.length > 5 && (
-                              <p className="font-mono text-[10px] text-neutral-400 text-center pt-1">
-                                +{era.fights.length - 5} {L(i18n.language, 'outros combates', 'more bouts', 'autres combats', 'peleas más')}
-                              </p>
-                            )}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    {/* Indicador de ano selecionado */}
-                    {isSelected && (
-                      <span className="absolute -top-3.5 text-amber-400 text-[10px] animate-bounce pointer-events-none">
-                        ▲
-                      </span>
-                    )}
-
-                    {/* Ano em destaque */}
-                    <span
-                      className={`font-display text-sm sm:text-base font-bold transition-all duration-200 ${
-                        isSelected
-                          ? 'text-amber-400 scale-125 font-black drop-shadow-[0_0_10px_rgba(251,191,36,0.6)]'
-                          : isHovered
-                            ? 'text-white scale-110'
-                            : hasTitle
-                              ? 'text-amber-400'
-                              : 'text-neutral-400 group-hover:text-white'
-                      }`}
-                    >
-                      {era.year}
-                    </span>
-
-                    {/* Ponto / Nó na régua */}
-                    <div
-                      className={`my-1.5 h-2.5 w-2.5 rounded-full transition-all duration-200 ${
-                        isSelected
-                          ? 'bg-amber-400 ring-4 ring-amber-400/50 scale-150 shadow-[0_0_12px_rgba(251,191,36,0.9)]'
-                          : hasTitle
-                            ? 'bg-amber-400 ring-4 ring-amber-400/20 scale-125'
-                            : allWins
-                              ? 'bg-emerald-400 ring-2 ring-emerald-400/20'
-                              : 'bg-white/30 group-hover:bg-white group-hover:scale-125'
-                      }`}
-                    />
-
-                    {/* Marcador de Era / Marco Histórico */}
-                    <span className="font-mono text-[9px] sm:text-[10px] text-amber-400/90 font-semibold tracking-tight whitespace-nowrap min-h-[14px]">
-                      {era.milestone ? `(${era.milestone})` : ''}
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
+            <SeasonTimeline
+              eras={timelineEras}
+              selectedYear={selectedEra?.year ?? null}
+              lang={i18n.language}
+              onSelect={(era) => setSelectedEra((prev) => (prev?.year === era.year ? null : era))}
+            />
           )}
         </div>
       </motion.section>

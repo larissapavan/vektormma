@@ -406,7 +406,7 @@ export const routes: Record<string, unknown> = {
 }
 
 /** Look a URL up in the fake API; unknown fighters reuse the shapes above. */
-routes['/photo-credits'] = { credits: { ESPN: ['/fighter-photos/alpha-one.webp'] } }
+routes['/photo-credits'] = { credits: { ESPN: ['/fighter-photos/alpha-one.webp'], UFC: ['/fighter-photos/beta-two-champion.webp'] } }
 
 export function respond(rawUrl: string): unknown {
   const url = decodeURIComponent(rawUrl).replace(/^https?:\/\/[^/]+/, '').split('?')[0]
