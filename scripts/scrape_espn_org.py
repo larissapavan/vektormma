@@ -17,12 +17,19 @@ files this script wrote and must run after it: running this script again rewrite
 Output (data/raw/<org>/), the same three files every non-UFC organization has (see backend/app/services/org_service.py):
     fights.csv, fighters.csv, rankings.csv
 
-The first run of a league makes thousands of calls; --cache-dir keeps every answer so an interrupted run resumes.
+The first run of a league makes thousands of calls; --cache-dir keeps every answer so an interrupted run resumes. The daily
+refresh does not repeat that: `--recent-days N` reads only the last N days and the cards still to come, replaces those
+events in the files and leaves every older row as it was.
+
+RIZIN and KSW are frozen: ESPN has nothing after 2024 for them and the later events were added from Sherdog to the same files
+(scripts/scrape_sherdog_org.py), so `all` and the daily refresh skip them, and naming one asks for --rewrite-frozen because
+a full run would drop what Sherdog added.
 
 Usage (from the repo root):
     python -m scripts.scrape_espn_org lfa --dry-run --cache-dir .espn-cache
     python -m scripts.scrape_espn_org lfa --cache-dir .espn-cache
     python -m scripts.scrape_espn_org all --cache-dir .espn-cache --photos
+    python -m scripts.scrape_espn_org all --recent-days 45           # the daily refresh: LFA and Cage Warriors
 """
 
 from __future__ import annotations
@@ -49,7 +56,7 @@ from scripts.scrape_bellator import (
     parse_bout_method,
     propagate_weight_classes,
 )
-from scripts.scrape_espn import ascii_name, clean_clock, clean_round, map_weight_class, name_key, save_csv
+from scripts.scrape_espn import ascii_name, clean_clock, clean_round, load_csv, map_weight_class, name_key, save_csv
 from scripts.scrape_pfl import FIGHT_FIELDS, FIGHTER_FIELDS, RANKING_FIELDS
 from src.ufc_predictor.config import BASE_DIR, RAW_DATA_DIR
 
@@ -82,11 +89,13 @@ class League:
     default_americas: bool = False
     # Text ESPN puts in front of the event name that adds nothing ("Rizin FF: Rizin Fighting Federation 40").
     name_prefix: str = ""
+    # ESPN has nothing recent and another source continued the files (see the module docstring).
+    frozen: bool = False
 
 
 LEAGUES: dict[str, League] = {
-    "rizin": League("rizin", "rizin", 2015, name_prefix="Rizin FF: "),
-    "ksw": League("ksw", "ksw", 2004),
+    "rizin": League("rizin", "rizin", 2015, name_prefix="Rizin FF: ", frozen=True),
+    "ksw": League("ksw", "ksw", 2004, frozen=True),
     "lfa": League("lfa", "lfa", 2017, default_americas=True),
     "cage-warriors": League("cage-warriors", "cage-warriors", 2005),
 }
@@ -313,6 +322,104 @@ def collect(league: League, fetcher: Fetcher, *, dry_run: bool, photos: bool, ph
     return 0
 
 
+RECENT_DAYS = 45
+
+
+def refresh_rows(league: League, events: list[dict], methods: dict, bios: dict, fighters: dict, stored_fights: list[dict], stored_fighters: list[dict], today: date) -> tuple[list[dict], list[dict], dict]:
+    """The files' rows after the events read are put in place of the stored rows of the same events.
+
+    Every other stored row is left as it was. Only the fighters on the refreshed cards are rebuilt, and one whose ESPN profile
+    could not be read keeps its stored row (only its dates move), so a bad answer never blanks a good profile."""
+    new_fights = fight_rows(events, methods, league)
+    ids_by_name = {name_key(info["name"]): athlete_id for athlete_id, info in fighters.items()}
+    fill_weight_classes(new_fights, bios, ids_by_name)
+    slugs = {f"{league.id}-{event['id']}" for event in events}
+    base = [row for row in stored_fights if row["event_slug"] not in slugs]
+    # The division a fighter usually fights at is counted over the history, but only the new bouts are filled with it.
+    propagate_weight_classes([*new_fights, *[row for row in base if row["weight_class"]]])
+    combined = sorted([*new_fights, *base], key=lambda row: row["event_date"], reverse=True)  # stable: each card keeps its order
+
+    fought = [row for row in combined if row["outcome"]]  # a card still to come is not a fight the fighter has had
+    rebuilt = {name_key(row["name"]): (athlete_id, row) for athlete_id, row in zip(fighters, fighter_rows(fighters, bios, fought, today.isoformat()))}
+    existing = {name_key(row["name"]): row for row in stored_fighters}
+    taken = {row["slug"] for row in stored_fighters}
+    result = [dict(row) for row in stored_fighters]
+    positions = {name_key(row["name"]): index for index, row in enumerate(result)}
+    dates: dict[str, list[str]] = {}
+    for row in fought:
+        for side in ("fighter_1", "fighter_2"):
+            dates.setdefault(name_key(row[side]), []).append(row["event_date"])
+    report = {"new": 0, "updated": 0, "kept": 0}
+    for key, (athlete_id, row) in rebuilt.items():
+        old = existing.get(key)
+        if old is None:
+            row["slug"] = row["slug"] if row["slug"] not in taken else f"{row['slug']}-{athlete_id}"
+            taken.add(row["slug"])
+            result.append(row)
+            report["new"] += 1
+        elif bios.get(athlete_id):
+            row["slug"], row["image_url"] = old["slug"], old["image_url"] or row["image_url"]
+            result[positions[key]] = row
+            report["updated"] += 1
+        else:
+            own = sorted(dates.get(key, []))
+            if own:
+                result[positions[key]].update(first_fight_date=own[0], last_fight_date=own[-1])
+            report["kept"] += 1
+    result.sort(key=lambda row: ascii_name(row["name"]).lower())
+    return combined, result, report
+
+
+def collect_recent(league: League, fetcher: Fetcher, *, recent_days: int, dry_run: bool) -> int:
+    """The daily refresh: the events of the last `recent_days` days and the cards still to come, put in place of the stored ones."""
+    folder = RAW_DATA_DIR / league.id
+    if not (folder / "fights.csv").exists() or not (folder / "fighters.csv").exists():
+        print(f"[error] {league.id}: no files to refresh in {folder}; run it once in full first")
+        return 1
+    _, stored_fights = load_csv(folder / "fights.csv")
+    _, stored_fighters = load_csv(folder / "fighters.csv")
+    today = date.today()
+    cutoff = today - timedelta(days=recent_days)
+    events: list[dict] = []
+    for year in range(cutoff.year, today.year + 2):
+        events += [event for event in parse_events(fetcher.get(SCOREBOARD_URL.format(league=league.espn), {"dates": f"{year}0101-{year}1231", "limit": 500}), league) if event["day"] >= cutoff]
+    events.sort(key=lambda event: (event["day"], event["id"]), reverse=True)
+    if not events:
+        print(f"[info] {league.id}: no event since {cutoff} and none announced: nothing to update")
+        return 0
+    bouts = [(event, bout) for event in events for bout in event["bouts"]]
+    print(f"[info] {league.id}: {len(events)} events since {cutoff}, {len(bouts)} bouts")
+
+    def method_of(item: tuple[dict, dict]) -> tuple[str, tuple[str, str]]:
+        event, bout = item
+        if not bout["completed"]:
+            return bout["competition_id"], ("", "")
+        status = fetcher.get(f"{CORE_URL.format(league=league.espn)}/events/{event['id']}/competitions/{bout['competition_id']}/status?lang=en", optional=True)
+        return bout["competition_id"], parse_bout_method(status)
+
+    with ThreadPoolExecutor(max_workers=WORKERS) as pool:
+        methods = dict(pool.map(method_of, bouts))
+    fighters: dict[str, dict] = {}
+    for _, bout in bouts:
+        for fighter in bout["fighters"]:
+            fighters.setdefault(fighter["id"], fighter)
+    with ThreadPoolExecutor(max_workers=WORKERS) as pool:
+        bios = dict(zip(fighters, pool.map(lambda athlete_id: parse_athlete(fetcher.get(ATHLETE_URL.format(athlete_id=athlete_id), optional=True)), fighters)))
+    combined, people, report = refresh_rows(league, events, methods, bios, fighters, stored_fights, stored_fighters, today)
+    if len(combined) < len(stored_fights) * 0.98:
+        print(f"[error] {league.id}: the refresh would drop rows ({len(stored_fights)} -> {len(combined)}); files left untouched")
+        return 1
+    print(f"[info] {league.id}: bouts {len(stored_fights)} -> {len(combined)}, fighters {len(stored_fighters)} -> {len(people)} ({report['new']} new, {report['updated']} refreshed, {report['kept']} kept as they were: no profile answer)")
+    if dry_run:
+        print(f"[dry-run] {league.id}: nothing written")
+        return 0
+    if combined != stored_fights:
+        save_csv(folder / "fights.csv", FIGHT_FIELDS, combined)
+    if people != stored_fighters:
+        save_csv(folder / "fighters.csv", FIGHTER_FIELDS, people)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("league", choices=[*LEAGUES, "all"])
@@ -321,12 +428,25 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--limit", type=int, default=5000, help="max photos to download per league in one run")
     parser.add_argument("--delay", type=float, default=REQUEST_DELAY_SECONDS)
     parser.add_argument("--cache-dir", type=Path, help="keep every answer here so an interrupted run resumes")
+    parser.add_argument("--recent-days", type=int, nargs="?", const=RECENT_DAYS, help=f"the daily refresh: only the last N days (default {RECENT_DAYS}) and the cards to come")
+    parser.add_argument("--rewrite-frozen", action="store_true", help="allow a full run of RIZIN or KSW: drops what Sherdog added to their files")
     args = parser.parse_args(argv)
 
+    chosen = [league for league in LEAGUES.values() if not league.frozen] if args.league == "all" else [LEAGUES[args.league]]
+    if args.league != "all" and chosen[0].frozen:
+        if args.recent_days is not None:  # the daily refresh: nothing to read, Sherdog continues this one
+            print(f"[info] {args.league} is frozen (ESPN has nothing recent for it; Sherdog continues it): nothing to refresh here")
+            return 0
+        if not args.rewrite_frozen:
+            print(f"[error] {args.league} is frozen: a full run would drop what scripts/scrape_sherdog_org.py added. Use --rewrite-frozen if that is what you want")
+            return 1
     fetcher = Fetcher(args.delay, args.cache_dir)
     status = 0
-    for league in LEAGUES.values() if args.league == "all" else [LEAGUES[args.league]]:
-        status |= collect(league, fetcher, dry_run=args.dry_run, photos=args.photos, photo_limit=args.limit, delay=args.delay)
+    for league in chosen:
+        if args.recent_days is not None:
+            status |= collect_recent(league, fetcher, recent_days=args.recent_days, dry_run=args.dry_run)
+        else:
+            status |= collect(league, fetcher, dry_run=args.dry_run, photos=args.photos, photo_limit=args.limit, delay=args.delay)
     return status
 
 

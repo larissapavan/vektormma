@@ -23,6 +23,10 @@ What the site does NOT give, and what this script therefore leaves empty rather 
 Output (data/raw/oktagon/), the same three files every non-UFC organization has (see backend/app/services/org_service.py):
     fights.csv, fighters.csv, rankings.csv
 
+It is a daily job (about 150 pages, two minutes): the files are rebuilt from the site, but a day with no change leaves them
+byte for byte as they were (a fighter's `checked` date moves only when something about the fighter changed), and a read that
+would shrink the files by more than 2% is refused, so a site outage or redesign cannot wipe the history.
+
 Usage (from the repo root):
     python -m scripts.scrape_oktagon --dry-run --cache-dir .oktagon-cache
     python -m scripts.scrape_oktagon --cache-dir .oktagon-cache
@@ -46,7 +50,7 @@ import requests
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scripts.scrape_espn import ascii_name, map_weight_class, name_key, save_csv
+from scripts.scrape_espn import ascii_name, load_csv, map_weight_class, name_key, save_csv
 from scripts.scrape_pfl import FIGHT_FIELDS, FIGHTER_FIELDS, RANKING_FIELDS
 from src.ufc_predictor.config import RAW_DATA_DIR
 from src.ufc_predictor.countries import english_name
@@ -314,6 +318,17 @@ def fighter_rows(events: list[dict], fights: list[dict], today: date) -> list[di
     return rows
 
 
+def keep_checked(rows: list[dict], stored: list[dict]) -> list[dict]:
+    """The fighter rows, each one that is the same as the stored row (apart from the day it was checked) kept as stored."""
+    by_url = {row["profile_url"]: row for row in stored}
+    kept = []
+    for row in rows:
+        old = by_url.get(row["profile_url"])
+        same = old is not None and all(old.get(key, "") == str(value) for key, value in row.items() if key != "checked")
+        kept.append(old if same else row)
+    return kept
+
+
 # --------------------------------------------------------------------------- main
 
 
@@ -361,13 +376,23 @@ def main(argv: list[str] | None = None) -> int:
     if no_method:
         print(f"[warn] {len(no_method)} won bouts with no method on the site (left empty): {no_method[:3]}")
     print(f"[info] {len(fights)} bouts, {len(rows)} fighters, {sum(1 for f in fights if f['title_fight'])} title bouts, {sum(1 for f in fights if not f['outcome'])} bouts to come")
+    stored_fights = load_csv(OUTPUT_DIR / "fights.csv")[1] if (OUTPUT_DIR / "fights.csv").exists() else []
+    stored_fighters = load_csv(OUTPUT_DIR / "fighters.csv")[1] if (OUTPUT_DIR / "fighters.csv").exists() else []
+    if stored_fights and len(fights) < len(stored_fights) * 0.98:
+        print(f"[error] the read would shrink the files ({len(stored_fights)} -> {len(fights)} bouts); they were left untouched")
+        return 1
+    rows = keep_checked(rows, stored_fighters)
+    as_text = lambda items: [{key: str(value) for key, value in item.items()} for item in items]  # noqa: E731 - the stored rows are all text
     if args.dry_run:
         print("[dry-run] nothing written")
         return 0
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    save_csv(OUTPUT_DIR / "fights.csv", FIGHT_FIELDS, fights)
-    save_csv(OUTPUT_DIR / "fighters.csv", FIGHTER_FIELDS, rows)
-    save_csv(OUTPUT_DIR / "rankings.csv", RANKING_FIELDS, [])
+    if as_text(fights) != stored_fights:
+        save_csv(OUTPUT_DIR / "fights.csv", FIGHT_FIELDS, fights)
+    if as_text(rows) != stored_fighters:
+        save_csv(OUTPUT_DIR / "fighters.csv", FIGHTER_FIELDS, rows)
+    if not (OUTPUT_DIR / "rankings.csv").exists():
+        save_csv(OUTPUT_DIR / "rankings.csv", RANKING_FIELDS, [])
     return 0
 
 

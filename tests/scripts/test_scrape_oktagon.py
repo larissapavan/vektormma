@@ -209,3 +209,46 @@ def test_a_dry_run_writes_nothing_and_an_empty_sitemap_is_an_error(tmp_path, mon
     assert run(tmp_path, monkeypatch, {okt.SITEMAP_URL: "<urlset></urlset>"}) == 1
     assert run(tmp_path, monkeypatch, {okt.SITEMAP_URL: SITEMAP}) == 1  # events listed but none has a card
     assert not (tmp_path / "oktagon").exists()
+
+
+def run_main(tmp_path, monkeypatch, pages):
+    monkeypatch.setattr(okt, "OUTPUT_DIR", tmp_path / "oktagon")
+    monkeypatch.setattr(okt, "Fetcher", lambda delay, cache_dir: FakeFetcher(pages))
+    return okt.main([])
+
+
+def test_a_day_with_no_change_leaves_the_files_byte_for_byte_as_they_were(tmp_path, monkeypatch):
+    assert run_main(tmp_path, monkeypatch, pages_for_run()) == 0
+    folder = tmp_path / "oktagon"
+    # pretend the first run was long ago: every fighter was checked on an old day
+    text = (folder / "fighters.csv").read_text(encoding="utf-8")
+    old = text.replace(date.today().isoformat(), "2020-01-01")
+    assert old != text
+    (folder / "fighters.csv").write_text(old, encoding="utf-8", newline="")
+    before = {name: (folder / name).read_bytes() for name in ("fights.csv", "fighters.csv", "rankings.csv")}
+    assert run_main(tmp_path, monkeypatch, pages_for_run()) == 0
+    assert {name: (folder / name).read_bytes() for name in before} == before  # the same site: the same files, `checked` days included
+
+
+def test_only_the_fighter_who_changed_gets_a_new_checked_day(tmp_path, monkeypatch):
+    assert run_main(tmp_path, monkeypatch, pages_for_run()) == 0
+    folder = tmp_path / "oktagon"
+    (folder / "fighters.csv").write_text((folder / "fighters.csv").read_text(encoding="utf-8").replace(date.today().isoformat(), "2020-01-01"), encoding="utf-8", newline="")
+    changed = pages_for_run()
+    stronger = fighter("ana-one", "Ána", "One", wins=11)  # one more win on the site, on the newest card she is on
+    changed[okt.EVENT_URL.format(slug="oktagon-2")] = page(bout(stronger, CAL), slug="oktagon-2", start="2025-01-01T18:00:00.000Z")
+    assert run_main(tmp_path, monkeypatch, changed) == 0
+    rows = {r["name"]: r for r in read(folder / "fighters.csv")}
+    assert rows["Ana One"]["wins"] == "11" and rows["Ana One"]["checked"] == date.today().isoformat()
+    assert rows["Bia Two"]["checked"] == "2020-01-01" and rows["Cal Three"]["checked"] == "2020-01-01"
+
+
+def test_a_read_that_would_shrink_the_files_is_refused_and_leaves_them_alone(tmp_path, monkeypatch, capsys):
+    assert run_main(tmp_path, monkeypatch, pages_for_run()) == 0
+    folder = tmp_path / "oktagon"
+    before = {name: (folder / name).read_bytes() for name in ("fights.csv", "fighters.csv")}
+    pages = pages_for_run()
+    pages[okt.EVENT_URL.format(slug="oktagon-1")] = page(bout(ANA, BIA))  # the site now shows one bout where it showed two
+    pages.pop(okt.EVENT_URL.format(slug="oktagon-2"))  # and an event is gone
+    assert run_main(tmp_path, monkeypatch, pages) == 1
+    assert {name: (folder / name).read_bytes() for name in before} == before and "shrink" in capsys.readouterr().out

@@ -227,10 +227,14 @@ def test_a_dry_run_writes_nothing_and_no_events_is_an_error_that_leaves_the_file
 def test_the_command_line_takes_one_organization_or_all_and_fails_if_the_sitemaps_cannot_be_read(monkeypatch):
     ran = []
     monkeypatch.setattr(sd, "Fetcher", lambda delay, cache_dir, user_agent: FakeFetcher({url: "<urlset></urlset>" for url in sd.SITEMAPS}))
-    monkeypatch.setattr(sd, "collect", lambda org, fetcher, sitemaps, dry_run: ran.append(org.id) or 0)
-    assert sd.main(["invicta", "--dry-run"]) == 0 and ran == ["invicta"]
+    monkeypatch.setattr(sd, "collect", lambda org, fetcher, sitemaps, dry_run, recent_days=None: ran.append((org.id, recent_days)) or 0)
+    assert sd.main(["invicta", "--dry-run"]) == 0 and ran == [("invicta", None)]
     ran.clear()
-    assert sd.main(["all", "--dry-run"]) == 0 and ran == ["jungle-fight", "invicta"]
+    assert sd.main(["all", "--dry-run"]) == 0 and ran == [("jungle-fight", None), ("invicta", None)]
+    ran.clear()
+    assert sd.main(["daily", "--dry-run"]) == 0 and ran == [(org, sd.RECENT_DAYS) for org in ("jungle-fight", "invicta", "ksw", "rizin")]  # all four, the recent window
+    ran.clear()
+    assert sd.main(["ksw", "--recent-days", "10"]) == 0 and ran == [("ksw", 10)]
     monkeypatch.setattr(sd, "Fetcher", lambda delay, cache_dir, user_agent: FakeFetcher({}))
     assert sd.main(["all", "--dry-run"]) == 1
     with pytest.raises(SystemExit):
@@ -256,7 +260,8 @@ def espn_fight(slug, day, one, two, *, winner="", division="Lightweight", order=
 
 def espn_fighter(name, **values):
     row = {field: "" for field in FIGHTER_FIELDS}
-    row.update(name=name, slug=name.lower().replace(" ", "-"), profile_url=f"https://www.espn.com/mma/fighter/_/id/{name[:3]}", status="inactive", country="Poland", **values)
+    row.update(name=name, slug=name.lower().replace(" ", "-"), profile_url=f"https://www.espn.com/mma/fighter/_/id/{name[:3]}", status="inactive", country="Poland")
+    row.update(values)
     return row
 
 
@@ -389,3 +394,130 @@ def test_a_run_writes_the_combined_files_and_a_dry_run_writes_nothing(tmp_path, 
     assert len(read(folder / "fights.csv")) == 3 and len(read(folder / "fighters.csv")) == 6
     assert sd.collect_supplement(KSW, [], dry_run=False) == 1  # no event from the start day on: an error, files kept
     assert len(read(folder / "fights.csv")) == 3
+
+
+# --------------------------------------------------------------------------- the daily refresh
+
+
+def test_the_refresh_reads_the_recent_known_events_and_the_unknown_ones_created_after_them():
+    urls = [f"https://www.sherdog.com/events/KSW-{n}-X-{n}" for n in (100, 150, 160, 170, 180, 190)]
+    known = {"150": "2025-01-10", "160": "2026-09-01", "170": "2026-10-20", "180": "2027-01-01"}  # id -> day; 100 is pre-2025 and was never wanted
+    chosen = sd.select_recent(urls, known, date(2026, 11, 2), 45)
+    # 160 (two months ago) and 150 (long ago) are known and past the window: not read. 170 is recent and 180 is announced: read.
+    # 190 is unknown and newer than the oldest recent event: read. 100 is unknown but older: it is not an event the files want.
+    assert [sd.event_id(url) for url in chosen] == ["170", "180", "190"]
+
+
+def test_with_no_recent_event_in_the_files_the_refresh_still_catches_what_was_created_after_the_newest():
+    urls = [f"https://www.sherdog.com/events/Invicta-FC-{n}-X-{n}" for n in (10, 20, 30)]
+    chosen = sd.select_recent(urls, {"10": "2024-01-01", "20": "2025-05-16"}, date(2026, 11, 2), 45)  # a dormant organization
+    # Nothing is recent, so only an id newer than the newest known (20) is read: 30. The known events are past the window.
+    assert [sd.event_id(url) for url in chosen] == ["30"]
+
+
+def test_the_ids_of_the_events_the_script_added_come_from_the_slugs_and_never_from_espns():
+    rows = [{"event_slug": "ksw-sherdog-777", "event_date": "2025-03-08"}, {"event_slug": "ksw-600059074", "event_date": "2024-12-20"}]
+    assert sd.known_events(KSW, rows) == {"777": "2025-03-08"}
+    assert sd.known_events(JUNGLE, [{"event_slug": "jungle-fight-5", "event_date": "2024-03-16"}]) == {"5": "2024-03-16"}
+
+
+def test_an_incremental_supplement_replaces_only_the_events_read_and_keeps_every_other_row():
+    fights, fighters = base()
+    first = sd.supplement(KSW, [sd_event(row(1, CAL, DAN), day="2025-03-08", ident="777"), sd_event(row(1, EVA, FAY), day="2025-04-26", title="KSW 105", ident="888")], fights, fighters, TODAY)
+    corrected = sd_event(row(1, CAL, DAN, method="KO (Punches)"), day="2025-03-08", ident="777")  # the result of one card was corrected
+    combined, people, report = sd.supplement(KSW, [corrected], first[0], first[1], TODAY, incremental=True)
+    assert [r["event_slug"] for r in combined] == [r["event_slug"] for r in first[0]]  # the same cards in the same order
+    by_event = {r["event_slug"]: r for r in combined}
+    assert by_event["ksw-sherdog-777"]["method"] == "KO/TKO"  # replaced
+    assert by_event["ksw-sherdog-888"] == next(r for r in first[0] if r["event_slug"] == "ksw-sherdog-888")  # not read again: untouched
+    assert [r for r in combined if "sherdog" not in r["event_slug"]] == fights  # and neither is ESPN's
+    assert {p["name"] for p in people} == {p["name"] for p in first[1]} and report["new_people"] == 0
+
+
+def test_a_card_created_after_the_last_run_is_added_to_the_files_it_finds():
+    fights, fighters = base()
+    first = sd.supplement(KSW, [sd_event(row(1, CAL, DAN), day="2025-03-08", ident="777")], fights, fighters, TODAY)
+    newer = sd_event(row(1, EVA, FAY), day="2026-12-19", title="KSW 124", ident="999")
+    combined, people, report = sd.supplement(KSW, [newer], first[0], first[1], TODAY, incremental=True)
+    assert [r["event_slug"] for r in combined] == ["ksw-sherdog-999", "ksw-sherdog-777", "ksw-old", "ksw-women"]  # newest first, ESPN's rows last
+    assert {"Eva Five", "Fay Six"} <= {p["name"] for p in people} and report["new_bouts"] == 1
+
+
+def test_an_organization_built_from_sherdog_alone_refreshes_the_same_way(tmp_path, monkeypatch):
+    from scripts.scrape_espn import save_csv
+
+    monkeypatch.setattr(sd, "RAW_DATA_DIR", tmp_path)
+    folder = tmp_path / "jungle-fight"
+    folder.mkdir()
+    old = sd.parse_event(page(row(1, ANA, BIA), day="2024-01-01"), "https://www.sherdog.com/events/Jungle-Fight-1-A-1", JUNGLE)
+    fights = sd.fight_rows([old], JUNGLE)
+    save_csv(folder / "fights.csv", FIGHT_FIELDS, fights)
+    save_csv(folder / "fighters.csv", FIGHTER_FIELDS, sd.fighter_rows([old], fights, TODAY))
+    before = (folder / "fights.csv").read_bytes()
+    recent = sd.parse_event(page(row(1, CAL, DAN), day="2026-10-24"), "https://www.sherdog.com/events/Jungle-Fight-2-B-2", JUNGLE)
+    assert sd.collect_supplement(JUNGLE, [recent], dry_run=True, incremental=True) == 0 and (folder / "fights.csv").read_bytes() == before
+    assert sd.collect_supplement(JUNGLE, [recent], dry_run=False, incremental=True) == 0
+    rows = read(folder / "fights.csv")
+    assert [r["event_slug"] for r in rows] == ["jungle-fight-2", "jungle-fight-1"]  # the old card is still there, untouched
+    once = (folder / "fights.csv").read_bytes()
+    assert sd.collect_supplement(JUNGLE, [recent], dry_run=False, incremental=True) == 0 and (folder / "fights.csv").read_bytes() == once  # a second run changes nothing
+
+
+def seed_jungle(tmp_path, monkeypatch, rows=1):
+    from scripts.scrape_espn import save_csv
+
+    monkeypatch.setattr(sd, "RAW_DATA_DIR", tmp_path)
+    folder = tmp_path / "jungle-fight"
+    folder.mkdir()
+    old = sd.parse_event(page(*[row(n, ANA, BIA) for n in range(rows)], day="2024-01-01"), "https://www.sherdog.com/events/Jungle-Fight-1-A-1", JUNGLE)
+    fights = sd.fight_rows([old], JUNGLE)
+    save_csv(folder / "fights.csv", FIGHT_FIELDS, fights)
+    save_csv(folder / "fighters.csv", FIGHTER_FIELDS, sd.fighter_rows([old], fights, TODAY))
+    return folder
+
+
+def test_a_refresh_with_nothing_new_is_not_an_error(tmp_path, monkeypatch, capsys):
+    folder = seed_jungle(tmp_path, monkeypatch)
+    before = (folder / "fights.csv").read_bytes()
+    assert sd.collect_supplement(JUNGLE, [], dry_run=False, incremental=True) == 0 and "nothing new" in capsys.readouterr().out
+    assert (folder / "fights.csv").read_bytes() == before
+    # and when none of the pages the refresh asked for turns out to be an event of the organization
+    assert sd.collect(JUNGLE, FakeFetcher({}), [sitemap("Jungle-Fight-1-A-1")], dry_run=False, recent_days=45) == 0
+    assert (folder / "fights.csv").read_bytes() == before
+
+
+def test_a_refresh_without_the_files_asks_for_a_full_run_first(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(sd, "RAW_DATA_DIR", tmp_path)
+    assert sd.collect(JUNGLE, FakeFetcher({}), [sitemap("Jungle-Fight-1-A-1")], dry_run=False, recent_days=45) == 1
+    assert "run it once in full first" in capsys.readouterr().out and not (tmp_path / "jungle-fight").exists()
+
+
+def test_an_incremental_refresh_that_would_lose_rows_is_refused_and_leaves_the_files_alone(tmp_path, monkeypatch, capsys):
+    folder = seed_jungle(tmp_path, monkeypatch, rows=60)  # one card of 60 bouts
+    before = (folder / "fights.csv").read_bytes(), (folder / "fighters.csv").read_bytes()
+    shrunk = sd.parse_event(page(row(1, CAL, DAN), day="2024-01-01"), "https://www.sherdog.com/events/Jungle-Fight-1-A-1", JUNGLE)  # the site now shows one bout of it
+    assert sd.collect_supplement(JUNGLE, [shrunk], dry_run=False, incremental=True) == 1
+    assert ((folder / "fights.csv").read_bytes(), (folder / "fighters.csv").read_bytes()) == before and "would drop rows" in capsys.readouterr().out
+
+
+def test_two_fighters_with_one_name_stay_two_people_inside_sherdog_when_a_refresh_meets_them():
+    first_dan = ("Dan Four", 4, "win")
+    other_dan = ("Dan Four", 99, "loss")  # another person: another Sherdog profile, the same name
+    fights, fighters = base()
+    first = sd.supplement(KSW, [sd_event(row(1, first_dan, CAL), day="2025-03-08", ident="777")], fights, fighters, TODAY)
+    event = sd_event(row(1, other_dan, EVA), day="2025-09-20", title="KSW 110", ident="888")
+    combined, people, report = sd.supplement(KSW, [event], first[0], first[1], TODAY, incremental=True)
+    urls = {r["fighter_1_url"] for r in combined if "sherdog" in r["event_slug"] and r["fighter_1"] == "Dan Four"}
+    assert urls == {"https://www.sherdog.com/fighter/Dan-Four-4", "https://www.sherdog.com/fighter/Dan-Four-99"}  # not collapsed into one profile
+    assert sorted(p["profile_url"] for p in people if p["name"] == "Dan Four") == sorted(urls)
+    assert len({p["slug"] for p in people}) == len(people) and report["possible_same"] == []  # the slugs differ, and equal names are not "look-alikes"
+
+
+def test_a_name_the_files_have_from_another_source_is_still_matched_by_name():
+    fights, fighters = base()
+    event = sd_event(row(1, CAL, DAN))
+    fighters.append(espn_fighter("Cal Three"))  # ESPN's Cal Three
+    combined, people, _ = sd.supplement(KSW, [event], fights, fighters, TODAY)
+    [bout] = [r for r in combined if "sherdog" in r["event_slug"]]
+    assert bout["fighter_1_url"] == "https://www.espn.com/mma/fighter/_/id/Cal"  # Sherdog's Cal Three is ESPN's
+    assert [p["name"] for p in people].count("Cal Three") == 1  # one profile, not two
