@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ArrowDown, ArrowRight, Sparkles, Swords } from 'lucide-react'
+import { ArrowDown, ArrowRight, Swords } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
@@ -146,14 +146,14 @@ export function Landing() {
                       'EXPLORAR ORGANIZACIONES',
                     )}
                   </span>
-                  <ArrowDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-1" />
+                  <ArrowDown className="h-4 w-4 transition-transform duration-300 group-hover:translate-y-1" aria-hidden="true" />
                 </a>
 
+                {/* Third call: a text link, so the hero keeps one primary and one secondary button */}
                 <Link
                   to="/model"
-                  className="group inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)] hover:border-[#FF2E54]/40 dark:border-white/10 dark:bg-white/5 dark:text-neutral-300 dark:hover:bg-white/10 dark:hover:text-white px-4 py-2.5 font-mono text-xs uppercase tracking-widest transition-all duration-300 shadow-xs"
+                  className="group inline-flex min-h-11 items-center gap-1.5 rounded-sm px-1 font-mono text-xs font-semibold uppercase tracking-widest text-[var(--text-secondary)] underline decoration-[#FF2E54]/60 decoration-2 underline-offset-[6px] transition-colors duration-200 hover:text-[var(--text-primary)] hover:decoration-[#FF2E54] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF2E54] dark:text-neutral-300 dark:hover:text-white"
                 >
-                  <Sparkles className="h-3.5 w-3.5 text-[#FF2E54] transition-transform duration-300 group-hover:scale-110" />
                   <span>
                     {L(
                       i18n.language,
@@ -163,7 +163,7 @@ export function Landing() {
                       'VER EL MODELO PREDICTIVO',
                     )}
                   </span>
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
                 </Link>
               </div>
 
