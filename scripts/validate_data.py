@@ -30,7 +30,8 @@ MAX_CONTRADICTORY_SHARE = 0.005  # share of fight_stats.csv rows that may have m
 MAX_RANK = 15  # the UFC ranks 15 fighters per division (rank 0 is the champion)
 # Organisations other than the UFC keep their three files in data/raw/<org>/ (see scripts/scrape_pfl.py and scrape_one.py).
 # RIZIN, KSW, LFA and Cage Warriors come from scripts/scrape_espn_org.py; ESPN has no rankings for them, so rankings.csv is only a header.
-ORG_DIRS = ["pfl", "one", "bellator", "rizin", "ksw", "lfa", "cage-warriors"]
+# OKTAGON comes from scripts/scrape_oktagon.py; Jungle Fight and Invicta FC from scripts/scrape_sherdog_org.py (no rankings either).
+ORG_DIRS = ["pfl", "one", "bellator", "rizin", "ksw", "lfa", "cage-warriors", "oktagon", "jungle-fight", "invicta"]
 ORG_FILES = ["fights.csv", "fighters.csv", "rankings.csv"]
 ORG_MIN_ROWS = {
     "pfl": {"fights.csv": 1300, "fighters.csv": 900, "rankings.csv": 50},
@@ -40,6 +41,9 @@ ORG_MIN_ROWS = {
     "ksw": {"fights.csv": 520, "fighters.csv": 340, "rankings.csv": 0},
     "lfa": {"fights.csv": 1200, "fighters.csv": 1300, "rankings.csv": 0},
     "cage-warriors": {"fights.csv": 1000, "fighters.csv": 830, "rankings.csv": 0},
+    "oktagon": {"fights.csv": 1100, "fighters.csv": 750, "rankings.csv": 0},
+    "jungle-fight": {"fights.csv": 1500, "fighters.csv": 1600, "rankings.csv": 0},
+    "invicta": {"fights.csv": 480, "fighters.csv": 360, "rankings.csv": 0},
 }
 STALE_UPCOMING_DAYS = 3  # a card this far past its date should have turned into results by now
 

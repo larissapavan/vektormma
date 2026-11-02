@@ -65,6 +65,16 @@ const DATA_ECOSYSTEM_SOURCES = [
     scopeEs: 'Perfiles de peleadores y resultados de eventos de RIZIN, KSW, la LFA y Cage Warriors, según la cobertura de ESPN en cada liga. Sin cinturones ni rankings.',
   },
   {
+    org: 'OKTAGON · Jungle Fight · Invicta FC',
+    name: 'oktagonmma.com & Sherdog',
+    href: 'https://www.sherdog.com',
+    accent: '#14B8A6',
+    scopePt: 'Eventos, cards e resultados do OKTAGON (site oficial), do Jungle Fight e do Invicta FC (Sherdog), com lutas de título marcadas. Sem rankings.',
+    scopeEn: "Events, cards and results for OKTAGON (its own site), Jungle Fight and Invicta FC (Sherdog), with title bouts flagged. No rankings.",
+    scopeFr: "Événements, cartes et résultats d'OKTAGON (son site officiel), du Jungle Fight et d'Invicta FC (Sherdog), avec les combats de titre signalés. Pas de classements.",
+    scopeEs: 'Eventos, carteleras y resultados de OKTAGON (su sitio oficial), Jungle Fight e Invicta FC (Sherdog), con las peleas de título marcadas. Sin rankings.',
+  },
+  {
     org: 'Camps & Gyms',
     name: 'FightHub & Tapology',
     href: 'https://www.fighthub.net',

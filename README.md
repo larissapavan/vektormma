@@ -101,6 +101,9 @@ Explore information from different organizations across the combat sports ecosys
 | KSW | Fighter profiles and event results (ESPN coverage) |
 | LFA | Fighter profiles and event results (ESPN coverage) |
 | Cage Warriors | Fighter profiles and event results (ESPN coverage) |
+| OKTAGON MMA | Fighter profiles, event results and upcoming cards (from its own site) |
+| Jungle Fight | Fighter profiles and event results (Sherdog coverage) |
+| Invicta FC | Fighter profiles and event results (Sherdog coverage) |
 
 ### Prediction Track Record
 
@@ -172,6 +175,7 @@ Data sources include:
 - [Sherdog](https://www.sherdog.com/)
 - [PFL](https://pflmma.com/)
 - [ONE Championship](https://www.onefc.com/)
+- [OKTAGON MMA](https://oktagonmma.com/)
 
 Source availability and data coverage may vary.
 
@@ -203,7 +207,7 @@ Explore the platform, discover your favorite fighters and experience a different
 
 ## Disclaimer
 
-Vektor MMA is an independent project and is not affiliated with, sponsored by or officially endorsed by the UFC, PFL, ONE Championship, Bellator MMA, RIZIN Fighting Federation, KSW, LFA, Cage Warriors or ESPN.
+Vektor MMA is an independent project and is not affiliated with, sponsored by or officially endorsed by the UFC, PFL, ONE Championship, Bellator MMA, RIZIN Fighting Federation, KSW, LFA, Cage Warriors, OKTAGON MMA, Jungle Fight, Invicta FC, ESPN or Sherdog.
 
 All predictions are statistical estimates provided for informational and analytical purposes. They do not guarantee fight outcomes.
 

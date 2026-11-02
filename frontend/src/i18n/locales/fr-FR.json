@@ -68,7 +68,10 @@
       "rizin": "Profils des combattants et résultats des événements.",
       "ksw": "Profils des combattants et résultats des événements.",
       "lfa": "Profils des combattants et résultats des événements.",
-      "cage-warriors": "Profils des combattants et résultats des événements."
+      "cage-warriors": "Profils des combattants et résultats des événements.",
+      "oktagon": "Profils des combattants et résultats des événements.",
+      "jungle-fight": "Profils des combattants et résultats des événements.",
+      "invicta": "Profils des combattants et résultats des événements."
     }
   },
   "footer": {
@@ -281,12 +284,12 @@
     "description": "Qui construit ce site, d'où viennent les données, et quelles sont ses limites.",
     "who": "Qui fait ce site",
     "whoText1": "Ce projet est construit et maintenu de façon entièrement indépendante par Larissa Pavan.",
-    "whoText2": "Il n'a aucune affiliation, partenariat, sponsoring ni aval de l'UFC, de Zuffa LLC, de TKO, de la Professional Fighters League (PFL), du Bellator MMA, de la RIZIN Fighting Federation, de KSW, de la Legacy Fighting Alliance (LFA), de Cage Warriors, d'ESPN, de FightHub, de Wikipédia ou de toute autre organisation citée.",
+    "whoText2": "Il n'a aucune affiliation, partenariat, sponsoring ni aval de l'UFC, de Zuffa LLC, de TKO, de la Professional Fighters League (PFL), du Bellator MMA, de la RIZIN Fighting Federation, de KSW, de la Legacy Fighting Alliance (LFA), de Cage Warriors, d'OKTAGON MMA, du Jungle Fight, d'Invicta FC, d'ESPN, de Sherdog, de FightHub, de Wikipédia ou de toute autre organisation citée.",
     "whoText3": "Toutes les marques, les noms des combattants et les photos appartiennent à leurs titulaires. Ils sont utilisés ici uniquement à titre informatif et d’étude.",
     "dataAndSystem": "Données et système",
     "disclaimer": "Avertissement important",
     "disclaimerText1": "Les pronostics sont des estimations statistiques, faites par hobby et pour l'étude. Ils ne garantissent aucun résultat et ne constituent pas un conseil de pari.",
-    "disclaimerText2": "Ce site n'est pas un produit officiel de l'UFC, de la PFL, du Bellator, de RIZIN, de KSW, de la LFA ou de Cage Warriors.",
+    "disclaimerText2": "Ce site n'est pas un produit officiel de l'UFC, de la PFL, du Bellator, de RIZIN, de KSW, de la LFA, de Cage Warriors, d'OKTAGON, du Jungle Fight ou d'Invicta FC.",
     "contact": "Contact et crédits",
     "contactText": "Une erreur dans les données, ou une correction à demander ? Écrivez via",
     "sources": "Sources et crédits"

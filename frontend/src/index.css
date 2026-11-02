@@ -262,6 +262,42 @@
   --hard: #cbd5e1;
 }
 
+:root[data-org='oktagon'] {
+  --accent-red: #84cc16;
+  --text-red: #a3e635;
+  --hard: #4d7c0f;
+}
+
+:root[data-org='oktagon'][data-theme='light'] {
+  --accent-red: #4d7c0f;
+  --text-red: #3f6212;
+  --hard: #cbd5e1;
+}
+
+:root[data-org='jungle-fight'] {
+  --accent-red: #6366f1;
+  --text-red: #818cf8;
+  --hard: #4338ca;
+}
+
+:root[data-org='jungle-fight'][data-theme='light'] {
+  --accent-red: #4338ca;
+  --text-red: #3730a3;
+  --hard: #cbd5e1;
+}
+
+:root[data-org='invicta'] {
+  --accent-red: #14b8a6;
+  --text-red: #2dd4bf;
+  --hard: #0f766e;
+}
+
+:root[data-org='invicta'][data-theme='light'] {
+  --accent-red: #0f766e;
+  --text-red: #115e59;
+  --hard: #cbd5e1;
+}
+
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;

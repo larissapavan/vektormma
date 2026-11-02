@@ -75,10 +75,10 @@ describe('the page that chooses an organization', () => {
     renderAt('/')
     const list = await screen.findByRole('list', { name: 'Organizations' }, WAIT)
     const links = within(list).getAllByRole('link')
-    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/home', '/pfl', '/one', '/bellator', '/rizin', '/ksw', '/lfa', '/cage-warriors'])
+    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/home', '/pfl', '/one', '/bellator', '/rizin', '/ksw', '/lfa', '/cage-warriors', '/oktagon', '/jungle-fight', '/invicta'])
     expect(within(list).getAllByText('AI Predictions')).toHaveLength(2)  // the UFC and ONE
     expect(within(list).getByText('Historical Archive')).toBeInTheDocument()  // Bellator
-    expect(within(list).getAllByText('Events & Results')).toHaveLength(4)  // RIZIN, KSW, LFA and Cage Warriors
+    expect(within(list).getAllByText('Events & Results')).toHaveLength(7)  // every organization that has only fighters and events
   })
 
   it('has no switcher, section menu or fighter search until an organization is chosen', async () => {
@@ -291,18 +291,23 @@ describe('the Bellator archive', () => {
     const switcher = screen.getAllByRole('group', { name: 'Organization' })[0]
     expect(within(switcher).getAllByRole('link').map((link) => link.getAttribute('href'))).toEqual([
       '/events', '/pfl/events', '/one/events', '/bellator/events', '/rizin/events', '/ksw/events', '/lfa/events', '/cage-warriors/events',
+      '/oktagon/events', '/jungle-fight/events', '/invicta/events',
     ])
   })
 })
 
-const ESPN_ORGS = [
+// Organizations whose source (ESPN, their own site or Sherdog) gives fighters and events but no belts or rankings.
+const FIGHTERS_AND_EVENTS_ORGS = [
   { id: 'rizin', name: 'RIZIN Fighting Federation', short: 'RIZIN' },
   { id: 'ksw', name: 'Konfrontacja Sztuk Walki', short: 'KSW' },
   { id: 'lfa', name: 'Legacy Fighting Alliance', short: 'LFA' },
   { id: 'cage-warriors', name: 'Cage Warriors', short: 'Cage Warriors' },
+  { id: 'oktagon', name: 'OKTAGON MMA', short: 'OKTAGON' },
+  { id: 'jungle-fight', name: 'Jungle Fight', short: 'Jungle Fight' },
+  { id: 'invicta', name: 'Invicta Fighting Championships', short: 'Invicta FC' },
 ] as const
 
-describe.each(ESPN_ORGS)('$short (read from ESPN: fighters and events only)', ({ id, name }) => {
+describe.each(FIGHTERS_AND_EVENTS_ORGS)('$short (fighters and events only)', ({ id, name }) => {
   const base = `/${id}`
 
   it('knows its own addresses, name and colors', () => {
@@ -337,7 +342,7 @@ describe.each(ESPN_ORGS)('$short (read from ESPN: fighters and events only)', ({
     for (const missing of ['rankings', 'champions', 'predictor']) expect(links).not.toContain(`${base}/${missing}`)
   })
 
-  it('has no champions section and does not promise daily, official data: it says what ESPN gives', async () => {
+  it('has no champions section and does not promise daily, official data: it says what its source gives', async () => {
     renderAt(base)
     expect(await screen.findByText(/No belts or rankings\./, undefined, WAIT)).toBeInTheDocument()
     expect(screen.getByText(/events and fights may be missing, and it is not refreshed daily/)).toBeInTheDocument()

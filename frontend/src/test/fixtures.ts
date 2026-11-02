@@ -278,9 +278,9 @@ export const orgRoutes: Record<string, unknown> = {
   ],
   '/orgs/one/rankings': pflRankings,
   '/orgs/one/data-info': { last_updated: '2026-10-28', fighters_count: 2, events_count: 2, fights_count: 2, sources: ['onefc.com'] },
-  // RIZIN, KSW, LFA and Cage Warriors: read from ESPN, so fighters and events only (no upcoming cards, rankings or belts).
+  // RIZIN, KSW, LFA, Cage Warriors, OKTAGON, Jungle Fight and Invicta FC: fighters and events only (no upcoming cards, rankings or belts).
   ...Object.fromEntries(
-    ['rizin', 'ksw', 'lfa', 'cage-warriors'].flatMap((id) => [
+    ['rizin', 'ksw', 'lfa', 'cage-warriors', 'oktagon', 'jungle-fight', 'invicta'].flatMap((id) => [
       [`/orgs/${id}/fighters`, [pflChampion, pflVeteran]],
       [`/orgs/${id}/events`, [orgEvent(`${id} 10`, '2024-06-01', [orgFight({ winner: 'Riko Stone', method: 'KO/TKO', round: 1, time: '2:00' })], { circuit: null })]],
       [`/orgs/${id}/events/upcoming`, []],

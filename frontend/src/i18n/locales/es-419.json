@@ -68,7 +68,10 @@
       "rizin": "Perfiles de peleadores y resultados de eventos.",
       "ksw": "Perfiles de peleadores y resultados de eventos.",
       "lfa": "Perfiles de peleadores y resultados de eventos.",
-      "cage-warriors": "Perfiles de peleadores y resultados de eventos."
+      "cage-warriors": "Perfiles de peleadores y resultados de eventos.",
+      "oktagon": "Perfiles de peleadores y resultados de eventos.",
+      "jungle-fight": "Perfiles de peleadores y resultados de eventos.",
+      "invicta": "Perfiles de peleadores y resultados de eventos."
     }
   },
   "footer": {
@@ -281,12 +284,12 @@
     "description": "Quién lo desarrolla, de dónde vienen los datos y cuáles son sus límites.",
     "who": "Quién lo desarrolla",
     "whoText1": "Este proyecto está creado y mantenido de forma totalmente independiente por Larissa Pavan.",
-    "whoText2": "No tiene ninguna afiliación, alianza, patrocinio ni respaldo de la UFC, Zuffa LLC, TKO, la Professional Fighters League (PFL), Bellator MMA, RIZIN Fighting Federation, KSW, Legacy Fighting Alliance (LFA), Cage Warriors, ESPN, FightHub, Wikipedia ni de ninguna otra organización mencionada.",
+    "whoText2": "No tiene ninguna afiliación, alianza, patrocinio ni respaldo de la UFC, Zuffa LLC, TKO, la Professional Fighters League (PFL), Bellator MMA, RIZIN Fighting Federation, KSW, Legacy Fighting Alliance (LFA), Cage Warriors, OKTAGON MMA, Jungle Fight, Invicta FC, ESPN, Sherdog, FightHub, Wikipedia ni de ninguna otra organización mencionada.",
     "whoText3": "Todas las marcas, los nombres de los peleadores y las fotos pertenecen a sus respectivos dueños y se usan aquí únicamente con fines informativos y de estudio.",
     "dataAndSystem": "Datos y sistema",
     "disclaimer": "Aviso importante",
     "disclaimerText1": "Los pronósticos son estimaciones estadísticas, hechas como pasatiempo y para estudio. No garantizan ningún resultado y no son un consejo de apuestas.",
-    "disclaimerText2": "Este sitio no es un producto oficial de la UFC, la PFL, Bellator, RIZIN, KSW, la LFA ni Cage Warriors.",
+    "disclaimerText2": "Este sitio no es un producto oficial de la UFC, la PFL, Bellator, RIZIN, KSW, la LFA, Cage Warriors, OKTAGON, Jungle Fight ni Invicta FC.",
     "contact": "Contacto y créditos",
     "contactText": "¿Encontraste un error en los datos o quieres que se corrija algo? Escríbeme a través de",
     "sources": "Fuentes y créditos"

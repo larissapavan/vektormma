@@ -89,6 +89,29 @@ ORGS: dict[str, Org] = {
         tagline="Cage Warriors fighters and event results.",
         sources=("espn.com",),
     ),
+    # Read from the organisation's own site (scripts/scrape_oktagon.py): results, title bouts and upcoming cards, no rankings.
+    "oktagon": Org(
+        id="oktagon",
+        name="OKTAGON MMA",
+        short_name="OKTAGON",
+        tagline="OKTAGON MMA fighters, event results and upcoming cards.",
+        sources=("oktagonmma.com",),
+    ),
+    # Read from Sherdog's event pages (scripts/scrape_sherdog_org.py): full cards with results and title bouts, no rankings.
+    "jungle-fight": Org(
+        id="jungle-fight",
+        name="Jungle Fight",
+        short_name="Jungle Fight",
+        tagline="Jungle Fight fighters and event results.",
+        sources=("sherdog.com",),
+    ),
+    "invicta": Org(
+        id="invicta",
+        name="Invicta Fighting Championships",
+        short_name="Invicta FC",
+        tagline="Invicta FC fighters and event results.",
+        sources=("sherdog.com",),
+    ),
 }
 
 # Lightest to heaviest, men's divisions first, then women's. Anything unknown goes last in the order it was scraped.

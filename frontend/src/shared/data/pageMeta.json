@@ -221,6 +221,54 @@
         "title": "Academias do Cage Warriors",
         "description": "Academias e equipes dos atletas do Cage Warriors."
       },
+      "/oktagon": {
+        "title": "OKTAGON",
+        "description": "OKTAGON MMA: lutadores, resultados de eventos e academias."
+      },
+      "/oktagon/fighters": {
+        "title": "Lutadores do OKTAGON",
+        "description": "Atletas do OKTAGON: cartel, medidas, equipes e combates."
+      },
+      "/oktagon/events": {
+        "title": "Eventos do OKTAGON",
+        "description": "Eventos do OKTAGON com cards e resultados."
+      },
+      "/oktagon/gyms": {
+        "title": "Academias do OKTAGON",
+        "description": "Academias e equipes dos atletas do OKTAGON."
+      },
+      "/jungle-fight": {
+        "title": "Jungle Fight",
+        "description": "Jungle Fight: lutadores, resultados de eventos e academias."
+      },
+      "/jungle-fight/fighters": {
+        "title": "Lutadores do Jungle Fight",
+        "description": "Atletas do Jungle Fight: cartel, medidas, equipes e combates."
+      },
+      "/jungle-fight/events": {
+        "title": "Eventos do Jungle Fight",
+        "description": "Eventos do Jungle Fight com cards e resultados."
+      },
+      "/jungle-fight/gyms": {
+        "title": "Academias do Jungle Fight",
+        "description": "Academias e equipes dos atletas do Jungle Fight."
+      },
+      "/invicta": {
+        "title": "Invicta FC",
+        "description": "Invicta Fighting Championships (Invicta FC): lutadores, resultados de eventos e academias."
+      },
+      "/invicta/fighters": {
+        "title": "Lutadores do Invicta FC",
+        "description": "Atletas do Invicta FC: cartel, medidas, equipes e combates."
+      },
+      "/invicta/events": {
+        "title": "Eventos do Invicta FC",
+        "description": "Eventos do Invicta FC com cards e resultados."
+      },
+      "/invicta/gyms": {
+        "title": "Academias do Invicta FC",
+        "description": "Academias e equipes dos atletas do Invicta FC."
+      },
       "/about-model": {
         "title": "Sobre o Modelo de IA",
         "description": "Projeto completo de IA aplicada: fluxo de dados, modelo preditivo e API."
@@ -434,6 +482,54 @@
       "/cage-warriors/gyms": {
         "title": "Cage Warriors gyms",
         "description": "Where Cage Warriors fighters train: gyms and teams with their fighters."
+      },
+      "/oktagon": {
+        "title": "OKTAGON",
+        "description": "OKTAGON MMA: fighters, event results and gyms."
+      },
+      "/oktagon/fighters": {
+        "title": "OKTAGON fighters",
+        "description": "OKTAGON fighter profiles: records, builds, camps and every bout."
+      },
+      "/oktagon/events": {
+        "title": "OKTAGON events",
+        "description": "OKTAGON events with fight cards and results."
+      },
+      "/oktagon/gyms": {
+        "title": "OKTAGON gyms",
+        "description": "Where OKTAGON fighters train: gyms and teams with their fighters."
+      },
+      "/jungle-fight": {
+        "title": "Jungle Fight",
+        "description": "Jungle Fight: fighters, event results and gyms."
+      },
+      "/jungle-fight/fighters": {
+        "title": "Jungle Fight fighters",
+        "description": "Jungle Fight fighter profiles: records, builds, camps and every bout."
+      },
+      "/jungle-fight/events": {
+        "title": "Jungle Fight events",
+        "description": "Jungle Fight events with fight cards and results."
+      },
+      "/jungle-fight/gyms": {
+        "title": "Jungle Fight gyms",
+        "description": "Where Jungle Fight fighters train: gyms and teams with their fighters."
+      },
+      "/invicta": {
+        "title": "Invicta FC",
+        "description": "Invicta Fighting Championships (Invicta FC): fighters, event results and gyms."
+      },
+      "/invicta/fighters": {
+        "title": "Invicta FC fighters",
+        "description": "Invicta FC fighter profiles: records, builds, camps and every bout."
+      },
+      "/invicta/events": {
+        "title": "Invicta FC events",
+        "description": "Invicta FC events with fight cards and results."
+      },
+      "/invicta/gyms": {
+        "title": "Invicta FC gyms",
+        "description": "Where Invicta FC fighters train: gyms and teams with their fighters."
       },
       "/about-model": {
         "title": "About the model",
@@ -649,6 +745,54 @@
         "title": "Salles Cage Warriors",
         "description": "Où s'entraînent les combattants Cage Warriors : salles et équipes, avec leurs combattants."
       },
+      "/oktagon": {
+        "title": "OKTAGON",
+        "description": "OKTAGON MMA : combattants, résultats des événements et salles."
+      },
+      "/oktagon/fighters": {
+        "title": "Combattants OKTAGON",
+        "description": "Profils des combattants OKTAGON : palmarès, mensurations, salles et combats."
+      },
+      "/oktagon/events": {
+        "title": "Événements OKTAGON",
+        "description": "Événements OKTAGON avec cartes de combats et résultats."
+      },
+      "/oktagon/gyms": {
+        "title": "Salles OKTAGON",
+        "description": "Où s'entraînent les combattants OKTAGON : salles et équipes, avec leurs combattants."
+      },
+      "/jungle-fight": {
+        "title": "Jungle Fight",
+        "description": "Jungle Fight : combattants, résultats des événements et salles."
+      },
+      "/jungle-fight/fighters": {
+        "title": "Combattants Jungle Fight",
+        "description": "Profils des combattants Jungle Fight : palmarès, mensurations, salles et combats."
+      },
+      "/jungle-fight/events": {
+        "title": "Événements Jungle Fight",
+        "description": "Événements Jungle Fight avec cartes de combats et résultats."
+      },
+      "/jungle-fight/gyms": {
+        "title": "Salles Jungle Fight",
+        "description": "Où s'entraînent les combattants Jungle Fight : salles et équipes, avec leurs combattants."
+      },
+      "/invicta": {
+        "title": "Invicta FC",
+        "description": "Invicta Fighting Championships (Invicta FC) : combattants, résultats des événements et salles."
+      },
+      "/invicta/fighters": {
+        "title": "Combattants Invicta FC",
+        "description": "Profils des combattants Invicta FC : palmarès, mensurations, salles et combats."
+      },
+      "/invicta/events": {
+        "title": "Événements Invicta FC",
+        "description": "Événements Invicta FC avec cartes de combats et résultats."
+      },
+      "/invicta/gyms": {
+        "title": "Salles Invicta FC",
+        "description": "Où s'entraînent les combattants Invicta FC : salles et équipes, avec leurs combattants."
+      },
       "/about-model": {
         "title": "À propos du modèle",
         "description": "Un projet complet d'IA appliquée : chaîne de données, modèle et API."
@@ -862,6 +1006,54 @@
       "/cage-warriors/gyms": {
         "title": "Gimnasios de Cage Warriors",
         "description": "Dónde entrenan los peleadores de Cage Warriors: gimnasios y equipos con sus peleadores."
+      },
+      "/oktagon": {
+        "title": "OKTAGON",
+        "description": "OKTAGON MMA: peleadores, resultados de eventos y gimnasios."
+      },
+      "/oktagon/fighters": {
+        "title": "Peleadores de OKTAGON",
+        "description": "Perfiles de peleadores de OKTAGON: récords, medidas, campamentos y cada pelea."
+      },
+      "/oktagon/events": {
+        "title": "Eventos de OKTAGON",
+        "description": "Eventos de OKTAGON con carteleras y resultados."
+      },
+      "/oktagon/gyms": {
+        "title": "Gimnasios de OKTAGON",
+        "description": "Dónde entrenan los peleadores de OKTAGON: gimnasios y equipos con sus peleadores."
+      },
+      "/jungle-fight": {
+        "title": "Jungle Fight",
+        "description": "Jungle Fight: peleadores, resultados de eventos y gimnasios."
+      },
+      "/jungle-fight/fighters": {
+        "title": "Peleadores de Jungle Fight",
+        "description": "Perfiles de peleadores de Jungle Fight: récords, medidas, campamentos y cada pelea."
+      },
+      "/jungle-fight/events": {
+        "title": "Eventos de Jungle Fight",
+        "description": "Eventos de Jungle Fight con carteleras y resultados."
+      },
+      "/jungle-fight/gyms": {
+        "title": "Gimnasios de Jungle Fight",
+        "description": "Dónde entrenan los peleadores de Jungle Fight: gimnasios y equipos con sus peleadores."
+      },
+      "/invicta": {
+        "title": "Invicta FC",
+        "description": "Invicta Fighting Championships (Invicta FC): peleadores, resultados de eventos y gimnasios."
+      },
+      "/invicta/fighters": {
+        "title": "Peleadores de Invicta FC",
+        "description": "Perfiles de peleadores de Invicta FC: récords, medidas, campamentos y cada pelea."
+      },
+      "/invicta/events": {
+        "title": "Eventos de Invicta FC",
+        "description": "Eventos de Invicta FC con carteleras y resultados."
+      },
+      "/invicta/gyms": {
+        "title": "Gimnasios de Invicta FC",
+        "description": "Dónde entrenan los peleadores de Invicta FC: gimnasios y equipos con sus peleadores."
       },
       "/about-model": {
         "title": "Acerca del modelo",

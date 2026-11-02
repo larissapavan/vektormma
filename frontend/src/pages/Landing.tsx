@@ -211,6 +211,66 @@ const ORG_CARDS: OrgCardInfo[] = [
       { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '970+', valueEn: '970+', valueFr: '970+', valueEs: '970+' },
     ],
   },
+  {
+    id: 'oktagon',
+    watermark: '09',
+    shortName: 'OKTAGON',
+    fullName: 'OKTAGON MMA',
+    accentColor: '#84CC16',
+    hoverBorder: 'border-[#84CC16]/35 hover:border-[#84CC16] hover:shadow-[0_0_30px_rgba(132,204,22,0.28),inset_0_0_15px_rgba(132,204,22,0.08)]',
+    glove: { src: '/mma-glove-oktagon.webp', glow: '#84CC16', duration: '5.1s', delay: '-1.1s' },
+    statusBadge: {
+      labelPt: 'Eventos & Resultados',
+      labelEn: 'Events & Results',
+      labelFr: 'Événements & Résultats',
+      labelEs: 'Eventos y resultados',
+      pulse: false,
+    },
+    metrics: [
+      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '120+', valueEn: '120+', valueFr: '120+', valueEs: '120+' },
+      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '840+', valueEn: '840+', valueFr: '840+', valueEs: '840+' },
+    ],
+  },
+  {
+    id: 'jungle-fight',
+    watermark: '10',
+    shortName: 'JUNGLE FIGHT',
+    fullName: 'Jungle Fight',
+    accentColor: '#6366F1',
+    hoverBorder: 'border-[#6366F1]/35 hover:border-[#6366F1] hover:shadow-[0_0_30px_rgba(99,102,241,0.28),inset_0_0_15px_rgba(99,102,241,0.08)]',
+    glove: { src: '/mma-glove-jungle-fight.webp', glow: '#6366F1', duration: '5.5s', delay: '-2.5s' },
+    statusBadge: {
+      labelPt: 'Eventos & Resultados',
+      labelEn: 'Events & Results',
+      labelFr: 'Événements & Résultats',
+      labelEs: 'Eventos y resultados',
+      pulse: false,
+    },
+    metrics: [
+      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '150+', valueEn: '150+', valueFr: '150+', valueEs: '150+' },
+      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '1.8k+', valueEn: '1.8k+', valueFr: '1.8k+', valueEs: '1.8k+' },
+    ],
+  },
+  {
+    id: 'invicta',
+    watermark: '11',
+    shortName: 'INVICTA FC',
+    fullName: 'Invicta Fighting Championships',
+    accentColor: '#14B8A6',
+    hoverBorder: 'border-[#14B8A6]/35 hover:border-[#14B8A6] hover:shadow-[0_0_30px_rgba(20,184,166,0.28),inset_0_0_15px_rgba(20,184,166,0.08)]',
+    glove: { src: '/mma-glove-invicta.webp', glow: '#14B8A6', duration: '4.8s', delay: '-3.3s' },
+    statusBadge: {
+      labelPt: 'Eventos & Resultados',
+      labelEn: 'Events & Results',
+      labelFr: 'Événements & Résultats',
+      labelEs: 'Eventos y resultados',
+      pulse: false,
+    },
+    metrics: [
+      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '60+', valueEn: '60+', valueFr: '60+', valueEs: '60+' },
+      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '400+', valueEn: '400+', valueFr: '400+', valueEs: '400+' },
+    ],
+  },
 ]
 
 // Shown until the API answers (or if it never does): the last figures checked by hand.
@@ -657,10 +717,10 @@ export function Landing() {
               <p>
                 {L(
                   i18n.language,
-                  'Projeto analítico independente. Não afiliado ao UFC, PFL, Bellator, ONE Championship, RIZIN, KSW, LFA ou Cage Warriors.',
-                  'Independent analytics project. Not affiliated with UFC, PFL, Bellator, ONE Championship, RIZIN, KSW, LFA, or Cage Warriors.',
-                  'Projet analytique indépendant. Non affilié à l’UFC, au PFL, au Bellator, au ONE Championship, à RIZIN, à KSW, à la LFA ou à Cage Warriors.',
-                  'Proyecto analítico independiente. No afiliado a la UFC, la PFL, Bellator, ONE Championship, RIZIN, KSW, la LFA ni Cage Warriors.',
+                  'Projeto analítico independente. Não afiliado ao UFC, PFL, Bellator, ONE Championship, RIZIN, KSW, LFA, Cage Warriors, OKTAGON, Jungle Fight ou Invicta FC.',
+                  'Independent analytics project. Not affiliated with UFC, PFL, Bellator, ONE Championship, RIZIN, KSW, LFA, Cage Warriors, OKTAGON, Jungle Fight, or Invicta FC.',
+                  'Projet analytique indépendant. Non affilié à l’UFC, au PFL, au Bellator, au ONE Championship, à RIZIN, à KSW, à la LFA, à Cage Warriors, à OKTAGON, au Jungle Fight ou à Invicta FC.',
+                  'Proyecto analítico independiente. No afiliado a la UFC, la PFL, Bellator, ONE Championship, RIZIN, KSW, la LFA, Cage Warriors, OKTAGON, Jungle Fight ni Invicta FC.',
                 )}
               </p>
               <Link

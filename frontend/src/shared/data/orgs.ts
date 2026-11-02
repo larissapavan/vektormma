@@ -1,4 +1,4 @@
-export type OrgId = 'ufc' | 'pfl' | 'one' | 'bellator' | 'rizin' | 'ksw' | 'lfa' | 'cage-warriors'
+export type OrgId = 'ufc' | 'pfl' | 'one' | 'bellator' | 'rizin' | 'ksw' | 'lfa' | 'cage-warriors' | 'oktagon' | 'jungle-fight' | 'invicta'
 
 export type OrgSection = 'fighters' | 'events' | 'rankings' | 'gyms' | 'champions' | 'predictor'
 
@@ -75,8 +75,9 @@ export const ORGS: Record<OrgId, OrgConfig> = {
     hasRankings: false,
     hasChampions: true,
   },
-  // RIZIN, KSW, LFA and Cage Warriors are read from ESPN (scripts/scrape_espn_org.py): fighters and events only, because
-  // ESPN has no belts or rankings for them. Their pages are the fighters list, the events and the gyms.
+  // RIZIN, KSW, LFA and Cage Warriors are read from ESPN (scripts/scrape_espn_org.py), OKTAGON from its own site, Jungle Fight
+  // and Invicta FC from Sherdog: fighters and events only, because none of these sources gives belts or rankings that can be
+  // trusted. Their pages are the fighters list, the events and the gyms.
   rizin: {
     id: 'rizin',
     name: 'RIZIN Fighting Federation',
@@ -129,10 +130,49 @@ export const ORGS: Record<OrgId, OrgConfig> = {
     hasChampions: false,
     partialCoverage: true,
   },
+  oktagon: {
+    id: 'oktagon',
+    name: 'OKTAGON MMA',
+    shortName: 'OKTAGON',
+    basePath: '/oktagon',
+    sourceName: 'oktagonmma.com',
+    sourceUrl: 'https://oktagonmma.com/en/events/',
+    tagline: 'Fighters and event results.',
+    hasPredictions: false,
+    hasRankings: false,
+    hasChampions: false,
+    partialCoverage: true,
+  },
+  'jungle-fight': {
+    id: 'jungle-fight',
+    name: 'Jungle Fight',
+    shortName: 'Jungle Fight',
+    basePath: '/jungle-fight',
+    sourceName: 'Sherdog',
+    sourceUrl: 'https://www.sherdog.com/organizations/Jungle-Fight-351',
+    tagline: 'Fighters and event results.',
+    hasPredictions: false,
+    hasRankings: false,
+    hasChampions: false,
+    partialCoverage: true,
+  },
+  invicta: {
+    id: 'invicta',
+    name: 'Invicta Fighting Championships',
+    shortName: 'Invicta FC',
+    basePath: '/invicta',
+    sourceName: 'Sherdog',
+    sourceUrl: 'https://www.sherdog.com/organizations/Invicta-Fighting-Championships-4469',
+    tagline: 'Fighters and event results.',
+    hasPredictions: false,
+    hasRankings: false,
+    hasChampions: false,
+    partialCoverage: true,
+  },
 }
 
 /** Display order of the organization switcher. Add a new organization here and in ORGS. */
-export const ORG_LIST: OrgConfig[] = [ORGS.ufc, ORGS.pfl, ORGS.one, ORGS.bellator, ORGS.rizin, ORGS.ksw, ORGS.lfa, ORGS['cage-warriors']]
+export const ORG_LIST: OrgConfig[] = [ORGS.ufc, ORGS.pfl, ORGS.one, ORGS.bellator, ORGS.rizin, ORGS.ksw, ORGS.lfa, ORGS['cage-warriors'], ORGS.oktagon, ORGS['jungle-fight'], ORGS.invicta]
 
 /** Organizations served by the generic /orgs/{id} API (everything but the UFC, which has its own endpoints). */
 export const GENERIC_ORGS: OrgConfig[] = ORG_LIST.filter((org) => org.id !== 'ufc')
