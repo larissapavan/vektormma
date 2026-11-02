@@ -132,7 +132,7 @@ export function SeasonFightsPanel({
           </div>
 
           {/* Lista Completa de Combates do Ano */}
-          <div className="flex-1 overflow-y-auto no-scrollbar space-y-2 pr-0.5 sm:pr-1">
+          <div className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden no-scrollbar space-y-2 pr-0.5 sm:pr-1">
             {era.fights.map((fight, idx) => {
               const isWin = fight.result === 'win'
               const isLoss = fight.result === 'loss'
@@ -148,10 +148,10 @@ export function SeasonFightsPanel({
                   className="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.06] hover:border-white/15 transition-all duration-200"
                 >
                   {/* Left: Organization & Result pill, opponent & event */}
-                  <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                    <div className="flex items-center sm:flex-col gap-1 shrink-0">
+                  <div className="flex flex-col items-start sm:flex-row sm:items-center gap-1.5 sm:gap-3 min-w-0">
+                    <div className="flex flex-wrap items-center sm:flex-col sm:flex-nowrap sm:items-stretch gap-1 min-w-0 max-w-full sm:shrink-0">
                       <span
-                        className={`px-1.5 py-0.5 rounded font-mono font-bold text-[9px] tracking-wider uppercase ${
+                        className={`max-w-full truncate px-1.5 py-0.5 rounded font-mono font-bold text-[9px] tracking-wider uppercase ${
                           fight.is_ufc !== false
                             ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
                             : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
@@ -172,7 +172,7 @@ export function SeasonFightsPanel({
                       </span>
                     </div>
 
-                    <div className="min-w-0 flex-1">
+                    <div className="min-w-0 max-w-full flex-1">
                       <button
                         type="button"
                         onClick={(e) => {
@@ -191,8 +191,8 @@ export function SeasonFightsPanel({
                   </div>
 
                   {/* Right: Method, Round, Time & Badges */}
-                  <div className="flex items-center justify-between sm:flex-col sm:items-end sm:justify-center border-t border-white/[0.06] pt-1.5 sm:border-t-0 sm:pt-0 shrink-0 text-left sm:text-right gap-1 min-w-0">
-                    <p className="font-mono text-[11px] sm:text-xs font-semibold text-neutral-200 truncate">
+                  <div className="flex items-center justify-between sm:flex-col sm:items-end sm:justify-center border-t border-white/[0.06] pt-1.5 sm:border-t-0 sm:pt-0 sm:shrink-0 text-left sm:text-right gap-1 min-w-0">
+                    <p className="min-w-0 font-mono text-[11px] sm:text-xs font-semibold text-neutral-200 truncate">
                       {methodLabel(fight) || L(lang, 'Decisão', 'Decision', 'Décision', 'Decisión')}
                     </p>
                     <p className="font-mono text-[10px] text-neutral-400 shrink-0">
