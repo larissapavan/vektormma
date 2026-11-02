@@ -114,10 +114,10 @@ export function Landing() {
               <p className="font-sans text-sm sm:text-base text-[var(--text-secondary)] dark:text-neutral-400 font-normal max-w-lg leading-relaxed">
                 {L(
                   i18n.language,
-                  'A ciência de dados aplicada ao combate. Previsões por aprendizado de máquina, cartéis históricos e telemetria analítica com a inteligência da Vektor MMA.',
-                  'Data science applied to combat sports. Machine learning predictions, official records, and analytical telemetry with Vektor MMA intelligence.',
-                  "La science des données appliquée au combat. Prévisions par apprentissage automatique, historiques et télémétrie analytique avec l'intelligence Vektor MMA.",
-                  'La ciencia de datos aplicada al combate. Pronósticos con aprendizaje automático, récords históricos y telemetría analítica con la inteligencia de Vektor MMA.',
+                  'Compare lutadores e veja a probabilidade de vitória de cada luta do UFC, com os fatores que mais pesam no resultado.',
+                  'Compare fighters and see the win probability for every UFC fight, with the factors that weigh most on the result.',
+                  "Comparez les combattants et découvrez la probabilité de victoire de chaque combat de l’UFC, avec les facteurs qui pèsent le plus dans le résultat.",
+                  'Compara peleadores y mira la probabilidad de victoria de cada pelea de la UFC, con los factores que más pesan en el resultado.',
                 )}
               </p>
 
