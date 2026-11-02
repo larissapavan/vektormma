@@ -4,9 +4,14 @@ Images are saved as optimized WebP files in frontend/public/fighter-photos/one/
 and exposed in data/raw/one/fighters.csv under image_url (/fighter-photos/one/<slug>.webp)
 and headshot_url (the official cdn.onefc.com image URL).
 
+The athlete page each fighter already has in fighters.csv (profile_url) is read first; the sitemap and the alias table
+below only fill in for a fighter whose own link does not work. onefc.com/robots.txt allows these pages; the downloads are
+kept slow on purpose (a few connections, a pause after each request).
+
 Usage (from the repo root):
     python -m scripts.scrape_one_photos --limit 150
     python -m scripts.scrape_one_photos --all
+    python -m scripts.scrape_one_photos --all --active-only
 """
 
 from __future__ import annotations
@@ -15,6 +20,8 @@ import argparse
 import csv
 import io
 import re
+import sys
+import time
 import unicodedata
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -35,6 +42,7 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 MAX_WIDTH = 300
 WEBP_QUALITY = 80
 TIMEOUT = 15
+PAUSE_SECONDS = 0.5  # after every request, per worker
 
 KNOWN_ALIASES = {
     "Marcus Buchecha": "https://www.onefc.com/athletes/marcus-almeida/",
@@ -183,10 +191,13 @@ def download_and_save(session: requests.Session, cdn_url: str, dest_path: Path) 
 
 
 def main():
+    # Names carry accents and other scripts; a redirected Windows console would stop at the first one.
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser(description="Download official ONE fighter photos")
     parser.add_argument("--limit", type=int, default=150, help="Max photos to download")
     parser.add_argument("--all", action="store_true", help="Download photos for all available fighters")
-    parser.add_argument("--workers", type=int, default=12, help="Parallel worker threads")
+    parser.add_argument("--workers", type=int, default=3, help="Parallel worker threads")
+    parser.add_argument("--active-only", action="store_true", help="Only fighters whose status is active")
     args = parser.parse_args()
 
     PHOTOS_DIR.mkdir(parents=True, exist_ok=True)
@@ -234,10 +245,15 @@ def main():
     for f in sorted_fighters:
         name = f["name"]
         slug = f["slug"] or slugify(name)
-        url = match_url(name, slug)
+        if args.active_only and f.get("status") != "active":
+            continue
+        # The fighter's own athlete page first; the sitemap and aliases only when there is none.
+        url = f.get("profile_url") or match_url(name, slug)
         if not url:
             continue
         dest_file = PHOTOS_DIR / f"{slug}.webp"
+        if dest_file.exists():
+            continue
         targets.append((f, slug, url, dest_file))
 
     limit = len(targets) if args.all else args.limit
@@ -252,10 +268,12 @@ def main():
             return (fighter["name"], slug, fighter.get("headshot_url") or "", True)
 
         cdn_url = extract_athlete_photo_url(session, url)
+        time.sleep(PAUSE_SECONDS)
         if not cdn_url:
             return (fighter["name"], slug, "", False)
 
         success = download_and_save(session, cdn_url, dest_path)
+        time.sleep(PAUSE_SECONDS)
         return (fighter["name"], slug, cdn_url if success else "", success)
 
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
@@ -276,10 +294,9 @@ def main():
             updated_count += 1
         elif f["name"] in results and results[f["name"]][1]:
             f["headshot_url"] = results[f["name"]][1]
-        # Also ensure profile_url points to real onefc.com page if known
-        known_url = match_url(f["name"], slug)
-        if known_url:
-            f["profile_url"] = known_url
+        # A fighter with no athlete page of his own gets the one the sitemap or the alias table knows.
+        if not f.get("profile_url"):
+            f["profile_url"] = match_url(f["name"], slug) or ""
 
     with FIGHTERS_PATH.open("w", encoding="utf-8", newline="") as h:
         w = csv.DictWriter(h, fieldnames=list(fighters[0].keys()))

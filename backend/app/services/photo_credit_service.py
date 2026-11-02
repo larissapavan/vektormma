@@ -1,9 +1,11 @@
-"""Which fighter photos come from ESPN or from ufc.com, so the site can print the credit on them.
+"""Which fighter photos come from ESPN, ufc.com or onefc.com, so the site can print the credit on them.
 
 The photos are small copies stored with the site (frontend/public/fighter-photos). Where each one came from is written
 down when it is downloaded: data/raw/fighter_photos.csv for the UFC roster, where `source` is "ESPN" for the ESPN
 headshots and "ufc.com ..." for the champions' belt photos and the athlete-page photos, and the headshots of the Bellator
-archive and of RIZIN, KSW, LFA and Cage Warriors are ESPN's too (see the About page). The site asks for this list once and credits every photo on it ("Foto:
+archive and of RIZIN, KSW, LFA and Cage Warriors are ESPN's too (see the About page). The ONE Championship photos are
+the athlete-page photos of onefc.com, registered in data/raw/one/fighters.csv. The site asks for this list once and
+credits every photo on it ("Foto:
 ESPN", "Foto: UFC"); a photo that is not on it gets no credit line.
 """
 
@@ -19,7 +21,9 @@ from src.ufc_predictor.config import RAW_DATA_DIR
 PHOTOS_MANIFEST_PATH = RAW_DATA_DIR / "fighter_photos.csv"
 # Organisations whose headshots come from ESPN (their fighters.csv holds the stored photo in `image_url`).
 ESPN_ORG_FIGHTERS_PATHS = [RAW_DATA_DIR / org / "fighters.csv" for org in ("bellator", "rizin", "ksw", "lfa", "cage-warriors")]
+ONE_FIGHTERS_PATH = RAW_DATA_DIR / "one" / "fighters.csv"
 WEB_PREFIX = "/fighter-photos/"
+ONE_WEB_PREFIX = WEB_PREFIX + "one/"
 
 
 def _web_path(value: str) -> str:
@@ -52,6 +56,15 @@ def ufc_photo_paths() -> list[str]:
     return sorted(_manifest_paths("UFC.COM"))
 
 
+@lru_cache(maxsize=1)
+def one_photo_paths() -> list[str]:
+    """The ONE fighters' photos: every image the ONE roster points at inside the site's own one/ folder."""
+    if not ONE_FIGHTERS_PATH.exists():
+        return []
+    fighters = pd.read_csv(ONE_FIGHTERS_PATH, keep_default_na=False, dtype=str, usecols=["image_url"], encoding="utf-8-sig")
+    return sorted({_web_path(url) for url in fighters["image_url"] if _web_path(url).startswith(ONE_WEB_PREFIX)})
+
+
 def photo_credits() -> dict[str, list[str]]:
     """Credit line -> the photos it goes on."""
-    return {"ESPN": espn_photo_paths(), "UFC": ufc_photo_paths()}
+    return {"ESPN": espn_photo_paths(), "UFC": ufc_photo_paths(), "ONE": one_photo_paths()}

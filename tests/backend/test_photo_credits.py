@@ -1,4 +1,4 @@
-"""The photos that come from ESPN or ufc.com are listed, so the site can print "Foto: ESPN" / "Foto: UFC" on them."""
+"""The photos that come from ESPN, ufc.com or onefc.com are listed, so the site can print "Foto: ESPN" / "Foto: UFC" / "Foto: ONE" on them."""
 
 from pathlib import Path
 
@@ -49,6 +49,14 @@ def test_the_champions_belt_photos_are_credited_to_ufc(client):
     assert all(path.startswith("/fighter-photos/") and "?" not in path for path in paths)
     assert paths == sorted(set(paths))
     assert not set(paths) & set(_espn(client))
+    assert [path for path in paths if not (PUBLIC / path.lstrip("/")).exists()] == []
+
+
+def test_the_one_athlete_photos_are_credited_to_one(client):
+    paths = _credit(client, "ONE")
+    assert paths and all(path.startswith("/fighter-photos/one/") and "?" not in path for path in paths)
+    assert paths == sorted(set(paths))
+    assert not set(paths) & set(_espn(client)) and not set(paths) & set(_ufc(client))
     assert [path for path in paths if not (PUBLIC / path.lstrip("/")).exists()] == []
 
 

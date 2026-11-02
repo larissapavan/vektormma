@@ -66,8 +66,8 @@ const sources: { name: string; href?: string; use: string; usePt: string }[] = [
   {
     name: 'ONE Championship',
     href: 'https://www.onefc.com',
-    use: 'Official ONE Championship event cards, results, fighter profiles, and divisional champions across MMA and Muay Thai.',
-    usePt: 'Cards oficiais de eventos do ONE Championship, resultados, perfis de atletas e campeões das divisões de MMA e Muay Thai.',
+    use: 'Official ONE Championship event cards, results, fighter profiles and photos, and divisional champions across MMA and Muay Thai.',
+    usePt: 'Cards oficiais de eventos do ONE Championship, resultados, perfis e fotos de atletas e campeões das divisões de MMA e Muay Thai.',
   },
   {
     name: 'Sherdog',
@@ -122,7 +122,7 @@ const SOURCE_USE_FR: Record<string, string> = {
   FightHub: "L'annuaire des salles et des équipes, et les combattants qui s'y entraînent, affiché sur les pages Salles et rapproché par le nom avec les combattants de chaque organisation. Seules les pages autorisées par son robots.txt sont lues.",
   'Next-Fight': 'Annonces de combats, cartes à venir, confirmations d’affrontements et avis de combats de titre (comme UFC 336: Prates vs. Morales).',
   Tapology: "Palmarès complets des combattants, historiques des combats à travers les circuits régionaux et mondiaux de MMA (Jungle Fight, Predador FC, LFA, etc.) et méthodes de victoire.",
-  'ONE Championship': "Cartes officielles d'événements du ONE Championship, résultats, profils d'athlètes et champions des divisions de MMA et Muay Thai.",
+  'ONE Championship': "Cartes officielles d'événements du ONE Championship, résultats, profils et photos d'athlètes et champions des divisions de MMA et Muay Thai.",
   Sherdog: "Archives des combats de carrière, palmarès officiels, attributs physiques et photos d'archives.",
   Wikipedia: "Registres complets des combats professionnels de MMA, tableaux de tournois Grand Prix et historiques des règnes de titres (CC BY-SA 4.0).",
   'Published UFC title histories': 'Champions, règnes et la liste des combats pour le titre BMF, compilés à la main.',
@@ -142,7 +142,7 @@ const SOURCE_USE_ES: Record<string, string> = {
   FightHub: 'El directorio de gimnasios y equipos y de los peleadores que entrenan en cada uno, que se muestra en las páginas de Gimnasios y se cruza por nombre con los peleadores de cada organización. Solo se leen las páginas que permite su robots.txt.',
   'Next-Fight': 'Anuncios de peleas, próximas carteleras, confirmaciones de enfrentamientos y avisos de peleas por el título (como UFC 336: Prates vs. Morales).',
   Tapology: 'Récords completos de los peleadores, historiales de peleas en circuitos de MMA regionales y mundiales (Jungle Fight, Predador FC, LFA, etc.) y métodos de victoria.',
-  'ONE Championship': 'Carteleras oficiales de eventos de ONE Championship, resultados, perfiles de peleadores y campeones de las divisiones de MMA y muay thai.',
+  'ONE Championship': 'Carteleras oficiales de eventos de ONE Championship, resultados, perfiles y fotos de peleadores y campeones de las divisiones de MMA y muay thai.',
   Sherdog: 'Archivo de peleas de carrera, récords históricos, atributos físicos y linajes de carrera.',
   Wikipedia: 'Récords completos de peleas de MMA profesional, llaves de torneos Grand Prix (Predador FC, Jungle Fight, PRIDE, WEC, Strikeforce) y linajes históricos de títulos (CC BY-SA 4.0).',
   'Published UFC title histories': 'Campeones, reinados y la lista de peleas por el título BMF, recopilados a mano.',
