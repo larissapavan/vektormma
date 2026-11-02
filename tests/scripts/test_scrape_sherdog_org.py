@@ -342,11 +342,27 @@ def test_a_division_both_sexes_use_gets_women_s_when_a_woman_the_files_have_is_i
 
 def test_names_that_look_alike_are_listed_for_review_but_never_merged():
     fights, fighters = base()
-    fighters.append(espn_fighter("Oleksii Polischuck"))
-    event = sd_event(row(1, ("Oleksii Polishchuk", 11, "win"), CAL))
+    fighters.append(espn_fighter("Marek Novacek"))
+    event = sd_event(row(1, ("Marek Novacek Jr", 11, "win"), CAL))
     combined, people, report = sd.supplement(KSW, [event], fights, fighters, TODAY)
-    assert report["possible_same"] == ["Oleksii Polishchuk ~ Oleksii Polischuck"]
-    assert {"Oleksii Polishchuk", "Oleksii Polischuck"} <= {p["name"] for p in people}
+    assert report["possible_same"] == ["Marek Novacek Jr ~ Marek Novacek"]
+    assert {"Marek Novacek Jr", "Marek Novacek"} <= {p["name"] for p in people}
+
+
+def test_a_name_confirmed_as_the_same_person_is_merged_into_the_one_the_files_already_have(monkeypatch):
+    monkeypatch.setitem(sd.SAME_PERSON, "ksw", {"Oleksii Polishchuk": "Oleksii Polischuck"})
+    fights, fighters = base()
+    fighters.append(espn_fighter("Oleksii Polischuck", last_fight_date="2024-01-20"))
+    fights.append(espn_fight("older", "2024-01-20", "Oleksii Polischuck", "Dan Four", winner="Dan Four", order=1))
+    event = sd_event(row(1, ("Oleksii Polishchuk", 11, "win"), CAL), day="2025-02-21", ident="21")
+    combined, people, report = sd.supplement(KSW, [event], fights, fighters, TODAY)
+    names = {p["name"] for p in people}
+    assert "Oleksii Polischuck" in names and "Oleksii Polishchuk" not in names  # one profile, in the files' spelling
+    [bout] = [r for r in combined if "sherdog" in r["event_slug"]]
+    assert (bout["fighter_1"], bout["winner"], bout["fighter_1_url"]) == ("Oleksii Polischuck", "Oleksii Polischuck", "https://www.espn.com/mma/fighter/_/id/Ole")
+    person = next(p for p in people if p["name"] == "Oleksii Polischuck")
+    assert (person["first_fight_date"], person["last_fight_date"], person["status"]) == ("2024-01-20", "2025-02-21", "active")  # one history across both sources
+    assert report["possible_same"] == []
 
 
 def test_the_supplement_refuses_to_run_without_the_files_it_adds_to_and_all_leaves_it_out(tmp_path, monkeypatch, capsys):

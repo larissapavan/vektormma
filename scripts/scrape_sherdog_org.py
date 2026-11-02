@@ -82,6 +82,12 @@ ORGS: dict[str, SherdogOrg] = {
 }
 # What `all` runs: the organizations built from Sherdog alone. The others add to files another source wrote, so they run by name.
 STANDALONE = [org_id for org_id, org in ORGS.items() if org.since is None]
+# People the files already have under another spelling, confirmed by hand (Sherdog's spelling -> the one already in the files).
+# Only equal names are merged by the script; a name that merely looks alike is listed for review until it is added here.
+SAME_PERSON: dict[str, dict[str, str]] = {
+    "ksw": {"Oleksii Polishchuk": "Oleksii Polischuck", "Patryk Surdyn": "Patrick Surdyn"},
+    "rizin": {"Kyung Pyo Kim": "KyeungPyo Kim"},
+}
 # Sherdog does not say which sex a bout is, and these division names exist for both.
 AMBIGUOUS_DIVISIONS = {"Atomweight", "Strawweight", "Flyweight", "Bantamweight", "Featherweight", "Lightweight"}
 
@@ -311,6 +317,7 @@ def supplement(org: SherdogOrg, events: list[dict], fights: list[dict], fighters
     base_fights = [row for row in fights if not row["event_slug"].startswith(marker)]
     base_fighters = [row for row in fighters if not row["profile_url"].startswith(BASE_URL)]
     known = {name_key(row["name"]): row for row in base_fighters}
+    aliases = {name_key(sherdog): name_key(espn) for sherdog, espn in SAME_PERSON.get(org.id, {}).items() if name_key(espn) in known}
     report: dict = {"skipped_overlap": [], "possible_same": [], "womens_unresolved": 0, "womens_fixed": 0}
 
     pairs_by_day: dict[str, set[frozenset]] = {}
@@ -332,7 +339,7 @@ def supplement(org: SherdogOrg, events: list[dict], fights: list[dict], fighters
     womens_only = {name for name in AMBIGUOUS_DIVISIONS if labelled[f"Women's {name}"] and not labelled[name]}
     for row in new_fights:
         for side in ("fighter_1", "fighter_2"):
-            existing = known.get(name_key(row[side]))
+            existing = known.get(aliases.get(name_key(row[side]), name_key(row[side])))
             if existing:  # the spelling and the profile ESPN already gave this person
                 if row["winner"] == row[side]:
                     row["winner"] = existing["name"]
@@ -345,7 +352,7 @@ def supplement(org: SherdogOrg, events: list[dict], fights: list[dict], fighters
             else:
                 report["womens_unresolved"] += 1
 
-    new_people = [row for row in fighter_rows(kept, new_fights, today) if name_key(row["name"]) not in known]
+    new_people = [row for row in fighter_rows(kept, new_fights, today) if name_key(row["name"]) not in known and name_key(row["name"]) not in aliases]
     for person in new_people:  # a name that is not equal to one ESPN has but looks like it: for a human to look at
         close = max(((SequenceMatcher(None, name_key(person["name"]), key).ratio(), row["name"]) for key, row in known.items()), default=(0, ""))
         if close[0] >= 0.88:

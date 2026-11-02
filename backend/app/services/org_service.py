@@ -581,17 +581,17 @@ def get_org_data_info(org_id: str) -> dict:
     }
 
 
-def is_not_mma(discipline: str | None) -> bool:
-    """True for a bout whose source names a sport other than MMA ("Muay Thai", "Kickboxing"...). A bout whose source does
-    not say its sport is not taken for a non-MMA one."""
-    name = (discipline or "").strip()
-    return bool(name) and name.upper() != "MMA"
+def is_mma(discipline: str | None) -> bool:
+    """True only for a bout whose source says it is MMA. A bout of another sport, and one whose source does not say its
+    sport, are not: the prediction model is trained on MMA fights, so it is not shown for a bout that may be something else."""
+    return (discipline or "").strip().upper() == "MMA"
 
 
 def get_org_upcoming_predictions(org_id: str, service: Any) -> list[dict[str, Any]]:
     """Calculate upcoming matchup predictions for an organization using the predictive model.
 
-    The model is trained on MMA fights only, so a bout known to be another sport gets no prediction."""
+    The model is trained on MMA fights only, so a bout gets a prediction only when its source says it is MMA: not one of another
+    sport, and not one whose sport is not named."""
     if service is None:
         return []
 
@@ -601,7 +601,7 @@ def get_org_upcoming_predictions(org_id: str, service: Any) -> list[dict[str, An
         for fight in event.get("fights", []):
             fighter_1 = fight.get("fighter_1")
             fighter_2 = fight.get("fighter_2")
-            if not fighter_1 or not fighter_2 or is_not_mma(fight.get("discipline")):
+            if not fighter_1 or not fighter_2 or not is_mma(fight.get("discipline")):
                 continue
             try:
                 result = service.predict_pick(fighter_1, fighter_2)

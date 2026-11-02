@@ -118,3 +118,16 @@ def test_a_fighter_on_both_sides_of_2025_is_one_profile_with_one_history(client,
     name = both[0]
     history = client.get(f"/orgs/{org_id}/fighters/{name}/fights").json()
     assert any(f["date"] >= SHERDOG_FROM for f in history) and any(f["date"] < SHERDOG_FROM for f in history)
+
+
+@pytest.mark.parametrize(
+    ("org_id", "sherdog_spelling", "files_spelling"),
+    [("ksw", "Oleksii Polishchuk", "Oleksii Polischuck"), ("ksw", "Patryk Surdyn", "Patrick Surdyn"), ("rizin", "Kyung Pyo Kim", "KyeungPyo Kim")],
+)
+def test_a_person_spelled_differently_by_the_two_sources_is_one_profile_with_the_whole_history(client, org_id, sherdog_spelling, files_spelling):
+    names = {fighter["name"] for fighter in client.get(f"/orgs/{org_id}/fighters").json()}
+    assert files_spelling in names and sherdog_spelling not in names  # confirmed by hand: kept in the spelling the files had
+    history = client.get(f"/orgs/{org_id}/fighters/{files_spelling}/fights").json()
+    assert any(fight["date"] < SHERDOG_FROM for fight in history) and any(fight["date"] >= SHERDOG_FROM for fight in history)
+    events = client.get(f"/orgs/{org_id}/events").json() + client.get(f"/orgs/{org_id}/events/upcoming").json()
+    assert not any(sherdog_spelling in (fight["fighter_1"], fight["fighter_2"]) for event in events for fight in event["fights"])

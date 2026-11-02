@@ -282,18 +282,18 @@ class StubModel:
         return {"predicted_winner": a, "probability": 0.7, "fighter_a_probability": 0.7}
 
 
-def test_no_prediction_is_made_for_a_bout_known_to_be_another_sport(mixed_sports_org):
+def test_a_prediction_is_made_only_for_a_bout_the_source_says_is_mma(mixed_sports_org):
     model = StubModel()
     picks = org_service.get_org_upcoming_predictions("mixed", model)
-    # The model is trained on MMA only: the Muay Thai and the kickboxing bout get none. The MMA bout does, and so does the one
-    # whose source does not say its sport (it is not known to be anything else).
-    assert [(pick["fighter_1"], pick["fighter_2"]) for pick in picks] == [("Bia Costa", "Dora Reis"), ("Ana Silva", "Dora Reis")]
-    assert model.asked == [("Bia Costa", "Dora Reis"), ("Ana Silva", "Dora Reis")]  # the model was not even asked about the others
+    # The model is trained on MMA only: the Muay Thai and the kickboxing bout get none, and neither does the one whose
+    # source does not say its sport (it may be something else). Only the bout named MMA does.
+    assert [(pick["fighter_1"], pick["fighter_2"]) for pick in picks] == [("Bia Costa", "Dora Reis")]
+    assert model.asked == [("Bia Costa", "Dora Reis")]  # the model was not even asked about the others
 
 
 @pytest.mark.parametrize(
     ("discipline", "expected"),
-    [("Muay Thai", True), ("Kickboxing", True), ("Submission Grappling", True), ("Grappling", True), ("MMA", False), ("mma", False), (" MMA ", False), ("", False), (None, False)],
+    [("MMA", True), ("mma", True), (" MMA ", True), ("Muay Thai", False), ("Kickboxing", False), ("Submission Grappling", False), ("Grappling", False), ("", False), (None, False)],
 )
-def test_only_a_named_sport_other_than_mma_counts_as_not_mma(discipline, expected):
-    assert org_service.is_not_mma(discipline) is expected
+def test_only_a_bout_named_mma_counts_as_mma(discipline, expected):
+    assert org_service.is_mma(discipline) is expected
