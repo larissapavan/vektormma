@@ -14,8 +14,10 @@ from src.ufc_predictor.config import RAW_DATA_DIR
 DATA_SOURCES = [
     "ufcstats.com",
     "ufc.com",
+    "espn.com",
     "pflmma.com",
     "onefc.com",
+    "oktagonmma.com",
     "sherdog.com",
     "wikipedia.org",
     "tapology.com",

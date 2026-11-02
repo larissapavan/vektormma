@@ -85,9 +85,22 @@ def test_the_guards_against_two_people_with_one_name(ufc_division, org_division,
 def test_the_prediction_model_never_reads_the_other_organizations():
     """The record and striking numbers the model uses come from the UFC catalog, and the pre-fight history from event_cards.csv.
     Showing a second history on the profile must not change either."""
-    for module in ("prediction_service.py", "catalog_service.py", "events_service.py"):
-        source = (Path(__file__).resolve().parents[2] / "backend" / "app" / "services" / module).read_text(encoding="utf-8")
+    services = Path(__file__).resolve().parents[2] / "backend" / "app" / "services"
+    for module in ("prediction_service.py", "events_service.py"):
+        source = (services / module).read_text(encoding="utf-8")
         assert "crossorg" not in source and "org_service" not in source, f"{module} must not read the other organizations"
+
+    # The UFC catalog is the data the model reads. Only the profile lookup for a fighter who is NOT in the UFC catalog (an
+    # organization's own fighter, opened from its page) may reach for the organizations, and it runs after the catalog came up empty.
+    import inspect
+
+    from backend.app.services import catalog_service
+
+    source = (services / "catalog_service.py").read_text(encoding="utf-8")
+    assert "crossorg" not in source
+    outside_profile = source.replace(inspect.getsource(catalog_service.get_fighter_profile), "")
+    assert "org_service" not in outside_profile, "only get_fighter_profile may look at the other organizations"
+    assert "org_service" not in inspect.getsource(catalog_service.get_fighter_catalog)
 
     events = pd.read_csv(RAW_DATA_DIR / "event_cards.csv", usecols=["event_name"])["event_name"].astype(str)
     assert not events.str.contains(r"\b(?:PFL|Bellator)\b", flags=re.IGNORECASE, regex=True).any()

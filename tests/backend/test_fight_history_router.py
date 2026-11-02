@@ -20,7 +20,10 @@ def test_fighter_performance_known_fighters_return_200(client, fighter_name):
     assert body["total_fights"] >= body["wins"] + body["losses"]
     assert sum(body["method_breakdown"].values()) == body["wins"]
     assert len(body["last_performances"]) <= 5
-    assert len(body["career_timeline"]) == body["total_fights"]
+    # The timeline is the whole career, every organization: it holds all of the UFC fights counted above, and the others besides.
+    timeline = body["career_timeline"]
+    assert len(timeline) >= body["total_fights"]
+    assert sum(1 for f in timeline if f.get("is_ufc", True)) >= body["total_fights"]
     dated = [f["date"] for f in body["career_timeline"] if f["date"]]
     assert dated == sorted(dated)
 

@@ -3,7 +3,8 @@ from __future__ import annotations
 import re
 import unicodedata
 from collections import deque
-from datetime import datetime
+from datetime import date, datetime
+from difflib import SequenceMatcher
 
 import pandas as pd
 
@@ -43,6 +44,42 @@ def _source_signature() -> tuple | None:
 def _fold(name: str) -> str:
     """Name key that ignores accents: title_reigns.csv writes "José Aldo", the fight history "Jose Aldo"."""
     return _normalize_name(unicodedata.normalize("NFKD", str(name)).encode("ascii", "ignore").decode())
+
+
+def _day(value) -> date | None:
+    try:
+        return date.fromisoformat(str(value)[:10])
+    except ValueError:
+        return None
+
+
+def _merge_career_timeline(official: list[dict], cached: list[dict]) -> list[dict]:
+    """The whole career (the cache: every organization, oldest first) with the UFC fights as the UFC history records them.
+
+    The cache lists a UFC fight with no winner, referee, rounds scheduled, fight link or interim-title mark, which the history
+    built from the event cards has. So each UFC fight in the cache is matched to the history's fight and the history's fields win.
+    Both sources describe the same card, but the day can differ by one (local time against UTC) and so can the spelling of the
+    name ("Jan Błachowicz", "Jan Blachowicz"), and a fighter is not on two cards a day apart: the match is by day (within one),
+    the name only picks between two candidates.
+
+    A UFC fight the history has and the cache does not (a fight newer than the cache) is added. A UFC fight only the cache has
+    (an early one the event cards miss) is kept as the cache has it. Every other organization's fight is untouched."""
+    unmatched = list(official)
+    timeline: list[dict] = []
+    for entry in cached:
+        entry = dict(entry)
+        if entry.get("is_ufc", True):
+            when = _day(entry.get("date"))
+            candidates = [(abs((_day(fight["date"]) - when).days), fight) for fight in unmatched if when and _day(fight.get("date")) and abs((_day(fight["date"]) - when).days) <= 1]
+            if candidates:
+                _, best = min(candidates, key=lambda item: (item[0], -SequenceMatcher(None, _fold(item[1]["opponent"]), _fold(entry.get("opponent", ""))).ratio()))
+                unmatched.remove(best)
+                entry = {**entry, **{key: value for key, value in best.items() if value is not None}, "is_ufc": True, "organization": "UFC"}
+        timeline.append(entry)
+    for fight in unmatched:
+        timeline.append({**fight, "is_ufc": True, "organization": "UFC"})
+    timeline.sort(key=lambda fight: fight.get("date") or "")  # stable: the cache's order breaks ties
+    return timeline
 
 
 def _pair_key(fighter_1: str, fighter_2: str) -> tuple[str, str]:
@@ -347,7 +384,7 @@ def get_fighter_performance(name: str) -> dict:
         career_data = None
 
     if career_data and career_data.get("fights"):
-        timeline = career_data["fights"]
+        timeline = _merge_career_timeline(fights, career_data["fights"])
         ufc_rec = career_data.get("ufc_record")
         comp_rec = career_data.get("complete_record")
         orgs = career_data.get("organizations", ["UFC"])
