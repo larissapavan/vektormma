@@ -59,6 +59,7 @@ class OrgFighter(BaseModel):
 
 class OrgFight(FightResult):
     stage: str | None = None
+    discipline: str | None = None  # "MMA", "Muay Thai", "Kickboxing"...: only where the source says it
 
 
 class OrgEvent(EventSummary):

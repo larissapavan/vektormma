@@ -221,6 +221,8 @@ def _format_fight(row: dict) -> dict:
         "time": _text(row.get("time")),
         "fight_url": _text(row.get("fight_url")),
         "title_fight": True if str(row.get("title_fight", "")).lower() == "true" else None,
+        # The sport of the bout, when the source says it (the ONE file does): "MMA", "Muay Thai", "Kickboxing"...
+        "discipline": _text(row.get("discipline")),
     }
 
 
@@ -272,6 +274,7 @@ def _fighter_history(events: list[dict]) -> dict[str, list[dict]]:
                         "location": event["location"],
                         "fight_url": fight["fight_url"],
                         "title_fight": fight["title_fight"],
+                        "discipline": fight["discipline"],
                         "outcome": outcome,
                     }
                 )

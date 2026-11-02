@@ -45,6 +45,8 @@ ORG_MIN_ROWS = {
     "jungle-fight": {"fights.csv": 1500, "fighters.csv": 1600, "rankings.csv": 0},
     "invicta": {"fights.csv": 480, "fighters.csv": 360, "rankings.csv": 0},
 }
+# A column added at the end on purpose (the ONE file now says the sport of each bout). Once it is committed it is the header to keep.
+ADDED_COLUMNS = {"one/fights.csv": ["discipline"]}
 STALE_UPCOMING_DAYS = 3  # a card this far past its date should have turned into results by now
 
 
@@ -229,7 +231,7 @@ def org_problems() -> list[str]:
             if old_text is None:
                 continue
             old_rows = read_rows(old_text)
-            if old_rows and new_rows and old_rows[0] != new_rows[0]:
+            if old_rows and new_rows and old_rows[0] != new_rows[0] and new_rows[0] != old_rows[0] + ADDED_COLUMNS.get(label, []):
                 problems.append(f"{label}: header changed {old_rows[0]} -> {new_rows[0]}")
             old_n, new_n = len(old_rows) - 1, len(new_rows) - 1
             if old_n > 0 and new_n < old_n * (1 - MAX_ROW_LOSS):

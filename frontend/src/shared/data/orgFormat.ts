@@ -59,6 +59,16 @@ export function formatMethod(method: string | null, detail?: string | null, lang
   return detail ? `${label} (${detail})` : label
 }
 
+/** The sport of a bout that is not MMA ("Muay Thai", "Kickboxing"...), or null for an MMA bout and for one whose source does not say. */
+export function nonMmaDiscipline(discipline: string | null | undefined): string | null {
+  const name = (discipline ?? '').trim()
+  return name && name.toUpperCase() !== 'MMA' ? name : null
+}
+
+export function nonMmaHint(language: string | boolean = false) {
+  return L(language, 'Esta luta não é de MMA, mas conta no cartel.', 'Not an MMA bout, but it counts in the record.', "Ce combat n'est pas du MMA, mais il compte dans le palmarès.", 'Esta pelea no es de MMA, pero cuenta en el récord.')
+}
+
 /** "KO/TKO · R2 · 4:07" for a fought bout, null for one that has not happened. */
 export function fightSummary(fight: Pick<OrgFightResult, 'method' | 'method_detail' | 'round' | 'time'>, language: string | boolean = false) {
   const parts = [formatMethod(fight.method, fight.method_detail, language), fight.round ? `R${fight.round}` : null, fight.time]

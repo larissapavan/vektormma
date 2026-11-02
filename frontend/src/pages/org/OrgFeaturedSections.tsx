@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { FighterAvatar } from '../../shared/components/FighterAvatar'
 import { FlagIcon } from '../../shared/components/FlagIcon'
 import { LoadingSkeleton } from '../../shared/components/LoadingSkeleton'
-import { OrgFightRow, OrgTitleBadge } from '../../shared/components/OrgFightRow'
+import { OrgFightRow, OrgSportTag, OrgTitleBadge } from '../../shared/components/OrgFightRow'
 import { WinProbabilityBar } from '../../shared/components/WinProbabilityBar'
 import { L, localeTag } from '../../i18n/lang'
 import { getDivisionName } from '../../shared/data/divisions'
@@ -210,6 +210,7 @@ export function MainEventCard({
         <div className="flex flex-wrap items-center gap-2">
           <p className="broadcast-label text-[11px] text-[var(--accent-red)]">{L(lang, 'Luta Principal', 'Main event', 'Combat principal', 'Pelea estelar')}</p>
           {main.title_fight ? <OrgTitleBadge weightClass={main.weight_class} /> : null}
+          <OrgSportTag discipline={main.discipline} />
         </div>
 
         <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4">

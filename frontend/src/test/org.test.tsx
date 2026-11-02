@@ -367,7 +367,20 @@ describe('ONE Championship', () => {
     expect(screen.getAllByRole('link', { name: 'Champions' })[0]).toHaveAttribute('href', '/one/champions')
   })
 
+  it('flags a bout that is not MMA with its sport, and does not flag an MMA bout', async () => {
+    renderAt('/one')
+    const latest = await screen.findByRole('region', { name: 'Latest results' }, WAIT)
+    expect(await within(latest).findByText('Muay Thai', undefined, WAIT)).toHaveAttribute('title', expect.stringMatching(/not an MMA bout/i))
+    expect(within(latest).getAllByText('Muay Thai')).toHaveLength(1)
+    expect(within(latest).getByText('Lena Ortiz')).toBeInTheDocument()  // the MMA bout is on the card too...
+    expect(within(latest).queryByText('MMA')).not.toBeInTheDocument()  // ...and carries no sport tag
+  })
 
+  it('flags the main event of the next card too when it is not MMA', async () => {
+    renderAt('/one')
+    expect(await screen.findByRole('heading', { name: 'ONE Fight Night 49: Gabriel vs. Magomedov' }, WAIT)).toBeInTheDocument()
+    expect(await screen.findByText('Kickboxing', undefined, WAIT)).toHaveAttribute('title', expect.stringMatching(/counts in the record/i))
+  })
 })
 
 describe('the organization switcher', () => {

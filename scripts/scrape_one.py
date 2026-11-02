@@ -14,6 +14,11 @@ What it does with the file (the history before this script existed is kept exact
   file are never overwritten, and the time and the technical detail stay blank because the page does not show them;
 - an event the file does not have yet is created, with the same name and slug conventions as the others.
 
+Every bout also carries its discipline ("MMA", "Muay Thai", "Kickboxing", "Submission Grappling", "Grappling"), the column
+`discipline` that only this file has: the cards mix MMA with other sports, and the site flags the ones that are not MMA.
+`--disciplines` reads every event page once and fills the column for the bouts the file already has (history included),
+without adding, replacing or removing any bout. A bout the pages do not match is left blank, never guessed.
+
 Only events whose page changed in the last LASTMOD_DAYS days are opened, and of those only the ones inside
 [--since, --until] are used, so a daily run reads a few dozen pages. Athlete profiles (data/raw/one/fighters.csv) are not
 touched: an athlete who has no profile there yet is only reported.
@@ -23,6 +28,7 @@ Usage (from the repo root):
     python -m scripts.scrape_one                           # update data/raw/one/fights.csv
     python -m scripts.scrape_one --since 2026-01-01        # also re-read older events (results, corrections)
     python -m scripts.scrape_one --cache-dir .one-cache    # keep downloaded pages
+    python -m scripts.scrape_one --disciplines --cache-dir .one-cache   # fill the discipline of every stored bout
 """
 
 from __future__ import annotations
@@ -65,6 +71,8 @@ NAME_SIMILARITY = 0.86
 VARIANT_SIMILARITY = 0.78
 
 CIRCUIT = "ONE Championship"
+# The columns of the ONE file: the common ones plus the sport of the bout (blank when the site does not say).
+ONE_FIELDS = [*FIGHT_FIELDS, "discipline"]
 DISCIPLINES = ("Submission Grappling", "Muay Thai", "Kickboxing", "MMA", "Grappling")
 # ONE's own class names. The file has no men's Strawweight: ONE's 125 lb class is stored as Flyweight, like the UFC's.
 WOMENS_DIVISIONS = ("Atomweight", "Strawweight", "Flyweight", "Bantamweight", "Featherweight")
@@ -156,6 +164,12 @@ def _json_ld_event(soup: BeautifulSoup) -> dict | None:
     return None
 
 
+def discipline_of(text: str) -> str:
+    """The sport a bout title names, wherever it stands in it ("Lightweight MMA", "140 LBS Muay Thai"), or "" when it names none."""
+    found = re.search(r"\b(" + "|".join(re.escape(name) for name in DISCIPLINES) + r")\b", clean(text), re.IGNORECASE)
+    return next((name for name in DISCIPLINES if found and name.lower() == found.group(1).lower()), "")
+
+
 def split_title(text: str) -> dict:
     """'Strawweight Muay Thai World Championship Unification' -> division, discipline and whether a world title is at stake."""
     text = clean(text)
@@ -164,12 +178,13 @@ def split_title(text: str) -> dict:
         text = text[len("women's "):]
     division = next((name for name in DIVISIONS if text.startswith(name)), "")
     rest = text[len(division):].strip()
-    discipline = next((name for name in DISCIPLINES if rest.startswith(name)), "")
-    tail = rest[len(discipline):].strip()
+    leading = next((name for name in DISCIPLINES if rest.startswith(name)), "")
+    tail = rest[len(leading):].strip()
     return {
         "division": division,
         "womens": womens or division == "Atomweight",
-        "discipline": discipline,
+        # The sport is named right after the division ("Lightweight MMA") or after a weight in pounds ("140 LBS Muay Thai").
+        "discipline": discipline_of(text),
         "title_fight": bool(re.search(r"\bworld\b.*\b(championship|title)\b|\bworld title\b", tail, re.IGNORECASE)),
     }
 
@@ -362,6 +377,8 @@ def merge_event(stored: list[dict], event: dict, profiles: Profiles, womens: set
         index, hits = best
         if index is not None and hits == 2:
             used.add(index)
+            if not rows[index].get("discipline"):
+                rows[index]["discipline"] = bout["discipline"]
             if results:
                 _apply_result(rows[index], bout, report)
             continue
@@ -376,12 +393,13 @@ def merge_event(stored: list[dict], event: dict, profiles: Profiles, womens: set
             continue
         (slug_a, name_a), (slug_b, name_b) = bout["fighters"]
         (n1, u1), (n2, u2) = profiles.person(slug_a, name_a), profiles.person(slug_b, name_b)
-        row = {field: "" for field in FIGHT_FIELDS}
+        row = {field: "" for field in ONE_FIELDS}
         row.update(meta)
         row.update({
             "fight_url": f"{url_base}#bout-{order}", "card_order": str(order), "fighter_1": n1, "fighter_2": n2,
             "fighter_1_url": u1, "fighter_2_url": u2, "weight_class": weight_class(bout, womens),
             "stage": "World Title" if bout["title_fight"] else stage, "title_fight": "true" if bout["title_fight"] else "false",
+            "discipline": bout["discipline"],
         })
         if results:
             _apply_result(row, bout, report)
@@ -431,6 +449,88 @@ def merge_all(rows: list[dict], events: list[dict], profiles: Profiles, *, resul
     return [row for key in ordered for row in groups[key]], report
 
 
+def fill_disciplines(rows: list[dict], events: list[dict]) -> tuple[list[dict], dict]:
+    """The stored rows with `discipline` filled in from the pages. Only a bout that matches a stored row on BOTH athletes is
+    used; nothing is added, replaced or removed, a row that already has a discipline keeps it, and an unmatched row stays blank."""
+    rows = [dict(row) for row in rows]
+    report: dict = {"filled": Counter(), "no_event": [], "ambiguous": 0, "no_discipline_on_page": 0}
+    groups: dict[tuple[str, str], list[int]] = {}
+    for index, row in enumerate(rows):
+        groups.setdefault((row["event_date"], row["event_slug"]), []).append(index)
+    keyed = {key: [rows[index] for index in indexes] for key, indexes in groups.items()}
+    for event in events:
+        key = find_group(keyed, event)
+        if key is None:
+            report["no_event"].append(f"{event['date']} {event['title']}")
+            continue
+        members = [rows[index] for index in groups[key]]
+        used: set[int] = set()
+        for bout in event["bouts"]:
+            best = max(((position, _pair_matches(bout, row)) for position, row in enumerate(members) if position not in used), key=lambda item: item[1], default=(None, 0))
+            position, hits = best
+            if position is None or hits == 0:
+                continue
+            if hits == 1:
+                report["ambiguous"] += 1  # one athlete matches and the other does not: not safely the same bout
+                continue
+            used.add(position)
+            if not bout["discipline"]:
+                report["no_discipline_on_page"] += 1
+            elif not members[position].get("discipline"):
+                members[position]["discipline"] = bout["discipline"]
+                report["filled"][bout["discipline"]] += 1
+    return rows, report
+
+
+def with_discipline_column(header: list[str] | None, rows: list[dict]) -> tuple[list[str], list[dict]]:
+    """The file's header with `discipline` added at the end when it is not there yet, and every row carrying the key."""
+    columns = list(header or FIGHT_FIELDS)
+    if "discipline" not in columns:
+        columns.append("discipline")
+    for row in rows:
+        row.setdefault("discipline", "")
+    return columns, rows
+
+
+def run_disciplines(fetcher: Fetcher, header: list[str] | None, stored: list[dict], *, dry_run: bool) -> int:
+    """Read every event page once and fill the discipline of the stored bouts (see fill_disciplines)."""
+    entries = parse_sitemap(fetcher.get(SITEMAP_URL))
+    print(f"[info] {len(entries)} event pages in the sitemap")
+    events: list[dict] = []
+    failures = 0
+    for position, (url, _) in enumerate(entries, 1):
+        try:
+            event = parse_event_page(fetcher.get(url), url)
+        except RuntimeError as error:
+            failures += 1
+            print(f"[warn] {error}")
+            continue
+        if event is not None:
+            events.append(event)
+        if position % 50 == 0:
+            print(f"[info] {position}/{len(entries)} pages read")
+    print(f"[info] {len(events)} events read ({failures} pages failed)")
+    if not events:
+        print("[error] no event found; the file was left untouched")
+        return 1
+    columns, rows = with_discipline_column(header, [dict(row) for row in stored])
+    filled, report = fill_disciplines(rows, events)
+    if len(filled) != len(stored):
+        print("[error] the row count changed; the file was left untouched")
+        return 1
+    blank = sum(1 for row in filled if not row.get("discipline"))
+    print(f"[info] discipline filled for {sum(report['filled'].values())} bouts: {dict(report['filled'])}")
+    print(f"[info] still blank: {blank} of {len(filled)} bouts | pages with a bout that matches only one athlete: {report['ambiguous']} | bouts whose page names no discipline: {report['no_discipline_on_page']}")
+    if report["no_event"]:
+        print(f"[info] {len(report['no_event'])} events on the site are not in the file (first: {report['no_event'][:3]})")
+    if dry_run:
+        print("[dry-run] nothing written")
+        return 0
+    save_csv(FIGHTS_PATH, columns, filled)
+    print(f"[info] {FIGHTS_PATH.name} updated with the discipline column")
+    return 0
+
+
 # --------------------------------------------------------------------------- main
 
 
@@ -440,6 +540,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--until", type=date.fromisoformat, help="last event day to use (default: one year ahead)")
     parser.add_argument("--dry-run", action="store_true", help="read the site and report, write nothing")
     parser.add_argument("--no-results", action="store_true", help="only cards: do not fill in winners and methods")
+    parser.add_argument("--disciplines", action="store_true", help="read every event page and fill the discipline of the stored bouts; adds, replaces and removes nothing")
     parser.add_argument("--cache-dir", type=Path, help="keep downloaded pages here, so an interrupted run can resume")
     args = parser.parse_args(argv)
 
@@ -453,6 +554,8 @@ def main(argv: list[str] | None = None) -> int:
     profiles = Profiles(load_csv(FIGHTERS_PATH)[1] if FIGHTERS_PATH.exists() else [])
 
     fetcher = Fetcher(delay=REQUEST_DELAY_SECONDS, cache_dir=args.cache_dir)
+    if args.disciplines:
+        return run_disciplines(fetcher, header, stored, dry_run=args.dry_run)
     entries = parse_sitemap(fetcher.get(SITEMAP_URL))
     pages = candidate_pages(entries, today)
     print(f"[info] {len(entries)} event pages in the sitemap, {len(pages)} touched in the last {LASTMOD_DAYS} days")
@@ -472,6 +575,7 @@ def main(argv: list[str] | None = None) -> int:
         print("[error] no event found; the file was left untouched")
         return 1
 
+    columns, stored = with_discipline_column(header, stored)
     merged, report = merge_all(stored, events, profiles, results=not args.no_results)
     if len(merged) < len(stored):
         print(f"[error] the merge would drop rows ({len(stored)} -> {len(merged)}); the file was left untouched")
@@ -489,8 +593,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.dry_run:
         print("[dry-run] nothing written")
         return 0
-    if merged != stored:
-        save_csv(FIGHTS_PATH, header or FIGHT_FIELDS, merged)
+    if merged != stored or columns != (header or FIGHT_FIELDS):
+        save_csv(FIGHTS_PATH, columns, merged)
         print(f"[info] {FIGHTS_PATH.name} updated: {len(stored)} -> {len(merged)} rows")
     else:
         print("[info] nothing changed")

@@ -19,6 +19,7 @@ class FightRecord(BaseModel):
     referee: str | None = None
     num_rounds: int | None = None
     title_fight: bool | None = None
+    discipline: str | None = None  # other organizations: the sport of the bout when the source says it ("Muay Thai")
     bmf_title: bool = False
     interim_title: bool = False
     interim_title_win: bool = False

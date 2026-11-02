@@ -224,3 +224,41 @@ def test_an_organization_without_its_own_record_gets_one_counted_from_its_bouts(
     assert fighters["Bia Costa"]["org_record"] == "1-1-0"  # beat Dora, lost to Ana
     assert fighters["Ana Silva"]["org_record"] == "2-1-0"  # the file's own value wins over the count
     assert fighters["Dora Reis"]["org_record"] == "0-1-0"
+
+
+# --------------------------------------------------------------------------- the sport of a bout (the ONE file has a discipline column)
+
+
+@pytest.fixture
+def mixed_sports_org(tmp_path, monkeypatch):
+    fights = [
+        _fight("card", "Mixed Card", PAST, 0, "Ana Silva", "Bia Costa", "Ana Silva", method="KO/TKO", round=1, time="1:00", discipline="Muay Thai"),
+        _fight("card", "Mixed Card", PAST, 1, "Ana Silva", "Caio Dias", "Caio Dias", method="U-DEC", round=3, time="5:00", discipline="MMA"),
+        _fight("card", "Mixed Card", PAST, 2, "Bia Costa", "Dora Reis", "Dora Reis", method="SUB", round=2, time="2:00"),  # the source did not say
+    ]
+    fighters = [_fighter(name, (1, 1, 0), last_fight_date=PAST) for name in ("Ana Silva", "Bia Costa", "Caio Dias", "Dora Reis")]
+    _write(tmp_path / "fights.csv", [*FIGHT_FIELDS, "discipline"], fights)
+    _write(tmp_path / "fighters.csv", FIGHTER_FIELDS, fighters)
+    _write(tmp_path / "rankings.csv", RANKING_FIELDS, [])
+    test_org = org_service.Org(id="mixed", name="Mixed Sports", short_name="MS", tagline="Several sports.", sources=("example.test",), root=tmp_path)
+    monkeypatch.setitem(org_service.ORGS, "mixed", test_org)
+    org_service._cache.pop("mixed", None)
+    yield test_org
+    org_service._cache.pop("mixed", None)
+
+
+def test_the_sport_of_each_bout_is_served_with_the_card_and_blank_when_the_source_does_not_say(client, mixed_sports_org):
+    [event] = client.get("/orgs/mixed/events").json()
+    assert [fight["discipline"] for fight in event["fights"]] == ["Muay Thai", "MMA", None]
+
+
+def test_the_sport_is_served_with_a_fighters_history_and_the_record_still_counts_every_bout(client, mixed_sports_org):
+    history = client.get("/orgs/mixed/fighters/Ana Silva/fights").json()
+    assert {fight["opponent"]: fight["discipline"] for fight in history} == {"Bia Costa": "Muay Thai", "Caio Dias": "MMA"}
+    ana = next(fighter for fighter in client.get("/orgs/mixed/fighters").json() if fighter["name"] == "Ana Silva")
+    assert ana["org_record"] == "1-1-0"  # the Muay Thai win and the MMA loss both count: the bouts are flagged, the record is kept
+
+
+def test_a_file_without_the_column_serves_no_sport(client, org):
+    [past, _] = client.get("/orgs/test/events").json()
+    assert all(fight["discipline"] is None for fight in past["fights"])
