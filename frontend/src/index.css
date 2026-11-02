@@ -772,17 +772,17 @@ select.soft-input option {
   color: var(--text-red) !important;
 }
 
-/* Org-card gloves: neon glow + float, driven by --glove-duration / --glove-delay on the card.
-   Only transform/opacity are animated; the filter glow is static and only changes on hover. */
+/* Org-card gloves: a soft rim in the organization colour + float, driven by --glove-duration / --glove-delay on the card.
+   Only transform/opacity are animated; the filter is static and only changes on hover. */
 .glove-art {
-  filter: drop-shadow(0 0 1.5px var(--glove-glow))
-    drop-shadow(0 0 14px color-mix(in srgb, var(--glove-glow) 65%, transparent));
+  filter: drop-shadow(0 0 1px var(--glove-glow))
+    drop-shadow(0 0 6px color-mix(in srgb, var(--glove-glow) 35%, transparent));
   transition: filter 0.35s ease;
 }
 
 .group:hover .glove-art {
-  filter: drop-shadow(0 0 2px var(--glove-glow))
-    drop-shadow(0 0 22px color-mix(in srgb, var(--glove-glow) 90%, transparent));
+  filter: drop-shadow(0 0 1px var(--glove-glow))
+    drop-shadow(0 0 10px color-mix(in srgb, var(--glove-glow) 55%, transparent));
 }
 
 /* Colour wash clipped to the glove's own silhouette, so it only touches the leather. */
@@ -824,25 +824,9 @@ select.soft-input option {
   transform: translateY(-5px) scale(1.05);
 }
 
-.glove-halo-wrap {
-  transition: opacity 0.35s ease;
-}
-
-.group:hover .glove-halo-wrap {
-  opacity: 1;
-}
-
 .glove-float {
   animation: glove-float var(--glove-duration, 5s) ease-in-out var(--glove-delay, 0s) infinite;
   will-change: transform;
-}
-
-.glove-halo {
-  animation: glove-halo var(--glove-duration, 5s) ease-in-out var(--glove-delay, 0s) infinite;
-}
-
-.glove-shadow {
-  animation: glove-shadow var(--glove-duration, 5s) ease-in-out var(--glove-delay, 0s) infinite;
 }
 
 @keyframes glove-float {
@@ -855,42 +839,14 @@ select.soft-input option {
   }
 }
 
-/* The glove is highest at 0%: the cast shadow shrinks and fades, the halo tightens. */
-@keyframes glove-halo {
-  0%,
-  100% {
-    transform: scale(0.92);
-    opacity: 0.6;
-  }
-  50% {
-    transform: scale(1.06);
-    opacity: 0.9;
-  }
-}
-
-@keyframes glove-shadow {
-  0%,
-  100% {
-    transform: scaleX(0.75);
-    opacity: 0.25;
-  }
-  50% {
-    transform: scaleX(1.05);
-    opacity: 0.55;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .glove-float,
-  .glove-halo,
-  .glove-shadow {
+  .glove-float {
     animation: none;
   }
 
   .glove-art,
   .glove-tint,
-  .glove-lift,
-  .glove-halo-wrap {
+  .glove-lift {
     transition: none;
   }
 

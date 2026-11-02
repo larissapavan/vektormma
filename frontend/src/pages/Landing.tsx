@@ -13,265 +13,46 @@ import { FeaturedMatchup } from '../shared/components/FeaturedMatchup'
 import { useDataInfo } from '../shared/hooks/useDataInfo'
 import { useModelInfo } from '../shared/hooks/useModelInfo'
 
-interface OrgMetric {
-  labelPt: string
-  labelEn: string
-  labelFr: string
-  labelEs: string
-  valuePt: string
-  valueEn: string
-  valueFr: string
-  valueEs: string
-}
-
-interface OrgStatusBadge {
-  labelPt: string
-  labelEn: string
-  labelFr: string
-  labelEs: string
-  pulse?: boolean
-}
+type StatusKind = 'ai' | 'tournament' | 'archive' | 'results'
 
 interface OrgCardInfo {
   id: OrgId
-  watermark: string
+  index: string
   shortName: string
   fullName: string
-  fullNameEn?: string
-  fullNameFr?: string
-  fullNameEs?: string
   accentColor: string
-  hoverBorder: string
-  glove: { src: string; glow: string; duration: string; delay: string }
-  statusBadge: OrgStatusBadge
-  metrics: [OrgMetric, OrgMetric]
+  glove: { src: string; duration: string; delay: string }
+  status: StatusKind
+  /** Snapshot of the data-info counts (events, fighters, bouts): rounded down when shown, so "790+" stays true as data grows. */
+  counts: { events: number; fighters: number; fights: number }
+}
+
+const STATUS_LABELS: Record<StatusKind, { pt: string; en: string; fr: string; es: string; pulse: boolean }> = {
+  ai: { pt: 'Previsões IA', en: 'AI Predictions', fr: 'Pronostics IA', es: 'Pronósticos IA', pulse: true },
+  tournament: { pt: 'Liga & Torneio', en: 'Tournament', fr: 'Tournoi Actif', es: 'Torneo', pulse: false },
+  archive: { pt: 'Arquivo Histórico', en: 'Historical Archive', fr: 'Archives', es: 'Archivo histórico', pulse: false },
+  results: { pt: 'Eventos & Resultados', en: 'Events & Results', fr: 'Événements & Résultats', es: 'Eventos y resultados', pulse: false },
 }
 
 const ORG_CARDS: OrgCardInfo[] = [
-  {
-    id: 'ufc',
-    watermark: '01',
-    shortName: 'UFC',
-    fullName: 'Ultimate Fighting Championship',
-    accentColor: '#E11D48',
-    hoverBorder: 'border-[#E11D48]/35 hover:border-[#E11D48] hover:shadow-[0_0_30px_rgba(225,29,72,0.28),inset_0_0_15px_rgba(225,29,72,0.08)]',
-    glove: { src: '/mma-glove-ufc.webp', glow: '#E11D48', duration: '5.2s', delay: '0s' },
-    statusBadge: {
-      labelPt: 'Previsões IA',
-      labelEn: 'AI Predictions',
-      labelFr: 'Pronostics IA',
-      labelEs: 'Pronósticos IA',
-      pulse: true,
-    },
-    metrics: [
-      { labelPt: 'Divisões', labelEn: 'Divisions', labelFr: 'Divisions', labelEs: 'Divisiones', valuePt: '12', valueEn: '12', valueFr: '12', valueEs: '12' },
-      { labelPt: 'Lutas', labelEn: 'Bouts', labelFr: 'Combats', labelEs: 'Peleas', valuePt: '8.9k+', valueEn: '8.9k+', valueFr: '8.9k+', valueEs: '8.9k+' },
-    ],
-  },
-  {
-    id: 'pfl',
-    watermark: '02',
-    shortName: 'PFL',
-    fullName: 'Professional Fighters League',
-    accentColor: '#2563EB',
-    hoverBorder: 'border-[#2563EB]/35 hover:border-[#2563EB] hover:shadow-[0_0_30px_rgba(37,99,235,0.28),inset_0_0_15px_rgba(37,99,235,0.08)]',
-    glove: { src: '/mma-glove-pfl.webp', glow: '#2563EB', duration: '4.6s', delay: '-1.4s' },
-    statusBadge: {
-      labelPt: 'Liga & Torneio',
-      labelEn: 'Tournament',
-      labelFr: 'Tournoi Actif',
-      labelEs: 'Torneo',
-      pulse: false,
-    },
-    metrics: [
-      { labelPt: 'Divisões', labelEn: 'Divisions', labelFr: 'Divisions', labelEs: 'Divisiones', valuePt: '10', valueEn: '10', valueFr: '10', valueEs: '10' },
-      { labelPt: 'Formato', labelEn: 'Format', labelFr: 'Format', labelEs: 'Formato', valuePt: 'Torneio', valueEn: 'Tournament', valueFr: 'Tournoi', valueEs: 'Torneo' },
-    ],
-  },
-  {
-    id: 'one',
-    watermark: '03',
-    shortName: 'ONE',
-    fullName: 'ONE Championship',
-    accentColor: '#F59E0B',
-    hoverBorder: 'border-[#F59E0B]/35 hover:border-[#F59E0B] hover:shadow-[0_0_30px_rgba(245,158,11,0.28),inset_0_0_15px_rgba(245,158,11,0.08)]',
-    glove: { src: '/mma-glove-one.webp', glow: '#F59E0B', duration: '5.8s', delay: '-2.7s' },
-    statusBadge: {
-      labelPt: 'Previsões IA',
-      labelEn: 'AI Predictions',
-      labelFr: 'Pronostics IA',
-      labelEs: 'Pronósticos IA',
-      pulse: true,
-    },
-    metrics: [
-      { labelPt: 'Divisões', labelEn: 'Divisions', labelFr: 'Divisions', labelEs: 'Divisiones', valuePt: '10', valueEn: '10', valueFr: '10', valueEs: '10' },
-      { labelPt: 'Modalidades', labelEn: 'Disciplines', labelFr: 'Disciplines', labelEs: 'Disciplinas', valuePt: 'MMA & Muay Thai', valueEn: 'MMA & Muay Thai', valueFr: 'MMA & Muay Thai', valueEs: 'MMA & Muay Thai' },
-    ],
-  },
-  {
-    id: 'bellator',
-    watermark: '04',
-    shortName: 'BELLATOR',
-    fullName: 'Bellator MMA',
-    fullNameEn: 'Bellator MMA',
-    fullNameFr: 'Bellator MMA',
-    fullNameEs: 'Bellator MMA',
-    accentColor: '#10B981',
-    hoverBorder: 'border-[#10B981]/35 hover:border-[#10B981] hover:shadow-[0_0_30px_rgba(16,185,129,0.28),inset_0_0_15px_rgba(16,185,129,0.08)]',
-    glove: { src: '/mma-glove-bellator.webp', glow: '#10B981', duration: '4.9s', delay: '-0.8s' },
-    statusBadge: {
-      labelPt: 'Arquivo Histórico',
-      labelEn: 'Historical Archive',
-      labelFr: 'Archives',
-      labelEs: 'Archivo histórico',
-      pulse: false,
-    },
-    metrics: [
-      { labelPt: 'Divisões', labelEn: 'Divisions', labelFr: 'Divisions', labelEs: 'Divisiones', valuePt: '10', valueEn: '10', valueFr: '10', valueEs: '10' },
-      { labelPt: 'Campeões', labelEn: 'Champions', labelFr: 'Champions', labelEs: 'Campeones', valuePt: '71', valueEn: '71', valueFr: '71', valueEs: '71' },
-    ],
-  },
-  {
-    id: 'rizin',
-    watermark: '05',
-    shortName: 'RIZIN',
-    fullName: 'RIZIN Fighting Federation',
-    accentColor: '#A855F7',
-    hoverBorder: 'border-[#A855F7]/35 hover:border-[#A855F7] hover:shadow-[0_0_30px_rgba(168,85,247,0.28),inset_0_0_15px_rgba(168,85,247,0.08)]',
-    glove: { src: '/mma-glove-rizin.webp', glow: '#A855F7', duration: '5.4s', delay: '-1.9s' },
-    statusBadge: {
-      labelPt: 'Eventos & Resultados',
-      labelEn: 'Events & Results',
-      labelFr: 'Événements & Résultats',
-      labelEs: 'Eventos y resultados',
-      pulse: false,
-    },
-    metrics: [
-      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '80+', valueEn: '80+', valueFr: '80+', valueEs: '80+' },
-      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '460+', valueEn: '460+', valueFr: '460+', valueEs: '460+' },
-    ],
-  },
-  {
-    id: 'ksw',
-    watermark: '06',
-    shortName: 'KSW',
-    fullName: 'Konfrontacja Sztuk Walki',
-    accentColor: '#06B6D4',
-    hoverBorder: 'border-[#06B6D4]/35 hover:border-[#06B6D4] hover:shadow-[0_0_30px_rgba(6,182,212,0.28),inset_0_0_15px_rgba(6,182,212,0.08)]',
-    glove: { src: '/mma-glove-ksw.webp', glow: '#06B6D4', duration: '5.0s', delay: '-3.1s' },
-    statusBadge: {
-      labelPt: 'Eventos & Resultados',
-      labelEn: 'Events & Results',
-      labelFr: 'Événements & Résultats',
-      labelEs: 'Eventos y resultados',
-      pulse: false,
-    },
-    metrics: [
-      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '120+', valueEn: '120+', valueFr: '120+', valueEs: '120+' },
-      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '520+', valueEn: '520+', valueFr: '520+', valueEs: '520+' },
-    ],
-  },
-  {
-    id: 'lfa',
-    watermark: '07',
-    shortName: 'LFA',
-    fullName: 'Legacy Fighting Alliance',
-    accentColor: '#EC4899',
-    hoverBorder: 'border-[#EC4899]/35 hover:border-[#EC4899] hover:shadow-[0_0_30px_rgba(236,72,153,0.28),inset_0_0_15px_rgba(236,72,153,0.08)]',
-    glove: { src: '/mma-glove-lfa.webp', glow: '#EC4899', duration: '4.7s', delay: '-2.2s' },
-    statusBadge: {
-      labelPt: 'Eventos & Resultados',
-      labelEn: 'Events & Results',
-      labelFr: 'Événements & Résultats',
-      labelEs: 'Eventos y resultados',
-      pulse: false,
-    },
-    metrics: [
-      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '230+', valueEn: '230+', valueFr: '230+', valueEs: '230+' },
-      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '1.5k+', valueEn: '1.5k+', valueFr: '1.5k+', valueEs: '1.5k+' },
-    ],
-  },
-  {
-    id: 'cage-warriors',
-    watermark: '08',
-    shortName: 'CAGE WARRIORS',
-    fullName: 'Cage Warriors',
-    accentColor: '#F97316',
-    hoverBorder: 'border-[#F97316]/35 hover:border-[#F97316] hover:shadow-[0_0_30px_rgba(249,115,22,0.28),inset_0_0_15px_rgba(249,115,22,0.08)]',
-    glove: { src: '/mma-glove-cage-warriors.webp', glow: '#F97316', duration: '5.6s', delay: '-0.4s' },
-    statusBadge: {
-      labelPt: 'Eventos & Resultados',
-      labelEn: 'Events & Results',
-      labelFr: 'Événements & Résultats',
-      labelEs: 'Eventos y resultados',
-      pulse: false,
-    },
-    metrics: [
-      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '200+', valueEn: '200+', valueFr: '200+', valueEs: '200+' },
-      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '970+', valueEn: '970+', valueFr: '970+', valueEs: '970+' },
-    ],
-  },
-  {
-    id: 'oktagon',
-    watermark: '09',
-    shortName: 'OKTAGON',
-    fullName: 'OKTAGON MMA',
-    accentColor: '#84CC16',
-    hoverBorder: 'border-[#84CC16]/35 hover:border-[#84CC16] hover:shadow-[0_0_30px_rgba(132,204,22,0.28),inset_0_0_15px_rgba(132,204,22,0.08)]',
-    glove: { src: '/mma-glove-oktagon.webp', glow: '#84CC16', duration: '5.1s', delay: '-1.1s' },
-    statusBadge: {
-      labelPt: 'Eventos & Resultados',
-      labelEn: 'Events & Results',
-      labelFr: 'Événements & Résultats',
-      labelEs: 'Eventos y resultados',
-      pulse: false,
-    },
-    metrics: [
-      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '120+', valueEn: '120+', valueFr: '120+', valueEs: '120+' },
-      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '840+', valueEn: '840+', valueFr: '840+', valueEs: '840+' },
-    ],
-  },
-  {
-    id: 'jungle-fight',
-    watermark: '10',
-    shortName: 'JUNGLE FIGHT',
-    fullName: 'Jungle Fight',
-    accentColor: '#6366F1',
-    hoverBorder: 'border-[#6366F1]/35 hover:border-[#6366F1] hover:shadow-[0_0_30px_rgba(99,102,241,0.28),inset_0_0_15px_rgba(99,102,241,0.08)]',
-    glove: { src: '/mma-glove-jungle-fight.webp', glow: '#6366F1', duration: '5.5s', delay: '-2.5s' },
-    statusBadge: {
-      labelPt: 'Eventos & Resultados',
-      labelEn: 'Events & Results',
-      labelFr: 'Événements & Résultats',
-      labelEs: 'Eventos y resultados',
-      pulse: false,
-    },
-    metrics: [
-      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '150+', valueEn: '150+', valueFr: '150+', valueEs: '150+' },
-      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '1.8k+', valueEn: '1.8k+', valueFr: '1.8k+', valueEs: '1.8k+' },
-    ],
-  },
-  {
-    id: 'invicta',
-    watermark: '11',
-    shortName: 'INVICTA FC',
-    fullName: 'Invicta Fighting Championships',
-    accentColor: '#14B8A6',
-    hoverBorder: 'border-[#14B8A6]/35 hover:border-[#14B8A6] hover:shadow-[0_0_30px_rgba(20,184,166,0.28),inset_0_0_15px_rgba(20,184,166,0.08)]',
-    glove: { src: '/mma-glove-invicta.webp', glow: '#14B8A6', duration: '4.8s', delay: '-3.3s' },
-    statusBadge: {
-      labelPt: 'Eventos & Resultados',
-      labelEn: 'Events & Results',
-      labelFr: 'Événements & Résultats',
-      labelEs: 'Eventos y resultados',
-      pulse: false,
-    },
-    metrics: [
-      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '60+', valueEn: '60+', valueFr: '60+', valueEs: '60+' },
-      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '400+', valueEn: '400+', valueFr: '400+', valueEs: '400+' },
-    ],
-  },
+  { id: 'ufc', index: '01', shortName: 'UFC', fullName: 'Ultimate Fighting Championship', accentColor: '#E11D48', glove: { src: '/mma-glove-ufc.webp', duration: '5.2s', delay: '0s' }, status: 'ai', counts: { events: 797, fighters: 2796, fights: 8985 } },
+  { id: 'pfl', index: '02', shortName: 'PFL', fullName: 'Professional Fighters League', accentColor: '#2563EB', glove: { src: '/mma-glove-pfl.webp', duration: '4.6s', delay: '-1.4s' }, status: 'tournament', counts: { events: 141, fighters: 1054, fights: 1380 } },
+  { id: 'one', index: '03', shortName: 'ONE', fullName: 'ONE Championship', accentColor: '#F59E0B', glove: { src: '/mma-glove-one.webp', duration: '5.8s', delay: '-2.7s' }, status: 'ai', counts: { events: 453, fighters: 3637, fights: 4817 } },
+  { id: 'bellator', index: '04', shortName: 'BELLATOR', fullName: 'Bellator MMA', accentColor: '#10B981', glove: { src: '/mma-glove-bellator.webp', duration: '4.9s', delay: '-0.8s' }, status: 'archive', counts: { events: 311, fighters: 2283, fights: 3004 } },
+  { id: 'rizin', index: '05', shortName: 'RIZIN', fullName: 'RIZIN Fighting Federation', accentColor: '#A855F7', glove: { src: '/mma-glove-rizin.webp', duration: '5.4s', delay: '-1.9s' }, status: 'results', counts: { events: 83, fighters: 464, fights: 609 } },
+  { id: 'ksw', index: '06', shortName: 'KSW', fullName: 'Konfrontacja Sztuk Walki', accentColor: '#06B6D4', glove: { src: '/mma-glove-ksw.webp', duration: '5.0s', delay: '-3.1s' }, status: 'results', counts: { events: 125, fighters: 527, fights: 804 } },
+  { id: 'lfa', index: '07', shortName: 'LFA', fullName: 'Legacy Fighting Alliance', accentColor: '#EC4899', glove: { src: '/mma-glove-lfa.webp', duration: '4.7s', delay: '-2.2s' }, status: 'results', counts: { events: 236, fighters: 1527, fights: 1429 } },
+  { id: 'cage-warriors', index: '08', shortName: 'CAGE WARRIORS', fullName: 'Cage Warriors', accentColor: '#F97316', glove: { src: '/mma-glove-cage-warriors.webp', duration: '5.6s', delay: '-0.4s' }, status: 'results', counts: { events: 202, fighters: 978, fights: 1186 } },
+  { id: 'oktagon', index: '09', shortName: 'OKTAGON', fullName: 'OKTAGON MMA', accentColor: '#84CC16', glove: { src: '/mma-glove-oktagon.webp', duration: '5.1s', delay: '-1.1s' }, status: 'results', counts: { events: 114, fighters: 846, fights: 1220 } },
+  { id: 'jungle-fight', index: '10', shortName: 'JUNGLE FIGHT', fullName: 'Jungle Fight', accentColor: '#6366F1', glove: { src: '/mma-glove-jungle-fight.webp', duration: '5.5s', delay: '-2.5s' }, status: 'results', counts: { events: 158, fighters: 1813, fights: 1688 } },
+  { id: 'invicta', index: '11', shortName: 'INVICTA FC', fullName: 'Invicta Fighting Championships', accentColor: '#14B8A6', glove: { src: '/mma-glove-invicta.webp', duration: '4.8s', delay: '-3.3s' }, status: 'results', counts: { events: 67, fighters: 409, fights: 534 } },
 ]
+
+/** 797 -> "790+", 8985 -> "8.9k+" (decimal mark follows the language). */
+function approximately(count: number, lang: string): string {
+  if (count >= 1000) return `${(Math.floor(count / 100) / 10).toLocaleString(lang)}k+`
+  return `${Math.floor(count / 10) * 10}+`
+}
 
 // Shown until the API answers (or if it never does): the last figures checked by hand.
 const FALLBACK_FIGHTS = 8985
@@ -506,7 +287,7 @@ export function Landing() {
             </h2>
           </div>
 
-          {/* Grade de Organizações com Cards Individuais Modernos e Luvas 3D Destacadas */}
+          {/* One card per organization: same surface, accent strip and three counts for all of them */}
           <div
             role="list"
             aria-label={L(i18n.language, 'Organizações', 'Organizations', 'Organisations', 'Organizaciones')}
@@ -514,148 +295,68 @@ export function Landing() {
           >
             {ORG_CARDS.map((card) => {
               const orgConfig = ORGS[card.id]
+              const status = STATUS_LABELS[card.status]
+              const metrics = [
+                { value: card.counts.events, label: L(i18n.language, 'Eventos', 'Events', 'Événements', 'Eventos') },
+                { value: card.counts.fighters, label: L(i18n.language, 'Lutadores', 'Fighters', 'Combattants', 'Peleadores') },
+                { value: card.counts.fights, label: L(i18n.language, 'Lutas', 'Bouts', 'Combats', 'Peleas') },
+              ]
               return (
                 <Link
                   key={card.id}
                   to={orgPath(orgConfig)}
                   aria-label={`Open ${card.fullName}`}
-                  style={{ '--accent-color': card.accentColor } as React.CSSProperties}
-                  className={`group relative flex flex-col justify-between rounded-2xl border bg-[var(--bg-surface)] dark:bg-[#07080C]/85 backdrop-blur-xl p-5 sm:p-5.5 transition-all duration-300 hover:-translate-y-1.5 cursor-pointer min-w-0 overflow-hidden ${card.hoverBorder}`}
+                  style={
+                    {
+                      '--accent-color': card.accentColor,
+                      '--glove-duration': card.glove.duration,
+                      '--glove-delay': card.glove.delay,
+                    } as React.CSSProperties
+                  }
+                  className="group relative flex min-w-0 cursor-pointer flex-col overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-5 pt-6 shadow-[var(--card-shadow)] transition-all duration-200 hover:-translate-y-1 hover:border-[var(--accent-color)] hover:shadow-[var(--elevated-shadow)] dark:border-white/10 dark:bg-[#0c0f17]/90 dark:hover:border-[var(--accent-color)]"
                 >
-                  {/* Camada Inferior: Textura Esportiva de Fibra de Carbono Micrométrica */}
-                  <div
-                    className="pointer-events-none absolute inset-0 opacity-[0.035] dark:opacity-[0.07] mix-blend-luminosity"
-                    style={{
-                      backgroundImage: `
-                        repeating-linear-gradient(45deg, #ffffff 0, #ffffff 1px, transparent 1px, transparent 4px),
-                        repeating-linear-gradient(-45deg, #ffffff 0, #ffffff 1px, transparent 1px, transparent 4px)
-                      `,
-                      backgroundSize: '6px 6px',
-                    }}
-                  />
+                  <span aria-hidden="true" className="absolute inset-x-0 top-0 h-[3px]" style={{ backgroundColor: card.accentColor }} />
 
-                  {/* Moldura Néon Refinada no Topo do Card */}
-                  <div
-                    className="absolute top-0 left-0 right-0 h-[2px] opacity-40 group-hover:opacity-100 transition-opacity duration-300"
-                    style={{
-                      backgroundColor: card.accentColor,
-                      boxShadow: `0 0 10px ${card.accentColor}`,
-                    }}
-                  />
-
-                  {/* Top: Índice e Badge de Status Alinhados */}
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-mono text-xs font-semibold text-[var(--text-muted)] dark:text-neutral-500 tracking-wider">
-                        {`// ${card.watermark}`}
-                      </span>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono text-xs font-semibold tracking-wider text-[var(--text-muted)] dark:text-neutral-400">{card.index}</span>
+                    <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-2.5 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-wide text-[var(--text-secondary)] dark:border-white/10 dark:bg-white/5 dark:text-neutral-300">
                       <span
-                        className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider backdrop-blur-md"
-                        style={{
-                          backgroundColor: `${card.accentColor}18`,
-                          borderColor: `${card.accentColor}40`,
-                          color: card.accentColor,
-                          borderWidth: 1,
-                        }}
-                      >
-                        {card.statusBadge.pulse && (
-                          <span
-                            className="h-1.5 w-1.5 rounded-full animate-pulse"
-                            style={{
-                              backgroundColor: card.accentColor,
-                              boxShadow: `0 0 6px ${card.accentColor}`,
-                            }}
-                          />
-                        )}
-                        {L(
-                          i18n.language,
-                          card.statusBadge.labelPt,
-                          card.statusBadge.labelEn,
-                          card.statusBadge.labelFr,
-                          card.statusBadge.labelEs,
-                        )}
-                      </span>
-                    </div>
-
-                    {/* Título e Subtítulo Claros sem Truncamento */}
-                    <div className="mt-3">
-                      <h3 className="font-display font-black text-xl sm:text-2xl uppercase tracking-tight text-[var(--text-primary)] dark:text-white leading-none">
-                        {card.shortName}
-                      </h3>
-                      <p className="font-sans text-[11px] sm:text-xs text-[var(--text-secondary)] dark:text-neutral-400 font-medium leading-snug mt-1">
-                        {L(
-                          i18n.language,
-                          card.fullName,
-                          card.fullNameEn ?? card.fullName,
-                          card.fullNameFr ?? card.fullName,
-                          card.fullNameEs ?? card.fullName,
-                        )}
-                      </p>
-                    </div>
-
-                    {/* Luva decorativa iluminada, flutuando; o halo e a sombra acompanham o movimento */}
-                    <div
-                      aria-hidden="true"
-                      className="relative my-3 sm:my-4 h-40 sm:h-44 w-full flex items-center justify-center overflow-hidden"
-                      style={
-                        {
-                          '--glove-duration': card.glove.duration,
-                          '--glove-delay': card.glove.delay,
-                        } as React.CSSProperties
-                      }
-                    >
-                      <div className="glove-halo-wrap absolute inset-0 opacity-70 dark:opacity-85 pointer-events-none">
-                        <div
-                          className="glove-halo absolute inset-0"
-                          style={{
-                            background: `radial-gradient(closest-side, ${card.glove.glow}66 0%, ${card.glove.glow}1f 55%, transparent 100%)`,
-                          }}
-                        />
-                      </div>
-                      <div
-                        className="glove-shadow absolute bottom-3 h-2.5 w-24 rounded-full pointer-events-none"
-                        style={{
-                          background: `radial-gradient(closest-side, ${card.glove.glow}aa, transparent)`,
-                        }}
+                        className={`h-1.5 w-1.5 shrink-0 rounded-full ${status.pulse ? 'animate-pulse' : ''}`}
+                        style={{ backgroundColor: card.accentColor }}
                       />
-                      <div className="glove-lift relative z-10">
-                        <div className="glove-float">
-                          <MMAGlove src={card.glove.src} glow={card.glove.glow} className="h-26 sm:h-28 w-auto" />
-                        </div>
+                      <span className="truncate">{L(i18n.language, status.pt, status.en, status.fr, status.es)}</span>
+                    </span>
+                  </div>
+
+                  <h3 className="mt-4 font-display text-xl font-extrabold uppercase leading-none tracking-tight text-[var(--text-primary)] dark:text-white sm:text-2xl">
+                    {card.shortName}
+                  </h3>
+                  <p className="mt-1 text-xs font-medium leading-snug text-[var(--text-secondary)] dark:text-neutral-400">{card.fullName}</p>
+
+                  {/* Decorative glove: floats, tinted in the organization's colour */}
+                  <div aria-hidden="true" className="flex min-h-28 flex-1 items-center justify-center">
+                    <div className="glove-lift">
+                      <div className="glove-float">
+                        <MMAGlove src={card.glove.src} glow={card.accentColor} className="h-24 w-auto" />
                       </div>
                     </div>
                   </div>
 
-                  {/* Bottom: Métricas e Botão de Ação rigorosamente alinhados */}
-                  <div className="mt-auto relative z-10">
-                    <div className="my-3 grid grid-cols-2 gap-2 border-y border-[var(--border-subtle)] dark:border-white/5 py-2.5">
-                      <div>
-                        <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400 font-medium block">
-                          {L(i18n.language, card.metrics[0].labelPt, card.metrics[0].labelEn, card.metrics[0].labelFr, card.metrics[0].labelEs)}
-                        </span>
-                        <p className="mt-0.5 font-display font-bold text-sm sm:text-base text-[var(--text-primary)] dark:text-white tabular-nums">
-                          {L(i18n.language, card.metrics[0].valuePt, card.metrics[0].valueEn, card.metrics[0].valueFr, card.metrics[0].valueEs)}
-                        </p>
+                  <dl className="grid grid-cols-3 gap-2 border-y border-[var(--border-subtle)] py-3 dark:border-white/10">
+                    {metrics.map((metric) => (
+                      <div key={metric.label} className="min-w-0">
+                        <dd className="font-display text-base font-bold tabular-nums text-[var(--text-primary)] dark:text-white sm:text-lg">
+                          {approximately(metric.value, i18n.language)}
+                        </dd>
+                        <dt className="mt-0.5 truncate font-mono text-[11px] uppercase tracking-wide text-[var(--text-secondary)] dark:text-neutral-400">{metric.label}</dt>
                       </div>
-                      <div>
-                        <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400 font-medium block">
-                          {L(i18n.language, card.metrics[1].labelPt, card.metrics[1].labelEn, card.metrics[1].labelFr, card.metrics[1].labelEs)}
-                        </span>
-                        <p className="mt-0.5 font-display font-bold text-xs sm:text-[13px] text-[var(--text-primary)] dark:text-white leading-tight">
-                          {L(i18n.language, card.metrics[1].valuePt, card.metrics[1].valueEn, card.metrics[1].valueFr, card.metrics[1].valueEs)}
-                        </p>
-                      </div>
-                    </div>
+                    ))}
+                  </dl>
 
-                    <div className="pt-1">
-                      <span
-                        className="inline-flex w-full items-center justify-between rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3.5 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)] transition-all duration-300 group-hover:bg-[var(--accent-color)] group-hover:text-white group-hover:border-[var(--accent-color)] dark:border-white/10 dark:bg-white/5 dark:text-neutral-200 shadow-xs"
-                      >
-                        <span>{L(i18n.language, 'Entrar', 'Enter', 'Entrer', 'Entrar')}</span>
-                        <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-                      </span>
-                    </div>
-                  </div>
+                  <span className="mt-4 inline-flex w-full items-center justify-between rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3.5 py-2 font-mono text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)] transition-colors duration-200 group-hover:border-[var(--accent-color)] dark:border-white/10 dark:bg-white/5 dark:text-neutral-200 dark:group-hover:border-[var(--accent-color)]">
+                    <span>{L(i18n.language, 'Entrar', 'Enter', 'Entrer', 'Entrar')}</span>
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+                  </span>
                 </Link>
               )
             })}
