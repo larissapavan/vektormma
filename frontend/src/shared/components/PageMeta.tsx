@@ -18,6 +18,7 @@ const SITE_URL = pageMeta.site.url
 const PAGE_TABLES = pageMeta.pages as Record<UiLang, Record<string, PageText>>
 const GYM_DETAILS = pageMeta.gymDetail as Record<UiLang, PageText>
 const DEFAULT_DESCRIPTIONS = pageMeta.defaultDescription as Record<UiLang, string>
+const HOME_TITLES = pageMeta.homeTitle as Record<UiLang, string>
 
 const GYM_PAGE = /^(\/pfl|\/bellator|\/one|\/rizin|\/ksw|\/lfa|\/cage-warriors|\/oktagon|\/jungle-fight|\/invicta)?\/gyms\/[^/]+$/
 const ATHLETE_PAGE = /^\/athlete\/([^/]+)$/
@@ -90,7 +91,7 @@ export function PageMeta() {
     const title = page
       ? `${page.title} · ${SITE}`
       : path === '/'
-        ? SITE
+        ? HOME_TITLES[lang]
         : `${L(i18n.language, 'Página não encontrada', 'Page not found', 'Page introuvable', 'Página no encontrada')} · ${SITE}`
     const description = page?.description ?? DEFAULT_DESCRIPTIONS[lang]
     // The address without a query string or a trailing slash: ?a=X&b=Y on /head-to-head is the same page for a search engine.

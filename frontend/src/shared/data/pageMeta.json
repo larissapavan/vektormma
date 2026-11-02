@@ -3,6 +3,12 @@
     "name": "Vektor MMA",
     "url": "https://www.vektormma.com"
   },
+  "homeTitle": {
+    "pt": "Vektor MMA — Estatísticas e previsões de lutas do UFC",
+    "en": "Vektor MMA — UFC fight stats and predictions",
+    "fr": "Vektor MMA — Statistiques et pronostics des combats de l’UFC",
+    "es": "Vektor MMA — Estadísticas y pronósticos de peleas de la UFC"
+  },
   "defaultDescription": {
     "pt": "Compare lutadores e veja a probabilidade de vitória de cada luta do UFC, com os fatores que mais pesam no resultado.",
     "en": "Compare fighters and see the win probability for every UFC fight, with the factors that weigh most on the result.",

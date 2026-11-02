@@ -44,10 +44,10 @@ describe('PageMeta', () => {
     expect(meta('meta[property="og:locale"]')).toBe('pt_BR')
   })
 
-  it('gives the site root the plain site name and the root address', () => {
+  it('gives the site root its own title and the root address', () => {
     renderAt('/')
 
-    expect(document.title).toBe('Vektor MMA')
+    expect(document.title).toBe('Vektor MMA — UFC fight stats and predictions')
     expect(canonical()).toBe('https://www.vektormma.com/')
   })
 
