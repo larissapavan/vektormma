@@ -35,6 +35,7 @@ const MatchupIntelligence = lazy(() =>
 const AthleteDossier = lazy(() =>
   import('./pages/AthleteDossier').then((module) => ({ default: module.AthleteDossier })),
 )
+const FightPage = lazy(() => import('./pages/FightPage').then((module) => ({ default: module.FightPage })))
 
 const Gyms = lazy(() => import('./pages/Gyms').then((module) => ({ default: module.Gyms })))
 const GymDetail = lazy(() => import('./pages/GymDetail').then((module) => ({ default: module.GymDetail })))
@@ -80,6 +81,7 @@ function App() {
               <Route path="/fighters" element={<Fighters />} />
               <Route path="/athlete" element={<AthleteDossier />} />
               <Route path="/athlete/:name" element={<AthleteDossier />} />
+              <Route path="/fight/:pair" element={<FightPage />} />
               <Route path="/events" element={<Events />} />
               <Route path="/rankings" element={<Rankings />} />
               <Route path="/gyms" element={<Gyms />} />

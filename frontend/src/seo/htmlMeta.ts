@@ -8,6 +8,8 @@
  * they can be tested without a build.
  */
 
+import { langPath, UI_LANGS, type UiLang } from '../i18n/lang'
+
 export interface RouteText {
   title: string
   description: string
@@ -65,16 +67,42 @@ function setTitle(html: string, title: string): string {
   return html.replace(/<title>[^<]*<\/title>/, () => `<title>${title}</title>`)
 }
 
+/** The language tag of each language in <html lang> and og:locale (the app sets the same ones once it runs). */
+export const HTML_LANG: Record<UiLang, string> = { pt: 'pt-BR', en: 'en-US', fr: 'fr-FR', es: 'es-419' }
+
+/** hreflang codes, which name the language (and the region only where it matters). */
+export const HREFLANG: Record<UiLang, string> = { pt: 'pt-BR', en: 'en', fr: 'fr', es: 'es-419' }
+
+/** The <link rel="alternate" hreflang> tags of a page: the same address in every language, and the Portuguese one as the default. */
+export function hreflangLinks(siteUrl: string, path: string, indent = '    '): string {
+  const link = (code: string, href: string) => `${indent}<link rel="alternate" hreflang="${code}" href="${escapeHtml(href)}" />`
+  const lines = UI_LANGS.map((lang) => link(HREFLANG[lang], absoluteUrl(siteUrl, langPath(lang, path))))
+  lines.push(link('x-default', absoluteUrl(siteUrl, path)))
+  return lines.join('\n')
+}
+
+export interface RouteOptions {
+  /** The language the copy of the page is written in (Portuguese when left out). Sets <html lang>, og:locale, the address prefix and hreflang. */
+  lang: UiLang
+  /** Address of the share image, from the site root ("/og/athletes/jon-jones.jpg"). The template's image stays when left out. */
+  image?: string
+  /** Use the title as it is, without " · Site" (the home page). */
+  rawTitle?: boolean
+  /** The site description for the JSON-LD block, in the language of the page. */
+  siteDescription?: string
+}
+
 /**
  * index.html with the tags of one route. `meta` is the route's own title and description; `null` leaves the text of the
  * template (the home page) and only sets the address tags.
  */
-export function routeHtml(template: string, site: SiteInfo, path: string, meta: RouteText | null, body?: string): string {
-  const url = escapeHtml(absoluteUrl(site.url, path))
+export function routeHtml(template: string, site: SiteInfo, path: string, meta: RouteText | null, body?: string, options?: RouteOptions): string {
+  const lang = options?.lang ?? 'pt'
+  const url = escapeHtml(absoluteUrl(site.url, langPath(lang, path)))
   let html = template
   if (body !== undefined) html = setBody(html, body)
   if (meta) {
-    const title = escapeHtml(pageTitle(site.name, meta.title))
+    const title = escapeHtml(options?.rawTitle ? meta.title : pageTitle(site.name, meta.title))
     const description = escapeHtml(meta.description)
     html = setTitle(html, title)
     html = setTag(html, '<meta name="description"', 'content', description)
@@ -86,13 +114,49 @@ export function routeHtml(template: string, site: SiteInfo, path: string, meta: 
   html = setTag(html, '<link rel="canonical"', 'href', url)
   html = setTag(html, '<meta property="og:url"', 'content', url)
   html = setTag(html, '<meta name="twitter:url"', 'content', url)
+  if (options) html = localize(html, site, path, options)
   return html
 }
 
-/** sitemap.xml for the given paths. No <lastmod>: the pages are rebuilt on every deploy, which says nothing about a change. */
-export function sitemapXml(siteUrl: string, paths: string[]): string {
-  const entries = paths.map((path) => `  <url>\n    <loc>${escapeHtml(absoluteUrl(siteUrl, path))}</loc>\n  </url>`)
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.join('\n')}\n</urlset>\n`
+/** The tags that depend on the language and on the page's image: <html lang>, og:locale, hreflang, JSON-LD and the share image. */
+function localize(template: string, site: SiteInfo, path: string, options: RouteOptions): string {
+  const tag = HTML_LANG[options.lang]
+  let html = template.replace(/<html lang="[^"]*"/, () => `<html lang="${tag}"`)
+  html = html.replace(/(<meta property="og:locale" content=")[^"]*(")/, (_m, open: string, close: string) => open + tag.replace('-', '_') + close)
+  html = html.replace(/("inLanguage": ")[^"]*(")/, (_m, open: string, close: string) => open + tag + close)
+  if (options.siteDescription) {
+    const description = options.siteDescription.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+    html = html.replace(/("description": ")[^"]*(")/, (_m, open: string, close: string) => open + description + close)
+  }
+  if (options.image) {
+    const image = escapeHtml(absoluteUrl(site.url, options.image))
+    html = setTag(html, '<meta property="og:image"', 'content', image)
+    html = setTag(html, '<meta name="twitter:image"', 'content', image)
+  }
+  const alternates = hreflangLinks(site.url, path)
+  return html.includes('</head>') ? html.replace('</head>', () => `${alternates}\n  </head>`) : html
+}
+
+/**
+ * sitemap.xml for the given paths. No <lastmod>: the pages are rebuilt on every deploy, which says nothing about a change.
+ * With `langs`, each path is listed once per language and each entry names its siblings (hreflang), as search engines ask.
+ */
+export function sitemapXml(siteUrl: string, paths: string[], langs?: UiLang[]): string {
+  const head = '<?xml version="1.0" encoding="UTF-8"?>'
+  if (!langs) {
+    const entries = paths.map((path) => `  <url>\n    <loc>${escapeHtml(absoluteUrl(siteUrl, path))}</loc>\n  </url>`)
+    return `${head}\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.join('\n')}\n</urlset>\n`
+  }
+  const alternate = (code: string, href: string) => `    <xhtml:link rel="alternate" hreflang="${code}" href="${escapeHtml(href)}" />`
+  const entries = paths.flatMap((path) => {
+    const siblings = [
+      ...langs.map((lang) => alternate(HREFLANG[lang], absoluteUrl(siteUrl, langPath(lang, path)))),
+      alternate('x-default', absoluteUrl(siteUrl, path)),
+    ].join('\n')
+    return langs.map((lang) => `  <url>\n    <loc>${escapeHtml(absoluteUrl(siteUrl, langPath(lang, path)))}</loc>\n${siblings}\n  </url>`)
+  })
+  const urlset = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">'
+  return `${head}\n${urlset}\n${entries.join('\n')}\n</urlset>\n`
 }
 
 export interface BodyLink {

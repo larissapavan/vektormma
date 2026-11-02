@@ -6,6 +6,7 @@ import ptBR from './locales/pt-BR.json'
 import enUS from './locales/en-US.json'
 import frFR from './locales/fr-FR.json'
 import es419 from './locales/es-419.json'
+import { localeTag, splitLangPath } from './lang'
 
 export const LANGUAGE_STORAGE_KEY = 'ufc-predictor:language'
 
@@ -26,6 +27,26 @@ export const resources = {
 
 const isTest = import.meta.env?.MODE === 'test'
 
+/**
+ * The language the address asks for: /en/..., /fr/..., /es/... are English, French and Spanish, an address with no prefix is
+ * Portuguese. Null when the address says nothing (it never does in a test, which runs on a memory router).
+ */
+function languageOfAddress(): string | null {
+  if (isTest || typeof window === 'undefined') return null
+  const { lang } = splitLangPath(window.location.pathname)
+  return lang ? localeTag(lang) : null
+}
+
+const addressLanguage = languageOfAddress()
+// Choosing a language by its address is a choice: the next visit to a bare address (/) opens in it.
+if (addressLanguage) {
+  try {
+    window.localStorage.setItem(LANGUAGE_STORAGE_KEY, addressLanguage)
+  } catch {
+    // Private mode: the address still decides the language of this visit.
+  }
+}
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -34,7 +55,7 @@ i18n
     fallbackLng: 'en-US',
     lng: isTest
       ? 'en-US'
-      : (typeof window !== 'undefined' && window.localStorage?.getItem(LANGUAGE_STORAGE_KEY)) || 'pt-BR',
+      : addressLanguage || (typeof window !== 'undefined' && window.localStorage?.getItem(LANGUAGE_STORAGE_KEY)) || 'pt-BR',
     detection: {
       order: ['localStorage', 'navigator'],
       lookupLocalStorage: LANGUAGE_STORAGE_KEY,

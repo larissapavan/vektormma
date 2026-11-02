@@ -24,12 +24,13 @@ import { getMatchupTitleFight } from '../shared/data/titleFights'
 import { getFighterPerformance } from '../shared/services/api'
 import type { FighterPerformance, FighterProfile } from '../shared/types/api'
 
-export function MatchupIntelligence() {
+/** `preset` chooses the two corners from the address (/fight/a-vs-b); the ?a= and ?b= of the page still win when present. */
+export function MatchupIntelligence({ preset }: { preset?: { a: string; b: string } } = {}) {
   const { t, i18n } = useTranslation()
 
   const [searchParams, setSearchParams] = useSearchParams()
-  const presetFighterA = searchParams.get('a') || searchParams.get('fighter_a')
-  const presetFighterB = searchParams.get('b') || searchParams.get('fighter_b')
+  const presetFighterA = searchParams.get('a') || searchParams.get('fighter_a') || preset?.a || null
+  const presetFighterB = searchParams.get('b') || searchParams.get('fighter_b') || preset?.b || null
   const eventName = searchParams.get('event')
 
   const [fighterAName, setFighterAName] = useState(() => presetFighterA ?? '')

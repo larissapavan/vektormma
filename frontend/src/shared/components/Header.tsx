@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { L } from '../../i18n/lang'
+import { L, langPath, uiLang } from '../../i18n/lang'
 import { isLandingPath, LANDING_PATH, orgPath, type OrgConfig } from '../data/orgs'
 import { isInfoOnlyPath } from '../data/staticPages'
 import { useModelInfo } from '../hooks/useModelInfo'
@@ -146,7 +146,7 @@ export function Header() {
               >
                 <div className="flex h-14 min-w-max shrink-0 items-center gap-1 whitespace-nowrap sm:h-16 sm:gap-2">
                 <a
-                  href="/#organizations-grid"
+                  href={`${langPath(uiLang(i18n.language), '/')}#organizations-grid`}
                   onClick={(e) => {
                     if (landing) {
                       e.preventDefault()

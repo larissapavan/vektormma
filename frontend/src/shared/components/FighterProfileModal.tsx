@@ -10,6 +10,7 @@ import { L } from '../../i18n/lang'
 import { OtherOrganizationsPanel } from './OtherOrganizationsPanel'
 import { getDivisionName } from '../data/divisions'
 import { translateFightMethod, translateHometown, translateStance } from '../data/fightLabels'
+import { athletePath } from '../../seo/athletes'
 import { getFighterImageUrl, normalizeFighterName, useFighterImages } from '../hooks/useFighterImages'
 import { useFighters } from '../hooks/useFighters'
 import { useUpcomingPicks } from '../hooks/useUpcomingPicks'
@@ -317,7 +318,7 @@ export function FighterProfileModal({
             type="button"
             onClick={() => {
               onClose()
-              navigate(`/athlete/${encodeURIComponent(name)}`)
+              navigate(athletePath(name))
             }}
             className="group inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-white/10 bg-white/[0.04] hover:bg-white/[0.09] hover:border-white/20 px-3 sm:px-4 py-1.5 sm:py-2 font-mono text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-neutral-300 hover:text-white shadow-[0_0_20px_rgba(255,255,255,0.03)] backdrop-blur-md transition-all cursor-pointer"
             title={L(i18n.language, 'Abrir Dossiê Completo', 'Open Full Dossier', 'Ouvrir le dossier', 'Abrir dosier completo')}

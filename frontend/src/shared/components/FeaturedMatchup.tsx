@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { L, localeTag } from '../../i18n/lang'
+import { fightPath } from '../../seo/athletes'
+import { cardPositionLabel } from '../data/cardPosition'
 import { useFeaturedPick } from '../hooks/useFeaturedPick'
 import { WinProbabilityBar } from './WinProbabilityBar'
 
@@ -10,13 +12,6 @@ import { WinProbabilityBar } from './WinProbabilityBar'
 export function headToHeadPath(fighterA: string, fighterB: string) {
   const params = new URLSearchParams({ a: fighterA, b: fighterB })
   return `/head-to-head?${params.toString()}`
-}
-
-/** "Main event", "Co-main" or a plain "fight on the card", named the way the MMA community does in each language. */
-function positionLabel(position: number | null | undefined, language: string): string {
-  if (position === 1) return L(language, 'Main event', 'Main event', 'Main event', 'Pelea estelar')
-  if (position === 2) return L(language, 'Co-main', 'Co-main event', 'Co-main event', 'Co-estelar')
-  return L(language, 'Luta do card', 'Fight on the card', 'Combat du card', 'Pelea de la cartelera')
 }
 
 /** "7 nov 2026" in the language on screen; the API sends the day as 2026-11-07, which names the same day everywhere. */
@@ -34,7 +29,8 @@ export function FeaturedMatchup() {
 
   const probabilityA = pick.fighter_1_probability
   const href = headToHeadPath(pick.fighter_1, pick.fighter_2)
-  const factorsHref = `/matchup-intelligence?${new URLSearchParams({ a: pick.fighter_1, b: pick.fighter_2, event: pick.event_name }).toString()}`
+  // The fight's own page: the matchup analysis with the factors behind the pick, at an address that can be shared.
+  const factorsHref = fightPath(pick.fighter_1, pick.fighter_2)
   const day = eventDay(pick.event_date, i18n.language)
 
   return (
@@ -47,7 +43,7 @@ export function FeaturedMatchup() {
         {L(i18n.language, 'Próxima luta em destaque', 'Next featured fight', 'Prochain combat à l’affiche', 'Próxima pelea destacada')}
       </p>
       <p className="mt-1 text-xs font-semibold text-[var(--text-primary)] dark:text-white">
-        {positionLabel(pick.card_position, i18n.language)}
+        {cardPositionLabel(pick.card_position, i18n.language)}
         {pick.title_fight ? ` · ${L(i18n.language, 'Luta pelo cinturão', 'Title fight', 'Combat de titre', 'Pelea por el título')}` : ''}
       </p>
       <p className="truncate text-xs text-[var(--text-secondary)] dark:text-neutral-400">

@@ -196,7 +196,8 @@ describe('sharing a matchup', () => {
 
     await waitFor(() => expect(writeText).toHaveBeenCalledTimes(1))
     const link = new URL(writeText.mock.calls[0][0])
-    expect(link.pathname).toBe('/matchup-intelligence')
+    // The tests run in English, so the copied link has the /en prefix.
+    expect(link.pathname).toBe('/en/matchup-intelligence')
     expect(link.searchParams.get('a')).toBe('Alpha One')
     expect(link.searchParams.get('b')).toBe('Beta Two')
     expect(within(screen.getByRole('button', { name: /link copied/i })).getByRole('status')).toHaveTextContent('Link copied')

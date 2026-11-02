@@ -40,8 +40,8 @@ describe('Landing', () => {
     expect(card).toHaveTextContent('UFC 900: Alpha vs. Beta · Jan 1, 2030')
     const hrefs = Array.from(card.querySelectorAll('a')).map((link) => link.getAttribute('href'))
     expect(hrefs).toContain('/head-to-head?a=Gamma+Three&b=Delta+Four')
-    // The factors behind the pick: the matchup page, which shows the SHAP bars.
-    expect(hrefs).toContain('/matchup-intelligence?a=Gamma+Three&b=Delta+Four&event=UFC+900%3A+Alpha+vs.+Beta')
+    // The factors behind the pick: the fight's own page, which shows the SHAP bars.
+    expect(hrefs).toContain('/fight/gamma-three-vs-delta-four')
   })
 
   it('has a primary call to compare fighters', async () => {

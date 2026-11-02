@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it } from 'vitest'
 
@@ -29,9 +29,11 @@ describe('PageMeta', () => {
 
     expect(document.title).toBe('Predict a fight · Vektor MMA')
     expect(meta('meta[name="description"]')).toMatch(/win probability/)
-    expect(canonical()).toBe('https://www.vektormma.com/predictor')
-    expect(meta('meta[property="og:url"]')).toBe('https://www.vektormma.com/predictor')
-    expect(meta('meta[name="twitter:url"]')).toBe('https://www.vektormma.com/predictor')
+    // The tests run in English: the address of an English page has the /en prefix.
+    expect(canonical()).toBe('https://www.vektormma.com/en/predictor')
+    expect(meta('meta[property="og:url"]')).toBe('https://www.vektormma.com/en/predictor')
+    expect(meta('meta[name="twitter:url"]')).toBe('https://www.vektormma.com/en/predictor')
+    expect(meta('meta[property="og:image"]')).toBe('https://www.vektormma.com/og-image.jpg?v=5')
     expect(meta('meta[property="og:title"]')).toBe('Predict a fight · Vektor MMA')
     expect(document.head.querySelector('meta[name="robots"]')).toBeNull()
   })
@@ -42,34 +44,58 @@ describe('PageMeta', () => {
 
     expect(document.title).toBe('Confronto Direto · Vektor MMA')
     expect(meta('meta[property="og:locale"]')).toBe('pt_BR')
+    // Portuguese is the language of the bare address.
+    expect(canonical()).toBe('https://www.vektormma.com/head-to-head')
   })
 
   it('gives the site root its own title and the root address', () => {
     renderAt('/')
 
     expect(document.title).toBe('Vektor MMA — UFC fight stats and predictions')
-    expect(canonical()).toBe('https://www.vektormma.com/')
+    expect(canonical()).toBe('https://www.vektormma.com/en')
   })
 
   it('points a page with a query string or a trailing slash to the clean address', () => {
     renderAt('/head-to-head/?a=Jon%20Jones&b=Tom%20Aspinall')
 
-    expect(canonical()).toBe('https://www.vektormma.com/head-to-head')
+    expect(canonical()).toBe('https://www.vektormma.com/en/head-to-head')
   })
 
-  it('titles an athlete page with the athlete, not "Page not found"', () => {
+  it('names every language of a page for search engines, with the Portuguese one as the default', () => {
+    renderAt('/rankings')
+
+    const alternates = Array.from(document.head.querySelectorAll('link[rel="alternate"][hreflang]')).map((link) => [link.getAttribute('hreflang'), link.getAttribute('href')])
+    expect(alternates).toEqual([
+      ['pt-BR', 'https://www.vektormma.com/rankings'],
+      ['en', 'https://www.vektormma.com/en/rankings'],
+      ['fr', 'https://www.vektormma.com/fr/rankings'],
+      ['es-419', 'https://www.vektormma.com/es/rankings'],
+      ['x-default', 'https://www.vektormma.com/rankings'],
+    ])
+  })
+
+  it('titles an athlete page with the athlete, not "Page not found"', async () => {
     renderAt('/athlete/Jon%20Jones')
 
-    expect(document.title).toBe('Jon Jones · Vektor MMA')
+    // The athlete data is a separate chunk: the tags are written once it has loaded.
+    await waitFor(() => expect(document.title).toBe('Jon Jones · Vektor MMA'))
     expect(meta('meta[name="description"]')).toMatch(/Jon Jones/)
-    expect(canonical()).toBe('https://www.vektormma.com/athlete/Jon%20Jones')
+    // One address per athlete: the slug, whatever form the visitor typed.
+    expect(canonical()).toBe('https://www.vektormma.com/en/athlete/jon-jones')
     expect(document.head.querySelector('meta[name="robots"]')).toBeNull()
   })
 
-  it('survives an address that is not valid percent-encoding', () => {
+  it('gives an athlete of the static data a share image of their own', async () => {
+    renderAt('/athlete/aaron-pico')
+
+    await waitFor(() => expect(meta('meta[property="og:image"]')).toBe('https://www.vektormma.com/og/athletes/aaron-pico.jpg'))
+    expect(meta('meta[name="twitter:image"]')).toBe('https://www.vektormma.com/og/athletes/aaron-pico.jpg')
+  })
+
+  it('survives an address that is not valid percent-encoding', async () => {
     renderAt('/athlete/100%25%')
 
-    expect(document.title).toMatch(/Vektor MMA$/)
+    await waitFor(() => expect(document.title).toMatch(/Vektor MMA$/))
     expect(document.title).not.toMatch(/not found/i)
   })
 
@@ -86,7 +112,7 @@ describe('PageMeta', () => {
     renderAt('/rankings')
 
     expect(document.head.querySelector('meta[name="robots"]')).toBeNull()
-    expect(canonical()).toBe('https://www.vektormma.com/rankings')
+    expect(canonical()).toBe('https://www.vektormma.com/en/rankings')
   })
 })
 

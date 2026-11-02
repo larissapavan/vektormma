@@ -2,7 +2,7 @@ import { Check, Link2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { L } from '../../i18n/lang'
+import { L, langPath, uiLang } from '../../i18n/lang'
 
 async function copyText(text: string) {
   try {
@@ -36,7 +36,7 @@ export function CopyLinkButton({ href, label, className = '' }: { href: string; 
   useEffect(() => () => window.clearTimeout(timer.current), [])
 
   const copy = async () => {
-    const ok = await copyText(new URL(href, window.location.origin).toString())
+    const ok = await copyText(new URL(langPath(uiLang(i18n.language), href), window.location.origin).toString())
     setState(ok ? 'copied' : 'failed')
     window.clearTimeout(timer.current)
     timer.current = window.setTimeout(() => setState('idle'), 2200)

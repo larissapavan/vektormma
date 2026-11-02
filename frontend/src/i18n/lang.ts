@@ -38,3 +38,24 @@ export type ByLang<T = string> = Record<UiLang, T>
 export function pick<T>(language: string | boolean | null | undefined, table: ByLang<T>): T {
   return table[uiLang(language)]
 }
+
+/** The address prefix of each language: Portuguese, the language the site opens in, has none (/fighters, /en/fighters). */
+export const LANG_PREFIX: Record<UiLang, string> = { pt: '', en: '/en', fr: '/fr', es: '/es' }
+
+export const UI_LANGS: UiLang[] = ['pt', 'en', 'fr', 'es']
+
+/** The language an address is written in, and the same address without its language prefix: "/fr/guide" -> fr, "/guide". */
+export function splitLangPath(path: string): { lang: UiLang | null; path: string } {
+  for (const lang of UI_LANGS) {
+    const prefix = LANG_PREFIX[lang]
+    if (prefix && (path === prefix || path.startsWith(`${prefix}/`))) return { lang, path: path.slice(prefix.length) || '/' }
+  }
+  return { lang: null, path }
+}
+
+/** An address inside the site in the given language: ("fr", "/guide") -> "/fr/guide", ("en", "/") -> "/en", ("pt", "/") -> "/". */
+export function langPath(lang: UiLang, path: string): string {
+  const prefix = LANG_PREFIX[lang]
+  if (!prefix) return path
+  return path === '/' ? prefix : `${prefix}${path}`
+}

@@ -13,6 +13,10 @@
       "destination": "https://ufc-fight-predictor-api-production.up.railway.app/:path*"
     },
     {
+      "source": "/:lang(en|fr|es)/:path*",
+      "destination": "/:lang/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

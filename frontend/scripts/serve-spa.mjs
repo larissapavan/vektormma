@@ -42,6 +42,18 @@ function resolveRequestPath(url) {
     return filePath
   }
 
+  // /fighters is dist/fighters/index.html, the way the host serves a folder.
+  const folderIndex = join(filePath, 'index.html')
+  if (existsSync(folderIndex)) {
+    return folderIndex
+  }
+
+  // An address the build did not write a page for still opens the app, in the language of its prefix (/en/athlete/x -> /en).
+  const language = /^\/(en|fr|es)(\/|$)/.exec(normalizedPath.replaceAll('\\', '/'))
+  if (language) {
+    return join(distDir, language[1], 'index.html')
+  }
+
   return indexFile
 }
 

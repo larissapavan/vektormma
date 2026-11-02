@@ -1,7 +1,8 @@
 {
   "site": {
     "name": "Vektor MMA",
-    "url": "https://www.vektormma.com"
+    "url": "https://www.vektormma.com",
+    "image": "/og-image.jpg?v=5"
   },
   "homeTitle": {
     "pt": "Vektor MMA — Estatísticas e previsões de lutas do UFC",
