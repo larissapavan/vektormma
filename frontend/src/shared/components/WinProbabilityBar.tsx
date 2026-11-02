@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { L } from '../../i18n/lang'
-import { edgeLabel, formatProbability } from '../data/probability'
+import { formatProbability } from '../data/probability'
 
 interface WinProbabilityBarProps {
   nameA: string
@@ -72,7 +72,7 @@ export function WinProbabilityBar({
         <p className={`mt-2 text-center text-[var(--text-muted)] ${compact ? 'text-xs' : 'text-sm'}`}>
           {L(i18n.language, 'Modelo favorece ', 'Model favors ', 'Le modèle favorise ', 'El modelo favorece a ')}
           <span className="font-semibold text-[var(--text-main)]">{predictedWinner}</span>
-          <span> · {edgeLabel(Math.max(probabilityA, probabilityB), i18n.language).toLowerCase()}</span>
+          <span> ({formatProbability(Math.max(probabilityA, probabilityB))})</span>
         </p>
       ) : null}
     </div>

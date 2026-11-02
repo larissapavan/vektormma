@@ -33,8 +33,15 @@ describe('Landing', () => {
     expect(card).toHaveTextContent('Gamma Three')
     expect(card).toHaveTextContent('Delta Four')
     expect(card).toHaveTextContent('72%')
-    const link = card.querySelector('a')
-    expect(link).toHaveAttribute('href', '/head-to-head?a=Gamma+Three&b=Delta+Four')
+    expect(card).toHaveTextContent('Model favors Gamma Three (72%)')
+    expect(card).not.toHaveTextContent(/clear edge/i)
+    // Where the fight sits on the card, and the day of the event.
+    expect(card).toHaveTextContent('Co-main event')
+    expect(card).toHaveTextContent('UFC 900: Alpha vs. Beta · Jan 1, 2030')
+    const hrefs = Array.from(card.querySelectorAll('a')).map((link) => link.getAttribute('href'))
+    expect(hrefs).toContain('/head-to-head?a=Gamma+Three&b=Delta+Four')
+    // The factors behind the pick: the matchup page, which shows the SHAP bars.
+    expect(hrefs).toContain('/matchup-intelligence?a=Gamma+Three&b=Delta+Four&event=UFC+900%3A+Alpha+vs.+Beta')
   })
 
   it('has a primary call to compare fighters', async () => {

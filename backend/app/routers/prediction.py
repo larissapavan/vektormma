@@ -33,7 +33,8 @@ def _predict_all_upcoming(service: PredictionService) -> list[UpcomingPick]:
     """Calculate quick prediction picks for all fighters scheduled in upcoming events."""
     picks: list[UpcomingPick] = []
     for event in get_upcoming_events():
-        for fight in event.get("fights", []):
+        # get_upcoming_events() lists the main event first, then the co-main: 1 is the main event, 2 the co-main.
+        for position, fight in enumerate(event.get("fights", []), start=1):
             fighter_1 = fight.get("fighter_1")
             fighter_2 = fight.get("fighter_2")
             if not fighter_1 or not fighter_2:
@@ -65,6 +66,7 @@ def _predict_all_upcoming(service: PredictionService) -> list[UpcomingPick]:
                     title_fight=fight.get("title_fight"),
                     bmf_title=bool(fight.get("bmf_title")),
                     interim_title=bool(fight.get("interim_title")),
+                    card_position=position,
                 )
             )
     return picks

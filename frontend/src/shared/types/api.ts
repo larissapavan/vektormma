@@ -486,6 +486,8 @@ export interface UpcomingPick {
   title_fight?: boolean | null
   bmf_title?: boolean
   interim_title?: boolean
+  /** Place on its card: 1 is the main event, 2 the co-main, then card order. Absent for organizations whose card order is unknown. */
+  card_position?: number | null
 }
 
 /** Organizations served by the generic /orgs/{id} endpoints (everything except the UFC). */

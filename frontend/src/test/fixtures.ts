@@ -354,7 +354,7 @@ export const routes: Record<string, unknown> = {
   '/events': [event('UFC 899: Past Card', '2026-09-01', [fight({ event_name: 'UFC 899: Past Card', winner: 'Alpha One', method: 'KO/TKO', round: 2, result: 'KO/TKO' })])],
   '/events/upcoming': [event('UFC 900: Alpha vs. Beta', '2030-01-01', [fight(), fight({ fighter_1: 'Gamma Three', fighter_2: 'Delta Four' })])],
   '/predict/upcoming': [
-    { event_name: 'UFC 900: Alpha vs. Beta', event_date: '2030-01-01', fighter_1: 'Gamma Three', fighter_2: 'Delta Four', predicted_winner: 'Gamma Three', probability: 0.72, fighter_1_probability: 0.72 },
+    { event_name: 'UFC 900: Alpha vs. Beta', event_date: '2030-01-01', fighter_1: 'Gamma Three', fighter_2: 'Delta Four', predicted_winner: 'Gamma Three', probability: 0.72, fighter_1_probability: 0.72, card_position: 2 },
   ],
   '/rankings': [
     { category: 'Lightweight', is_p4p: false, entries: [{ rank: 0, fighter: 'Alpha One', win_rate: 0.857, last_fight: '2026-06-01', rank_change: null, athlete_url: null }, { rank: 1, fighter: 'Beta Two', win_rate: 0.8, last_fight: '2026-05-01', rank_change: null, athlete_url: null }] },

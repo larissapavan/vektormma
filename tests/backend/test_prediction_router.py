@@ -65,6 +65,15 @@ def test_upcoming_picks_cover_the_announced_fights(client):
         assert pick["predicted_winner"] == favored
 
 
+def test_upcoming_picks_say_where_the_fight_sits_on_its_card(client):
+    upcoming = {event["name"]: event["fights"] for event in client.get("/events/upcoming").json()}
+    for pick in client.get("/predict/upcoming").json():
+        fights = upcoming[pick["event_name"]]
+        index = next(i for i, fight in enumerate(fights) if (fight["fighter_1"], fight["fighter_2"]) == (pick["fighter_1"], pick["fighter_2"]))
+        # 1 is the main event, the first fight the events list returns.
+        assert pick["card_position"] == index + 1
+
+
 def test_a_pick_matches_the_full_prediction(client):
     pick = client.get("/predict/upcoming").json()[0]
     full = client.post("/predict", json={"fighter_a": pick["fighter_1"], "fighter_b": pick["fighter_2"]}).json()

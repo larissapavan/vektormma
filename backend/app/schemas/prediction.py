@@ -47,6 +47,8 @@ class UpcomingPick(BaseModel):
     title_fight: bool | None = None
     bmf_title: bool = False
     interim_title: bool = False
+    # Place of the fight on its card: 1 is the main event, 2 the co-main, then the rest in card order. None when unknown.
+    card_position: int | None = None
 
 
 class RoundRobinRow(BaseModel):
