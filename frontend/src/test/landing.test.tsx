@@ -67,4 +67,21 @@ describe('Landing', () => {
       expect(texts).toContain('2')
     })
   })
+
+  it('writes the counts with the grouping of the language and no plus on an exact total', async () => {
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>,
+    )
+    // The org cards show rounded-down snapshots with a plus, in the same grouping as the exact figures in the strip.
+    await screen.findByTestId('featured-matchup')
+    const grouped = Array.from(document.querySelectorAll('dd')).map((n) => n.textContent)
+    expect(grouped).toContain('8,900+')
+    expect(grouped).not.toContain('8.9k+')
+    // The strip's first two figures (bouts, athletes) are exact totals from the API: no plus.
+    const metrics = Array.from(document.querySelector('section.border-y > div')?.children ?? [])
+    expect(metrics[0]?.textContent).not.toContain('+')
+    expect(metrics[1]?.textContent).not.toContain('+')
+  })
 })

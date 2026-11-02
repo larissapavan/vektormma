@@ -3,7 +3,7 @@ import { ArrowDown, ArrowRight, Sparkles, Swords } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { L } from '../i18n/lang'
+import { L, localeTag } from '../i18n/lang'
 import { ORGS, orgPath, type OrgId } from '../shared/data/orgs'
 import { AnimatedCounter } from '../shared/components/editorial/AnimatedCounter'
 import { SocialLinks } from '../shared/components/SocialLinks'
@@ -48,10 +48,10 @@ const ORG_CARDS: OrgCardInfo[] = [
   { id: 'invicta', index: '11', shortName: 'INVICTA FC', fullName: 'Invicta Fighting Championships', accentColor: '#14B8A6', glove: { src: '/mma-glove-invicta.webp', duration: '4.8s', delay: '-3.3s' }, status: 'results', counts: { events: 67, fighters: 409, fights: 534 } },
 ]
 
-/** 797 -> "790+", 8985 -> "8.9k+" (decimal mark follows the language). */
+/** 797 -> "790+", 8985 -> "8.900+" (the grouping follows the language, like the exact figures in the strip above). */
 function approximately(count: number, lang: string): string {
-  if (count >= 1000) return `${(Math.floor(count / 100) / 10).toLocaleString(lang)}k+`
-  return `${Math.floor(count / 10) * 10}+`
+  const floor = count >= 1000 ? 100 : 10
+  return `${new Intl.NumberFormat(localeTag(lang)).format(Math.floor(count / floor) * floor)}+`
 }
 
 // Shown until the API answers (or if it never does): the last figures checked by hand.
@@ -227,7 +227,6 @@ export function Landing() {
                 <span className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--text-primary)] dark:text-white tracking-tight tabular-nums">
                   <AnimatedCounter value={fightsCount} />
                 </span>
-                <span className="text-[#E11D48] font-display font-extrabold text-2xl sm:text-3xl">+</span>
               </div>
               <p className="mt-1 font-sans text-xs uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400 font-medium">
                 {L(i18n.language, 'Lutas Catalogadas', 'Bouts Cataloged', 'Combats catalogués', 'Peleas catalogadas')}
@@ -240,7 +239,6 @@ export function Landing() {
                 <span className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--text-primary)] dark:text-white tracking-tight tabular-nums">
                   <AnimatedCounter value={fightersCount} />
                 </span>
-                <span className="text-[#2563EB] font-display font-extrabold text-2xl sm:text-3xl">+</span>
               </div>
               <p className="mt-1 font-sans text-xs uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400 font-medium">
                 {L(i18n.language, 'Atletas Monitorados', 'Athletes Profiled', 'Combattants répertoriés', 'Peleadores registrados')}

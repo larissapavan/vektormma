@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useInView, useReducedMotion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
+
+import { localeTag } from '../../../i18n/lang'
 
 interface AnimatedCounterProps {
   value: number
@@ -23,6 +26,7 @@ export function AnimatedCounter({
   suffix = '',
   className = '',
 }: AnimatedCounterProps) {
+  const { i18n } = useTranslation()
   const [displayValue, setDisplayValue] = useState(0)
   const ref = useRef<HTMLSpanElement>(null)
   const shown = useRef(0)
@@ -61,7 +65,9 @@ export function AnimatedCounter({
     return () => cancelAnimationFrame(animationFrame)
   }, [isInView, value, duration, reduceMotion])
 
-  const format = (n: number) => (decimals > 0 ? n.toFixed(decimals) : Math.round(n).toString())
+  // Digits grouped and the decimal mark placed the way the language on screen writes them (25.656, 25,656, 25 656).
+  const format = (n: number) =>
+    new Intl.NumberFormat(localeTag(i18n.language), { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(n)
 
   return (
     <span ref={ref} className={`tabular-nums ${className}`}>
