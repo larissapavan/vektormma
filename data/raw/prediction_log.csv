@@ -103,3 +103,5 @@ fight_key,event_name,event_date,fighter_1,fighter_2,prob_fighter_1,predicted_win
 2026-11-07|gabriel lorenco|thomas petersen,UFC Fight Night: Bonfim vs. Brady,2026-11-07,Thomas Petersen,Gabriel Lorenco,0.3565,Gabriel Lorenco,0.6435,2026-10-28,,,
 2026-12-12|angela hill|shanelle dyer,UFC 335: Oliveira vs. Lopes,2026-12-12,Angela Hill,Shanelle Dyer,0.2213,Shanelle Dyer,0.7787,2026-10-28,,,
 2027-02-06|benoit saint denis|quillan salkilld,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,Quillan Salkilld,Benoit Saint Denis,0.5288,Quillan Salkilld,0.5288,2026-10-28,,,
+2026-11-07|johnny walker|waldo cortes acosta,UFC Fight Night: Bonfim vs. Brady,2026-11-07,Waldo Cortes Acosta,Johnny Walker,0.6504,Waldo Cortes Acosta,0.6504,2026-11-02,,,
+2027-02-06|bogdan guskov|robert whittaker,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,Bogdan Guskov,Robert Whittaker,0.5212,Bogdan Guskov,0.5212,2026-11-02,,,

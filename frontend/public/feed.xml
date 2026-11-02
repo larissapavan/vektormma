@@ -6,7 +6,23 @@
     <description>The model's pick for every announced UFC fight, saved before the card, and how it did once the results were in. For fun and learning, not betting advice.</description>
     <language>en</language>
     <atom:link href="https://www.vektormma.com/feed.xml" rel="self" type="application/rss+xml" />
-    <lastBuildDate>Wed, 28 Oct 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 02 Nov 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Picks for UFC Fight Night: Bonfim vs. Brady (2026-11-07)</title>
+      <link>https://www.vektormma.com/events</link>
+      <guid isPermaLink="false">https://www.vektormma.com/feed/picks/2026-11-07/UFC Fight Night: Bonfim vs. Brady</guid>
+      <pubDate>Mon, 02 Nov 2026 00:00:00 +0000</pubDate>
+      <description>Thomas Petersen vs. Gabriel Lorenco: the model picks Gabriel Lorenco (64%)
+Waldo Cortes Acosta vs. Johnny Walker: the model picks Waldo Cortes Acosta (65%)</description>
+    </item>
+    <item>
+      <title>Picks for UFC Fight Night: Salkilld vs. Saint Denis (2027-02-06)</title>
+      <link>https://www.vektormma.com/events</link>
+      <guid isPermaLink="false">https://www.vektormma.com/feed/picks/2027-02-06/UFC Fight Night: Salkilld vs. Saint Denis</guid>
+      <pubDate>Mon, 02 Nov 2026 00:00:00 +0000</pubDate>
+      <description>Quillan Salkilld vs. Benoit Saint Denis: the model picks Quillan Salkilld (53%)
+Bogdan Guskov vs. Robert Whittaker: the model picks Bogdan Guskov (52%)</description>
+    </item>
     <item>
       <title>Picks for UFC 335: Oliveira vs. Lopes (2026-12-12)</title>
       <link>https://www.vektormma.com/events</link>
@@ -22,20 +38,6 @@ Roque Conceicao vs. Nilson Rojas: the model picks Nilson Rojas (67%)
 Ronald Humphrey vs. Nikolay Veretennikov: the model picks Ronald Humphrey (79%)
 Chase Hooper vs. Chris Padilla: the model picks Chase Hooper (56%)
 Angela Hill vs. Shanelle Dyer: the model picks Shanelle Dyer (78%)</description>
-    </item>
-    <item>
-      <title>Picks for UFC Fight Night: Bonfim vs. Brady (2026-11-07)</title>
-      <link>https://www.vektormma.com/events</link>
-      <guid isPermaLink="false">https://www.vektormma.com/feed/picks/2026-11-07/UFC Fight Night: Bonfim vs. Brady</guid>
-      <pubDate>Wed, 28 Oct 2026 00:00:00 +0000</pubDate>
-      <description>Thomas Petersen vs. Gabriel Lorenco: the model picks Gabriel Lorenco (64%)</description>
-    </item>
-    <item>
-      <title>Picks for UFC Fight Night: Salkilld vs. Saint Denis (2027-02-06)</title>
-      <link>https://www.vektormma.com/events</link>
-      <guid isPermaLink="false">https://www.vektormma.com/feed/picks/2027-02-06/UFC Fight Night: Salkilld vs. Saint Denis</guid>
-      <pubDate>Wed, 28 Oct 2026 00:00:00 +0000</pubDate>
-      <description>Quillan Salkilld vs. Benoit Saint Denis: the model picks Quillan Salkilld (53%)</description>
     </item>
     <item>
       <title>Results: UFC 333: Volkanovski vs. Evloev (2026-10-24)</title>
