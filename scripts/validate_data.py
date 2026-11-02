@@ -37,8 +37,8 @@ ORG_MIN_ROWS = {
     "pfl": {"fights.csv": 1300, "fighters.csv": 900, "rankings.csv": 50},
     "one": {"fights.csv": 4500, "fighters.csv": 3500, "rankings.csv": 20},
     "bellator": {"fights.csv": 2500, "fighters.csv": 1500, "rankings.csv": 8},  # an archive: the numbers will not change
-    "rizin": {"fights.csv": 350, "fighters.csv": 250, "rankings.csv": 0},
-    "ksw": {"fights.csv": 520, "fighters.csv": 340, "rankings.csv": 0},
+    "rizin": {"fights.csv": 520, "fighters.csv": 400, "rankings.csv": 0},
+    "ksw": {"fights.csv": 700, "fighters.csv": 450, "rankings.csv": 0},
     "lfa": {"fights.csv": 1200, "fighters.csv": 1300, "rankings.csv": 0},
     "cage-warriors": {"fights.csv": 1000, "fighters.csv": 830, "rankings.csv": 0},
     "oktagon": {"fights.csv": 1100, "fighters.csv": 750, "rankings.csv": 0},

@@ -97,8 +97,8 @@ Explore information from different organizations across the combat sports ecosys
 | PFL | Events, athletes and tournament information |
 | ONE Championship | Fighters, events and organizational data |
 | Bellator MMA | Historical records and organizational information |
-| RIZIN Fighting Federation | Fighter profiles and event results (ESPN coverage) |
-| KSW | Fighter profiles and event results (ESPN coverage) |
+| RIZIN Fighting Federation | Fighter profiles and event results (ESPN to 2024, Sherdog from 2025) |
+| KSW | Fighter profiles and event results (ESPN to 2024, Sherdog from 2025) |
 | LFA | Fighter profiles and event results (ESPN coverage) |
 | Cage Warriors | Fighter profiles and event results (ESPN coverage) |
 | OKTAGON MMA | Fighter profiles, event results and upcoming cards (from its own site) |

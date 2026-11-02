@@ -11,7 +11,8 @@ What ESPN does NOT give for these leagues, and what this script therefore leaves
 
 Coverage is whatever ESPN has, and it differs by league (checked 2 Nov 2026 by counting events per year):
 RIZIN 2015-2024, KSW 2004-2024, LFA 2017-2026, Cage Warriors 2005-2026 (thin from 2025). Events ESPN does not list are
-not here.
+not here. RIZIN and KSW from 2025 on are added from Sherdog (scripts/scrape_sherdog_org.py ksw|rizin), which adds to the
+files this script wrote and must run after it: running this script again rewrites them from ESPN alone.
 
 Output (data/raw/<org>/), the same three files every non-UFC organization has (see backend/app/services/org_service.py):
     fights.csv, fighters.csv, rankings.csv

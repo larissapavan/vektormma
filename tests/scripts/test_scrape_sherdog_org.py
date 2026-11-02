@@ -234,4 +234,142 @@ def test_the_command_line_takes_one_organization_or_all_and_fails_if_the_sitemap
     monkeypatch.setattr(sd, "Fetcher", lambda delay, cache_dir, user_agent: FakeFetcher({}))
     assert sd.main(["all", "--dry-run"]) == 1
     with pytest.raises(SystemExit):
-        sd.main(["ksw"])
+        sd.main(["oktagon"])  # OKTAGON has its own collector
+
+
+# --------------------------------------------------------------------------- adding to the files another source wrote (KSW, RIZIN)
+
+KSW = sd.SherdogOrg("ksw", ("KSW-",), "Konfrontacja Sztuk Walki", since=date(2025, 1, 1))
+TODAY = date(2026, 11, 2)
+
+
+def espn_fight(slug, day, one, two, *, winner="", division="Lightweight", order=0):
+    row = {field: "" for field in FIGHT_FIELDS}
+    row.update(
+        event_name=f"KSW {slug}", event_date=day, location="Warsaw, Poland", event_url=f"https://www.espn.com/{slug}", event_slug=f"ksw-{slug}",
+        fight_url=f"https://www.espn.com/{slug}#fight-{order}", card_order=str(order), fighter_1=one, fighter_2=two,
+        fighter_1_url=f"https://www.espn.com/mma/fighter/_/id/{one[:3]}", fighter_2_url=f"https://www.espn.com/mma/fighter/_/id/{two[:3]}",
+        winner=winner, outcome="win" if winner else "", weight_class=division, method="KO/TKO" if winner else "",
+    )
+    return row
+
+
+def espn_fighter(name, **values):
+    row = {field: "" for field in FIGHTER_FIELDS}
+    row.update(name=name, slug=name.lower().replace(" ", "-"), profile_url=f"https://www.espn.com/mma/fighter/_/id/{name[:3]}", status="inactive", country="Poland", **values)
+    return row
+
+
+def base():
+    fights = [
+        espn_fight("old", "2024-12-20", "Ana One", "Bia Two", winner="Ana One"),
+        espn_fight("women", "2024-11-16", "Gia Seven", "Hana Eight", winner="Gia Seven", division="Women's Strawweight"),
+    ]
+    fighters = [espn_fighter("Ana One", last_fight_date="2024-12-20"), espn_fighter("Bia Two", last_fight_date="2024-12-20"), espn_fighter("Gia Seven"), espn_fighter("Hana Eight")]
+    return fights, fighters
+
+
+def sd_event(*rows, day="2025-03-08", title="KSW 104", ident="777"):
+    return sd.parse_event(page(*rows, org="Konfrontacja Sztuk Walki", day=day, title=title), f"https://www.sherdog.com/events/KSW-104-X-{ident}", KSW)
+
+
+def test_the_new_events_are_added_to_the_other_sources_rows_which_are_left_exactly_as_they_were():
+    fights, fighters = base()
+    before = [dict(row) for row in fights]
+    event = sd_event(row(2, CAL, DAN), row(1, EVA, FAY))
+    combined, people, report = sd.supplement(KSW, [event], fights, fighters, TODAY)
+    assert [r for r in combined if "sherdog" not in r["event_slug"]] == before  # every ESPN row, untouched and in its order
+    new = [r for r in combined if "sherdog" in r["event_slug"]]
+    assert [r["fighter_1"] for r in new] == ["Cal Three", "Eva Five"] and {r["event_slug"] for r in new} == {"ksw-sherdog-777"}
+    assert [r["event_date"] for r in combined] == ["2025-03-08", "2025-03-08", "2024-12-20", "2024-11-16"]  # newest first
+    assert report["new_bouts"] == 2 and report["new_people"] == 4
+
+
+def test_an_event_before_the_start_day_is_not_added_and_one_the_files_already_have_is_skipped():
+    fights, fighters = base()
+    too_old = sd_event(row(1, CAL, DAN), day="2024-06-01", ident="1")
+    same_card = sd_event(row(1, ANA, BIA), day="2024-12-21", ident="2")  # the card ESPN has, a day later in another time zone... but before `since`
+    combined, _, report = sd.supplement(KSW, [too_old, same_card], fights, fighters, TODAY)
+    assert len(combined) == len(fights) and report["new_bouts"] == 0
+
+    after = sd_event(row(1, ANA, BIA), day="2025-01-02", ident="3")
+    fights[0]["event_date"] = "2025-01-01"  # the other source does have a card from `since` on, and the same bout
+    combined, _, report = sd.supplement(KSW, [after], fights, fighters, TODAY)
+    assert report["skipped_overlap"] and report["new_bouts"] == 0 and len(combined) == len(fights)
+
+
+def test_a_person_the_files_have_keeps_their_spelling_and_profile_and_a_winner_follows_the_rename():
+    fights, fighters = base()
+    fighters[0]["name"], fighters[0]["profile_url"] = "Ána-One", "https://www.espn.com/mma/fighter/_/id/ANA"  # how ESPN spells and links her
+    fighters[0]["name"] = "Ana One"
+    event = sd_event(row(1, ("Ana One", 1, "win"), CAL))
+    combined, _, _ = sd.supplement(KSW, [event], fights, fighters, TODAY)
+    [bout] = [r for r in combined if "sherdog" in r["event_slug"]]
+    assert (bout["fighter_1"], bout["fighter_1_url"], bout["winner"]) == ("Ana One", "https://www.espn.com/mma/fighter/_/id/ANA", "Ana One")
+    assert bout["fighter_2_url"] == "https://www.sherdog.com/fighter/Cal-Three-3"  # someone new keeps Sherdog's profile
+
+
+def test_new_fighters_are_added_and_the_known_ones_only_get_newer_dates_and_an_active_status():
+    fights, fighters = base()
+    event = sd_event(row(1, ANA, CAL), day="2026-01-17", ident="9")
+    combined, people, _ = sd.supplement(KSW, [event], fights, fighters, TODAY)
+    by_name = {p["name"]: p for p in people}
+    ana, bia = by_name["Ana One"], by_name["Bia Two"]
+    assert (ana["last_fight_date"], ana["status"], ana["country"]) == ("2026-01-17", "active", "Poland")  # a newer fight: active, nothing else changed
+    assert (bia["last_fight_date"], bia["status"]) == ("2024-12-20", "inactive")  # not on the new card: left alone
+    assert by_name["Cal Three"]["profile_url"] == "https://www.sherdog.com/fighter/Cal-Three-3" and by_name["Cal Three"]["country"] == ""
+
+
+def test_a_second_run_replaces_what_the_first_added_and_gives_the_same_files():
+    fights, fighters = base()
+    event = sd_event(row(1, CAL, DAN))
+    first = sd.supplement(KSW, [event], fights, fighters, TODAY)
+    second = sd.supplement(KSW, [event], first[0], first[1], TODAY)
+    assert second[0] == first[0] and second[1] == first[1]
+    corrected = sd_event(row(1, CAL, DAN, method="KO (Punches)"))  # the result was corrected on the site
+    third, _, _ = sd.supplement(KSW, [corrected], first[0], first[1], TODAY)
+    assert [r["method"] for r in third if "sherdog" in r["event_slug"]] == ["KO/TKO"]  # the earlier U-DEC is replaced, not kept beside it
+
+
+def test_a_division_both_sexes_use_gets_women_s_when_a_woman_the_files_have_is_in_it_or_when_the_files_only_know_it_as_women_s():
+    fights, fighters = base()
+    known_woman = sd_event(row(2, ("Gia Seven", 7, "win"), CAL, weight="Bantamweight"), row(1, EVA, FAY, weight="Strawweight"), row(0, DAN, BIA, weight="Welterweight"), ident="5")
+    combined, _, report = sd.supplement(KSW, [known_woman], fights, fighters, TODAY)
+    divisions = {r["fighter_1"]: r["weight_class"] for r in combined if "sherdog" in r["event_slug"]}
+    assert divisions == {"Gia Seven": "Women's Bantamweight", "Eva Five": "Women's Strawweight", "Dan Four": "Welterweight"}
+    assert report["womens_fixed"] == 2
+
+
+def test_names_that_look_alike_are_listed_for_review_but_never_merged():
+    fights, fighters = base()
+    fighters.append(espn_fighter("Oleksii Polischuck"))
+    event = sd_event(row(1, ("Oleksii Polishchuk", 11, "win"), CAL))
+    combined, people, report = sd.supplement(KSW, [event], fights, fighters, TODAY)
+    assert report["possible_same"] == ["Oleksii Polishchuk ~ Oleksii Polischuck"]
+    assert {"Oleksii Polishchuk", "Oleksii Polischuck"} <= {p["name"] for p in people}
+
+
+def test_the_supplement_refuses_to_run_without_the_files_it_adds_to_and_all_leaves_it_out(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(sd, "RAW_DATA_DIR", tmp_path)
+    assert sd.collect_supplement(KSW, [sd_event(row(1, CAL, DAN))], dry_run=False) == 1
+    assert "no files to add to" in capsys.readouterr().out and not (tmp_path / "ksw").exists()
+    assert sd.STANDALONE == ["jungle-fight", "invicta"] and "ksw" in sd.ORGS and "rizin" in sd.ORGS
+
+
+def test_a_run_writes_the_combined_files_and_a_dry_run_writes_nothing(tmp_path, monkeypatch):
+    from scripts.scrape_espn import save_csv
+
+    monkeypatch.setattr(sd, "RAW_DATA_DIR", tmp_path)
+    folder = tmp_path / "ksw"
+    folder.mkdir()
+    fights, fighters = base()
+    save_csv(folder / "fights.csv", FIGHT_FIELDS, fights)
+    save_csv(folder / "fighters.csv", FIGHTER_FIELDS, fighters)
+    save_csv(folder / "rankings.csv", RANKING_FIELDS, [])
+    before = (folder / "fights.csv").read_bytes()
+    event = sd_event(row(1, CAL, DAN))
+    assert sd.collect_supplement(KSW, [event], dry_run=True) == 0 and (folder / "fights.csv").read_bytes() == before
+    assert sd.collect_supplement(KSW, [event], dry_run=False) == 0
+    assert len(read(folder / "fights.csv")) == 3 and len(read(folder / "fighters.csv")) == 6
+    assert sd.collect_supplement(KSW, [], dry_run=False) == 1  # no event from the start day on: an error, files kept
+    assert len(read(folder / "fights.csv")) == 3

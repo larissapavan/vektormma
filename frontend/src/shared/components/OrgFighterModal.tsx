@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 
 import { L } from '../../i18n/lang'
 import { getDivisionName } from '../data/divisions'
-import { formatDate, formatMethod, nonMmaDiscipline, originLine } from '../data/orgFormat'
+import { formatDate, formatMethod, nonMmaDiscipline, originLine, profileSource } from '../data/orgFormat'
 import { OrgSportTag } from './OrgFightRow'
 import { orgEs, type OrgConfig } from '../data/orgs'
 import { translateHometown } from '../data/fightLabels'
@@ -141,6 +141,8 @@ function OrgOnlyFighterModal({
     }
   }, [profile, completedFights])
   const orgTotal = orgRecord.wins + orgRecord.losses + orgRecord.draws
+  // The profile link goes to the site the profile is on: a RIZIN or KSW fighter can have an ESPN page or, from 2025, a Sherdog one.
+  const profileLabel = profileSource(profile?.profile_url, org.sourceName)
   // The record counts every bout of the organization; the ones that are not MMA are flagged in the history.
   const otherSports = useMemo(() => completedFights.filter((fight) => nonMmaDiscipline(fight.discipline) !== null).length, [completedFights])
   const orgWinRate = orgTotal ? Math.round((orgRecord.wins / orgTotal) * 100) : 0
@@ -571,7 +573,7 @@ function OrgOnlyFighterModal({
                     className="inline-flex w-fit items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-widest text-neutral-300 underline decoration-white/30 underline-offset-4 hover:text-white"
                   >
                     {org.partialCoverage
-                      ? L(lang, `Perfil no ${org.sourceName}`, `Profile on ${org.sourceName}`, `Profil sur ${org.sourceName}`, `Perfil en ${org.sourceName}`)
+                      ? L(lang, `Perfil no ${profileLabel}`, `Profile on ${profileLabel}`, `Profil sur ${profileLabel}`, `Perfil en ${profileLabel}`)
                       : L(lang, `Perfil oficial no ${org.sourceName}`, `Profile on ${org.sourceName}`, `Profil officiel sur ${org.sourceName}`, `Perfil oficial en ${org.sourceName}`)}
                     <ExternalLink className="h-3 w-3" />
                   </a>

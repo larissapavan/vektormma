@@ -59,6 +59,18 @@ export function formatMethod(method: string | null, detail?: string | null, lang
   return detail ? `${label} (${detail})` : label
 }
 
+/** Where a profile link goes, for its label: ESPN and Sherdog by name, any other site by its address ("onefc.com"). */
+export function profileSource(url: string | null | undefined, fallback: string): string {
+  try {
+    const host = new URL(url ?? '').hostname.replace(/^www\./, '')
+    if (host.endsWith('espn.com')) return 'ESPN'
+    if (host.endsWith('sherdog.com')) return 'Sherdog'
+    return host || fallback
+  } catch {
+    return fallback
+  }
+}
+
 /** The sport of a bout that is not MMA ("Muay Thai", "Kickboxing"...), or null for an MMA bout and for one whose source does not say. */
 export function nonMmaDiscipline(discipline: string | null | undefined): string | null {
   const name = (discipline ?? '').trim()

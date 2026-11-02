@@ -147,8 +147,8 @@ const ORG_CARDS: OrgCardInfo[] = [
       pulse: false,
     },
     metrics: [
-      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '60+', valueEn: '60+', valueFr: '60+', valueEs: '60+' },
-      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '290+', valueEn: '290+', valueFr: '290+', valueEs: '290+' },
+      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '80+', valueEn: '80+', valueFr: '80+', valueEs: '80+' },
+      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '460+', valueEn: '460+', valueFr: '460+', valueEs: '460+' },
     ],
   },
   {
@@ -167,8 +167,8 @@ const ORG_CARDS: OrgCardInfo[] = [
       pulse: false,
     },
     metrics: [
-      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '100+', valueEn: '100+', valueFr: '100+', valueEs: '100+' },
-      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '390+', valueEn: '390+', valueFr: '390+', valueEs: '390+' },
+      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '120+', valueEn: '120+', valueFr: '120+', valueEs: '120+' },
+      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '520+', valueEn: '520+', valueFr: '520+', valueEs: '520+' },
     ],
   },
   {

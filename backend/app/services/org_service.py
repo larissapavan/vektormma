@@ -60,20 +60,21 @@ ORGS: dict[str, Org] = {
         sources=("onefc.com", "wikipedia.org"),
     ),
     # The four organisations below are read from ESPN's public API (scripts/scrape_espn_org.py). ESPN has no belts or
-    # rankings for them, so they have no champions page and their title bouts are not flagged.
+    # rankings for them, so they have no champions page and their title bouts are not flagged. ESPN stops at the end of 2024
+    # for RIZIN and KSW: their later events are added from Sherdog (scripts/scrape_sherdog_org.py ksw|rizin), which does flag title bouts.
     "rizin": Org(
         id="rizin",
         name="RIZIN Fighting Federation",
         short_name="RIZIN",
         tagline="RIZIN fighters and event results.",
-        sources=("espn.com",),
+        sources=("espn.com", "sherdog.com"),
     ),
     "ksw": Org(
         id="ksw",
         name="Konfrontacja Sztuk Walki",
         short_name="KSW",
         tagline="KSW fighters and event results.",
-        sources=("espn.com",),
+        sources=("espn.com", "sherdog.com"),
     ),
     "lfa": Org(
         id="lfa",

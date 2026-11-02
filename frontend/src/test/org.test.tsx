@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import App from '../App'
 import { ORGS, orgFromPathname, orgPath, switchOrgPath } from '../shared/data/orgs'
-import { compareDivisions, fightSummary, formatHeight, formatMethod, formatReach, formatRecord } from '../shared/data/orgFormat'
+import { compareDivisions, fightSummary, formatHeight, formatMethod, formatReach, formatRecord, profileSource } from '../shared/data/orgFormat'
 import { respond } from './fixtures'
 
 // Every URL the fake API was asked for, so a test can tell which catalogs a page downloaded.
@@ -107,6 +107,20 @@ describe('the page that chooses an organization', () => {
     const nav = screen.getByRole('group', { name: 'Organization' })
     expect(within(nav).getByRole('link', { name: 'UFC' })).toHaveAttribute('href', '/home')
     expect(screen.getAllByRole('link', { name: 'Events' })[0]).toHaveAttribute('href', '/events')
+  })
+})
+
+describe('where a profile link goes', () => {
+  it('is named after the site of the address, so a RIZIN fighter can link to ESPN or to Sherdog', () => {
+    expect(profileSource('https://www.espn.com/mma/fighter/_/id/123', 'ESPN, Sherdog')).toBe('ESPN')
+    expect(profileSource('https://www.sherdog.com/fighter/Kyoji-Horiguchi-1', 'ESPN, Sherdog')).toBe('Sherdog')
+    expect(profileSource('https://www.onefc.com/athletes/x/', 'ONE')).toBe('onefc.com')
+    expect(profileSource('https://oktagonmma.com/en/fighters/x/', 'OKTAGON')).toBe('oktagonmma.com')
+  })
+
+  it('falls back to the organization source when the address is missing or not an address', () => {
+    expect(profileSource(null, 'ESPN, Sherdog')).toBe('ESPN, Sherdog')
+    expect(profileSource('not a url', 'ESPN, Sherdog')).toBe('ESPN, Sherdog')
   })
 })
 

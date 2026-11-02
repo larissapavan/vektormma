@@ -388,10 +388,10 @@ export function OrgHome() {
           : org.partialCoverage
             ? L(
                 i18n.language,
-                `Dados do ${org.sourceName}, na cobertura que ele tem desta liga: podem faltar eventos e lutas, e a atualização não é diária. Sem cinturões nem rankings.`,
-                `Data from ${org.sourceName}, as far as it covers this league: events and fights may be missing, and it is not refreshed daily. No belts or rankings.`,
-                `Données d'${org.sourceName}, dans la mesure où il couvre cette ligue : des événements et des combats peuvent manquer, et la mise à jour n'est pas quotidienne. Ni ceintures ni classements.`,
-                `Datos de ${org.sourceName}, según la cobertura que tiene de esta liga: pueden faltar eventos y peleas, y no se actualiza a diario. Sin cinturones ni rankings.`,
+                `Dados de ${org.sourceName}, conforme a cobertura da fonte nesta liga: podem faltar eventos e lutas, e a atualização não é diária. Sem cinturões nem rankings.`,
+                `Data from ${org.sourceName}, as far as the source covers this league: events and fights may be missing, and it is not refreshed daily. No belts or rankings.`,
+                `Données de ${org.sourceName}, dans la mesure où la source couvre cette ligue : des événements et des combats peuvent manquer, et la mise à jour n'est pas quotidienne. Ni ceintures ni classements.`,
+                `Datos de ${org.sourceName}, según la cobertura de la fuente en esta liga: pueden faltar eventos y peleas, y no se actualiza a diario. Sin cinturones ni rankings.`,
               )
             : L(i18n.language, `Dados oficiais via ${org.sourceName}, sincronizados diariamente.`, `Data from ${org.sourceName}, refreshed daily.`, `Données officielles via ${org.sourceName}, synchronisées chaque jour.`, `Datos oficiales de ${org.sourceName}, actualizados a diario.`)}{' '}
         {L(

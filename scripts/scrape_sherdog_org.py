@@ -17,12 +17,20 @@ What Sherdog's event pages do NOT give, and what this script therefore leaves em
 - rankings or the list of champions: rankings.csv holds only its header (a title bout is flagged on the bout itself);
 - the gender of a division: Sherdog calls the women's strawweight just "Strawweight", and so does this data.
 
+KSW and RIZIN are a different case: ESPN covers them up to the end of 2024 (scripts/scrape_espn_org.py) and Sherdog has the
+events after that, so for them this script only ADDS the events from `since` on to the files ESPN wrote and never touches an
+ESPN row: fighters keep the spelling and profile ESPN gave them, an event the files already have is skipped, and a second run
+replaces only what an earlier run added (its event slug has "-sherdog-" in it). Name matching is exact (accents and case
+ignored); names that look alike but are not equal are listed for review, never merged.
+
 Output (data/raw/<org>/), the same three files every non-UFC organization has (see backend/app/services/org_service.py):
     fights.csv, fighters.csv, rankings.csv
 
 Usage (from the repo root):
     python -m scripts.scrape_sherdog_org jungle-fight --dry-run --cache-dir .sherdog-cache
-    python -m scripts.scrape_sherdog_org all --cache-dir .sherdog-cache
+    python -m scripts.scrape_sherdog_org all --cache-dir .sherdog-cache        # Jungle Fight and Invicta FC
+    python -m scripts.scrape_sherdog_org ksw --cache-dir .sherdog-cache        # add KSW from 2025 on to the ESPN files
+    python -m scripts.scrape_sherdog_org rizin --cache-dir .sherdog-cache      # add RIZIN from 2025 on to the ESPN files
 """
 
 from __future__ import annotations
@@ -33,6 +41,7 @@ import sys
 from collections import Counter
 from dataclasses import dataclass
 from datetime import date, timedelta
+from difflib import SequenceMatcher
 from pathlib import Path
 
 from bs4 import BeautifulSoup
@@ -40,7 +49,7 @@ from bs4 import BeautifulSoup
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scripts.scrape_espn import ascii_name, map_weight_class, name_key, save_csv
+from scripts.scrape_espn import ascii_name, load_csv, map_weight_class, name_key, save_csv
 from scripts.scrape_oktagon import Fetcher
 from scripts.scrape_pfl import FIGHT_FIELDS, FIGHTER_FIELDS, RANKING_FIELDS, normalize_method
 from src.ufc_predictor.config import RAW_DATA_DIR
@@ -56,15 +65,25 @@ DECISIONS = {"U-DEC", "S-DEC", "M-DEC", "DEC"}
 @dataclass(frozen=True)
 class SherdogOrg:
     id: str  # the organization id: data/raw/<id>, the URL prefix and the event slug prefix
-    prefix: str  # what the event's address starts with on Sherdog ("Jungle-Fight-156-...")
+    prefixes: tuple[str, ...]  # what the event's address starts with on Sherdog ("Jungle-Fight-156-...")
     name: str  # the organization as the event page names it
     womens: bool = False  # an all-women's promotion: Sherdog's "Bantamweight" there is the women's division
+    # Set for an organization whose earlier years come from another source: only events from this day on are added to the
+    # files that source wrote, instead of the files being built from Sherdog alone.
+    since: date | None = None
 
 
 ORGS: dict[str, SherdogOrg] = {
-    "jungle-fight": SherdogOrg("jungle-fight", "Jungle-Fight", "Jungle Fight"),
-    "invicta": SherdogOrg("invicta", "Invicta", "Invicta Fighting Championships", womens=True),
+    "jungle-fight": SherdogOrg("jungle-fight", ("Jungle-Fight",), "Jungle Fight"),
+    "invicta": SherdogOrg("invicta", ("Invicta",), "Invicta Fighting Championships", womens=True),
+    # ESPN has both up to the end of 2024 (KSW 101 on 2024-12-20, Rizin 49 on 2024-12-31); Sherdog has what came after.
+    "ksw": SherdogOrg("ksw", ("KSW-", "Konfrontacja"), "Konfrontacja Sztuk Walki", since=date(2025, 1, 1)),
+    "rizin": SherdogOrg("rizin", ("Rizin-", "RIZIN"), "Rizin Fighting Federation", since=date(2025, 1, 1)),
 }
+# What `all` runs: the organizations built from Sherdog alone. The others add to files another source wrote, so they run by name.
+STANDALONE = [org_id for org_id, org in ORGS.items() if org.since is None]
+# Sherdog does not say which sex a bout is, and these division names exist for both.
+AMBIGUOUS_DIVISIONS = {"Atomweight", "Strawweight", "Flyweight", "Bantamweight", "Featherweight", "Lightweight"}
 
 
 # --------------------------------------------------------------------------- listing
@@ -195,6 +214,11 @@ def parse_event(html: str, url: str, org: SherdogOrg) -> dict | None:
 # --------------------------------------------------------------------------- assembling
 
 
+def slug_prefix(org: SherdogOrg) -> str:
+    """The event slug prefix: "invicta-<id>", but "ksw-sherdog-<id>" where ESPN's "ksw-<id>" events are already in the file."""
+    return f"{org.id}-sherdog" if org.since else org.id
+
+
 def fight_rows(events: list[dict], org: SherdogOrg) -> list[dict]:
     rows = []
     for event in events:
@@ -204,7 +228,7 @@ def fight_rows(events: list[dict], org: SherdogOrg) -> list[dict]:
             rows.append(
                 {
                     "event_name": event["name"], "event_date": event["day"].isoformat(), "location": event["location"],
-                    "event_url": event["url"], "event_slug": f"{org.id}-{event['id']}", "circuit": "",
+                    "event_url": event["url"], "event_slug": f"{slug_prefix(org)}-{event['id']}", "circuit": "",
                     "fight_url": f"{event['url']}#fight-{order}", "card_order": order, "fighter_1": one["name"], "fighter_2": two["name"],
                     "fighter_1_url": one["url"], "fighter_2_url": two["url"], "winner": bout["winner"], "outcome": bout["outcome"],
                     "weight_class": bout["weight_class"], "stage": "Title Fight" if title else "", "title_fight": "true" if title else "",
@@ -258,13 +282,106 @@ def fighter_rows(events: list[dict], fights: list[dict], today: date) -> list[di
     return rows
 
 
+def womens_names(fights: list[dict]) -> set[str]:
+    """People the file already has in a women's bout: Sherdog does not say which sex a "Bantamweight" bout is."""
+    found: set[str] = set()
+    for row in fights:
+        if row["weight_class"].startswith("Women's"):
+            found.update((name_key(row["fighter_1"]), name_key(row["fighter_2"])))
+    return found
+
+
+def overlaps(row_pairs: dict[str, set[frozenset]], event: dict) -> bool:
+    """Whether an event the file already has (a day apart at most) holds one of this event's bouts: the same card twice."""
+    pairs = {frozenset((name_key(b["fighter_1"]["name"]), name_key(b["fighter_2"]["name"]))) for b in event["bouts"]}
+    for offset in (-1, 0, 1):
+        if pairs & row_pairs.get((event["day"] + timedelta(days=offset)).isoformat(), set()):
+            return True
+    return False
+
+
+def supplement(org: SherdogOrg, events: list[dict], fights: list[dict], fighters: list[dict], today: date) -> tuple[list[dict], list[dict], dict]:
+    """The files another source wrote plus this organization's events from `org.since` on.
+
+    Nothing of the other source's is changed except two facts that the new bouts make stale, and only for a fighter who is on
+    a new card: the first/last fight date, and `status` (marked inactive and fought within two years: marked active, never
+    the other way round).
+    Rows an earlier run of this script added are replaced, so a second run gives the same files."""
+    marker = f"{org.id}-sherdog-"
+    base_fights = [row for row in fights if not row["event_slug"].startswith(marker)]
+    base_fighters = [row for row in fighters if not row["profile_url"].startswith(BASE_URL)]
+    known = {name_key(row["name"]): row for row in base_fighters}
+    report: dict = {"skipped_overlap": [], "possible_same": [], "womens_unresolved": 0, "womens_fixed": 0}
+
+    pairs_by_day: dict[str, set[frozenset]] = {}
+    for row in base_fights:
+        pairs_by_day.setdefault(row["event_date"], set()).add(frozenset((name_key(row["fighter_1"]), name_key(row["fighter_2"]))))
+    fresh = [event for event in events if event["day"] >= org.since]
+    kept = []
+    for event in fresh:
+        if overlaps(pairs_by_day, event):
+            report["skipped_overlap"].append(f"{event['day']} {event['name']}")
+        else:
+            kept.append(event)
+
+    new_fights = fight_rows(kept, org)
+    women = womens_names(base_fights)
+    # A division the file only knows as a women's one (KSW's Strawweight and Flyweight: nine and ten "Women's" bouts, no men's)
+    # is a women's division for the new bouts too, even between two fighters the file has not seen.
+    labelled = Counter(row["weight_class"] for row in base_fights)
+    womens_only = {name for name in AMBIGUOUS_DIVISIONS if labelled[f"Women's {name}"] and not labelled[name]}
+    for row in new_fights:
+        for side in ("fighter_1", "fighter_2"):
+            existing = known.get(name_key(row[side]))
+            if existing:  # the spelling and the profile ESPN already gave this person
+                if row["winner"] == row[side]:
+                    row["winner"] = existing["name"]
+                row[side], row[f"{side}_url"] = existing["name"], existing["profile_url"]
+        division = row["weight_class"]
+        if division in AMBIGUOUS_DIVISIONS:
+            if division in womens_only or name_key(row["fighter_1"]) in women or name_key(row["fighter_2"]) in women:
+                row["weight_class"] = f"Women's {division}"
+                report["womens_fixed"] += 1
+            else:
+                report["womens_unresolved"] += 1
+
+    new_people = [row for row in fighter_rows(kept, new_fights, today) if name_key(row["name"]) not in known]
+    for person in new_people:  # a name that is not equal to one ESPN has but looks like it: for a human to look at
+        close = max(((SequenceMatcher(None, name_key(person["name"]), key).ratio(), row["name"]) for key, row in known.items()), default=(0, ""))
+        if close[0] >= 0.88:
+            report["possible_same"].append(f"{person['name']} ~ {close[1]}")
+
+    combined = [*new_fights, *base_fights]
+    combined.sort(key=lambda row: row["event_date"], reverse=True)  # stable: each card keeps its order
+    dates: dict[str, list[str]] = {}
+    for row in combined:
+        if row["outcome"]:
+            for side in ("fighter_1", "fighter_2"):
+                dates.setdefault(name_key(row[side]), []).append(row["event_date"])
+    cutoff = (today - timedelta(days=ACTIVE_WITHIN_DAYS)).isoformat()
+    on_new_cards = {name_key(row[side]) for row in new_fights for side in ("fighter_1", "fighter_2")}
+    updated = []
+    for row in base_fighters:
+        own = sorted(dates.get(name_key(row["name"]), []))
+        row = dict(row)
+        if own and name_key(row["name"]) in on_new_cards:  # only a fighter with a new bout has anything to update
+            row["first_fight_date"], row["last_fight_date"] = own[0], own[-1]
+            if row["status"] == "inactive" and own[-1] >= cutoff:
+                row["status"] = "active"
+        updated.append(row)
+    all_fighters = sorted([*updated, *new_people], key=lambda row: row["name"].lower())
+    report.update(events=kept, new_bouts=len(new_fights), new_people=len(new_people))
+    return combined, all_fighters, report
+
+
 # --------------------------------------------------------------------------- main
 
 
 def collect(org: SherdogOrg, fetcher: Fetcher, sitemaps: list[str], *, dry_run: bool) -> int:
     urls: list[str] = []
     for xml in sitemaps:
-        urls += event_urls(xml, org.prefix)
+        for prefix in org.prefixes:
+            urls += event_urls(xml, prefix)
     urls = list(dict.fromkeys(urls))
     print(f"[info] {org.id}: {len(urls)} candidate events in the sitemap")
     events: list[dict] = []
@@ -284,6 +401,9 @@ def collect(org: SherdogOrg, fetcher: Fetcher, sitemaps: list[str], *, dry_run: 
         print(f"[error] {org.id}: no events; files left untouched")
         return 1
 
+    if org.since:
+        return collect_supplement(org, events, dry_run=dry_run)
+
     fights = fight_rows(events, org)
     rows = fighter_rows(events, fights, date.today())
     methods = Counter(fight["method"] for fight in fights if fight["outcome"] == "win")
@@ -301,6 +421,35 @@ def collect(org: SherdogOrg, fetcher: Fetcher, sitemaps: list[str], *, dry_run: 
     return 0
 
 
+def collect_supplement(org: SherdogOrg, events: list[dict], *, dry_run: bool) -> int:
+    """Add the events from org.since on to the files another source wrote (see supplement)."""
+    folder = RAW_DATA_DIR / org.id
+    if not (folder / "fights.csv").exists() or not (folder / "fighters.csv").exists():
+        print(f"[error] {org.id}: {folder} has no files to add to (this organization is built from another source first); nothing done")
+        return 1
+    _, fights = load_csv(folder / "fights.csv")
+    _, fighters = load_csv(folder / "fighters.csv")
+    combined, people, report = supplement(org, events, fights, fighters, date.today())
+    added = report["events"]
+    if not added:
+        print(f"[error] {org.id}: no event from {org.since} on; files left untouched")
+        return 1
+    print(f"[info] {org.id}: {len(added)} events from {org.since} on ({min(e['day'] for e in added)} to {max(e['day'] for e in added)}), {report['new_bouts']} bouts, {report['new_people']} fighters ESPN did not have")
+    print(f"[info] {org.id}: {sum(1 for e in added for b in e['bouts'] if not b['outcome'])} bouts still to come, {sum(1 for e in added for b in e['bouts'] if b['title_fight'])} title bouts")
+    print(f"[info] {org.id}: {report['womens_fixed']} bouts marked as women's (a women's-only division here, or a woman the files already have); {report['womens_unresolved']} bouts in a division name both sexes use are left as Sherdog writes it (nearly all men's)")
+    if report["skipped_overlap"]:
+        print(f"[info] {org.id}: {len(report['skipped_overlap'])} events skipped, the files already have them: {report['skipped_overlap'][:4]}")
+    if report["possible_same"]:
+        print(f"[review] {org.id}: new names that look like names the files already have (not merged): {report['possible_same'][:12]}")
+    print(f"[info] {org.id}: files now {len(combined)} bouts and {len(people)} fighters (before: {len(fights)} and {len(fighters)})")
+    if dry_run:
+        print(f"[dry-run] {org.id}: nothing written")
+        return 0
+    save_csv(folder / "fights.csv", FIGHT_FIELDS, combined)
+    save_csv(folder / "fighters.csv", FIGHTER_FIELDS, people)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("org", choices=[*ORGS, "all"])
@@ -315,7 +464,7 @@ def main(argv: list[str] | None = None) -> int:
         print("[error] Sherdog's sitemaps could not be read; files left untouched")
         return 1
     status = 0
-    for org in ORGS.values() if args.org == "all" else [ORGS[args.org]]:
+    for org in [ORGS[org_id] for org_id in STANDALONE] if args.org == "all" else [ORGS[args.org]]:
         status |= collect(org, fetcher, sitemaps, dry_run=args.dry_run)
     return status
 
