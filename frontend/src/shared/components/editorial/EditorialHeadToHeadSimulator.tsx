@@ -171,10 +171,10 @@ export function EditorialHeadToHeadSimulator({
                 {nameA || pickFighterLabel}
               </h3>
             </div>
-            <ChevronDown className="h-4 w-4 text-zinc-500 group-hover:text-white transition" />
+            <ChevronDown className="h-4 w-4 text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition" />
           </button>
 
-          <p className="font-mono text-xs text-zinc-400">
+          <p className="font-mono text-xs text-[var(--text-muted)]">
             {profileA
               ? `${getDivisionName(profileA.division, i18n.language) || 'UFC'} • ${profileA.wins}${L(i18n.language, 'V', 'W', 'V', 'V')} - ${profileA.losses}${L(i18n.language, 'D', 'L', 'D', 'D')}`
               : '—'}
@@ -201,7 +201,7 @@ export function EditorialHeadToHeadSimulator({
         <div className="lg:col-span-2 flex flex-col items-center justify-center text-center py-4">
           <div className="relative flex flex-col items-center">
             {/* VS Badge */}
-            <span className="font-display font-extrabold text-2xl text-neutral-500 tracking-widest uppercase">
+            <span className="font-display font-extrabold text-2xl text-[var(--text-muted)] tracking-widest uppercase">
               VS
             </span>
 
@@ -212,7 +212,7 @@ export function EditorialHeadToHeadSimulator({
                   {showPrediction ? <><AnimatedCounter value={probA} />%</> : '–'}
                 </span>
               </div>
-              <span className="text-zinc-600 font-display font-extrabold text-xl">:</span>
+              <span className="text-[var(--text-muted)] font-display font-extrabold text-xl">:</span>
               <div className="text-left">
                 <span className="font-display font-extrabold text-3xl sm:text-4xl text-[#2563EB] tracking-tight tabular-nums">
                   {showPrediction ? <><AnimatedCounter value={probB} />%</> : '–'}
@@ -220,7 +220,7 @@ export function EditorialHeadToHeadSimulator({
               </div>
             </div>
 
-            <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-medium">
+            <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-[var(--text-muted)] font-medium">
               {!matchupReady
                 ? L(i18n.language, 'ESCOLHA DOIS LUTADORES PARA SIMULAR', 'PICK TWO FIGHTERS TO SIMULATE', 'CHOISISSEZ DEUX COMBATTANTS À SIMULER', 'ELIGE DOS PELEADORES PARA SIMULAR')
                 : predicting
@@ -263,7 +263,7 @@ export function EditorialHeadToHeadSimulator({
             onClick={() => setSelectingCorner('b')}
             className="group flex items-center gap-2 cursor-pointer text-right"
           >
-            <ChevronDown className="h-4 w-4 text-zinc-500 group-hover:text-white transition" />
+            <ChevronDown className="h-4 w-4 text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition" />
             <div>
               {profileB?.nickname && (
                 <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-[#2563EB]">
@@ -276,7 +276,7 @@ export function EditorialHeadToHeadSimulator({
             </div>
           </button>
 
-          <p className="font-mono text-xs text-zinc-400">
+          <p className="font-mono text-xs text-[var(--text-muted)]">
             {profileB
               ? `${getDivisionName(profileB.division, i18n.language) || 'UFC'} • ${profileB.wins}${L(i18n.language, 'V', 'W', 'V', 'V')} - ${profileB.losses}${L(i18n.language, 'D', 'L', 'D', 'D')}`
               : '—'}
@@ -303,7 +303,7 @@ export function EditorialHeadToHeadSimulator({
       {/* COMPARATIVE METRIC BARS */}
       {profileA && profileB && (
       <div className="relative z-10 mt-8 space-y-4 pt-5 border-t border-[var(--border-subtle)] dark:border-white/10">
-        <h4 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-zinc-400 text-center">
+        <h4 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-[var(--text-muted)] text-center">
           {L(i18n.language, 'ANÁLISE COMPARATIVA DE VOLUME E DEFESA', 'COMPARATIVE VOLUME & DEFENSE ANALYSIS', 'ANALYSE COMPARATIVE DES VOLUMES ET DE LA DÉFENSE', 'ANÁLISIS COMPARATIVO DE VOLUMEN Y DEFENSA')}
         </h4>
 
@@ -391,7 +391,7 @@ export function EditorialHeadToHeadSimulator({
                 <button
                   type="button"
                   onClick={() => setSelectingCorner(null)}
-                  className="rounded-full p-1 text-zinc-400 hover:text-white cursor-pointer"
+                  className="rounded-full p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
                 >
                   ✕
                 </button>
@@ -399,7 +399,7 @@ export function EditorialHeadToHeadSimulator({
 
               <div className="mt-4">
                 <div className="relative">
-                  <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-zinc-400" />
+                  <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-[var(--text-muted)]" />
                   <input
                     type="text"
                     value={searchQuery}
@@ -420,11 +420,11 @@ export function EditorialHeadToHeadSimulator({
                     >
                       <div>
                         <p className="font-bold text-[var(--text-primary)] dark:text-white text-sm">{f.name}</p>
-                        <p className="text-xs text-zinc-400 font-mono">
+                        <p className="text-xs text-[var(--text-muted)] font-mono">
                           {getDivisionName(f.division, i18n.language) || 'UFC'} • {f.wins}{L(i18n.language, 'V', 'W', 'V', 'V')} - {f.losses}{L(i18n.language, 'D', 'L', 'D', 'D')}
                         </p>
                       </div>
-                      <span className="font-mono text-xs text-zinc-500">
+                      <span className="font-mono text-xs text-[var(--text-muted)]">
                         {L(i18n.language, 'Selecionar', 'Select', 'Sélectionner', 'Seleccionar')}
                       </span>
                     </button>
@@ -461,7 +461,7 @@ function ComparativeBar({
           {valA}
           {unit}
         </span>
-        <span className="font-sans font-medium text-xs text-neutral-400 text-center uppercase tracking-wider">{label}</span>
+        <span className="font-sans font-medium text-xs text-[var(--text-muted)] text-center uppercase tracking-wider">{label}</span>
         <span className="font-mono font-bold text-[#2563EB] tabular-nums">
           {valB}
           {unit}
@@ -493,7 +493,7 @@ function MeasurementCard({
 }) {
   return (
     <div className="rounded-xl border border-[var(--border-subtle)] dark:border-white/5 bg-[var(--bg-surface-subtle)] dark:bg-white/[0.03] p-2.5 text-center backdrop-blur-sm">
-      <span className="font-sans text-[10px] uppercase tracking-wider text-neutral-400 font-medium">{label}</span>
+      <span className="font-sans text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-medium">{label}</span>
       <p className={`mt-0.5 text-sm font-bold font-mono tabular-nums ${highlight ? 'text-[#F59E0B]' : 'text-[var(--text-primary)] dark:text-white'}`}>
         {val}
       </p>

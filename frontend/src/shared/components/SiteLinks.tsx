@@ -21,7 +21,7 @@ export function SiteLinks({ className = '' }: { className?: string }) {
           <li key={item.to}>
             <Link
               to={item.to}
-              className="underline decoration-[var(--rule)] decoration-1 underline-offset-4 transition hover:text-[#C8102E] focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C8102E]"
+              className="inline-flex min-h-6 items-center underline decoration-[var(--rule)] decoration-1 underline-offset-4 transition hover:text-[#C8102E] focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C8102E]"
             >
               {item.label}
             </Link>

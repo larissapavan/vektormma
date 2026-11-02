@@ -76,8 +76,10 @@
 
   /* Accents & States */
   --accent-red: #ef4444;
+  --accent-red-solid: #dc2626;    /* fill behind white text: 4.8:1 (the lighter red above is 3.8:1) */
   --text-red: #f87171;            /* 6.4:1 */
   --accent-blue: #3b82f6;
+  --accent-blue-solid: #2563eb;   /* fill behind white text: 5.2:1 */
   --text-blue: #60a5fa;           /* 7.4:1 */
   --accent-green: #22c55e;
   --text-green: #4ade80;          /* 10.3:1 */
@@ -119,6 +121,7 @@
   --avatar-bg: #1c2230;
   --logo-bg: #000000;
   --tape: #f59e0b;
+  --on-tape: #0e0e0e;
 }
 
 :root[data-theme='light'] {
@@ -144,8 +147,10 @@
 
   /* Accents & States */
   --accent-red: #c8102e;          /* Official Combat Red */
+  --accent-red-solid: #c8102e;
   --text-red: #b91c1c;            /* 7.6:1 on #ffffff (AAA) */
   --accent-blue: #1d4ed8;
+  --accent-blue-solid: #1d4ed8;
   --text-blue: #1e40af;           /* 7.8:1 on #ffffff (AAA) */
   --accent-green: #15803d;
   --text-green: #166534;          /* 6.8:1 on #ffffff (AA) */
@@ -187,6 +192,7 @@
   --avatar-bg: #e2e8f0;
   --logo-bg: #0f172a;
   --tape: #b45309;
+  --on-tape: #ffffff;
 }
 
 /* Organization Specific Theme Customizations */
@@ -470,7 +476,7 @@ h3,
   font-family: var(--font-sports-tech);
   font-weight: 700;
   letter-spacing: 0.12em;
-  background-color: var(--accent-red);
+  background-color: var(--accent-red-solid);
   color: #ffffff !important;
   border: 1px solid transparent;
   box-shadow: 0 4px 14px -2px rgba(200, 16, 46, 0.4);
@@ -852,5 +858,14 @@ select.soft-input option {
 
   .group:hover .glove-lift {
     transform: none;
+  }
+}
+
+/* One visible focus ring for every link, button and control reached by keyboard. It sits in the base layer so the
+   focus styles written on individual elements (utilities) still win. */
+@layer base {
+  :where(a, button, summary, select, [role='button'], [tabindex]:not([tabindex='-1'])):focus-visible {
+    outline: 2px solid var(--input-focus);
+    outline-offset: 2px;
   }
 }

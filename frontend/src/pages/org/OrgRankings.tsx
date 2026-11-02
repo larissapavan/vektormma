@@ -157,7 +157,7 @@ function RankingList({
       <div className="grid gap-2.5">
         {vacant ? (
           <article className="metric-tile flex items-center gap-3.5 rounded-2xl px-3.5 py-3">
-            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--accent-red)] text-white">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--accent-red-solid)] text-white">
               <Crown className="h-4 w-4" />
             </span>
             <p className="text-base font-semibold text-[var(--text-main)]">{L(i18n.language, 'Cinturão vago', 'Championship vacant', 'Ceinture vacante', 'Campeonato vacante')}</p>
@@ -204,7 +204,7 @@ function RankingRow({
     <>
       <span
         className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl text-base font-bold ${
-          holder ? (interim ? 'bg-[#1F4E9C] text-white' : 'bg-[var(--accent-red)] text-white') : 'bg-[var(--surface-3)] text-[var(--text-main)]'
+          holder ? (interim ? 'bg-[#1F4E9C] text-white' : 'bg-[var(--accent-red-solid)] text-white') : 'bg-[var(--surface-3)] text-[var(--text-main)]'
         }`}
       >
         {holder ? <Crown className="h-4 w-4" /> : entry.rank}

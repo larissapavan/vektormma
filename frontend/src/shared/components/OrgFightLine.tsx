@@ -27,7 +27,7 @@ export function OrgFightLine({ fight, knownOpponent, onSelect }: { fight: FightR
       <span
         title={label}
         className={`grid h-7 w-7 shrink-0 place-items-center border-2 text-xs font-bold ${
-          win ? 'border-[var(--rule)] bg-[var(--accent-red)] text-white' : loss ? 'border-[var(--rule)] bg-[var(--surface-3)] text-[var(--text-main)]' : 'border-[var(--line-soft)] text-[var(--text-muted)]'
+          win ? 'border-[var(--rule)] bg-[var(--accent-red-solid)] text-white' : loss ? 'border-[var(--rule)] bg-[var(--surface-3)] text-[var(--text-main)]' : 'border-[var(--line-soft)] text-[var(--text-muted)]'
         }`}
       >
         <span aria-hidden="true">{win ? L(i18n.language, 'V', 'W', 'V', 'V') : loss ? L(i18n.language, 'D', 'L', 'D', 'D') : upcoming ? '·' : '–'}</span>

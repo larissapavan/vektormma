@@ -93,6 +93,7 @@ export function Header() {
   const bare = isAbout || isInfoOnlyPath(pathname)
   const navItems = landing || bare ? [] : navItemsFor(org)
   const { isLight, toggleTheme } = useTheme()
+  const githubLabel = L(i18n.language, 'Perfil no GitHub (abre em nova aba)', 'GitHub profile (opens in a new tab)', 'Profil GitHub (s’ouvre dans un nouvel onglet)', 'Perfil de GitHub (se abre en una pestaña nueva)')
   const [tabsRef, moreTabsOnRight] = useScrollingTabs(pathname)
 
   const apiLabel = loading
@@ -132,7 +133,7 @@ export function Header() {
                   {t('header.matchupAnalytics', 'Análise de Combates')}
                 </span>
                 <span className="text-xs xs:text-sm sm:text-base font-bold tracking-tight whitespace-nowrap text-[var(--text-primary)]">
-                  VEKTOR <span className="text-[#FF2E54]">MMA</span>
+                  VEKTOR <span className="text-[#C8102E] dark:text-[#FF2E54]">MMA</span>
                 </span>
               </span>
             </Link>
@@ -304,11 +305,11 @@ export function Header() {
                 href="https://github.com/larissapavan"
                 target="_blank"
                 rel="noreferrer"
-                title="GitHub"
-                aria-label="GitHub"
+                title={githubLabel}
+                aria-label={githubLabel}
                 className="hidden sm:inline-flex h-7.5 w-7.5 sm:h-8 sm:w-8 items-center justify-center rounded-lg transition text-[var(--text-secondary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)] dark:hover:text-white"
               >
-                <FolderGit2 className="h-4 w-4" />
+                <FolderGit2 className="h-4 w-4" aria-hidden="true" />
               </a>
             </div>
           </div>

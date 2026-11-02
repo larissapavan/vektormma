@@ -121,7 +121,7 @@ export function HeadToHead() {
     <div className="space-y-4">
       {/* Editorial vs Classic Mode Switcher */}
       <div className="surface-card flex items-center justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] dark:border-white/10 dark:bg-[#0c0d12]/90 px-4 py-3 shadow-sm text-[var(--text-primary)] dark:text-zinc-300">
-        <span className="font-['Anton','Barlow_Condensed',Impact,sans-serif] text-sm uppercase tracking-widest text-zinc-300">
+        <span className="font-['Anton','Barlow_Condensed',Impact,sans-serif] text-sm uppercase tracking-widest text-[var(--text-secondary)] dark:text-zinc-300">
           {L(i18n.language, 'Modo de Confronto', 'Matchup Mode', 'Mode de confrontation', 'Modo de enfrentamiento')}
         </span>
         <div className="inline-flex rounded-xl bg-[var(--bg-surface-subtle)] dark:bg-black/40 p-1 border border-[var(--border-subtle)] dark:border-white/10">
@@ -131,7 +131,7 @@ export function HeadToHead() {
             className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition ${
               viewMode === 'editorial'
                 ? 'bg-[#E11D48] text-white shadow-md'
-                : 'text-zinc-400 hover:text-white'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] dark:text-zinc-400 dark:hover:text-white'
             }`}
           >
             <Sparkles className="h-3.5 w-3.5" />
@@ -143,7 +143,7 @@ export function HeadToHead() {
             className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition ${
               viewMode === 'classic'
                 ? 'bg-zinc-700 text-white shadow-md'
-                : 'text-zinc-400 hover:text-white'
+                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] dark:text-zinc-400 dark:hover:text-white'
             }`}
           >
             {L(i18n.language, 'Histórico Completo', 'Full History', 'Historique complet', 'Historial completo')}

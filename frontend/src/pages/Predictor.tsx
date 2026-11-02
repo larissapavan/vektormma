@@ -263,7 +263,7 @@ function Corner({
 }) {
   const { i18n } = useTranslation()
   const { imageByName } = useFighterImages()
-  const block = side === 'red' ? 'bg-[var(--accent-red)] text-white' : 'bg-[var(--accent-blue)] text-white'
+  const block = side === 'red' ? 'bg-[var(--accent-red-solid)] text-white' : 'bg-[var(--accent-blue-solid)] text-white'
 
   return (
     <section className="flex min-w-0 flex-col rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] overflow-hidden shadow-xs">
@@ -509,9 +509,9 @@ function TaleOfTape({ fighterA, fighterB }: { fighterA: FighterProfile | null; f
       </div>
 
       <div className="grid grid-cols-[1fr_auto_1fr] border-b border-[var(--border-subtle)] text-center">
-        <span className="poster-display truncate bg-[var(--accent-red)] px-3 py-2 text-base text-white sm:text-lg">{fighterA?.name ?? L(i18n.language, 'Canto Vermelho', 'Red corner', 'Coin rouge', 'Esquina roja')}</span>
+        <span className="poster-display truncate bg-[var(--accent-red-solid)] px-3 py-2 text-base text-white sm:text-lg">{fighterA?.name ?? L(i18n.language, 'Canto Vermelho', 'Red corner', 'Coin rouge', 'Esquina roja')}</span>
         <span className="w-24 shrink-0 sm:w-40" />
-        <span className="poster-display truncate bg-[var(--accent-blue)] px-3 py-2 text-base text-white sm:text-lg">{fighterB?.name ?? L(i18n.language, 'Canto Azul', 'Blue corner', 'Coin bleu', 'Esquina azul')}</span>
+        <span className="poster-display truncate bg-[var(--accent-blue-solid)] px-3 py-2 text-base text-white sm:text-lg">{fighterB?.name ?? L(i18n.language, 'Canto Azul', 'Blue corner', 'Coin bleu', 'Esquina azul')}</span>
       </div>
 
       <div>

@@ -125,7 +125,7 @@ export function Landing() {
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <Link
                   to="/head-to-head"
-                  className="group inline-flex items-center gap-3 rounded-full bg-[#FF2E54] text-white hover:bg-[#E11D48] px-5 py-2.5 font-mono text-xs uppercase tracking-widest transition-all duration-300 shadow-md"
+                  className="group inline-flex min-h-11 items-center gap-3 rounded-full bg-[#E11D48] text-white hover:bg-[#BE123C] px-5 py-2.5 font-mono text-xs uppercase tracking-widest transition-all duration-300 shadow-md"
                 >
                   <Swords className="h-4 w-4" aria-hidden="true" />
                   <span>
@@ -135,7 +135,7 @@ export function Landing() {
 
                 <a
                   href="#organizations-grid"
-                  className="group inline-flex items-center gap-3 rounded-full border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:bg-[#0E0E0E] hover:text-white dark:border-white/20 dark:bg-white/5 dark:text-white dark:hover:bg-white dark:hover:text-black px-5 py-2.5 font-mono text-xs uppercase tracking-widest transition-all duration-300 shadow-md cursor-pointer"
+                  className="group inline-flex min-h-11 items-center gap-3 rounded-full border border-[var(--border-default)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:bg-[#0E0E0E] hover:text-white dark:border-white/20 dark:bg-white/5 dark:text-white dark:hover:bg-white dark:hover:text-black px-5 py-2.5 font-mono text-xs uppercase tracking-widest transition-all duration-300 shadow-md cursor-pointer"
                 >
                   <span>
                     {L(
@@ -263,7 +263,7 @@ export function Landing() {
                 <span className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--text-primary)] dark:text-white tracking-tight tabular-nums">
                   30
                 </span>
-                <span className="text-[#F59E0B] font-display font-extrabold text-2xl sm:text-3xl">+</span>
+                <span className="text-[#B45309] dark:text-[#F59E0B] font-display font-extrabold text-2xl sm:text-3xl">+</span>
               </div>
               <p className="mt-1 font-sans text-xs uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400 font-medium">
                 {L(i18n.language, 'Anos de Histórico (1993–2026)', 'Years of History (1993–2026)', 'Années d’Histoire (1993–2026)', 'Años de historia (1993–2026)')}
@@ -277,7 +277,7 @@ export function Landing() {
             ========================================================================= */}
         <section id="organizations-grid" className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 pt-6 sm:pt-8 pb-3 sm:pb-4 w-full">
           <div className="mb-4 sm:mb-5">
-            <span className="font-mono text-xs uppercase tracking-widest text-[#E11D48] font-bold">
+            <span className="font-mono text-xs uppercase tracking-widest text-[#BE123C] dark:text-[#FB7185] font-bold">
               {L(i18n.language, 'LIGAS & ORGANIZAÇÕES', 'LEAGUES & ORGANIZATIONS', 'LIGUES & ORGANISATIONS', 'LIGAS Y ORGANIZACIONES')}
             </span>
             <h2 className="mt-1 font-display font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-[var(--text-primary)] dark:text-white">
@@ -303,7 +303,7 @@ export function Landing() {
                 <Link
                   key={card.id}
                   to={orgPath(orgConfig)}
-                  aria-label={`Open ${card.fullName}`}
+                  aria-label={`${L(i18n.language, 'Abrir', 'Open', 'Ouvrir', 'Abrir')} ${card.fullName}`}
                   style={
                     {
                       '--accent-color': card.accentColor,
@@ -373,7 +373,7 @@ export function Landing() {
                 <span className="font-bold text-xs sm:text-sm text-[var(--text-primary)] dark:text-white tracking-tight">
                   Vektor MMA
                 </span>
-                <span className="text-[var(--text-muted)] dark:text-neutral-500">•</span>
+                <span aria-hidden="true" className="text-[var(--text-muted)] dark:text-neutral-400">•</span>
                 <span className="text-[11px] sm:text-xs text-[var(--text-secondary)] dark:text-neutral-400">
                   {L(
                     i18n.language,
@@ -389,18 +389,18 @@ export function Landing() {
               <div className="flex flex-wrap items-center gap-3 sm:gap-5">
                 <nav
                   aria-label={L(i18n.language, 'Links do rodapé', 'Footer links', 'Liens de bas de page', 'Enlaces del pie de página')}
-                  className="flex items-center gap-3 sm:gap-4 font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400"
+                  className="flex items-center gap-3 sm:gap-4 font-mono text-[11px] sm:text-xs uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400"
                 >
-                  <Link to="/about" className="hover:text-[var(--text-primary)] dark:hover:text-white transition">
+                  <Link to="/about" className="inline-flex min-h-6 items-center hover:text-[var(--text-primary)] dark:hover:text-white transition">
                     {L(i18n.language, 'Sobre', 'About', 'À propos', 'Acerca de')}
                   </Link>
-                  <Link to="/data" className="hover:text-[var(--text-primary)] dark:hover:text-white transition">
+                  <Link to="/data" className="inline-flex min-h-6 items-center hover:text-[var(--text-primary)] dark:hover:text-white transition">
                     {L(i18n.language, 'Dados', 'Data', 'Données', 'Datos')}
                   </Link>
-                  <Link to="/model" className="hover:text-[var(--text-primary)] dark:hover:text-white transition">
+                  <Link to="/model" className="inline-flex min-h-6 items-center hover:text-[var(--text-primary)] dark:hover:text-white transition">
                     {L(i18n.language, 'Sistema de IA', 'ML System', 'Système d’IA', 'Sistema de IA')}
                   </Link>
-                  <Link to="/track-record" className="hover:text-[var(--text-primary)] dark:hover:text-white transition">
+                  <Link to="/track-record" className="inline-flex min-h-6 items-center hover:text-[var(--text-primary)] dark:hover:text-white transition">
                     {L(i18n.language, 'Acurácia', 'Track Record', 'Historique', 'Historial')}
                   </Link>
                 </nav>
@@ -412,7 +412,7 @@ export function Landing() {
             </div>
 
             {/* Linha Inferior: Disclaimer editorial sutil */}
-            <div className="border-t border-[var(--border-subtle)]/50 dark:border-white/5 pt-1 sm:pt-1.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 text-[10px] text-[var(--text-muted)] dark:text-neutral-500 font-sans">
+            <div className="border-t border-[var(--border-subtle)]/50 dark:border-white/5 pt-1 sm:pt-1.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 text-[11px] text-[var(--text-muted)] dark:text-neutral-400 font-sans">
               <p>
                 {L(
                   i18n.language,
@@ -424,7 +424,7 @@ export function Landing() {
               </p>
               <Link
                 to="/about"
-                className="hover:text-[var(--text-primary)] dark:hover:text-neutral-300 underline underline-offset-2 transition whitespace-nowrap"
+                className="inline-flex min-h-6 items-center text-[var(--text-secondary)] dark:text-neutral-300 hover:text-[var(--text-primary)] dark:hover:text-white underline underline-offset-2 transition whitespace-nowrap"
               >
                 {L(
                   i18n.language,

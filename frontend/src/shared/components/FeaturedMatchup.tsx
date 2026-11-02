@@ -42,7 +42,7 @@ export function FeaturedMatchup() {
       data-testid="featured-matchup"
       className="w-full max-w-md rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)]/90 p-4 shadow-md backdrop-blur-md dark:border-white/10 dark:bg-white/[0.04]"
     >
-      <p className="flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-widest text-[#FF2E54]">
+      <p className="flex items-center gap-2 font-mono text-[11px] font-bold uppercase tracking-widest text-[#BE123C] dark:text-[#FF2E54]">
         <Swords className="h-3.5 w-3.5" aria-hidden="true" />
         {L(i18n.language, 'Próxima luta em destaque', 'Next featured fight', 'Prochain combat à l’affiche', 'Próxima pelea destacada')}
       </p>

@@ -285,7 +285,7 @@ export function Fighters() {
               <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
               {L(i18n.language, 'Filtros', 'Filters', 'Filtres', 'Filtros')}
               {stanceFilter !== 'All stances' || badgeFilter !== '' ? (
-                <span className="grid h-5 min-w-5 place-items-center bg-[var(--accent-red)] px-1 text-[11px] text-white">
+                <span className="grid h-5 min-w-5 place-items-center bg-[var(--accent-red-solid)] px-1 text-[11px] text-white">
                   {(stanceFilter !== 'All stances' ? 1 : 0) + (badgeFilter !== '' ? 1 : 0)}
                 </span>
               ) : null}
@@ -431,7 +431,7 @@ function CountPill({ active, children }: { active: boolean; children: React.Reac
   return (
     <span
       className={`inline-flex min-w-[1.6em] items-center justify-center rounded-full px-1.5 py-px text-[11px] font-bold tabular-nums tracking-normal ${
-        active ? 'bg-[var(--tape)] text-[#0E0E0E]' : 'bg-[var(--surface-3)] text-[var(--text-muted)]'
+        active ? 'bg-[var(--tape)] text-[var(--on-tape)]' : 'bg-[var(--surface-3)] text-[var(--text-muted)]'
       }`}
     >
       {children}
@@ -726,7 +726,7 @@ function FighterDivisionCard({
                 </h3>
                 {fighter.belt ? (
                   <div className="mt-1 flex flex-wrap items-center max-sm:justify-center">
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/50 bg-gradient-to-r from-amber-500/20 to-amber-600/10 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-amber-500 dark:text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/50 bg-gradient-to-r from-amber-500/20 to-amber-600/10 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
                       <Trophy className="h-3 w-3 text-amber-500 dark:text-amber-400" />
                       <span>{L(i18n.language, `Campeão ${getDivisionName(fighter.division ?? group.label, i18n.language)}`, `${getDivisionName(fighter.division ?? group.label, i18n.language)} Champion`, `Champion ${getDivisionName(fighter.division ?? group.label, i18n.language)}`, `Campeón de ${getDivisionName(fighter.division ?? group.label, i18n.language)}`)}</span>
                     </span>
@@ -744,7 +744,7 @@ function FighterDivisionCard({
                 {fighter.next_fight ? (
                   <span
                     title={`${fighter.next_fight.event_name}: vs ${fighter.next_fight.opponent}`}
-                    className="inline-flex items-center gap-1 rounded-full border border-[#22c55e]/40 bg-[#22c55e]/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#22c55e]"
+                    className="inline-flex items-center gap-1 rounded-full border border-[#22c55e]/40 bg-[#22c55e]/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--text-green)]"
                   >
                     <CalendarDays className="h-2.5 w-2.5" />
                     {L(i18n.language, 'Luta marcada', 'Fight booked', 'Combat prévu', 'Pelea confirmada')}

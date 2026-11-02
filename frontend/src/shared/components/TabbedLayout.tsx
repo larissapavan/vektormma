@@ -40,7 +40,7 @@ export function TabbedLayout({ label, tabs }: { label: string; tabs: SectionTab[
                   [
                     'block rounded-lg px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.12em] transition sm:px-5',
                     isActive
-                      ? 'bg-[var(--accent-red)] text-white shadow-xs'
+                      ? 'bg-[var(--accent-red-solid)] text-white shadow-xs'
                       : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)]',
                   ].join(' ')
                 }
