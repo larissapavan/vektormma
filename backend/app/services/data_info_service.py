@@ -8,13 +8,16 @@ from backend.app.services.catalog_service import (
     get_total_fights_tracked,
 )
 from backend.app.services.events_service import get_events
+from backend.app.services.org_service import ORGS
 from src.ufc_predictor.config import RAW_DATA_DIR
 
 DATA_SOURCES = [
     "ufcstats.com",
     "ufc.com",
+    "espn.com",
     "pflmma.com",
     "onefc.com",
+    "oktagonmma.com",
     "sherdog.com",
     "wikipedia.org",
     "tapology.com",
@@ -30,12 +33,7 @@ TRACKED_SOURCE_FILES = [
     RAW_DATA_DIR / "fighter_career_stats.csv",
     RAW_DATA_DIR / "rankings.csv",
     RAW_DATA_DIR / "upcoming_events.csv",
-    RAW_DATA_DIR / "pfl" / "fighters.csv",
-    RAW_DATA_DIR / "pfl" / "fights.csv",
-    RAW_DATA_DIR / "one" / "fighters.csv",
-    RAW_DATA_DIR / "one" / "fights.csv",
-    RAW_DATA_DIR / "bellator" / "fighters.csv",
-    RAW_DATA_DIR / "bellator" / "fights.csv",
+    *(org.data_dir / name for org in ORGS.values() for name in ("fighters.csv", "fights.csv")),
     HISTORICAL_PHOTOS_SOURCE_PATH,
 ]
 
@@ -51,7 +49,7 @@ def get_data_info() -> dict:
     total_fighters = len(catalog)
     total_events = len(events)
 
-    for org_id in ("pfl", "one", "bellator"):
+    for org_id in ORGS:
         try:
             from backend.app.services.org_service import get_org_fighters, get_org_events
             f_list = get_org_fighters(org_id)

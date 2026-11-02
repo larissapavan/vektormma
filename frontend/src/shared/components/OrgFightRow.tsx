@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { L } from '../../i18n/lang'
 import { getDivisionName } from '../data/divisions'
-import { fightSummary } from '../data/orgFormat'
+import { fightSummary, nonMmaDiscipline, nonMmaHint } from '../data/orgFormat'
 import { useOrgFighterLookup } from '../hooks/useOrgFighterLookup'
 import type { OrgFightResult, UpcomingPick } from '../types/api'
 import { FighterAvatar } from './FighterAvatar'
@@ -44,6 +44,7 @@ export function OrgFightRow({
           <span className="selector-chip text-[11px] text-[var(--text-main)]">{getDivisionName(fight.weight_class, i18n.language)}</span>
         ) : null}
         {stage ? <span className="selector-chip text-[11px] text-[var(--text-main)]">{stage}</span> : null}
+        <OrgSportTag discipline={fight.discipline} />
       </div>
 
       {scheduled && pick ? (
@@ -67,6 +68,18 @@ export function OrgFightRow({
         {summary ?? (fight.winner ? L(i18n.language, 'Resultado oficial registrado', 'Result recorded', 'Résultat officiel enregistré', 'Resultado registrado') : scheduled ? (pick ? null : L(i18n.language, 'Luta programada', 'Scheduled', 'Combat programmé', 'Programada')) : L(i18n.language, 'Sem resultado registrado', 'No result recorded', 'Aucun résultat enregistré', 'Sin resultado registrado'))}
       </p>
     </article>
+  )
+}
+
+/** The sport of a bout that is not MMA ("Muay Thai", "Kickboxing"...). Nothing for an MMA bout and for one whose source does not say. */
+export function OrgSportTag({ discipline }: { discipline: string | null | undefined }) {
+  const { i18n } = useTranslation()
+  const sport = nonMmaDiscipline(discipline)
+  if (!sport) return null
+  return (
+    <span title={nonMmaHint(i18n.language)} className="selector-chip text-[11px] font-bold uppercase tracking-wide text-[var(--text-red)]">
+      {sport}
+    </span>
   )
 }
 

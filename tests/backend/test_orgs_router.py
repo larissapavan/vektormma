@@ -224,3 +224,76 @@ def test_an_organization_without_its_own_record_gets_one_counted_from_its_bouts(
     assert fighters["Bia Costa"]["org_record"] == "1-1-0"  # beat Dora, lost to Ana
     assert fighters["Ana Silva"]["org_record"] == "2-1-0"  # the file's own value wins over the count
     assert fighters["Dora Reis"]["org_record"] == "0-1-0"
+
+
+# --------------------------------------------------------------------------- the sport of a bout (the ONE file has a discipline column)
+
+
+@pytest.fixture
+def mixed_sports_org(tmp_path, monkeypatch):
+    fights = [
+        _fight("card", "Mixed Card", PAST, 0, "Ana Silva", "Bia Costa", "Ana Silva", method="KO/TKO", round=1, time="1:00", discipline="Muay Thai"),
+        _fight("card", "Mixed Card", PAST, 1, "Ana Silva", "Caio Dias", "Caio Dias", method="U-DEC", round=3, time="5:00", discipline="MMA"),
+        _fight("card", "Mixed Card", PAST, 2, "Bia Costa", "Dora Reis", "Dora Reis", method="SUB", round=2, time="2:00"),  # the source did not say
+        # A card still to come, one bout of each kind.
+        _fight("coming", "Coming Card", NEXT, 0, "Ana Silva", "Caio Dias", discipline="Muay Thai"),
+        _fight("coming", "Coming Card", NEXT, 1, "Bia Costa", "Dora Reis", discipline="MMA"),
+        _fight("coming", "Coming Card", NEXT, 2, "Ana Silva", "Dora Reis"),
+        _fight("coming", "Coming Card", NEXT, 3, "Caio Dias", "Bia Costa", discipline="Kickboxing"),
+    ]
+    fighters = [_fighter(name, (1, 1, 0), last_fight_date=PAST) for name in ("Ana Silva", "Bia Costa", "Caio Dias", "Dora Reis")]
+    _write(tmp_path / "fights.csv", [*FIGHT_FIELDS, "discipline"], fights)
+    _write(tmp_path / "fighters.csv", FIGHTER_FIELDS, fighters)
+    _write(tmp_path / "rankings.csv", RANKING_FIELDS, [])
+    test_org = org_service.Org(id="mixed", name="Mixed Sports", short_name="MS", tagline="Several sports.", sources=("example.test",), root=tmp_path)
+    monkeypatch.setitem(org_service.ORGS, "mixed", test_org)
+    org_service._cache.pop("mixed", None)
+    yield test_org
+    org_service._cache.pop("mixed", None)
+
+
+def test_the_sport_of_each_bout_is_served_with_the_card_and_blank_when_the_source_does_not_say(client, mixed_sports_org):
+    [event] = client.get("/orgs/mixed/events").json()
+    assert [fight["discipline"] for fight in event["fights"]] == ["Muay Thai", "MMA", None]
+
+
+def test_the_sport_is_served_with_a_fighters_history_and_the_record_still_counts_every_bout(client, mixed_sports_org):
+    history = client.get("/orgs/mixed/fighters/Ana Silva/fights").json()
+    fought = [fight for fight in history if fight["result"]]  # the card still to come is in the history too, without a result
+    assert {fight["opponent"]: fight["discipline"] for fight in fought} == {"Bia Costa": "Muay Thai", "Caio Dias": "MMA"}
+    assert {fight["opponent"]: fight["discipline"] for fight in history if not fight["result"]} == {"Caio Dias": "Muay Thai", "Dora Reis": None}
+    ana = next(fighter for fighter in client.get("/orgs/mixed/fighters").json() if fighter["name"] == "Ana Silva")
+    assert ana["org_record"] == "1-1-0"  # the Muay Thai win and the MMA loss both count: the bouts are flagged, the record is kept
+
+
+def test_a_file_without_the_column_serves_no_sport(client, org):
+    [past, _] = client.get("/orgs/test/events").json()
+    assert all(fight["discipline"] is None for fight in past["fights"])
+
+
+class StubModel:
+    """Stands in for the prediction model: answers for any two names and remembers who it was asked about."""
+
+    def __init__(self):
+        self.asked = []
+
+    def predict_pick(self, a, b):
+        self.asked.append((a, b))
+        return {"predicted_winner": a, "probability": 0.7, "fighter_a_probability": 0.7}
+
+
+def test_a_prediction_is_made_only_for_a_bout_the_source_says_is_mma(mixed_sports_org):
+    model = StubModel()
+    picks = org_service.get_org_upcoming_predictions("mixed", model)
+    # The model is trained on MMA only: the Muay Thai and the kickboxing bout get none, and neither does the one whose
+    # source does not say its sport (it may be something else). Only the bout named MMA does.
+    assert [(pick["fighter_1"], pick["fighter_2"]) for pick in picks] == [("Bia Costa", "Dora Reis")]
+    assert model.asked == [("Bia Costa", "Dora Reis")]  # the model was not even asked about the others
+
+
+@pytest.mark.parametrize(
+    ("discipline", "expected"),
+    [("MMA", True), ("mma", True), (" MMA ", True), ("Muay Thai", False), ("Kickboxing", False), ("Submission Grappling", False), ("Grappling", False), ("", False), (None, False)],
+)
+def test_only_a_bout_named_mma_counts_as_mma(discipline, expected):
+    assert org_service.is_mma(discipline) is expected

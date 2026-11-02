@@ -14,8 +14,12 @@ ufc.com page as the rankings, and fighters created from ESPN need their headshot
     7. Career    scripts.scrape_ufc_career_stats     career striking/grappling numbers of fighters who fought lately (ufc.com, 15 s per page)
     8. PFL       scripts.scrape_pfl                  the Professional Fighters League: events, results, fighters, rankings, photos (pflmma.com)
     9. ONE       scripts.scrape_one                  ONE Championship: announced cards, new events and results of the last weeks (onefc.com)
-   10. Gyms      scripts.scrape_gyms                 the gyms and the fighters who train in them (fighthub-app.com)
-   11. Feed      scripts.build_feed                  the RSS feed of picks and results (frontend/public/feed.xml)
+   10. ESPN orgs scripts.scrape_espn_org             LFA and Cage Warriors: the last 45 days and the cards to come (ESPN). RIZIN and KSW are
+                                                     frozen there: Sherdog continues them (below)
+   11. OKTAGON   scripts.scrape_oktagon              OKTAGON MMA: every event and result, rebuilt from the site (oktagonmma.com, about 2 minutes)
+   12. Sherdog   scripts.scrape_sherdog_org daily    Jungle Fight, Invicta FC, KSW and RIZIN: the events of the last 45 days and the new ones
+   13. Gyms      scripts.scrape_gyms                 the gyms and the fighters who train in them (fighthub-app.com)
+   14. Feed      scripts.build_feed                  the RSS feed of picks and results (frontend/public/feed.xml)
 
 Usage (from the repo root):
     python -m scripts.update_all --dry-run      # ESPN preview only; rankings and photos write files, so they are skipped
@@ -39,8 +43,8 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scripts import (
-    build_feed, download_fighter_photos, log_predictions, scrape_espn, scrape_fight_stats, scrape_fighter_origins, scrape_gyms, scrape_one, scrape_pfl,
-    scrape_rankings, scrape_roster_watch, scrape_stat_leaders, scrape_ufc_career_stats, validate_data,
+    build_feed, download_fighter_photos, log_predictions, scrape_espn, scrape_espn_org, scrape_fight_stats, scrape_fighter_origins, scrape_gyms, scrape_oktagon,
+    scrape_one, scrape_pfl, scrape_rankings, scrape_roster_watch, scrape_sherdog_org, scrape_stat_leaders, scrape_ufc_career_stats, validate_data,
 )
 
 # New fighters are a handful per week; the cap keeps a daily run short even if the origins file is ever behind.
@@ -78,6 +82,24 @@ def run_one(*, dry_run: bool) -> None:
         raise RuntimeError("the ONE scraper found nothing; data/raw/one was left untouched")
 
 
+def run_espn_orgs(*, dry_run: bool) -> None:
+    status = scrape_espn_org.main(["all", "--recent-days"] + (["--dry-run"] if dry_run else []))
+    if status != 0:
+        raise RuntimeError("an ESPN league could not be refreshed (LFA or Cage Warriors); its files were left untouched")
+
+
+def run_oktagon(*, dry_run: bool) -> None:
+    status = scrape_oktagon.main(["--dry-run"] if dry_run else [])
+    if status != 0:
+        raise RuntimeError("the OKTAGON scraper found nothing or would have shrunk the files; data/raw/oktagon was left untouched")
+
+
+def run_sherdog(*, dry_run: bool) -> None:
+    status = scrape_sherdog_org.main(["daily"] + (["--dry-run"] if dry_run else []))
+    if status != 0:
+        raise RuntimeError("a Sherdog organization (Jungle Fight, Invicta FC, KSW or RIZIN) could not be refreshed; its files were left untouched")
+
+
 def run_gyms(*, dry_run: bool) -> None:
     status = scrape_gyms.main(["--dry-run"] if dry_run else [])
     if status != 0:
@@ -106,6 +128,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--skip-records", action="store_true")
     parser.add_argument("--skip-pfl", action="store_true")
     parser.add_argument("--skip-one", action="store_true")
+    parser.add_argument("--skip-espn-orgs", action="store_true", help="skip LFA and Cage Warriors (ESPN)")
+    parser.add_argument("--skip-oktagon", action="store_true")
+    parser.add_argument("--skip-sherdog", action="store_true", help="skip Jungle Fight, Invicta FC, KSW and RIZIN (Sherdog)")
     parser.add_argument("--skip-career-stats", action="store_true", help="skip the ufc.com career numbers (about ten minutes)")
     parser.add_argument("--skip-gyms", action="store_true")
     parser.add_argument("--skip-predictions", action="store_true")
@@ -141,6 +166,13 @@ def main(argv: list[str] | None = None) -> int:
         # The PFL preview reads the site but writes nothing, so unlike the steps above it can run.
         results["PFL (pflmma.com)"] = None if args.skip_pfl else run_step("PFL (pflmma.com)", lambda: run_pfl(dry_run=True, photos=False))
         results["ONE (onefc.com)"] = None if args.skip_one else run_step("ONE (onefc.com)", lambda: run_one(dry_run=True))
+        results["ESPN leagues (LFA, Cage Warriors)"] = (
+            None if args.skip_espn_orgs else run_step("ESPN leagues (LFA, Cage Warriors)", lambda: run_espn_orgs(dry_run=True))
+        )
+        results["OKTAGON (oktagonmma.com)"] = None if args.skip_oktagon else run_step("OKTAGON (oktagonmma.com)", lambda: run_oktagon(dry_run=True))
+        results["Sherdog (Jungle Fight, Invicta, KSW, RIZIN)"] = (
+            None if args.skip_sherdog else run_step("Sherdog (Jungle Fight, Invicta, KSW, RIZIN)", lambda: run_sherdog(dry_run=True))
+        )
         results["Gyms (FightHub)"] = None if args.skip_gyms else run_step("Gyms (FightHub)", lambda: run_gyms(dry_run=True))
     else:
         recent = (date.today() - timedelta(days=FIGHT_STATS_DAYS)).isoformat()
@@ -169,6 +201,13 @@ def main(argv: list[str] | None = None) -> int:
             None if args.skip_pfl else run_step("PFL (pflmma.com)", lambda: run_pfl(dry_run=False, photos=not args.skip_photos))
         )
         results["ONE (onefc.com)"] = None if args.skip_one else run_step("ONE (onefc.com)", lambda: run_one(dry_run=False))
+        results["ESPN leagues (LFA, Cage Warriors)"] = (
+            None if args.skip_espn_orgs else run_step("ESPN leagues (LFA, Cage Warriors)", lambda: run_espn_orgs(dry_run=False))
+        )
+        results["OKTAGON (oktagonmma.com)"] = None if args.skip_oktagon else run_step("OKTAGON (oktagonmma.com)", lambda: run_oktagon(dry_run=False))
+        results["Sherdog (Jungle Fight, Invicta, KSW, RIZIN)"] = (
+            None if args.skip_sherdog else run_step("Sherdog (Jungle Fight, Invicta, KSW, RIZIN)", lambda: run_sherdog(dry_run=False))
+        )
         results["Gyms (FightHub)"] = None if args.skip_gyms else run_step("Gyms (FightHub)", lambda: run_gyms(dry_run=False))
         results["RSS feed"] = None if args.skip_predictions else run_step("RSS feed (picks and results)", build_feed.main)
         results["Validate"] = run_step("Validate refreshed data", require_valid)

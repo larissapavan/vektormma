@@ -188,6 +188,11 @@ def test_an_athlete_already_in_a_womens_class_makes_a_strawweight_bout_womens():
 # --------------------------------------------------------------------------- merging into the file
 
 
+def without_discipline(rows):
+    """The rows as they were before the discipline column: what a read must leave exactly as it was."""
+    return [{key: value for key, value in row.items() if key != "discipline"} for row in rows]
+
+
 def merged(rows, event, *names, results=True):
     return one.merge_all(rows, [event] if isinstance(event, dict) else event, profiles(*names), results=results)
 
@@ -212,14 +217,15 @@ def test_reading_the_same_page_twice_changes_nothing():
     event = parse(bouts=[("Lightweight MMA", "Lucas Gabriel", "Magomed Magomedov")])
     once, _ = merged(rows, event)
     twice, report = merged(once, event)
-    assert once == twice == rows and not report["added"] and not report["replaced"]
+    assert once == twice and without_discipline(once) == without_discipline(rows) and not report["added"] and not report["replaced"]
+    assert once[0]["discipline"] == "MMA"  # the only thing a read adds to a bout the file already has
 
 
 def test_another_spelling_of_the_same_athlete_is_not_a_new_bout_and_keeps_the_stored_name():
     rows = [stored_row(fighter_1="Lee Seung-chul", fighter_2="Nazareth Lalthazuala"), stored_row(fighter_1="Allycia Rodrigues", fighter_2="Charlotte Padie", card_order="1")]
     event = parse(bouts=[("Strawweight MMA", "Lee Seung Cheol", "Nazareth Lalthazuala"), ("Atomweight MMA", "Allycia Hellen Rodrigues", "Charlotte Padie")])
     result, report = merged(rows, event)
-    assert result == rows and not report["added"] and not report["replaced"]
+    assert without_discipline(result) == without_discipline(rows) and not report["added"] and not report["replaced"]
 
 
 def test_a_gym_tag_shared_by_two_fighters_does_not_make_them_the_same_person():
@@ -248,7 +254,8 @@ def test_a_stored_bout_missing_from_the_page_is_kept_because_pages_show_partial_
     rows = [stored_row(fighter_1="Lucas Gabriel", fighter_2="Magomed Magomedov"), stored_row(fighter_1="Taiki Naito", fighter_2="Kongthoranee", card_order="1")]
     event = parse(bouts=[("Lightweight MMA", "Lucas Gabriel", "Magomed Magomedov")])
     result, _ = merged(rows, event)
-    assert result == rows
+    assert without_discipline(result) == without_discipline(rows)
+    assert (result[0]["discipline"], result[1].get("discipline", "")) == ("MMA", "")  # the bout the page does not show is not guessed
 
 
 def test_results_are_filled_in_but_what_the_file_already_has_is_not_overwritten():
@@ -395,3 +402,117 @@ def test_a_site_with_no_readable_events_leaves_the_file_alone_and_fails(site, ca
 def test_without_the_history_file_the_command_refuses_to_start(site, monkeypatch, tmp_path):
     monkeypatch.setattr(one, "FIGHTS_PATH", tmp_path / "missing.csv")
     assert one.main([]) == 1
+
+
+# --------------------------------------------------------------------------- the discipline of a bout
+
+
+def test_a_new_bout_carries_the_discipline_the_page_names():
+    rows = [stored_row(fighter_1="Lucas Gabriel", fighter_2="Magomed Magomedov")]
+    event = parse(bouts=[("Lightweight MMA", "Lucas Gabriel", "Magomed Magomedov"), ("Flyweight Muay Thai", "Bogdan Shumarov", "Gasham Mammadov"), ("Atomweight World Title", "A One", "B Two")])
+    result, _ = merged(rows, event)
+    assert [r["discipline"] for r in result] == ["MMA", "Muay Thai", ""]  # a title that names no sport is left blank, not taken for MMA
+
+
+def test_a_stored_discipline_is_never_overwritten():
+    rows = [stored_row(fighter_1="Lucas Gabriel", fighter_2="Magomed Magomedov", discipline="Kickboxing")]
+    event = parse(bouts=[("Lightweight MMA", "Lucas Gabriel", "Magomed Magomedov")])
+    result, _ = merged(rows, event)
+    assert result[0]["discipline"] == "Kickboxing"
+
+
+def history_rows():
+    return [
+        stored_row(fighter_1="Lucas Gabriel", fighter_2="Magomed Magomedov", card_order="0", winner="Lucas Gabriel", outcome="win"),
+        stored_row(fighter_1="Bogdan Shumarov", fighter_2="Gasham Mammadov", card_order="1"),
+        stored_row(fighter_1="Kalandar Tabarov", fighter_2="Ilmadi Israilov", card_order="2"),
+    ]
+
+
+def test_filling_the_disciplines_changes_only_that_column_and_never_adds_or_removes_a_bout():
+    rows = history_rows()
+    event = parse(bouts=[
+        ("Lightweight MMA", "Lucas Gabriel", "Magomed Magomedov"),
+        ("Flyweight Muay Thai", "Gasham Mammadov", "Bogdan Shumarov"),  # corners swapped: still the same bout
+        ("Lightweight Kickboxing", "Someone New", "Another New"),  # not in the file: not added
+    ])
+    result, report = one.fill_disciplines(rows, [event])
+    assert [r.get("discipline", "") for r in result] == ["MMA", "Muay Thai", ""]
+    assert without_discipline(result) == without_discipline(rows) and len(result) == len(rows)
+    assert dict(report["filled"]) == {"MMA": 1, "Muay Thai": 1}
+
+
+def test_a_bout_that_matches_only_one_athlete_is_left_blank():
+    rows = history_rows()
+    event = parse(bouts=[("Flyweight Muay Thai", "Bogdan Shumarov", "Somebody Else Entirely")])  # the opponent changed: not safely the same bout
+    result, report = one.fill_disciplines(rows, [event])
+    assert result[1].get("discipline", "") == "" and report["ambiguous"] == 1
+
+
+def test_an_event_the_file_does_not_have_is_reported_and_adds_nothing():
+    rows = history_rows()
+    event = parse(start="2020-01-01T09:00:00+07:00", bouts=[("Flyweight Muay Thai", "Bogdan Shumarov", "Gasham Mammadov")])
+    result, report = one.fill_disciplines(rows, [event])
+    assert result == [dict(r) for r in rows] and len(report["no_event"]) == 1
+
+
+def test_a_discipline_already_in_the_file_is_kept_when_filling():
+    rows = history_rows()
+    rows[1]["discipline"] = "Kickboxing"
+    event = parse(bouts=[("Flyweight Muay Thai", "Bogdan Shumarov", "Gasham Mammadov")])
+    result, _ = one.fill_disciplines(rows, [event])
+    assert result[1]["discipline"] == "Kickboxing"
+
+
+def test_the_column_is_added_to_a_file_that_does_not_have_it():
+    columns, rows = one.with_discipline_column(list(FIGHT_FIELDS), [stored_row()])
+    assert columns == [*FIGHT_FIELDS, "discipline"] and rows[0]["discipline"] == ""
+    again, _ = one.with_discipline_column(columns, rows)
+    assert again == columns  # asked twice, it is still one column
+
+
+def test_the_command_fills_the_discipline_of_every_stored_bout_and_nothing_else(site):
+    from scripts.scrape_espn import load_csv
+
+    _, before = load_csv(site)
+    assert one.main(["--disciplines"]) == 0
+    header, rows = load_csv(site)
+    assert header == [*FIGHT_FIELDS, "discipline"]
+    assert [r["discipline"] for r in rows] == ["MMA"]
+    assert without_discipline(rows) == without_discipline(before)  # the Kickboxing bout on the page is not in the file, so it is not added
+
+
+def test_the_disciplines_run_can_be_previewed_and_fails_on_a_site_with_no_readable_events(site):
+    before = site.read_bytes()
+    assert one.main(["--disciplines", "--dry-run"]) == 0 and site.read_bytes() == before
+    FakeFetcher.pages = {one.SITEMAP_URL: "<urlset></urlset>"}
+    assert one.main(["--disciplines"]) == 1 and site.read_bytes() == before
+
+
+def test_a_normal_run_also_adds_the_column_and_the_disciplines_of_new_bouts(site):
+    from scripts.scrape_espn import load_csv
+
+    assert one.main([]) == 0
+    header, rows = load_csv(site)
+    assert header[-1] == "discipline"
+    assert [(r["fighter_1"], r["discipline"]) for r in rows] == [("Lucas Gabriel", "MMA"), ("Bogdan Shumarov", "Kickboxing")]
+
+
+@pytest.mark.parametrize(
+    ("title", "discipline"),
+    [
+        ("Lightweight MMA", "MMA"),
+        ("Strawweight Muay Thai World Championship Unification", "Muay Thai"),
+        ("140 LBS Muay Thai", "Muay Thai"),  # a weight in pounds instead of a division name
+        ("Women's 118 LBS Kickboxing", "Kickboxing"),
+        ("Flyweight Submission Grappling", "Submission Grappling"),  # not just "Grappling"
+        ("Welterweight Grappling", "Grappling"),
+        ("Flyweight muay thai", "Muay Thai"),  # the site's capitals are not relied on
+        ("Flyweight World Championship", ""),  # names no sport: left blank, never taken for MMA
+        ("Lightweight", ""),
+        ("", ""),
+    ],
+)
+def test_the_sport_is_read_from_the_bout_title_wherever_it_stands(title, discipline):
+    assert one.discipline_of(title) == discipline
+    assert one.split_title(title)["discipline"] == discipline

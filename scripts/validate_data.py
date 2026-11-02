@@ -29,13 +29,24 @@ MIN_ROWS = {"rankings.csv": 100, "fights.csv": 8000, "fighters.csv": 4000, "even
 MAX_CONTRADICTORY_SHARE = 0.005  # share of fight_stats.csv rows that may have more landed than attempted (it is 0.11% today)
 MAX_RANK = 15  # the UFC ranks 15 fighters per division (rank 0 is the champion)
 # Organisations other than the UFC keep their three files in data/raw/<org>/ (see scripts/scrape_pfl.py and scrape_one.py).
-ORG_DIRS = ["pfl", "one", "bellator"]
+# RIZIN, KSW, LFA and Cage Warriors come from scripts/scrape_espn_org.py; ESPN has no rankings for them, so rankings.csv is only a header.
+# OKTAGON comes from scripts/scrape_oktagon.py; Jungle Fight and Invicta FC from scripts/scrape_sherdog_org.py (no rankings either).
+ORG_DIRS = ["pfl", "one", "bellator", "rizin", "ksw", "lfa", "cage-warriors", "oktagon", "jungle-fight", "invicta"]
 ORG_FILES = ["fights.csv", "fighters.csv", "rankings.csv"]
 ORG_MIN_ROWS = {
     "pfl": {"fights.csv": 1300, "fighters.csv": 900, "rankings.csv": 50},
     "one": {"fights.csv": 4500, "fighters.csv": 3500, "rankings.csv": 20},
     "bellator": {"fights.csv": 2500, "fighters.csv": 1500, "rankings.csv": 8},  # an archive: the numbers will not change
+    "rizin": {"fights.csv": 520, "fighters.csv": 400, "rankings.csv": 0},
+    "ksw": {"fights.csv": 700, "fighters.csv": 450, "rankings.csv": 0},
+    "lfa": {"fights.csv": 1200, "fighters.csv": 1300, "rankings.csv": 0},
+    "cage-warriors": {"fights.csv": 1000, "fighters.csv": 830, "rankings.csv": 0},
+    "oktagon": {"fights.csv": 1100, "fighters.csv": 750, "rankings.csv": 0},
+    "jungle-fight": {"fights.csv": 1500, "fighters.csv": 1600, "rankings.csv": 0},
+    "invicta": {"fights.csv": 480, "fighters.csv": 360, "rankings.csv": 0},
 }
+# A column added at the end on purpose (the ONE file now says the sport of each bout). Once it is committed it is the header to keep.
+ADDED_COLUMNS = {"one/fights.csv": ["discipline"]}
 STALE_UPCOMING_DAYS = 3  # a card this far past its date should have turned into results by now
 
 
@@ -220,7 +231,7 @@ def org_problems() -> list[str]:
             if old_text is None:
                 continue
             old_rows = read_rows(old_text)
-            if old_rows and new_rows and old_rows[0] != new_rows[0]:
+            if old_rows and new_rows and old_rows[0] != new_rows[0] and new_rows[0] != old_rows[0] + ADDED_COLUMNS.get(label, []):
                 problems.append(f"{label}: header changed {old_rows[0]} -> {new_rows[0]}")
             old_n, new_n = len(old_rows) - 1, len(new_rows) - 1
             if old_n > 0 and new_n < old_n * (1 - MAX_ROW_LOSS):

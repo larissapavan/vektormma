@@ -481,7 +481,10 @@ def get_fighter_profile(name: str) -> dict:
     catalog = get_fighter_catalog()
     match = catalog.loc[catalog["name"] == (canonical_name(name) or name)]
     if match.empty:
-        for org_id in ("one", "pfl", "bellator"):
+        # ONE, PFL and Bellator first (a name found in several keeps the profile it always had), then the other organisations.
+        from backend.app.services.org_service import ORGS
+
+        for org_id in ("one", "pfl", "bellator", *(known for known in ORGS if known not in {"one", "pfl", "bellator"})):
             try:
                 from backend.app.services.org_service import get_org_fighters, _name_key
                 org_fighters = get_org_fighters(org_id)

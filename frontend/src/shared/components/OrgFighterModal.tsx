@@ -6,7 +6,8 @@ import { useTranslation } from 'react-i18next'
 
 import { L } from '../../i18n/lang'
 import { getDivisionName } from '../data/divisions'
-import { formatDate, formatMethod, originLine } from '../data/orgFormat'
+import { formatDate, formatMethod, nonMmaDiscipline, originLine, profileSource } from '../data/orgFormat'
+import { OrgSportTag } from './OrgFightRow'
 import { orgEs, type OrgConfig } from '../data/orgs'
 import { translateHometown } from '../data/fightLabels'
 import { normalizeFighterName } from '../hooks/useFighterImages'
@@ -140,6 +141,10 @@ function OrgOnlyFighterModal({
     }
   }, [profile, completedFights])
   const orgTotal = orgRecord.wins + orgRecord.losses + orgRecord.draws
+  // The profile link goes to the site the profile is on: a RIZIN or KSW fighter can have an ESPN page or, from 2025, a Sherdog one.
+  const profileLabel = profileSource(profile?.profile_url, org.sourceName)
+  // The record counts every bout of the organization; the ones that are not MMA are flagged in the history.
+  const otherSports = useMemo(() => completedFights.filter((fight) => nonMmaDiscipline(fight.discipline) !== null).length, [completedFights])
   const orgWinRate = orgTotal ? Math.round((orgRecord.wins / orgTotal) * 100) : 0
 
   const proWins = profile?.wins ?? null
@@ -377,6 +382,17 @@ function OrgOnlyFighterModal({
                         <p className="font-sans text-[11px] text-neutral-400">
                           {L(lang, `${orgWinRate}% de aproveitamento no ${org.shortName}`, `${orgWinRate}% ${org.shortName} win rate`, `${orgWinRate}% de victoires chez ${org.shortName}`, `${orgWinRate}% de victorias en ${orgEs(org)}`)}
                         </p>
+                        {otherSports > 0 ? (
+                          <p className="font-sans text-[11px] text-neutral-400">
+                            {L(
+                              lang,
+                              `Inclui ${otherSports} ${otherSports === 1 ? 'luta que não é de MMA' : 'lutas que não são de MMA'}, sinalizadas no histórico.`,
+                              `Includes ${otherSports} non-MMA ${otherSports === 1 ? 'bout' : 'bouts'}, flagged in the fight history.`,
+                              `Comprend ${otherSports} ${otherSports === 1 ? 'combat qui n’est pas du MMA' : 'combats qui ne sont pas du MMA'}, signalé${otherSports === 1 ? '' : 's'} dans l’historique.`,
+                              `Incluye ${otherSports} ${otherSports === 1 ? 'pelea que no es de MMA' : 'peleas que no son de MMA'}, señaladas en el historial.`,
+                            )}
+                          </p>
+                        ) : null}
                       </div>
                     </div>
                   </div>
@@ -521,7 +537,7 @@ function OrgOnlyFighterModal({
                           ) : null}
 
                           <div className="flex items-center justify-between font-sans text-[11px] text-neutral-400">
-                            <span>{nextDetails?.weight_class ? getDivisionName(nextDetails.weight_class, lang) : L(lang, 'Card Principal', 'Main Card', 'Carte Principale', 'Cartelera principal')}</span>
+                            <span className="inline-flex flex-wrap items-center gap-1.5">{nextDetails?.weight_class ? getDivisionName(nextDetails.weight_class, lang) : L(lang, 'Card Principal', 'Main Card', 'Carte Principale', 'Cartelera principal')}<OrgSportTag discipline={nextDetails?.discipline} /></span>
                             <span className="font-mono text-[10px] uppercase text-neutral-400">
                               {opponentTbd
                                 ? L(lang, '✦ Luta Mantida • Buscando Substituto', '✦ Bout Booked • Seeking Opponent', '✦ Combat Confirmé • En recherche d\'adversaire', '✦ Pelea confirmada • Busca rival')
@@ -556,7 +572,9 @@ function OrgOnlyFighterModal({
                     rel="noreferrer"
                     className="inline-flex w-fit items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-widest text-neutral-300 underline decoration-white/30 underline-offset-4 hover:text-white"
                   >
-                    {L(lang, `Perfil oficial no ${org.sourceName}`, `Profile on ${org.sourceName}`, `Profil officiel sur ${org.sourceName}`, `Perfil oficial en ${org.sourceName}`)}
+                    {org.partialCoverage
+                      ? L(lang, `Perfil no ${profileLabel}`, `Profile on ${profileLabel}`, `Profil sur ${profileLabel}`, `Perfil en ${profileLabel}`)
+                      : L(lang, `Perfil oficial no ${org.sourceName}`, `Profile on ${org.sourceName}`, `Profil officiel sur ${org.sourceName}`, `Perfil oficial en ${org.sourceName}`)}
                     <ExternalLink className="h-3 w-3" />
                   </a>
                 ) : null}

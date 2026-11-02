@@ -41,7 +41,12 @@ def test_data_info_reports_real_counts_and_sources(client):
     assert body["fighters_count"] > 1000
     assert body["events_count"] > 0
     assert body["fights_count"] > 0
-    assert set(body["sources"]) == {"ufcstats.com", "ufc.com"}
+    # The UFC's own sources come first, and every other organization's source is listed too (the list is not UFC-only).
+    assert body["sources"][:2] == ["ufcstats.com", "ufc.com"]
+    assert len(body["sources"]) == len(set(body["sources"]))
+    from backend.app.services.org_service import ORGS
+
+    assert {source for org in ORGS.values() for source in org.sources} <= set(body["sources"])  # each organization's source is credited
 
     import datetime
 

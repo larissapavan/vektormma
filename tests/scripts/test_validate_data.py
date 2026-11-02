@@ -174,3 +174,28 @@ def test_gym_rosters_must_belong_to_a_listed_gym(tmp_path, monkeypatch):
     problems = validate_data.gym_problems()
     assert any("has no name (noname)" in problem for problem in problems)
     assert any("1 gyms are not in gyms.csv (first: ghost)" in problem for problem in problems)
+
+
+def org_header_problems(tmp_path, monkeypatch, old, new, name="fights.csv"):
+    """org_problems for the "one" folder whose committed `name` had the header `old` and whose working copy has `new`."""
+    monkeypatch.setattr(validate_data, "RAW_DIR", tmp_path)
+    monkeypatch.setattr(validate_data, "ORG_DIRS", ["one"])
+    monkeypatch.setattr(validate_data, "ORG_MIN_ROWS", {"one": {file: 0 for file in validate_data.ORG_FILES}})
+    monkeypatch.setattr(validate_data, "org_fight_problems", lambda org: [])
+    folder = tmp_path / "one"
+    folder.mkdir(exist_ok=True)
+    for file in validate_data.ORG_FILES:
+        write(folder / file, f"{new if file == name else 'a,b'}\n1,2\n")
+    monkeypatch.setattr(validate_data, "committed_text", lambda path: f"{old if path.name == name else 'a,b'}\n1,2\n")
+    return [problem for problem in validate_data.org_problems() if "header changed" in problem]
+
+
+def test_the_discipline_column_added_to_the_one_fights_file_is_not_a_header_change(tmp_path, monkeypatch):
+    assert org_header_problems(tmp_path, monkeypatch, "a,b", "a,b,discipline") == []
+
+
+def test_any_other_header_change_is_still_flagged(tmp_path, monkeypatch):
+    assert org_header_problems(tmp_path, monkeypatch, "a,b", "a,c")  # a renamed column
+    assert org_header_problems(tmp_path, monkeypatch, "a,b", "discipline,a,b")  # the column is allowed only at the end
+    assert org_header_problems(tmp_path, monkeypatch, "a,b", "a,b,discipline", name="fighters.csv")  # and only in the ONE fights file
+    assert org_header_problems(tmp_path, monkeypatch, "a,b", "a,b,other")

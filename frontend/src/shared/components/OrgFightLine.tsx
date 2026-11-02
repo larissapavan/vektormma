@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { L } from '../../i18n/lang'
 import { getDivisionName } from '../data/divisions'
-import { fightSummary, formatDate } from '../data/orgFormat'
+import { fightSummary, formatDate, nonMmaDiscipline, nonMmaHint } from '../data/orgFormat'
 import type { FightRecord } from '../types/api'
 
 /** One bout of a fighter's history in an organization other than the UFC: result, opponent, event and how it ended. */
@@ -51,6 +51,11 @@ export function OrgFightLine({ fight, knownOpponent, onSelect }: { fight: FightR
           {fight.title_fight ? (
             <span className="ml-1.5 bg-[#F2C230] px-1 text-[10px] font-bold uppercase text-[#0E0E0E]">
               {L(i18n.language, 'Cinturão', 'Title', 'Titre', 'Título')}
+            </span>
+          ) : null}
+          {nonMmaDiscipline(fight.discipline) ? (
+            <span title={nonMmaHint(i18n.language)} className="ml-1.5 border border-[var(--rule)] px-1 text-[10px] font-bold uppercase text-[var(--text-red)]">
+              {nonMmaDiscipline(fight.discipline)}
             </span>
           ) : null}
         </p>

@@ -59,6 +59,60 @@ ORGS: dict[str, Org] = {
         tagline="ONE Championship fighters, event results, upcoming cards, world champions and rankings.",
         sources=("onefc.com", "wikipedia.org"),
     ),
+    # The four organisations below are read from ESPN's public API (scripts/scrape_espn_org.py). ESPN has no belts or
+    # rankings for them, so they have no champions page and their title bouts are not flagged. ESPN stops at the end of 2024
+    # for RIZIN and KSW: their later events are added from Sherdog (scripts/scrape_sherdog_org.py ksw|rizin), which does flag title bouts.
+    "rizin": Org(
+        id="rizin",
+        name="RIZIN Fighting Federation",
+        short_name="RIZIN",
+        tagline="RIZIN fighters and event results.",
+        sources=("espn.com", "sherdog.com"),
+    ),
+    "ksw": Org(
+        id="ksw",
+        name="Konfrontacja Sztuk Walki",
+        short_name="KSW",
+        tagline="KSW fighters and event results.",
+        sources=("espn.com", "sherdog.com"),
+    ),
+    "lfa": Org(
+        id="lfa",
+        name="Legacy Fighting Alliance",
+        short_name="LFA",
+        tagline="LFA fighters and event results.",
+        sources=("espn.com",),
+    ),
+    "cage-warriors": Org(
+        id="cage-warriors",
+        name="Cage Warriors",
+        short_name="Cage Warriors",
+        tagline="Cage Warriors fighters and event results.",
+        sources=("espn.com",),
+    ),
+    # Read from the organisation's own site (scripts/scrape_oktagon.py): results, title bouts and upcoming cards, no rankings.
+    "oktagon": Org(
+        id="oktagon",
+        name="OKTAGON MMA",
+        short_name="OKTAGON",
+        tagline="OKTAGON MMA fighters, event results and upcoming cards.",
+        sources=("oktagonmma.com",),
+    ),
+    # Read from Sherdog's event pages (scripts/scrape_sherdog_org.py): full cards with results and title bouts, no rankings.
+    "jungle-fight": Org(
+        id="jungle-fight",
+        name="Jungle Fight",
+        short_name="Jungle Fight",
+        tagline="Jungle Fight fighters and event results.",
+        sources=("sherdog.com",),
+    ),
+    "invicta": Org(
+        id="invicta",
+        name="Invicta Fighting Championships",
+        short_name="Invicta FC",
+        tagline="Invicta FC fighters and event results.",
+        sources=("sherdog.com",),
+    ),
 }
 
 # Lightest to heaviest, men's divisions first, then women's. Anything unknown goes last in the order it was scraped.
@@ -168,6 +222,8 @@ def _format_fight(row: dict) -> dict:
         "time": _text(row.get("time")),
         "fight_url": _text(row.get("fight_url")),
         "title_fight": True if str(row.get("title_fight", "")).lower() == "true" else None,
+        # The sport of the bout, when the source says it (the ONE file does): "MMA", "Muay Thai", "Kickboxing"...
+        "discipline": _text(row.get("discipline")),
     }
 
 
@@ -219,6 +275,7 @@ def _fighter_history(events: list[dict]) -> dict[str, list[dict]]:
                         "location": event["location"],
                         "fight_url": fight["fight_url"],
                         "title_fight": fight["title_fight"],
+                        "discipline": fight["discipline"],
                         "outcome": outcome,
                     }
                 )
@@ -524,8 +581,17 @@ def get_org_data_info(org_id: str) -> dict:
     }
 
 
+def is_mma(discipline: str | None) -> bool:
+    """True only for a bout whose source says it is MMA. A bout of another sport, and one whose source does not say its
+    sport, are not: the prediction model is trained on MMA fights, so it is not shown for a bout that may be something else."""
+    return (discipline or "").strip().upper() == "MMA"
+
+
 def get_org_upcoming_predictions(org_id: str, service: Any) -> list[dict[str, Any]]:
-    """Calculate upcoming matchup predictions for an organization using the predictive model."""
+    """Calculate upcoming matchup predictions for an organization using the predictive model.
+
+    The model is trained on MMA fights only, so a bout gets a prediction only when its source says it is MMA: not one of another
+    sport, and not one whose sport is not named."""
     if service is None:
         return []
 
@@ -535,7 +601,7 @@ def get_org_upcoming_predictions(org_id: str, service: Any) -> list[dict[str, An
         for fight in event.get("fights", []):
             fighter_1 = fight.get("fighter_1")
             fighter_2 = fight.get("fighter_2")
-            if not fighter_1 or not fighter_2:
+            if not fighter_1 or not fighter_2 or not is_mma(fight.get("discipline")):
                 continue
             try:
                 result = service.predict_pick(fighter_1, fighter_2)

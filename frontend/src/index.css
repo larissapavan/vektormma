@@ -214,6 +214,90 @@
   --hard: #cbd5e1;
 }
 
+:root[data-org='rizin'] {
+  --accent-red: #a855f7;
+  --text-red: #c084fc;
+  --hard: #7e22ce;
+}
+
+:root[data-org='rizin'][data-theme='light'] {
+  --accent-red: #7e22ce;
+  --text-red: #6b21a8;
+  --hard: #cbd5e1;
+}
+
+:root[data-org='ksw'] {
+  --accent-red: #06b6d4;
+  --text-red: #22d3ee;
+  --hard: #0e7490;
+}
+
+:root[data-org='ksw'][data-theme='light'] {
+  --accent-red: #0e7490;
+  --text-red: #155e75;
+  --hard: #cbd5e1;
+}
+
+:root[data-org='lfa'] {
+  --accent-red: #ec4899;
+  --text-red: #f472b6;
+  --hard: #be185d;
+}
+
+:root[data-org='lfa'][data-theme='light'] {
+  --accent-red: #be185d;
+  --text-red: #9d174d;
+  --hard: #cbd5e1;
+}
+
+:root[data-org='cage-warriors'] {
+  --accent-red: #f97316;
+  --text-red: #fb923c;
+  --hard: #c2410c;
+}
+
+:root[data-org='cage-warriors'][data-theme='light'] {
+  --accent-red: #c2410c;
+  --text-red: #9a3412;
+  --hard: #cbd5e1;
+}
+
+:root[data-org='oktagon'] {
+  --accent-red: #84cc16;
+  --text-red: #a3e635;
+  --hard: #4d7c0f;
+}
+
+:root[data-org='oktagon'][data-theme='light'] {
+  --accent-red: #4d7c0f;
+  --text-red: #3f6212;
+  --hard: #cbd5e1;
+}
+
+:root[data-org='jungle-fight'] {
+  --accent-red: #6366f1;
+  --text-red: #818cf8;
+  --hard: #4338ca;
+}
+
+:root[data-org='jungle-fight'][data-theme='light'] {
+  --accent-red: #4338ca;
+  --text-red: #3730a3;
+  --hard: #cbd5e1;
+}
+
+:root[data-org='invicta'] {
+  --accent-red: #14b8a6;
+  --text-red: #2dd4bf;
+  --hard: #0f766e;
+}
+
+:root[data-org='invicta'][data-theme='light'] {
+  --accent-red: #0f766e;
+  --text-red: #115e59;
+  --hard: #cbd5e1;
+}
+
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;

@@ -64,7 +64,14 @@
       "ufc": "Fight stats, rankings and AI win predictions.",
       "pfl": "Fighter profiles, official events and league rankings.",
       "one": "MMA, 4oz open-finger Muay Thai, world champions and AI win predictions.",
-      "bellator": "Historical archive 2009–2023: fighters, events and champions."
+      "bellator": "Historical archive 2009–2023: fighters, events and champions.",
+      "rizin": "Fighter profiles and event results.",
+      "ksw": "Fighter profiles and event results.",
+      "lfa": "Fighter profiles and event results.",
+      "cage-warriors": "Fighter profiles and event results.",
+      "oktagon": "Fighter profiles and event results.",
+      "jungle-fight": "Fighter profiles and event results.",
+      "invicta": "Fighter profiles and event results."
     }
   },
   "footer": {
@@ -277,12 +284,12 @@
     "description": "Who builds this, where the data comes from, and what its limits are.",
     "who": "Who makes this",
     "whoText1": "This project is built and maintained entirely independently by Larissa Pavan.",
-    "whoText2": "It has no affiliation, partnership, sponsorship or endorsement from the UFC, Zuffa LLC, TKO, Professional Fighters League (PFL), Bellator MMA, ESPN, FightHub, Wikipedia or any other organization mentioned.",
+    "whoText2": "It has no affiliation, partnership, sponsorship or endorsement from the UFC, Zuffa LLC, TKO, Professional Fighters League (PFL), Bellator MMA, RIZIN Fighting Federation, KSW, Legacy Fighting Alliance (LFA), Cage Warriors, OKTAGON MMA, Jungle Fight, Invicta FC, ESPN, Sherdog, FightHub, Wikipedia or any other organization mentioned.",
     "whoText3": "All trademarks, fighter names, and photos belong to their respective owners, used here strictly for informational and study purposes.",
     "dataAndSystem": "Data & System",
     "disclaimer": "Important disclaimer",
     "disclaimerText1": "Predictions are statistical estimates, made as a hobby and for study. They are not a guarantee of any outcome and they are not betting advice.",
-    "disclaimerText2": "This site is not an official product of the UFC, the PFL or Bellator.",
+    "disclaimerText2": "This site is not an official product of the UFC, the PFL, Bellator, RIZIN, KSW, the LFA, Cage Warriors, OKTAGON, Jungle Fight or Invicta FC.",
     "contact": "Contact and credits",
     "contactText": "Found a mistake in the data, or want something corrected? Get in touch through",
     "sources": "Sources and credits"

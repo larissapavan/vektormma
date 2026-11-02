@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import App from '../App'
 import { ORGS, orgFromPathname, orgPath, switchOrgPath } from '../shared/data/orgs'
-import { compareDivisions, fightSummary, formatHeight, formatMethod, formatReach, formatRecord } from '../shared/data/orgFormat'
+import { compareDivisions, fightSummary, formatHeight, formatMethod, formatReach, formatRecord, profileSource } from '../shared/data/orgFormat'
 import { respond } from './fixtures'
 
 // Every URL the fake API was asked for, so a test can tell which catalogs a page downloaded.
@@ -75,9 +75,10 @@ describe('the page that chooses an organization', () => {
     renderAt('/')
     const list = await screen.findByRole('list', { name: 'Organizations' }, WAIT)
     const links = within(list).getAllByRole('link')
-    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/home', '/pfl', '/one', '/bellator'])
+    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/home', '/pfl', '/one', '/bellator', '/rizin', '/ksw', '/lfa', '/cage-warriors', '/oktagon', '/jungle-fight', '/invicta'])
     expect(within(list).getAllByText('AI Predictions')).toHaveLength(2)  // the UFC and ONE
     expect(within(list).getByText('Historical Archive')).toBeInTheDocument()  // Bellator
+    expect(within(list).getAllByText('Events & Results')).toHaveLength(7)  // every organization that has only fighters and events
   })
 
   it('has no switcher, section menu or fighter search until an organization is chosen', async () => {
@@ -106,6 +107,20 @@ describe('the page that chooses an organization', () => {
     const nav = screen.getByRole('group', { name: 'Organization' })
     expect(within(nav).getByRole('link', { name: 'UFC' })).toHaveAttribute('href', '/home')
     expect(screen.getAllByRole('link', { name: 'Events' })[0]).toHaveAttribute('href', '/events')
+  })
+})
+
+describe('where a profile link goes', () => {
+  it('is named after the site of the address, so a RIZIN fighter can link to ESPN or to Sherdog', () => {
+    expect(profileSource('https://www.espn.com/mma/fighter/_/id/123', 'ESPN, Sherdog')).toBe('ESPN')
+    expect(profileSource('https://www.sherdog.com/fighter/Kyoji-Horiguchi-1', 'ESPN, Sherdog')).toBe('Sherdog')
+    expect(profileSource('https://www.onefc.com/athletes/x/', 'ONE')).toBe('onefc.com')
+    expect(profileSource('https://oktagonmma.com/en/fighters/x/', 'OKTAGON')).toBe('oktagonmma.com')
+  })
+
+  it('falls back to the organization source when the address is missing or not an address', () => {
+    expect(profileSource(null, 'ESPN, Sherdog')).toBe('ESPN, Sherdog')
+    expect(profileSource('not a url', 'ESPN, Sherdog')).toBe('ESPN, Sherdog')
   })
 })
 
@@ -288,7 +303,71 @@ describe('the Bellator archive', () => {
     renderAt('/events')
     await screen.findByRole('heading', { name: 'UFC fight cards' }, WAIT)
     const switcher = screen.getAllByRole('group', { name: 'Organization' })[0]
-    expect(within(switcher).getAllByRole('link').map((link) => link.getAttribute('href'))).toEqual(['/events', '/pfl/events', '/one/events', '/bellator/events'])
+    expect(within(switcher).getAllByRole('link').map((link) => link.getAttribute('href'))).toEqual([
+      '/events', '/pfl/events', '/one/events', '/bellator/events', '/rizin/events', '/ksw/events', '/lfa/events', '/cage-warriors/events',
+      '/oktagon/events', '/jungle-fight/events', '/invicta/events',
+    ])
+  })
+})
+
+// Organizations whose source (ESPN, their own site or Sherdog) gives fighters and events but no belts or rankings.
+const FIGHTERS_AND_EVENTS_ORGS = [
+  { id: 'rizin', name: 'RIZIN Fighting Federation', short: 'RIZIN' },
+  { id: 'ksw', name: 'Konfrontacja Sztuk Walki', short: 'KSW' },
+  { id: 'lfa', name: 'Legacy Fighting Alliance', short: 'LFA' },
+  { id: 'cage-warriors', name: 'Cage Warriors', short: 'Cage Warriors' },
+  { id: 'oktagon', name: 'OKTAGON MMA', short: 'OKTAGON' },
+  { id: 'jungle-fight', name: 'Jungle Fight', short: 'Jungle Fight' },
+  { id: 'invicta', name: 'Invicta Fighting Championships', short: 'Invicta FC' },
+] as const
+
+describe.each(FIGHTERS_AND_EVENTS_ORGS)('$short (fighters and events only)', ({ id, name }) => {
+  const base = `/${id}`
+
+  it('knows its own addresses, name and colors', () => {
+    expect(orgFromPathname(`${base}/fighters`)).toBe(ORGS[id])
+    expect(orgPath(id, 'events')).toBe(`${base}/events`)
+    expect(ORGS[id].name).toBe(name)
+    expect(ORGS[id]).toMatchObject({ hasPredictions: false, hasRankings: false, hasChampions: false })
+    expect(ORGS[id].archived).toBeUndefined()
+  })
+
+  it('a UFC page that it has no equivalent of sends the visitor to its home page', () => {
+    expect(switchOrgPath(ORGS[id], '/rankings')).toBe(base)
+    expect(switchOrgPath(ORGS[id], '/champions')).toBe(base)
+    expect(switchOrgPath(ORGS[id], '/predictor')).toBe(base)
+    expect(switchOrgPath(ORGS[id], '/fighters')).toBe(`${base}/fighters`)
+  })
+
+  it('lists its fighters and its events, with its own color theme', async () => {
+    renderAt(`${base}/fighters`)
+    expect(await screen.findByText('Riko Stone', undefined, WAIT)).toBeInTheDocument()  // active
+    expect(screen.queryByText('Lena Ortiz')).not.toBeInTheDocument()  // a veteran: only on request
+    expect(document.documentElement.dataset.org).toBe(id)
+    expect(api.requested.some((url) => url.includes(`/orgs/${id}/fighters`))).toBe(true)
+    expect(api.requested.some((url) => url.startsWith('/fighters') || url.includes('/catalog'))).toBe(false)  // never downloads the UFC catalog
+  })
+
+  it('has fighters, events and gyms in its menu, and no rankings, champions or predictor', async () => {
+    renderAt(`${base}/events`)
+    await screen.findByRole('heading', { name: `${ORGS[id].shortName} fight cards` }, WAIT)
+    const links = screen.getAllByRole('link').map((link) => link.getAttribute('href'))
+    expect(links).toEqual(expect.arrayContaining([`${base}/fighters`, `${base}/events`, `${base}/gyms`]))
+    for (const missing of ['rankings', 'champions', 'predictor']) expect(links).not.toContain(`${base}/${missing}`)
+  })
+
+  it('has no champions section and does not promise daily, official data: it says what its source gives', async () => {
+    renderAt(base)
+    expect(await screen.findByText(/No belts or rankings\./, undefined, WAIT)).toBeInTheDocument()
+    expect(screen.getByText(/events and fights may be missing, and it is not refreshed daily/)).toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: 'Champions' })).not.toBeInTheDocument()
+    expect(screen.queryByText(/Champions are not available yet/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/refreshed daily\.$/)).not.toBeInTheDocument()
+  })
+
+  it('an address for a page it does not have is the not-found page', async () => {
+    renderAt(`${base}/rankings`)
+    expect(await screen.findByRole('heading', { name: /page not found/i }, WAIT)).toBeInTheDocument()
   })
 })
 
@@ -302,7 +381,20 @@ describe('ONE Championship', () => {
     expect(screen.getAllByRole('link', { name: 'Champions' })[0]).toHaveAttribute('href', '/one/champions')
   })
 
+  it('flags a bout that is not MMA with its sport, and does not flag an MMA bout', async () => {
+    renderAt('/one')
+    const latest = await screen.findByRole('region', { name: 'Latest results' }, WAIT)
+    expect(await within(latest).findByText('Muay Thai', undefined, WAIT)).toHaveAttribute('title', expect.stringMatching(/not an MMA bout/i))
+    expect(within(latest).getAllByText('Muay Thai')).toHaveLength(1)
+    expect(within(latest).getByText('Lena Ortiz')).toBeInTheDocument()  // the MMA bout is on the card too...
+    expect(within(latest).queryByText('MMA')).not.toBeInTheDocument()  // ...and carries no sport tag
+  })
 
+  it('flags the main event of the next card too when it is not MMA', async () => {
+    renderAt('/one')
+    expect(await screen.findByRole('heading', { name: 'ONE Fight Night 49: Gabriel vs. Magomedov' }, WAIT)).toBeInTheDocument()
+    expect(await screen.findByText('Kickboxing', undefined, WAIT)).toHaveAttribute('title', expect.stringMatching(/counts in the record/i))
+  })
 })
 
 describe('the organization switcher', () => {

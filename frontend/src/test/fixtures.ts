@@ -271,13 +271,32 @@ export const orgRoutes: Record<string, unknown> = {
   // ONE Championship: active organization with upcoming cards, past events, champions and rankings.
   '/orgs/one/fighters': [pflChampion, pflContender],
   '/orgs/one/events': [
-    orgEvent('ONE 173: Superbon vs. Noiri', '2025-11-16', [orgFight({ winner: 'Riko Stone', method: 'KO/TKO', round: 2, time: '4:02', title_fight: true, stage: 'World Title' })], { circuit: 'ONE Championship' }),
+    // The ONE file says the sport of each bout: this one is Muay Thai (flagged), the second one MMA (not flagged).
+    orgEvent(
+      'ONE 173: Superbon vs. Noiri',
+      '2025-11-16',
+      [
+        orgFight({ winner: 'Riko Stone', method: 'KO/TKO', round: 2, time: '4:02', title_fight: true, stage: 'World Title', discipline: 'Muay Thai' }),
+        orgFight({ fighter_1: 'Lena Ortiz', fighter_2: 'Dax Moore', winner: 'Lena Ortiz', method: 'U-DEC', round: 3, time: '5:00', discipline: 'MMA' }),
+      ],
+      { circuit: 'ONE Championship' },
+    ),
   ],
   '/orgs/one/events/upcoming': [
-    orgEvent('ONE Fight Night 49: Gabriel vs. Magomedov', '2030-11-06', [orgFight({ title_fight: false, stage: 'Main Event' })], { circuit: 'ONE Championship' }),
+    orgEvent('ONE Fight Night 49: Gabriel vs. Magomedov', '2030-11-06', [orgFight({ title_fight: false, stage: 'Main Event', discipline: 'Kickboxing' })], { circuit: 'ONE Championship' }),
   ],
   '/orgs/one/rankings': pflRankings,
   '/orgs/one/data-info': { last_updated: '2026-10-28', fighters_count: 2, events_count: 2, fights_count: 2, sources: ['onefc.com'] },
+  // RIZIN, KSW, LFA, Cage Warriors, OKTAGON, Jungle Fight and Invicta FC: fighters and events only (no upcoming cards, rankings or belts).
+  ...Object.fromEntries(
+    ['rizin', 'ksw', 'lfa', 'cage-warriors', 'oktagon', 'jungle-fight', 'invicta'].flatMap((id) => [
+      [`/orgs/${id}/fighters`, [pflChampion, pflVeteran]],
+      [`/orgs/${id}/events`, [orgEvent(`${id} 10`, '2024-06-01', [orgFight({ winner: 'Riko Stone', method: 'KO/TKO', round: 1, time: '2:00' })], { circuit: null })]],
+      [`/orgs/${id}/events/upcoming`, []],
+      [`/orgs/${id}/rankings`, []],
+      [`/orgs/${id}/data-info`, { last_updated: '2026-11-02', fighters_count: 2, events_count: 1, fights_count: 1, sources: ['espn.com'] }],
+    ]),
+  ),
 }
 
 
@@ -426,7 +445,7 @@ export function respond(rawUrl: string): unknown {
   if (url in routes) return routes[url]
   if (url in orgRoutes) return orgRoutes[url]
   if (url in gymRoutes) return gymRoutes[url]
-  if (/^\/orgs\/[a-z]+\/fighters\/.+\/fights$/.test(url)) return []
+  if (/^\/orgs\/[a-z-]+\/fighters\/.+\/fights$/.test(url)) return []
   if (url.includes('/predict/upcoming')) return []
   if (url.endsWith('/performance')) return { ...performance, fighter: url.split('/')[2] }
   if (url.endsWith('/opponents')) return { fighter: '', opponents: [] }

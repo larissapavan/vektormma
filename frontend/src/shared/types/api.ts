@@ -166,6 +166,8 @@ export interface FightResult {
   referee?: string | null
   num_rounds?: number | null
   title_fight?: boolean | null
+  /** The sport of the bout where the source says it (ONE): "MMA", "Muay Thai", "Kickboxing"... */
+  discipline?: string | null
   result?: string | null
   result_details?: string | null
   bmf_title?: boolean
@@ -212,6 +214,7 @@ export interface FightRecord {
   referee?: string | null
   num_rounds?: number | null
   title_fight?: boolean | null
+  discipline?: string | null
   bmf_title?: boolean
   /** The interim belt was at stake (the interim champion won it or defended it). */
   interim_title?: boolean

@@ -19,7 +19,7 @@ const PAGE_TABLES = pageMeta.pages as Record<UiLang, Record<string, PageText>>
 const GYM_DETAILS = pageMeta.gymDetail as Record<UiLang, PageText>
 const DEFAULT_DESCRIPTIONS = pageMeta.defaultDescription as Record<UiLang, string>
 
-const GYM_PAGE = /^(\/pfl|\/bellator|\/one)?\/gyms\/[^/]+$/
+const GYM_PAGE = /^(\/pfl|\/bellator|\/one|\/rizin|\/ksw|\/lfa|\/cage-warriors|\/oktagon|\/jungle-fight|\/invicta)?\/gyms\/[^/]+$/
 const ATHLETE_PAGE = /^\/athlete\/([^/]+)$/
 
 /** The athlete in the address (/athlete/Jon%20Jones), or null for any other page. */
