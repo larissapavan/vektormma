@@ -26,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Refresh ESPN data, UFC rankings and fighter photos
+      - name: Refresh ESPN data, UFC rankings, fighter photos and the static athlete pages
         id: refresh
         # One flaky source must not cost the whole day. update_all keeps going after a failing step and leaves that
         # step's files untouched, so whatever did refresh is still validated and committed below. The run is still
@@ -45,13 +45,13 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          if git diff --quiet -- data/raw frontend/public/fighter-photos frontend/public/feed.xml && [ -z "$(git ls-files --others --exclude-standard frontend/public/fighter-photos)" ]; then
+          if git diff --quiet -- data/raw frontend/public/fighter-photos frontend/public/feed.xml frontend/public/og frontend/src/seo/athletes.json && [ -z "$(git ls-files --others --exclude-standard frontend/public/fighter-photos frontend/public/og)" ]; then
             echo "No data changes."
             exit 0
           fi
           git config user.name "fight-intelligence-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/raw frontend/public/fighter-photos frontend/public/feed.xml
+          git add data/raw frontend/public/fighter-photos frontend/public/feed.xml frontend/public/og frontend/src/seo/athletes.json
           git commit -m "chore(data): daily refresh $(date -u +%F)"
           git push
 

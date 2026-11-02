@@ -20,6 +20,8 @@ ufc.com page as the rankings, and fighters created from ESPN need their headshot
    12. Sherdog   scripts.scrape_sherdog_org daily    Jungle Fight, Invicta FC, KSW and RIZIN: the events of the last 45 days and the new ones
    13. Gyms      scripts.scrape_gyms                 the gyms and the fighters who train in them (fighthub-app.com)
    14. Feed      scripts.build_feed                  the RSS feed of picks and results (frontend/public/feed.xml)
+   15. SEO       scripts.build_seo_athletes          the data of the static athlete and fight pages (frontend/src/seo/athletes.json)
+       OG images scripts.build_og_images             the share image of each of those pages (frontend/public/og/), only new or changed ones
 
 Usage (from the repo root):
     python -m scripts.update_all --dry-run      # ESPN preview only; rankings and photos write files, so they are skipped
@@ -43,7 +45,7 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scripts import (
-    build_feed, download_fighter_photos, log_predictions, scrape_espn, scrape_espn_org, scrape_fight_stats, scrape_fighter_origins, scrape_gyms, scrape_oktagon,
+    build_feed, build_og_images, build_seo_athletes, download_fighter_photos, log_predictions, scrape_espn, scrape_espn_org, scrape_fight_stats, scrape_fighter_origins, scrape_gyms, scrape_oktagon,
     scrape_one, scrape_pfl, scrape_rankings, scrape_roster_watch, scrape_sherdog_org, scrape_stat_leaders, scrape_ufc_career_stats, validate_data,
 )
 
@@ -210,6 +212,9 @@ def main(argv: list[str] | None = None) -> int:
         )
         results["Gyms (FightHub)"] = None if args.skip_gyms else run_step("Gyms (FightHub)", lambda: run_gyms(dry_run=False))
         results["RSS feed"] = None if args.skip_predictions else run_step("RSS feed (picks and results)", build_feed.main)
+        # The static pages and their share images: the roster, the records and the announced fights as of this refresh.
+        results["SEO pages data"] = run_step("SEO pages data (athletes and fights)", build_seo_athletes.main)
+        results["OG images"] = run_step("OG images (athletes and fights)", build_og_images.main)
         results["Validate"] = run_step("Validate refreshed data", require_valid)
 
     print("\n=== Summary ===")
