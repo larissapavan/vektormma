@@ -96,11 +96,11 @@ def make_cover(width: int = 1200, height: int = 627) -> Image.Image:
 
 def main() -> None:
     draw_mark(256).save(PUBLIC / "favicon.png")
-    make_og().save(PUBLIC / "og-image.jpg", quality=92)
+    # og-image.jpg is the Vektor MMA share card, designed by hand: make_og() is the old "Fight Intelligence" card and must not overwrite it.
     brand_dir = PUBLIC.parents[1] / "docs" / "brand"
     brand_dir.mkdir(parents=True, exist_ok=True)
     make_cover().save(brand_dir / "linkedin-cover.png")
-    print("wrote favicon.png (256x256), og-image.jpg (1200x630) and docs/brand/linkedin-cover.png (1200x627)")
+    print("wrote favicon.png (256x256) and docs/brand/linkedin-cover.png (1200x627)")
 
 
 if __name__ == "__main__":
