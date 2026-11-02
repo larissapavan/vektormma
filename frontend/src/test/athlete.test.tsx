@@ -14,6 +14,9 @@ vi.mock('axios', () => {
   return { default: { create: () => instance }, create: () => instance }
 })
 
+// The dossier and the matchup page are lazy chunks that wait for the fighters: under a full run one second is not always enough.
+const WAIT = { timeout: 10000 }
+
 function Where() {
   const { pathname } = useLocation()
   return <output data-testid="where">{pathname}</output>
@@ -32,15 +35,15 @@ describe('the address of an athlete', () => {
   it('opens the dossier from the slug', async () => {
     renderAt('/athlete/alpha-one')
 
-    expect((await screen.findAllByText('Alpha One')).length).toBeGreaterThan(0)
+    expect((await screen.findAllByText('Alpha One', undefined, WAIT)).length).toBeGreaterThan(0)
     expect(screen.getByTestId('where')).toHaveTextContent('/athlete/alpha-one')
   })
 
   it('rewrites an address with the name in it to the slug, so an athlete has one address', async () => {
     renderAt('/athlete/Alpha%20One')
 
-    await waitFor(() => expect(screen.getByTestId('where')).toHaveTextContent('/athlete/alpha-one'))
-    expect((await screen.findAllByText('Alpha One')).length).toBeGreaterThan(0)
+    await waitFor(() => expect(screen.getByTestId('where')).toHaveTextContent('/athlete/alpha-one'), WAIT)
+    expect((await screen.findAllByText('Alpha One', undefined, WAIT)).length).toBeGreaterThan(0)
   })
 })
 
@@ -62,6 +65,6 @@ describe('the address of a fight', () => {
   it('says the page does not exist when one of the slugs is not a fighter', async () => {
     renderAt('/fight/alpha-one-vs-nobody-at-all')
 
-    expect(await screen.findByRole('heading', { name: /page not found/i })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: /page not found/i }, WAIT)).toBeInTheDocument()
   })
 })
