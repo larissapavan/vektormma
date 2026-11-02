@@ -55,6 +55,16 @@ const DATA_ECOSYSTEM_SOURCES = [
     scopeEs: 'Archivo completo de Bellator (2009–2023), llaves de torneos Grand Prix y linajes de cinturones.',
   },
   {
+    org: 'RIZIN · KSW · LFA · Cage Warriors',
+    name: 'ESPN',
+    href: 'https://www.espn.com/mma/',
+    accent: '#6366F1',
+    scopePt: 'Perfis de atletas e resultados de eventos de RIZIN, KSW, LFA e Cage Warriors, conforme a cobertura do ESPN em cada liga. Sem cinturões nem rankings.',
+    scopeEn: "Fighter profiles and event results for RIZIN, KSW, the LFA and Cage Warriors, as far as ESPN covers each league. No belts or rankings.",
+    scopeFr: "Profils des combattants et résultats des événements de RIZIN, KSW, la LFA et Cage Warriors, dans la mesure où ESPN couvre chaque ligue. Ni ceintures ni classements.",
+    scopeEs: 'Perfiles de peleadores y resultados de eventos de RIZIN, KSW, la LFA y Cage Warriors, según la cobertura de ESPN en cada liga. Sin cinturones ni rankings.',
+  },
+  {
     org: 'Camps & Gyms',
     name: 'FightHub & Tapology',
     href: 'https://www.fighthub.net',

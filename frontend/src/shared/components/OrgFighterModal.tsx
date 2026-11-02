@@ -556,7 +556,9 @@ function OrgOnlyFighterModal({
                     rel="noreferrer"
                     className="inline-flex w-fit items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-widest text-neutral-300 underline decoration-white/30 underline-offset-4 hover:text-white"
                   >
-                    {L(lang, `Perfil oficial no ${org.sourceName}`, `Profile on ${org.sourceName}`, `Profil officiel sur ${org.sourceName}`, `Perfil oficial en ${org.sourceName}`)}
+                    {org.partialCoverage
+                      ? L(lang, `Perfil no ${org.sourceName}`, `Profile on ${org.sourceName}`, `Profil sur ${org.sourceName}`, `Perfil en ${org.sourceName}`)
+                      : L(lang, `Perfil oficial no ${org.sourceName}`, `Profile on ${org.sourceName}`, `Profil officiel sur ${org.sourceName}`, `Perfil oficial en ${org.sourceName}`)}
                     <ExternalLink className="h-3 w-3" />
                   </a>
                 ) : null}

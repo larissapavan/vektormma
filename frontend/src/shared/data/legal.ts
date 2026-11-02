@@ -348,7 +348,7 @@ const TERMS: ByLang<InfoPage> = {
       {
         heading: 'O que é o site',
         paragraphs: [
-          'O Vektor MMA reúne estatísticas, rankings, resultados e previsões de vitória para o UFC, a PFL, o ONE Championship e o acervo do Bellator. É um projeto pessoal, independente, feito para estudo e entretenimento. Não é um produto oficial nem é afiliado, patrocinado ou aprovado por nenhuma dessas organizações.',
+          'O Vektor MMA reúne estatísticas, rankings, resultados e previsões de vitória para o UFC, a PFL, o ONE Championship e o acervo do Bellator, além de perfis de atletas e resultados de eventos de RIZIN Fighting Federation, KSW, Legacy Fighting Alliance (LFA) e Cage Warriors. É um projeto pessoal, independente, feito para estudo e entretenimento. Não é um produto oficial nem é afiliado, patrocinado ou aprovado por nenhuma dessas organizações.',
         ],
       },
       {
@@ -405,7 +405,7 @@ const TERMS: ByLang<InfoPage> = {
       {
         heading: 'What the site is',
         paragraphs: [
-          'Vektor MMA gathers stats, rankings, results and win predictions for the UFC, the PFL, ONE Championship and the Bellator archive. It is an independent personal project, made for learning and entertainment. It is not an official product and is not affiliated with, sponsored by or endorsed by any of those organizations.',
+          'Vektor MMA gathers stats, rankings, results and win predictions for the UFC, the PFL, ONE Championship and the Bellator archive, plus fighter profiles and event results from RIZIN Fighting Federation, KSW, Legacy Fighting Alliance (LFA) and Cage Warriors. It is an independent personal project, made for learning and entertainment. It is not an official product and is not affiliated with, sponsored by or endorsed by any of those organizations.',
         ],
       },
       {
@@ -462,7 +462,7 @@ const TERMS: ByLang<InfoPage> = {
       {
         heading: 'Ce qu’est le site',
         paragraphs: [
-          'Vektor MMA rassemble statistiques, classements, résultats et prévisions de victoire pour l’UFC, la PFL, ONE Championship et les archives du Bellator. C’est un projet personnel indépendant, conçu pour apprendre et se divertir. Ce n’est pas un produit officiel et il n’est ni affilié, ni parrainé, ni approuvé par ces organisations.',
+          'Vektor MMA rassemble statistiques, classements, résultats et prévisions de victoire pour l’UFC, la PFL, ONE Championship et les archives du Bellator, ainsi que des profils de combattants et des résultats d’événements de RIZIN Fighting Federation, KSW, Legacy Fighting Alliance (LFA) et Cage Warriors. C’est un projet personnel indépendant, conçu pour apprendre et se divertir. Ce n’est pas un produit officiel et il n’est ni affilié, ni parrainé, ni approuvé par ces organisations.',
         ],
       },
       {
@@ -519,7 +519,7 @@ const TERMS: ByLang<InfoPage> = {
       {
         heading: 'Qué es el sitio',
         paragraphs: [
-          'Vektor MMA reúne estadísticas, ranking, resultados y pronósticos de victoria de la UFC, la PFL, ONE Championship y el archivo de Bellator. Es un proyecto personal e independiente, hecho para aprender y entretener. No es un producto oficial ni está afiliado, patrocinado o aprobado por ninguna de esas organizaciones.',
+          'Vektor MMA reúne estadísticas, ranking, resultados y pronósticos de victoria de la UFC, la PFL, ONE Championship y el archivo de Bellator, además de perfiles de peleadores y resultados de eventos de RIZIN Fighting Federation, KSW, Legacy Fighting Alliance (LFA) y Cage Warriors. Es un proyecto personal e independiente, hecho para aprender y entretener. No es un producto oficial ni está afiliado, patrocinado o aprobado por ninguna de esas organizaciones.',
         ],
       },
       {

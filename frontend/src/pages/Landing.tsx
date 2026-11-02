@@ -131,6 +131,86 @@ const ORG_CARDS: OrgCardInfo[] = [
       { labelPt: 'Campeões', labelEn: 'Champions', labelFr: 'Champions', labelEs: 'Campeones', valuePt: '71', valueEn: '71', valueFr: '71', valueEs: '71' },
     ],
   },
+  {
+    id: 'rizin',
+    watermark: '05',
+    shortName: 'RIZIN',
+    fullName: 'RIZIN Fighting Federation',
+    accentColor: '#A855F7',
+    hoverBorder: 'border-[#A855F7]/35 hover:border-[#A855F7] hover:shadow-[0_0_30px_rgba(168,85,247,0.28),inset_0_0_15px_rgba(168,85,247,0.08)]',
+    glove: { src: '/mma-glove-rizin.webp', glow: '#A855F7', duration: '5.4s', delay: '-1.9s' },
+    statusBadge: {
+      labelPt: 'Eventos & Resultados',
+      labelEn: 'Events & Results',
+      labelFr: 'Événements & Résultats',
+      labelEs: 'Eventos y resultados',
+      pulse: false,
+    },
+    metrics: [
+      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '60+', valueEn: '60+', valueFr: '60+', valueEs: '60+' },
+      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '290+', valueEn: '290+', valueFr: '290+', valueEs: '290+' },
+    ],
+  },
+  {
+    id: 'ksw',
+    watermark: '06',
+    shortName: 'KSW',
+    fullName: 'Konfrontacja Sztuk Walki',
+    accentColor: '#06B6D4',
+    hoverBorder: 'border-[#06B6D4]/35 hover:border-[#06B6D4] hover:shadow-[0_0_30px_rgba(6,182,212,0.28),inset_0_0_15px_rgba(6,182,212,0.08)]',
+    glove: { src: '/mma-glove-ksw.webp', glow: '#06B6D4', duration: '5.0s', delay: '-3.1s' },
+    statusBadge: {
+      labelPt: 'Eventos & Resultados',
+      labelEn: 'Events & Results',
+      labelFr: 'Événements & Résultats',
+      labelEs: 'Eventos y resultados',
+      pulse: false,
+    },
+    metrics: [
+      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '100+', valueEn: '100+', valueFr: '100+', valueEs: '100+' },
+      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '390+', valueEn: '390+', valueFr: '390+', valueEs: '390+' },
+    ],
+  },
+  {
+    id: 'lfa',
+    watermark: '07',
+    shortName: 'LFA',
+    fullName: 'Legacy Fighting Alliance',
+    accentColor: '#EC4899',
+    hoverBorder: 'border-[#EC4899]/35 hover:border-[#EC4899] hover:shadow-[0_0_30px_rgba(236,72,153,0.28),inset_0_0_15px_rgba(236,72,153,0.08)]',
+    glove: { src: '/mma-glove-lfa.webp', glow: '#EC4899', duration: '4.7s', delay: '-2.2s' },
+    statusBadge: {
+      labelPt: 'Eventos & Resultados',
+      labelEn: 'Events & Results',
+      labelFr: 'Événements & Résultats',
+      labelEs: 'Eventos y resultados',
+      pulse: false,
+    },
+    metrics: [
+      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '230+', valueEn: '230+', valueFr: '230+', valueEs: '230+' },
+      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '1.5k+', valueEn: '1.5k+', valueFr: '1.5k+', valueEs: '1.5k+' },
+    ],
+  },
+  {
+    id: 'cage-warriors',
+    watermark: '08',
+    shortName: 'CAGE WARRIORS',
+    fullName: 'Cage Warriors',
+    accentColor: '#F97316',
+    hoverBorder: 'border-[#F97316]/35 hover:border-[#F97316] hover:shadow-[0_0_30px_rgba(249,115,22,0.28),inset_0_0_15px_rgba(249,115,22,0.08)]',
+    glove: { src: '/mma-glove-cage-warriors.webp', glow: '#F97316', duration: '5.6s', delay: '-0.4s' },
+    statusBadge: {
+      labelPt: 'Eventos & Resultados',
+      labelEn: 'Events & Results',
+      labelFr: 'Événements & Résultats',
+      labelEs: 'Eventos y resultados',
+      pulse: false,
+    },
+    metrics: [
+      { labelPt: 'Eventos', labelEn: 'Events', labelFr: 'Événements', labelEs: 'Eventos', valuePt: '200+', valueEn: '200+', valueFr: '200+', valueEs: '200+' },
+      { labelPt: 'Lutadores', labelEn: 'Fighters', labelFr: 'Combattants', labelEs: 'Peleadores', valuePt: '970+', valueEn: '970+', valueFr: '970+', valueEs: '970+' },
+    ],
+  },
 ]
 
 // Shown until the API answers (or if it never does): the last figures checked by hand.
@@ -577,10 +657,10 @@ export function Landing() {
               <p>
                 {L(
                   i18n.language,
-                  'Projeto analítico independente. Não afiliado ao UFC, PFL, Bellator ou ONE Championship.',
-                  'Independent analytics project. Not affiliated with UFC, PFL, Bellator, or ONE Championship.',
-                  'Projet analytique indépendant. Non affilié à l’UFC, au PFL, au Bellator ou au ONE Championship.',
-                  'Proyecto analítico independiente. No afiliado a la UFC, la PFL, Bellator ni ONE Championship.',
+                  'Projeto analítico independente. Não afiliado ao UFC, PFL, Bellator, ONE Championship, RIZIN, KSW, LFA ou Cage Warriors.',
+                  'Independent analytics project. Not affiliated with UFC, PFL, Bellator, ONE Championship, RIZIN, KSW, LFA, or Cage Warriors.',
+                  'Projet analytique indépendant. Non affilié à l’UFC, au PFL, au Bellator, au ONE Championship, à RIZIN, à KSW, à la LFA ou à Cage Warriors.',
+                  'Proyecto analítico independiente. No afiliado a la UFC, la PFL, Bellator, ONE Championship, RIZIN, KSW, la LFA ni Cage Warriors.',
                 )}
               </p>
               <Link

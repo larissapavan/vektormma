@@ -237,61 +237,63 @@ export function OrgHome() {
         </section>
       ) : null}
 
-      <section aria-label={L(i18n.language, 'Campeões', 'Champions', 'Champions', 'Campeones')} className="space-y-3">
-        <div className="flex flex-wrap items-end justify-between gap-2">
-          <SectionHeading
-            eyebrow={L(i18n.language, isArchived ? 'Últimos Campeões (2023)' : 'Cinturões', isArchived ? 'Final champions (2023)' : 'Titles', isArchived ? 'Derniers champions (2023)' : 'Ceintures', isArchived ? 'Últimos campeones (2023)' : 'Cinturones')}
-            title={L(
-              i18n.language,
-              isArchived ? `Últimos Campeões do ${org.shortName}` : `Campeões do ${org.shortName}`,
-              isArchived ? `Final ${org.shortName} champions` : `${org.shortName} champions`,
-              isArchived ? `Derniers champions ${org.shortName}` : `Champions ${org.shortName}`,
-              isArchived ? `Últimos campeones de ${orgEs(org)}` : `Campeones de ${orgEs(org)}`,
-            )}
-            description={
-              isArchived
-                ? L(
-                    i18n.language,
-                    'Atletas que detinham o cinturão linear de cada categoria no encerramento das atividades do Bellator em novembro de 2023.',
-                    'The fighters holding each division’s belt when Bellator held its final event in November 2023.',
-                    'Les combattants qui détenaient la ceinture de chaque catégorie lors de la fermeture du Bellator fin 2023.',
-                    'Los peleadores que tenían el cinturón de cada división cuando Bellator realizó su último evento en noviembre de 2023.',
-                  )
-                : undefined
-            }
-          />
-          {org.hasChampions ? (
-            <Link
-              to={orgPath(org, 'champions')}
-              className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-main)] underline decoration-2 underline-offset-4 hover:bg-[#F2C230] hover:text-[#0E0E0E]"
-            >
-              {L(i18n.language, 'Seção completa de Campeões', 'Full champions section', 'Section complète des champions', 'Sección completa de campeones')}
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          ) : null}
-        </div>
-        {rankingsLoading ? (
-          <LoadingSkeleton className="h-[120px]" />
-        ) : champions.length ? (
-          <ul className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            {champions.map(({ division, holders }) => (
-              <li key={division}>
-                <ChampionTile
-                  division={division}
-                  holders={holders}
-                  lookup={lookup}
-                  archived={isArchived}
-                  onOpen={setProfileName}
-                />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-[var(--text-muted)]">
-            {L(i18n.language, 'Lista de campeões indisponível no momento.', 'Champions are not available yet.', 'La liste des champions n\'est pas encore disponible.', 'La lista de campeones aún no está disponible.')}
-          </p>
-        )}
-      </section>
+      {org.hasChampions ? (
+        <section aria-label={L(i18n.language, 'Campeões', 'Champions', 'Champions', 'Campeones')} className="space-y-3">
+          <div className="flex flex-wrap items-end justify-between gap-2">
+            <SectionHeading
+              eyebrow={L(i18n.language, isArchived ? 'Últimos Campeões (2023)' : 'Cinturões', isArchived ? 'Final champions (2023)' : 'Titles', isArchived ? 'Derniers champions (2023)' : 'Ceintures', isArchived ? 'Últimos campeones (2023)' : 'Cinturones')}
+              title={L(
+                i18n.language,
+                isArchived ? `Últimos Campeões do ${org.shortName}` : `Campeões do ${org.shortName}`,
+                isArchived ? `Final ${org.shortName} champions` : `${org.shortName} champions`,
+                isArchived ? `Derniers champions ${org.shortName}` : `Champions ${org.shortName}`,
+                isArchived ? `Últimos campeones de ${orgEs(org)}` : `Campeones de ${orgEs(org)}`,
+              )}
+              description={
+                isArchived
+                  ? L(
+                      i18n.language,
+                      'Atletas que detinham o cinturão linear de cada categoria no encerramento das atividades do Bellator em novembro de 2023.',
+                      'The fighters holding each division’s belt when Bellator held its final event in November 2023.',
+                      'Les combattants qui détenaient la ceinture de chaque catégorie lors de la fermeture du Bellator fin 2023.',
+                      'Los peleadores que tenían el cinturón de cada división cuando Bellator realizó su último evento en noviembre de 2023.',
+                    )
+                  : undefined
+              }
+            />
+            {org.hasChampions ? (
+              <Link
+                to={orgPath(org, 'champions')}
+                className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-main)] underline decoration-2 underline-offset-4 hover:bg-[#F2C230] hover:text-[#0E0E0E]"
+              >
+                {L(i18n.language, 'Seção completa de Campeões', 'Full champions section', 'Section complète des champions', 'Sección completa de campeones')}
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            ) : null}
+          </div>
+          {rankingsLoading ? (
+            <LoadingSkeleton className="h-[120px]" />
+          ) : champions.length ? (
+            <ul className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+              {champions.map(({ division, holders }) => (
+                <li key={division}>
+                  <ChampionTile
+                    division={division}
+                    holders={holders}
+                    lookup={lookup}
+                    archived={isArchived}
+                    onOpen={setProfileName}
+                  />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-[var(--text-muted)]">
+              {L(i18n.language, 'Lista de campeões indisponível no momento.', 'Champions are not available yet.', 'La liste des champions n\'est pas encore disponible.', 'La lista de campeones aún no está disponible.')}
+            </p>
+          )}
+        </section>
+      ) : null}
 
       {isArchived ? (
         <section aria-label={L(i18n.language, 'Histórico de títulos', 'Title history', 'Historique des titres', 'Historial de títulos')} className="space-y-4">
@@ -383,7 +385,15 @@ export function OrgHome() {
               `Archives historiques compilées à partir d'${org.sourceName === 'ESPN and Wikipedia' ? 'ESPN et Wikipédia' : org.sourceName}.`,
               `Archivo histórico compilado a partir de ${org.sourceName === 'ESPN and Wikipedia' ? 'ESPN y Wikipedia' : org.sourceName}.`,
             )
-          : L(i18n.language, `Dados oficiais via ${org.sourceName}, sincronizados diariamente.`, `Data from ${org.sourceName}, refreshed daily.`, `Données officielles via ${org.sourceName}, synchronisées chaque jour.`, `Datos oficiales de ${org.sourceName}, actualizados a diario.`)}{' '}
+          : org.partialCoverage
+            ? L(
+                i18n.language,
+                `Dados do ${org.sourceName}, na cobertura que ele tem desta liga: podem faltar eventos e lutas, e a atualização não é diária. Sem cinturões nem rankings.`,
+                `Data from ${org.sourceName}, as far as it covers this league: events and fights may be missing, and it is not refreshed daily. No belts or rankings.`,
+                `Données d'${org.sourceName}, dans la mesure où il couvre cette ligue : des événements et des combats peuvent manquer, et la mise à jour n'est pas quotidienne. Ni ceintures ni classements.`,
+                `Datos de ${org.sourceName}, según la cobertura que tiene de esta liga: pueden faltar eventos y peleas, y no se actualiza a diario. Sin cinturones ni rankings.`,
+              )
+            : L(i18n.language, `Dados oficiais via ${org.sourceName}, sincronizados diariamente.`, `Data from ${org.sourceName}, refreshed daily.`, `Données officielles via ${org.sourceName}, synchronisées chaque jour.`, `Datos oficiales de ${org.sourceName}, actualizados a diario.`)}{' '}
         {L(
           i18n.language,
           'As previsões da IA e o histórico detalhado estão focados no UFC atualmente, onde o modelo preditivo foi validado.',

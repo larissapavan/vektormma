@@ -157,6 +157,70 @@
         "title": "Academias do ONE Championship",
         "description": "Onde os atletas do ONE Championship treinam: equipes e academias."
       },
+      "/rizin": {
+        "title": "RIZIN",
+        "description": "RIZIN Fighting Federation: lutadores, resultados de eventos e academias."
+      },
+      "/rizin/fighters": {
+        "title": "Lutadores do RIZIN",
+        "description": "Atletas do RIZIN: cartel, medidas, equipes e combates."
+      },
+      "/rizin/events": {
+        "title": "Eventos do RIZIN",
+        "description": "Eventos do RIZIN com cards e resultados."
+      },
+      "/rizin/gyms": {
+        "title": "Academias do RIZIN",
+        "description": "Academias e equipes dos atletas do RIZIN."
+      },
+      "/ksw": {
+        "title": "KSW",
+        "description": "Konfrontacja Sztuk Walki (KSW): lutadores, resultados de eventos e academias."
+      },
+      "/ksw/fighters": {
+        "title": "Lutadores do KSW",
+        "description": "Atletas do KSW: cartel, medidas, equipes e combates."
+      },
+      "/ksw/events": {
+        "title": "Eventos do KSW",
+        "description": "Eventos do KSW com cards e resultados."
+      },
+      "/ksw/gyms": {
+        "title": "Academias do KSW",
+        "description": "Academias e equipes dos atletas do KSW."
+      },
+      "/lfa": {
+        "title": "LFA",
+        "description": "Legacy Fighting Alliance (LFA): lutadores, resultados de eventos e academias."
+      },
+      "/lfa/fighters": {
+        "title": "Lutadores do LFA",
+        "description": "Atletas do LFA: cartel, medidas, equipes e combates."
+      },
+      "/lfa/events": {
+        "title": "Eventos do LFA",
+        "description": "Eventos do LFA com cards e resultados."
+      },
+      "/lfa/gyms": {
+        "title": "Academias do LFA",
+        "description": "Academias e equipes dos atletas do LFA."
+      },
+      "/cage-warriors": {
+        "title": "Cage Warriors",
+        "description": "Cage Warriors: lutadores, resultados de eventos e academias."
+      },
+      "/cage-warriors/fighters": {
+        "title": "Lutadores do Cage Warriors",
+        "description": "Atletas do Cage Warriors: cartel, medidas, equipes e combates."
+      },
+      "/cage-warriors/events": {
+        "title": "Eventos do Cage Warriors",
+        "description": "Eventos do Cage Warriors com cards e resultados."
+      },
+      "/cage-warriors/gyms": {
+        "title": "Academias do Cage Warriors",
+        "description": "Academias e equipes dos atletas do Cage Warriors."
+      },
       "/about-model": {
         "title": "Sobre o Modelo de IA",
         "description": "Projeto completo de IA aplicada: fluxo de dados, modelo preditivo e API."
@@ -306,6 +370,70 @@
       "/one/gyms": {
         "title": "ONE Championship gyms",
         "description": "Where ONE Championship fighters train: every gym and team."
+      },
+      "/rizin": {
+        "title": "RIZIN",
+        "description": "RIZIN Fighting Federation: fighters, event results and gyms."
+      },
+      "/rizin/fighters": {
+        "title": "RIZIN fighters",
+        "description": "RIZIN fighter profiles: records, builds, camps and every bout."
+      },
+      "/rizin/events": {
+        "title": "RIZIN events",
+        "description": "RIZIN events with fight cards and results."
+      },
+      "/rizin/gyms": {
+        "title": "RIZIN gyms",
+        "description": "Where RIZIN fighters train: gyms and teams with their fighters."
+      },
+      "/ksw": {
+        "title": "KSW",
+        "description": "Konfrontacja Sztuk Walki (KSW): fighters, event results and gyms."
+      },
+      "/ksw/fighters": {
+        "title": "KSW fighters",
+        "description": "KSW fighter profiles: records, builds, camps and every bout."
+      },
+      "/ksw/events": {
+        "title": "KSW events",
+        "description": "KSW events with fight cards and results."
+      },
+      "/ksw/gyms": {
+        "title": "KSW gyms",
+        "description": "Where KSW fighters train: gyms and teams with their fighters."
+      },
+      "/lfa": {
+        "title": "LFA",
+        "description": "Legacy Fighting Alliance (LFA): fighters, event results and gyms."
+      },
+      "/lfa/fighters": {
+        "title": "LFA fighters",
+        "description": "LFA fighter profiles: records, builds, camps and every bout."
+      },
+      "/lfa/events": {
+        "title": "LFA events",
+        "description": "LFA events with fight cards and results."
+      },
+      "/lfa/gyms": {
+        "title": "LFA gyms",
+        "description": "Where LFA fighters train: gyms and teams with their fighters."
+      },
+      "/cage-warriors": {
+        "title": "Cage Warriors",
+        "description": "Cage Warriors: fighters, event results and gyms."
+      },
+      "/cage-warriors/fighters": {
+        "title": "Cage Warriors fighters",
+        "description": "Cage Warriors fighter profiles: records, builds, camps and every bout."
+      },
+      "/cage-warriors/events": {
+        "title": "Cage Warriors events",
+        "description": "Cage Warriors events with fight cards and results."
+      },
+      "/cage-warriors/gyms": {
+        "title": "Cage Warriors gyms",
+        "description": "Where Cage Warriors fighters train: gyms and teams with their fighters."
       },
       "/about-model": {
         "title": "About the model",
@@ -457,6 +585,70 @@
         "title": "Salles ONE Championship",
         "description": "Où s'entraînent les combattants ONE Championship : chaque salle et équipe."
       },
+      "/rizin": {
+        "title": "RIZIN",
+        "description": "RIZIN Fighting Federation : combattants, résultats des événements et salles."
+      },
+      "/rizin/fighters": {
+        "title": "Combattants RIZIN",
+        "description": "Profils des combattants RIZIN : palmarès, mensurations, salles et combats."
+      },
+      "/rizin/events": {
+        "title": "Événements RIZIN",
+        "description": "Événements RIZIN avec cartes de combats et résultats."
+      },
+      "/rizin/gyms": {
+        "title": "Salles RIZIN",
+        "description": "Où s'entraînent les combattants RIZIN : salles et équipes, avec leurs combattants."
+      },
+      "/ksw": {
+        "title": "KSW",
+        "description": "Konfrontacja Sztuk Walki (KSW) : combattants, résultats des événements et salles."
+      },
+      "/ksw/fighters": {
+        "title": "Combattants KSW",
+        "description": "Profils des combattants KSW : palmarès, mensurations, salles et combats."
+      },
+      "/ksw/events": {
+        "title": "Événements KSW",
+        "description": "Événements KSW avec cartes de combats et résultats."
+      },
+      "/ksw/gyms": {
+        "title": "Salles KSW",
+        "description": "Où s'entraînent les combattants KSW : salles et équipes, avec leurs combattants."
+      },
+      "/lfa": {
+        "title": "LFA",
+        "description": "Legacy Fighting Alliance (LFA) : combattants, résultats des événements et salles."
+      },
+      "/lfa/fighters": {
+        "title": "Combattants LFA",
+        "description": "Profils des combattants LFA : palmarès, mensurations, salles et combats."
+      },
+      "/lfa/events": {
+        "title": "Événements LFA",
+        "description": "Événements LFA avec cartes de combats et résultats."
+      },
+      "/lfa/gyms": {
+        "title": "Salles LFA",
+        "description": "Où s'entraînent les combattants LFA : salles et équipes, avec leurs combattants."
+      },
+      "/cage-warriors": {
+        "title": "Cage Warriors",
+        "description": "Cage Warriors : combattants, résultats des événements et salles."
+      },
+      "/cage-warriors/fighters": {
+        "title": "Combattants Cage Warriors",
+        "description": "Profils des combattants Cage Warriors : palmarès, mensurations, salles et combats."
+      },
+      "/cage-warriors/events": {
+        "title": "Événements Cage Warriors",
+        "description": "Événements Cage Warriors avec cartes de combats et résultats."
+      },
+      "/cage-warriors/gyms": {
+        "title": "Salles Cage Warriors",
+        "description": "Où s'entraînent les combattants Cage Warriors : salles et équipes, avec leurs combattants."
+      },
       "/about-model": {
         "title": "À propos du modèle",
         "description": "Un projet complet d'IA appliquée : chaîne de données, modèle et API."
@@ -606,6 +798,70 @@
       "/one/gyms": {
         "title": "Gimnasios de ONE Championship",
         "description": "Dónde entrenan los peleadores de ONE Championship: cada gimnasio y equipo."
+      },
+      "/rizin": {
+        "title": "RIZIN",
+        "description": "RIZIN Fighting Federation: peleadores, resultados de eventos y gimnasios."
+      },
+      "/rizin/fighters": {
+        "title": "Peleadores de RIZIN",
+        "description": "Perfiles de peleadores de RIZIN: récords, medidas, campamentos y cada pelea."
+      },
+      "/rizin/events": {
+        "title": "Eventos de RIZIN",
+        "description": "Eventos de RIZIN con carteleras y resultados."
+      },
+      "/rizin/gyms": {
+        "title": "Gimnasios de RIZIN",
+        "description": "Dónde entrenan los peleadores de RIZIN: gimnasios y equipos con sus peleadores."
+      },
+      "/ksw": {
+        "title": "KSW",
+        "description": "Konfrontacja Sztuk Walki (KSW): peleadores, resultados de eventos y gimnasios."
+      },
+      "/ksw/fighters": {
+        "title": "Peleadores de KSW",
+        "description": "Perfiles de peleadores de KSW: récords, medidas, campamentos y cada pelea."
+      },
+      "/ksw/events": {
+        "title": "Eventos de KSW",
+        "description": "Eventos de KSW con carteleras y resultados."
+      },
+      "/ksw/gyms": {
+        "title": "Gimnasios de KSW",
+        "description": "Dónde entrenan los peleadores de KSW: gimnasios y equipos con sus peleadores."
+      },
+      "/lfa": {
+        "title": "LFA",
+        "description": "Legacy Fighting Alliance (LFA): peleadores, resultados de eventos y gimnasios."
+      },
+      "/lfa/fighters": {
+        "title": "Peleadores de LFA",
+        "description": "Perfiles de peleadores de LFA: récords, medidas, campamentos y cada pelea."
+      },
+      "/lfa/events": {
+        "title": "Eventos de LFA",
+        "description": "Eventos de LFA con carteleras y resultados."
+      },
+      "/lfa/gyms": {
+        "title": "Gimnasios de LFA",
+        "description": "Dónde entrenan los peleadores de LFA: gimnasios y equipos con sus peleadores."
+      },
+      "/cage-warriors": {
+        "title": "Cage Warriors",
+        "description": "Cage Warriors: peleadores, resultados de eventos y gimnasios."
+      },
+      "/cage-warriors/fighters": {
+        "title": "Peleadores de Cage Warriors",
+        "description": "Perfiles de peleadores de Cage Warriors: récords, medidas, campamentos y cada pelea."
+      },
+      "/cage-warriors/events": {
+        "title": "Eventos de Cage Warriors",
+        "description": "Eventos de Cage Warriors con carteleras y resultados."
+      },
+      "/cage-warriors/gyms": {
+        "title": "Gimnasios de Cage Warriors",
+        "description": "Dónde entrenan los peleadores de Cage Warriors: gimnasios y equipos con sus peleadores."
       },
       "/about-model": {
         "title": "Acerca del modelo",

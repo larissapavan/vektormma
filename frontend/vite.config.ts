@@ -16,7 +16,7 @@ interface PageMetaFile {
 }
 
 // Where the static copies of the pages link to, so a crawler that stops at the HTML can still walk the site.
-const NAV_PATHS = ['/predictor', '/head-to-head', '/fighters', '/events', '/rankings', '/champions', '/pfl', '/one', '/bellator', '/guide', '/about', '/contact', '/privacy', '/terms']
+const NAV_PATHS = ['/predictor', '/head-to-head', '/fighters', '/events', '/rankings', '/champions', '/pfl', '/one', '/bellator', '/rizin', '/ksw', '/lfa', '/cage-warriors', '/guide', '/about', '/contact', '/privacy', '/terms']
 
 const INFO_BY_PATH = Object.fromEntries(Object.entries(INFO_PATHS).map(([id, path]) => [path, id as InfoPageId]))
 

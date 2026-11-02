@@ -64,7 +64,11 @@
       "ufc": "Estatísticas, rankings e previsões de vitória por IA.",
       "pfl": "Atletas, eventos oficiais e rankings por pontuação da liga.",
       "one": "MMA, Muay Thai com luvas de 4oz, campeões mundiais e previsões por IA.",
-      "bellator": "Acervo histórico 2009–2023: atletas, eventos e campeões."
+      "bellator": "Acervo histórico 2009–2023: atletas, eventos e campeões.",
+      "rizin": "Perfis de atletas e resultados de eventos.",
+      "ksw": "Perfis de atletas e resultados de eventos.",
+      "lfa": "Perfis de atletas e resultados de eventos.",
+      "cage-warriors": "Perfis de atletas e resultados de eventos."
     }
   },
   "footer": {
@@ -277,7 +281,7 @@
     "description": "Quem desenvolve, a procedência dos dados e as premissas deste estudo esportivo.",
     "who": "Quem desenvolve",
     "whoText1": "Este projeto é concebido, desenvolvido e mantido de forma 100% individual por Larissa Pavan, entusiasta de artes marciais mistas (MMA) e ciência de dados.",
-    "whoText2": "Não possui nenhuma afiliação, parceria, patrocínio ou endosso institucional do UFC, Zuffa LLC, TKO Group, PFL, Bellator MMA, ESPN, FightHub ou Wikipedia.",
+    "whoText2": "Não possui nenhuma afiliação, parceria, patrocínio ou endosso institucional do UFC, Zuffa LLC, TKO Group, PFL, Bellator MMA, RIZIN Fighting Federation, KSW, Legacy Fighting Alliance (LFA), Cage Warriors, ESPN, FightHub ou Wikipedia.",
     "whoText3": "Todas as marcas registradas, fotos e nomes de atletas pertencem aos seus respectivos proprietários, sendo aqui utilizados exclusivamente para fins informativos, analíticos e de estudo esportivo.",
     "dataAndSystem": "Dados & Metodologia",
     "disclaimer": "Aviso legal importante",

@@ -97,6 +97,10 @@ Explore information from different organizations across the combat sports ecosys
 | PFL | Events, athletes and tournament information |
 | ONE Championship | Fighters, events and organizational data |
 | Bellator MMA | Historical records and organizational information |
+| RIZIN Fighting Federation | Fighter profiles and event results (ESPN coverage) |
+| KSW | Fighter profiles and event results (ESPN coverage) |
+| LFA | Fighter profiles and event results (ESPN coverage) |
+| Cage Warriors | Fighter profiles and event results (ESPN coverage) |
 
 ### Prediction Track Record
 
@@ -199,7 +203,7 @@ Explore the platform, discover your favorite fighters and experience a different
 
 ## Disclaimer
 
-Vektor MMA is an independent project and is not affiliated with, sponsored by or officially endorsed by the UFC, PFL, ONE Championship, Bellator MMA or ESPN.
+Vektor MMA is an independent project and is not affiliated with, sponsored by or officially endorsed by the UFC, PFL, ONE Championship, Bellator MMA, RIZIN Fighting Federation, KSW, LFA, Cage Warriors or ESPN.
 
 All predictions are statistical estimates provided for informational and analytical purposes. They do not guarantee fight outcomes.
 

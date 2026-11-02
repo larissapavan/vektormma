@@ -59,6 +59,36 @@ ORGS: dict[str, Org] = {
         tagline="ONE Championship fighters, event results, upcoming cards, world champions and rankings.",
         sources=("onefc.com", "wikipedia.org"),
     ),
+    # The four organisations below are read from ESPN's public API (scripts/scrape_espn_org.py). ESPN has no belts or
+    # rankings for them, so they have no champions page and their title bouts are not flagged.
+    "rizin": Org(
+        id="rizin",
+        name="RIZIN Fighting Federation",
+        short_name="RIZIN",
+        tagline="RIZIN fighters and event results.",
+        sources=("espn.com",),
+    ),
+    "ksw": Org(
+        id="ksw",
+        name="Konfrontacja Sztuk Walki",
+        short_name="KSW",
+        tagline="KSW fighters and event results.",
+        sources=("espn.com",),
+    ),
+    "lfa": Org(
+        id="lfa",
+        name="Legacy Fighting Alliance",
+        short_name="LFA",
+        tagline="LFA fighters and event results.",
+        sources=("espn.com",),
+    ),
+    "cage-warriors": Org(
+        id="cage-warriors",
+        name="Cage Warriors",
+        short_name="Cage Warriors",
+        tagline="Cage Warriors fighters and event results.",
+        sources=("espn.com",),
+    ),
 }
 
 # Lightest to heaviest, men's divisions first, then women's. Anything unknown goes last in the order it was scraped.

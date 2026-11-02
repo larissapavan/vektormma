@@ -75,9 +75,10 @@ describe('the page that chooses an organization', () => {
     renderAt('/')
     const list = await screen.findByRole('list', { name: 'Organizations' }, WAIT)
     const links = within(list).getAllByRole('link')
-    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/home', '/pfl', '/one', '/bellator'])
+    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/home', '/pfl', '/one', '/bellator', '/rizin', '/ksw', '/lfa', '/cage-warriors'])
     expect(within(list).getAllByText('AI Predictions')).toHaveLength(2)  // the UFC and ONE
     expect(within(list).getByText('Historical Archive')).toBeInTheDocument()  // Bellator
+    expect(within(list).getAllByText('Events & Results')).toHaveLength(4)  // RIZIN, KSW, LFA and Cage Warriors
   })
 
   it('has no switcher, section menu or fighter search until an organization is chosen', async () => {
@@ -288,7 +289,66 @@ describe('the Bellator archive', () => {
     renderAt('/events')
     await screen.findByRole('heading', { name: 'UFC fight cards' }, WAIT)
     const switcher = screen.getAllByRole('group', { name: 'Organization' })[0]
-    expect(within(switcher).getAllByRole('link').map((link) => link.getAttribute('href'))).toEqual(['/events', '/pfl/events', '/one/events', '/bellator/events'])
+    expect(within(switcher).getAllByRole('link').map((link) => link.getAttribute('href'))).toEqual([
+      '/events', '/pfl/events', '/one/events', '/bellator/events', '/rizin/events', '/ksw/events', '/lfa/events', '/cage-warriors/events',
+    ])
+  })
+})
+
+const ESPN_ORGS = [
+  { id: 'rizin', name: 'RIZIN Fighting Federation', short: 'RIZIN' },
+  { id: 'ksw', name: 'Konfrontacja Sztuk Walki', short: 'KSW' },
+  { id: 'lfa', name: 'Legacy Fighting Alliance', short: 'LFA' },
+  { id: 'cage-warriors', name: 'Cage Warriors', short: 'Cage Warriors' },
+] as const
+
+describe.each(ESPN_ORGS)('$short (read from ESPN: fighters and events only)', ({ id, name }) => {
+  const base = `/${id}`
+
+  it('knows its own addresses, name and colors', () => {
+    expect(orgFromPathname(`${base}/fighters`)).toBe(ORGS[id])
+    expect(orgPath(id, 'events')).toBe(`${base}/events`)
+    expect(ORGS[id].name).toBe(name)
+    expect(ORGS[id]).toMatchObject({ hasPredictions: false, hasRankings: false, hasChampions: false })
+    expect(ORGS[id].archived).toBeUndefined()
+  })
+
+  it('a UFC page that it has no equivalent of sends the visitor to its home page', () => {
+    expect(switchOrgPath(ORGS[id], '/rankings')).toBe(base)
+    expect(switchOrgPath(ORGS[id], '/champions')).toBe(base)
+    expect(switchOrgPath(ORGS[id], '/predictor')).toBe(base)
+    expect(switchOrgPath(ORGS[id], '/fighters')).toBe(`${base}/fighters`)
+  })
+
+  it('lists its fighters and its events, with its own color theme', async () => {
+    renderAt(`${base}/fighters`)
+    expect(await screen.findByText('Riko Stone', undefined, WAIT)).toBeInTheDocument()  // active
+    expect(screen.queryByText('Lena Ortiz')).not.toBeInTheDocument()  // a veteran: only on request
+    expect(document.documentElement.dataset.org).toBe(id)
+    expect(api.requested.some((url) => url.includes(`/orgs/${id}/fighters`))).toBe(true)
+    expect(api.requested.some((url) => url.startsWith('/fighters') || url.includes('/catalog'))).toBe(false)  // never downloads the UFC catalog
+  })
+
+  it('has fighters, events and gyms in its menu, and no rankings, champions or predictor', async () => {
+    renderAt(`${base}/events`)
+    await screen.findByRole('heading', { name: `${ORGS[id].shortName} fight cards` }, WAIT)
+    const links = screen.getAllByRole('link').map((link) => link.getAttribute('href'))
+    expect(links).toEqual(expect.arrayContaining([`${base}/fighters`, `${base}/events`, `${base}/gyms`]))
+    for (const missing of ['rankings', 'champions', 'predictor']) expect(links).not.toContain(`${base}/${missing}`)
+  })
+
+  it('has no champions section and does not promise daily, official data: it says what ESPN gives', async () => {
+    renderAt(base)
+    expect(await screen.findByText(/No belts or rankings\./, undefined, WAIT)).toBeInTheDocument()
+    expect(screen.getByText(/events and fights may be missing, and it is not refreshed daily/)).toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: 'Champions' })).not.toBeInTheDocument()
+    expect(screen.queryByText(/Champions are not available yet/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/refreshed daily\.$/)).not.toBeInTheDocument()
+  })
+
+  it('an address for a page it does not have is the not-found page', async () => {
+    renderAt(`${base}/rankings`)
+    expect(await screen.findByRole('heading', { name: /page not found/i }, WAIT)).toBeInTheDocument()
   })
 })
 

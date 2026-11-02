@@ -1,4 +1,4 @@
-export type OrgId = 'ufc' | 'pfl' | 'one' | 'bellator'
+export type OrgId = 'ufc' | 'pfl' | 'one' | 'bellator' | 'rizin' | 'ksw' | 'lfa' | 'cage-warriors'
 
 export type OrgSection = 'fighters' | 'events' | 'rankings' | 'gyms' | 'champions' | 'predictor'
 
@@ -16,6 +16,9 @@ export interface OrgConfig {
   hasPredictions: boolean
   /** Set for an organization that no longer holds events: what happened to it. Its pages read as an archive. */
   archived?: string
+  /** True when the data comes from a source that covers the organization only in part and is not refreshed every day
+   *  (ESPN, for RIZIN, KSW, LFA and Cage Warriors): its pages say so instead of promising daily, official data. */
+  partialCoverage?: boolean
   /** False for an organization with no rankings page (its champions still show on its home page). */
   hasRankings: boolean
   /** Whether the organization has a dedicated Champions page (/champions, /pfl/champions, /one/champions, /bellator/champions). */
@@ -72,10 +75,64 @@ export const ORGS: Record<OrgId, OrgConfig> = {
     hasRankings: false,
     hasChampions: true,
   },
+  // RIZIN, KSW, LFA and Cage Warriors are read from ESPN (scripts/scrape_espn_org.py): fighters and events only, because
+  // ESPN has no belts or rankings for them. Their pages are the fighters list, the events and the gyms.
+  rizin: {
+    id: 'rizin',
+    name: 'RIZIN Fighting Federation',
+    shortName: 'RIZIN',
+    basePath: '/rizin',
+    sourceName: 'ESPN',
+    sourceUrl: 'https://www.espn.com/mma/',
+    tagline: 'Fighters and event results.',
+    hasPredictions: false,
+    hasRankings: false,
+    hasChampions: false,
+    partialCoverage: true,
+  },
+  ksw: {
+    id: 'ksw',
+    name: 'Konfrontacja Sztuk Walki',
+    shortName: 'KSW',
+    basePath: '/ksw',
+    sourceName: 'ESPN',
+    sourceUrl: 'https://www.espn.com/mma/',
+    tagline: 'Fighters and event results.',
+    hasPredictions: false,
+    hasRankings: false,
+    hasChampions: false,
+    partialCoverage: true,
+  },
+  lfa: {
+    id: 'lfa',
+    name: 'Legacy Fighting Alliance',
+    shortName: 'LFA',
+    basePath: '/lfa',
+    sourceName: 'ESPN',
+    sourceUrl: 'https://www.espn.com/mma/',
+    tagline: 'Fighters and event results.',
+    hasPredictions: false,
+    hasRankings: false,
+    hasChampions: false,
+    partialCoverage: true,
+  },
+  'cage-warriors': {
+    id: 'cage-warriors',
+    name: 'Cage Warriors',
+    shortName: 'Cage Warriors',
+    basePath: '/cage-warriors',
+    sourceName: 'ESPN',
+    sourceUrl: 'https://www.espn.com/mma/',
+    tagline: 'Fighters and event results.',
+    hasPredictions: false,
+    hasRankings: false,
+    hasChampions: false,
+    partialCoverage: true,
+  },
 }
 
 /** Display order of the organization switcher. Add a new organization here and in ORGS. */
-export const ORG_LIST: OrgConfig[] = [ORGS.ufc, ORGS.pfl, ORGS.one, ORGS.bellator]
+export const ORG_LIST: OrgConfig[] = [ORGS.ufc, ORGS.pfl, ORGS.one, ORGS.bellator, ORGS.rizin, ORGS.ksw, ORGS.lfa, ORGS['cage-warriors']]
 
 /** Organizations served by the generic /orgs/{id} API (everything but the UFC, which has its own endpoints). */
 export const GENERIC_ORGS: OrgConfig[] = ORG_LIST.filter((org) => org.id !== 'ufc')

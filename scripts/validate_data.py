@@ -29,12 +29,17 @@ MIN_ROWS = {"rankings.csv": 100, "fights.csv": 8000, "fighters.csv": 4000, "even
 MAX_CONTRADICTORY_SHARE = 0.005  # share of fight_stats.csv rows that may have more landed than attempted (it is 0.11% today)
 MAX_RANK = 15  # the UFC ranks 15 fighters per division (rank 0 is the champion)
 # Organisations other than the UFC keep their three files in data/raw/<org>/ (see scripts/scrape_pfl.py and scrape_one.py).
-ORG_DIRS = ["pfl", "one", "bellator"]
+# RIZIN, KSW, LFA and Cage Warriors come from scripts/scrape_espn_org.py; ESPN has no rankings for them, so rankings.csv is only a header.
+ORG_DIRS = ["pfl", "one", "bellator", "rizin", "ksw", "lfa", "cage-warriors"]
 ORG_FILES = ["fights.csv", "fighters.csv", "rankings.csv"]
 ORG_MIN_ROWS = {
     "pfl": {"fights.csv": 1300, "fighters.csv": 900, "rankings.csv": 50},
     "one": {"fights.csv": 4500, "fighters.csv": 3500, "rankings.csv": 20},
     "bellator": {"fights.csv": 2500, "fighters.csv": 1500, "rankings.csv": 8},  # an archive: the numbers will not change
+    "rizin": {"fights.csv": 350, "fighters.csv": 250, "rankings.csv": 0},
+    "ksw": {"fights.csv": 520, "fighters.csv": 340, "rankings.csv": 0},
+    "lfa": {"fights.csv": 1200, "fighters.csv": 1300, "rankings.csv": 0},
+    "cage-warriors": {"fights.csv": 1000, "fighters.csv": 830, "rankings.csv": 0},
 }
 STALE_UPCOMING_DAYS = 3  # a card this far past its date should have turned into results by now
 
