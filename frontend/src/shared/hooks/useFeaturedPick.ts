@@ -18,7 +18,7 @@ export function useFeaturedPick(): UpcomingPick | null {
         if (!cancelled) setPick(picks[0] ?? null)
       })
       .catch(() => {
-        // A sleeping or unreachable API just means no featured fight.
+        // An unreachable API just means no featured fight.
       })
     return () => {
       cancelled = true

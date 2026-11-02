@@ -96,13 +96,13 @@ export function Header() {
   const [tabsRef, moreTabsOnRight] = useScrollingTabs(pathname)
 
   const apiLabel = loading
-    ? t('header.apiWaking', 'Waking up')
+    ? t('header.apiWaking', 'Starting')
     : health?.model_loaded
       ? t('header.apiLive', 'Live')
       : t('header.apiOffline', 'Offline')
 
   const apiTitle = loading
-    ? t('header.apiWakingTitle', 'The API is starting. The first visit after a quiet spell can take up to a minute.')
+    ? t('header.apiWakingTitle', 'Starting API server...')
     : health?.model_loaded
       ? t('header.apiLiveTitle', 'API is live and the model is loaded')
       : t('header.apiOfflineTitle', 'API is unreachable')

@@ -27,19 +27,13 @@ export function MainLayout({ children }: { children: ReactNode }) {
   const locale = i18n.resolvedLanguage ?? 'pt-BR'
   const [dataDate, setDataDate] = useState<string | null>(null)
   const [orgDataDate, setOrgDataDate] = useState<{ org: string; date: string | null } | null>(null)
-  const [apiState, setApiState] = useState<'pending' | 'slow' | 'ready' | 'down'>('pending')
+  const [apiState, setApiState] = useState<'pending' | 'ready' | 'down'>('pending')
   const org = useOrg()
   const { pathname } = useLocation()
   const landing = isLandingPath(pathname)
   // The landing screen and the text pages need nothing from the API, so they open at once.
   const opensAtOnce = landing || isStaticPath(pathname)
-  // The loading screen holds the page open after the API answers only if the visitor saw it while waiting,
-  // so a mid-game round can finish and show its score; otherwise the app opens at once.
-  const [loadingSeen, setLoadingSeen] = useState(false)
-  const [loadingDone, setLoadingDone] = useState(false)
-  const waiting = apiState === 'pending' || apiState === 'slow'
-  if (waiting && !opensAtOnce && !loadingSeen) setLoadingSeen(true)
-  const showLoading = !opensAtOnce && (waiting || (apiState === 'ready' && loadingSeen && !loadingDone))
+  const showLoading = !opensAtOnce && apiState === 'pending'
 
   // Each organization has its own accent color (see index.css); the attribute is what the stylesheet reads.
   useEffect(() => {
@@ -59,8 +53,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
   }, [org.id, locale])
 
   useEffect(() => {
-    // The free hosting tier puts the API to sleep when idle, so the first visit can wait a while for it to wake up.
-    const slowTimer = window.setTimeout(() => setApiState((state) => (state === 'pending' ? 'slow' : state)), 2500)
+    // The API runs on a paid server, so it answers at once; the retries only cover a brief restart or outage.
     waitForHealth()
       .then((health) => {
         setDataDate(health.latest_fight_date ? formatDataDate(health.latest_fight_date, locale) : null)
@@ -70,7 +63,6 @@ export function MainLayout({ children }: { children: ReactNode }) {
         setDataDate(null)
         setApiState('down')
       })
-    return () => window.clearTimeout(slowTimer)
   }, [locale])
 
   const footerDate = landing ? null : org.id === 'ufc' ? dataDate : orgDataDate?.org === org.id ? orgDataDate.date : null
@@ -111,16 +103,8 @@ export function MainLayout({ children }: { children: ReactNode }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          {/* The chooser needs no data, so it opens at once while the API wakes up in the background. */}
-          {showLoading ? (
-            <ServerLoadingState
-              waking={apiState === 'slow'}
-              ready={apiState === 'ready'}
-              onContinue={() => setLoadingDone(true)}
-            />
-          ) : (
-            children
-          )}
+          {/* The chooser needs no data, so it opens at once while the API answers in the background. */}
+          {showLoading ? <ServerLoadingState /> : children}
         </motion.main>
         {landing ? null : (
           <footer className="mt-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-3.5 text-sm font-medium text-[var(--text-primary)] shadow-xs">

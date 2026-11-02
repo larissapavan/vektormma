@@ -129,7 +129,7 @@ export const getHealth = async () => {
   return response.data
 }
 
-/** Free hosts sleep when idle; keep pinging until the process is up. */
+/** Keep pinging for a while so a brief restart of the server does not show up as an outage. */
 export const waitForHealth = async (attempts = 8) => {
   let lastError: unknown
   for (let attempt = 0; attempt < attempts; attempt += 1) {

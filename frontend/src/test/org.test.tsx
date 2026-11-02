@@ -88,7 +88,7 @@ describe('the page that chooses an organization', () => {
     expect(screen.queryByRole('link', { name: 'Fighters' })).not.toBeInTheDocument()
   })
 
-  it('opens at once, without waiting for the API to wake up', async () => {
+  it('opens at once, without waiting for the API', async () => {
     renderAt('/')
     expect(screen.getByRole('list', { name: 'Organizations' })).toBeInTheDocument()  // synchronously: no loading screen first
   })
