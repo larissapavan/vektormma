@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -83,5 +83,62 @@ describe('Landing', () => {
     const metrics = Array.from(document.querySelector('section.border-y > div')?.children ?? [])
     expect(metrics[0]?.textContent).not.toContain('+')
     expect(metrics[1]?.textContent).not.toContain('+')
+  })
+})
+
+describe('the organizations section', () => {
+  const section = async () => {
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <App />
+      </MemoryRouter>,
+    )
+    return (await screen.findByRole('heading', { name: /pick an organization/i })).closest('section')!
+  }
+  const hrefs = (root: Element) => Array.from(root.querySelectorAll('a')).map((link) => link.getAttribute('href'))
+
+  it('links every organization once, in three levels', async () => {
+    const root = await section()
+
+    expect(hrefs(root)).toEqual(['/home', '/pfl', '/one', '/bellator', '/rizin', '/ksw', '/lfa', '/cage-warriors', '/oktagon', '/jungle-fight', '/invicta'])
+  })
+
+  it('gives the UFC a card of its own, with the badge, the counts and one call to enter', async () => {
+    const root = await section()
+    const ufc = within(root).getByRole('link', { name: /open ultimate fighting championship/i })
+
+    expect(ufc).toHaveAttribute('href', '/home')
+    expect(ufc).toHaveTextContent('AI Predictions')
+    expect(ufc).toHaveTextContent('Enter the UFC')
+    // 797 events, 2796 fighters and 8985 bouts, rounded down.
+    expect(ufc).toHaveTextContent('790+')
+    expect(ufc).toHaveTextContent('2,700+')
+    expect(ufc).toHaveTextContent('8,900+')
+    expect(within(ufc).queryByText(/simulate/i)).toBeNull()
+  })
+
+  it('shows PFL, ONE and Bellator as cards with their badge and counts', async () => {
+    const root = await section()
+
+    for (const [name, badge] of [
+      [/open professional fighters league/i, 'Tournament'],
+      [/open one championship/i, 'AI Predictions'],
+      [/open bellator mma/i, 'Historical Archive'],
+    ] as const) {
+      const card = within(root).getByRole('link', { name })
+      expect(card).toHaveTextContent(badge)
+      expect(card.querySelectorAll('dd')).toHaveLength(3)
+    }
+  })
+
+  it('lists the other seven as one line each under "More leagues", without a badge or a glove', async () => {
+    const root = await section()
+    const list = within(root).getByRole('heading', { name: /more leagues/i }).parentElement!.querySelector('ul')!
+
+    expect(list.querySelectorAll('li')).toHaveLength(7)
+    expect(list).toHaveTextContent('RIZIN')
+    expect(list).toHaveTextContent('80+ events · 460+ fighters · 600+ bouts')
+    expect(list.querySelector('img')).toBeNull()
+    expect(list).not.toHaveTextContent(/events & results/i)
   })
 })

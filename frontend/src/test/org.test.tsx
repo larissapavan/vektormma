@@ -71,26 +71,32 @@ describe('one history for a fighter who fought in several organizations', () => 
 })
 
 describe('the page that chooses an organization', () => {
+  const chooser = () => screen.getByRole('heading', { name: /pick an organization/i }).closest('section')!
+
   it('lists every organization with a way in, and says which one has predictions', async () => {
     renderAt('/')
-    const list = await screen.findByRole('list', { name: 'Organizations' }, WAIT)
-    const links = within(list).getAllByRole('link')
+    await screen.findByRole('heading', { name: /pick an organization/i }, WAIT)
+    const section = chooser()
+    const links = within(section).getAllByRole('link')
     expect(links.map((link) => link.getAttribute('href'))).toEqual(['/home', '/pfl', '/one', '/bellator', '/rizin', '/ksw', '/lfa', '/cage-warriors', '/oktagon', '/jungle-fight', '/invicta'])
-    expect(within(list).getAllByText('AI Predictions')).toHaveLength(2)  // the UFC and ONE
-    expect(within(list).getByText('Historical Archive')).toBeInTheDocument()  // Bellator
-    expect(within(list).getAllByText('Events & Results')).toHaveLength(7)  // every organization that has only fighters and events
+    expect(within(section).getAllByText('AI Predictions')).toHaveLength(2)  // the UFC and ONE
+    expect(within(section).getByText('Historical Archive')).toBeInTheDocument()  // Bellator
+    // The other seven (fighters and events only) are one line each under a single caption, not a badge apiece.
+    expect(within(section).getByText('Events, results and fighters of each league.')).toBeInTheDocument()
+    expect(within(section).queryByText('Events & Results')).not.toBeInTheDocument()
   })
 
   it('has no switcher, section menu or fighter search until an organization is chosen', async () => {
     renderAt('/')
-    await screen.findByRole('list', { name: 'Organizations' }, WAIT)
+    await screen.findByRole('heading', { name: /pick an organization/i }, WAIT)
     expect(screen.queryByRole('group', { name: 'Organization' })).not.toBeInTheDocument()
     expect(screen.queryByRole('link', { name: 'Fighters' })).not.toBeInTheDocument()
   })
 
   it('opens at once, without waiting for the API', async () => {
     renderAt('/')
-    expect(screen.getByRole('list', { name: 'Organizations' })).toBeInTheDocument()  // synchronously: no loading screen first
+    expect(screen.getByRole('heading', { name: /pick an organization/i })).toBeInTheDocument()  // synchronously: no loading screen first
+    expect(within(chooser()).getAllByRole('link')).toHaveLength(11)
   })
 
   it('choosing one opens its home page, where the switcher and the logo lead back', async () => {
