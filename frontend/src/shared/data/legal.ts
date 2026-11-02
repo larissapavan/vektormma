@@ -101,7 +101,7 @@ const PRIVACY: ByLang<InfoPage> = {
         paragraphs: [
           'O site não tem cadastro, login, comentários nem formulários. Eu não peço nome, e-mail, telefone ou qualquer dado pessoal, e não os guardo.',
           'Ao usar o simulador, os nomes dos dois lutadores escolhidos são enviados à API para calcular a previsão. Esses nomes não ficam ligados a você.',
-          'Como em qualquer site, os servidores de hospedagem (Vercel, para as páginas, e Render, para a API) registram dados técnicos de cada acesso, como endereço IP, data e hora, página pedida e navegador. Esses registros servem para segurança, para limitar abusos e para manter o serviço no ar.',
+          'Como em qualquer site, os servidores de hospedagem (Vercel, para as páginas, e Railway, para a API) registram dados técnicos de cada acesso, como endereço IP, data e hora, página pedida e navegador. Esses registros servem para segurança, para limitar abusos e para manter o serviço no ar.',
         ],
       },
       {
@@ -128,7 +128,7 @@ const PRIVACY: ByLang<InfoPage> = {
         heading: 'Outros serviços de terceiros',
         bullets: [
           'Google Fonts: as fontes do site são carregadas dos servidores do Google, que por isso recebem seu endereço IP.',
-          'Vercel e Render: hospedam o site e a API e têm suas próprias políticas de privacidade.',
+          'Vercel e Railway: hospedam o site e a API e têm suas próprias políticas de privacidade.',
           'Links externos (ESPN, UFC.com, redes sociais e outros): ao clicar, você sai do Vektor MMA e passa a seguir as regras de cada um deles.',
         ],
       },
@@ -164,7 +164,7 @@ const PRIVACY: ByLang<InfoPage> = {
         paragraphs: [
           'The site has no sign-up, login, comments or forms. I do not ask for your name, email, phone number or any other personal data, and I do not keep any.',
           'When you use the predictor, the names of the two fighters you picked are sent to the API to work out the prediction. Those names are not linked to you.',
-          'As with any website, the hosting servers (Vercel for the pages, Render for the API) record technical details of each visit, such as IP address, date and time, the page requested and the browser. These logs are used for security, to limit abuse and to keep the service running.',
+          'As with any website, the hosting servers (Vercel for the pages, Railway for the API) record technical details of each visit, such as IP address, date and time, the page requested and the browser. These logs are used for security, to limit abuse and to keep the service running.',
         ],
       },
       {
@@ -191,7 +191,7 @@ const PRIVACY: ByLang<InfoPage> = {
         heading: 'Other third-party services',
         bullets: [
           'Google Fonts: the site’s fonts are loaded from Google’s servers, which therefore receive your IP address.',
-          'Vercel and Render: they host the site and the API and have their own privacy policies.',
+          'Vercel and Railway: they host the site and the API and have their own privacy policies.',
           'External links (ESPN, UFC.com, social networks and others): when you click, you leave Vektor MMA and follow each one’s own rules.',
         ],
       },
@@ -227,7 +227,7 @@ const PRIVACY: ByLang<InfoPage> = {
         paragraphs: [
           'Le site n’a ni inscription, ni connexion, ni commentaires, ni formulaires. Je ne demande ni nom, ni e-mail, ni téléphone, ni aucune autre donnée personnelle, et je n’en conserve aucune.',
           'Lorsque vous utilisez le simulateur, les noms des deux combattants choisis sont envoyés à l’API pour calculer la prévision. Ces noms ne sont pas liés à vous.',
-          'Comme tout site, les serveurs d’hébergement (Vercel pour les pages, Render pour l’API) enregistrent des informations techniques sur chaque visite : adresse IP, date et heure, page demandée et navigateur. Ces journaux servent à la sécurité, à limiter les abus et à maintenir le service en ligne.',
+          'Comme tout site, les serveurs d’hébergement (Vercel pour les pages, Railway pour l’API) enregistrent des informations techniques sur chaque visite : adresse IP, date et heure, page demandée et navigateur. Ces journaux servent à la sécurité, à limiter les abus et à maintenir le service en ligne.',
         ],
       },
       {
@@ -254,7 +254,7 @@ const PRIVACY: ByLang<InfoPage> = {
         heading: 'Autres services tiers',
         bullets: [
           'Google Fonts : les polices du site sont chargées depuis les serveurs de Google, qui reçoivent donc votre adresse IP.',
-          'Vercel et Render : ils hébergent le site et l’API et ont leurs propres politiques de confidentialité.',
+          'Vercel et Railway : ils hébergent le site et l’API et ont leurs propres politiques de confidentialité.',
           'Liens externes (ESPN, UFC.com, réseaux sociaux et autres) : en cliquant, vous quittez Vektor MMA et suivez les règles de chacun.',
         ],
       },
@@ -290,7 +290,7 @@ const PRIVACY: ByLang<InfoPage> = {
         paragraphs: [
           'El sitio no tiene registro, inicio de sesión, comentarios ni formularios. No pido nombre, correo, teléfono ni ningún otro dato personal, y no guardo ninguno.',
           'Cuando usas el simulador, los nombres de los dos peleadores que elegiste se envían a la API para calcular el pronóstico. Esos nombres no quedan ligados a ti.',
-          'Como en cualquier sitio, los servidores de alojamiento (Vercel para las páginas y Render para la API) registran datos técnicos de cada visita, como la dirección IP, la fecha y la hora, la página solicitada y el navegador. Esos registros sirven para la seguridad, para limitar abusos y para mantener el servicio en línea.',
+          'Como en cualquier sitio, los servidores de alojamiento (Vercel para las páginas y Railway para la API) registran datos técnicos de cada visita, como la dirección IP, la fecha y la hora, la página solicitada y el navegador. Esos registros sirven para la seguridad, para limitar abusos y para mantener el servicio en línea.',
         ],
       },
       {
@@ -317,7 +317,7 @@ const PRIVACY: ByLang<InfoPage> = {
         heading: 'Otros servicios de terceros',
         bullets: [
           'Google Fonts: las fuentes del sitio se cargan desde los servidores de Google, que por eso reciben tu dirección IP.',
-          'Vercel y Render: alojan el sitio y la API y tienen sus propias políticas de privacidad.',
+          'Vercel y Railway: alojan el sitio y la API y tienen sus propias políticas de privacidad.',
           'Enlaces externos (ESPN, UFC.com, redes sociales y otros): al hacer clic sales de Vektor MMA y pasas a las reglas de cada uno.',
         ],
       },

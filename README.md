@@ -150,7 +150,7 @@ Vektor MMA combines modern web development with data science and artificial inte
 | Data Visualization | Recharts |
 | Styling & Animation | Tailwind CSS, Framer Motion |
 | Automated Data Updates | GitHub Actions |
-| Deployment | Vercel, Render |
+| Deployment | Vercel, Railway |
 
 ### Machine Learning & Explainable AI
 

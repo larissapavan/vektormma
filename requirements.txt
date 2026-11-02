@@ -1,5 +1,5 @@
 # Full environment for local development: model training, data scraping, notebooks.
-# The deployed API only needs backend/requirements.txt (smaller, faster Render builds).
+# The deployed API only needs backend/requirements.txt (smaller, faster builds).
 -r backend/requirements.txt
 requests==2.32.3
 pillow>=10.4
