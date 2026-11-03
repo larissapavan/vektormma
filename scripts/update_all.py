@@ -35,6 +35,7 @@ Title changes (data/raw/title_reigns.csv) are still maintained by hand.
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 import traceback
 from datetime import date, timedelta
@@ -108,15 +109,50 @@ def run_gyms(*, dry_run: bool) -> None:
         raise RuntimeError("the gym scraper found nothing; the gym files were left untouched")
 
 
+# Why each step of this run failed, by step name: the Summary at the end and the GitHub annotations are written from it.
+FAILURES: dict[str, str] = {}
+
+
 def run_step(name: str, step: Callable[[], None]) -> bool:
     print(f"\n=== {name} ===")
     try:
         step()
-    except Exception:  # noqa: BLE001 - report and keep going with the remaining steps
+    except Exception as error:  # noqa: BLE001 - report and keep going with the remaining steps
         print(f"[error] {name} failed:")
         traceback.print_exc()
+        FAILURES[name] = f"{type(error).__name__}: {error}".strip()
         return False
     return True
+
+
+def _annotation_text(value: str) -> str:
+    """Escapes a message for a GitHub Actions workflow command (the characters that would end or split it)."""
+    return value.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+
+
+def github_annotations(failures: dict[str, str]) -> list[str]:
+    """One `::error` line per failed step. GitHub shows them on the run's page, so the cause is visible without opening the log."""
+    return [f"::error title=Refresh step failed: {_annotation_text(name)}::{_annotation_text(reason)}" for name, reason in failures.items()]
+
+
+def github_step_summary(failures: dict[str, str]) -> str:
+    """The failed steps as a Markdown table, for the run's summary page."""
+    if not failures:
+        return "All refresh steps finished.\n"
+    rows = "\n".join(f"| {name} | {(reason.splitlines() or [''])[0]} |" for name, reason in failures.items())
+    return f"### Refresh steps that failed\n\n| Step | Reason |\n|---|---|\n{rows}\n"
+
+
+def report_to_github(failures: dict[str, str]) -> None:
+    """Inside GitHub Actions only: annotations on the run, and the table in its summary."""
+    if os.environ.get("GITHUB_ACTIONS") != "true":
+        return
+    for line in github_annotations(failures):
+        print(line)
+    summary_file = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary_file:
+        with open(summary_file, "a", encoding="utf-8") as handle:
+            handle.write(github_step_summary(failures))
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -140,6 +176,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--since", help="ESPN scan start date, YYYY-MM-DD (default: 30 days before the latest stored event)")
     parser.add_argument("--until", help="ESPN scan end date, YYYY-MM-DD")
     args = parser.parse_args(argv)
+    FAILURES.clear()
 
     espn_args = (["--dry-run"] if args.dry_run else []) + (["--since", args.since] if args.since else []) + (
         ["--until", args.until] if args.until else []
@@ -220,6 +257,9 @@ def main(argv: list[str] | None = None) -> int:
     print("\n=== Summary ===")
     for name, ok in results.items():
         print(f"  {name}: {'skipped' if ok is None else 'ok' if ok else 'FAILED'}")
+    for name, reason in FAILURES.items():
+        print(f"  ! {name}: {(reason.splitlines() or [''])[0]}")
+    report_to_github(FAILURES)
     return 1 if any(ok is False for ok in results.values()) else 0
 
 

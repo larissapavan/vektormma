@@ -126,3 +126,38 @@ def test_a_failing_organization_step_fails_the_run_but_not_the_others(monkeypatc
 def test_each_organization_step_can_be_skipped_on_its_own(calls, flag):
     update_all.main(["--skip-espn", "--skip-rankings", "--skip-photos", "--skip-origins", "--skip-roster", "--skip-records", "--skip-predictions", "--skip-stats", "--skip-career-stats", "--skip-pfl", "--skip-one", "--skip-gyms", flag])
     assert len(calls) == 2
+
+
+def test_a_failed_step_is_recorded_with_its_reason():
+    update_all.FAILURES.clear()
+
+    def broken():
+        raise RuntimeError("the gym scraper found nothing")
+
+    assert update_all.run_step("Gyms (FightHub)", broken) is False
+    assert update_all.FAILURES == {"Gyms (FightHub)": "RuntimeError: the gym scraper found nothing"}
+    update_all.FAILURES.clear()
+
+
+def test_github_gets_one_annotation_per_failed_step_with_the_special_characters_escaped():
+    lines = update_all.github_annotations({"Sherdog (KSW)": "HTTPError: 403 100% blocked\nsecond line"})
+    assert lines == ["::error title=Refresh step failed: Sherdog (KSW)::HTTPError: 403 100%25 blocked%0Asecond line"]
+
+
+def test_the_run_summary_lists_the_failed_steps_in_a_table():
+    text = update_all.github_step_summary({"Gyms (FightHub)": "RuntimeError: nothing\ntraceback detail"})
+    assert "| Gyms (FightHub) | RuntimeError: nothing |" in text
+    assert update_all.github_step_summary({}) == "All refresh steps finished.\n"
+
+
+def test_nothing_is_written_outside_github_actions(monkeypatch, tmp_path, capsys):
+    summary = tmp_path / "summary.md"
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.setenv("GITHUB_STEP_SUMMARY", str(summary))
+    update_all.report_to_github({"Gyms (FightHub)": "RuntimeError: nothing"})
+    assert not summary.exists() and capsys.readouterr().out == ""
+
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    update_all.report_to_github({"Gyms (FightHub)": "RuntimeError: nothing"})
+    assert "::error title=Refresh step failed: Gyms (FightHub)::RuntimeError: nothing" in capsys.readouterr().out
+    assert "Gyms (FightHub)" in summary.read_text(encoding="utf-8")
