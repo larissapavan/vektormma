@@ -394,15 +394,25 @@ export function OrgHome() {
                 `Datos de ${org.sourceName}, según la cobertura de la fuente en esta liga: pueden faltar eventos y peleas, y no se actualiza a diario. Sin cinturones ni rankings.`,
               )
             : L(i18n.language, `Dados oficiais via ${org.sourceName}, sincronizados diariamente.`, `Data from ${org.sourceName}, refreshed daily.`, `Données officielles via ${org.sourceName}, synchronisées chaque jour.`, `Datos oficiales de ${org.sourceName}, actualizados a diario.`)}{' '}
-        {L(
-          i18n.language,
-          'As previsões da IA e o histórico detalhado estão focados no UFC atualmente, onde o modelo preditivo foi validado.',
-          'Predictions, head-to-head and the track record are UFC-only for now: the model is trained on UFC fights.',
-          'Les prévisions, le face-à-face et le bilan des pronostics restent pour l\'instant limités à l\'UFC : le modèle est entraîné sur des combats UFC.',
-          'Los pronósticos, el cara a cara y el historial de aciertos son solo de la UFC por ahora: el modelo se entrena con peleas de la UFC.',
-        )}{' '}
-        <Link to="/predictor" className="font-semibold underline decoration-2 underline-offset-2 hover:bg-[#F2C230] hover:text-[#0E0E0E]">
-          {L(i18n.language, 'Simular lutas no UFC →', 'Try the UFC predictor', 'Simuler des combats UFC →', 'Probar el pronosticador de la UFC →')}
+        {org.hasPredictions
+          ? L(
+              i18n.language,
+              'As previsões vêm de um modelo treinado com lutas do UFC e validado só nelas; fora do UFC são menos confiáveis. O histórico de acertos é só do UFC.',
+              'Predictions come from a model trained on UFC fights and validated only on them, so outside the UFC they are less reliable. The track record is UFC-only.',
+              "Les prévisions viennent d'un modèle entraîné sur des combats UFC et validé uniquement sur eux : hors UFC, elles sont moins fiables. Le bilan des pronostics ne concerne que l'UFC.",
+              'Los pronósticos vienen de un modelo entrenado con peleas de la UFC y validado solo con ellas; fuera de la UFC son menos fiables. El historial de aciertos es solo de la UFC.',
+            )
+          : L(
+              i18n.language,
+              'As previsões da IA e o histórico detalhado estão focados no UFC atualmente, onde o modelo preditivo foi validado.',
+              'Predictions, head-to-head and the track record are UFC-only for now: the model is trained on UFC fights.',
+              'Les prévisions, le face-à-face et le bilan des pronostics restent pour l\'instant limités à l\'UFC : le modèle est entraîné sur des combats UFC.',
+              'Los pronósticos, el cara a cara y el historial de aciertos son solo de la UFC por ahora: el modelo se entrena con peleas de la UFC.',
+            )}{' '}
+        <Link to={org.hasPredictions ? orgPath(org, 'predictor') : '/predictor'} className="font-semibold underline decoration-2 underline-offset-2 hover:bg-[#F2C230] hover:text-[#0E0E0E]">
+          {org.hasPredictions
+            ? L(i18n.language, `Simular lutas no ${org.shortName} →`, `Try the ${org.shortName} predictor`, `Simuler des combats ${org.shortName} →`, `Probar el pronosticador de ${orgEs(org)} →`)
+            : L(i18n.language, 'Simular lutas no UFC →', 'Try the UFC predictor', 'Simuler des combats UFC →', 'Probar el pronosticador de la UFC →')}
         </Link>
       </p>
 

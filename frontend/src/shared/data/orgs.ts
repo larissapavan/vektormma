@@ -12,8 +12,12 @@ export interface OrgConfig {
   sourceName: string
   sourceUrl: string
   tagline: string
-  /** Pages that only exist for the UFC (the prediction model is trained on UFC fights only). */
+  /** Whether the organization has a predictor page and picks on its cards. The model is trained on UFC fights, so outside
+   *  the UFC these come with a notice that they are less reliable. */
   hasPredictions: boolean
+  /** True when the API pulls this organization's probabilities toward 50% (PROBABILITY_SHRINK in prediction_service.py):
+   *  its fighters' records come without striking or takedown numbers, so the model works from averages for those. */
+  probabilitiesEased?: boolean
   /** Set for an organization that no longer holds events: what happened to it. Its pages read as an archive. */
   archived?: string
   /** True when the data comes from a source that covers the organization only in part and is not refreshed every day
@@ -45,8 +49,9 @@ export const ORGS: Record<OrgId, OrgConfig> = {
     basePath: '/pfl',
     sourceName: 'pflmma.com',
     sourceUrl: 'https://pflmma.com',
-    tagline: 'Fighters, events and league rankings.',
-    hasPredictions: false,
+    tagline: 'Fighters, events, league rankings and AI win predictions.',
+    hasPredictions: true,
+    probabilitiesEased: true,
     hasRankings: true,
     hasChampions: true,
   },
@@ -59,6 +64,7 @@ export const ORGS: Record<OrgId, OrgConfig> = {
     sourceUrl: 'https://www.onefc.com/events/#past',
     tagline: 'MMA, Muay Thai, champions and AI win predictions.',
     hasPredictions: true,
+    probabilitiesEased: true,
     hasRankings: true,
     hasChampions: true,
   },
@@ -69,8 +75,9 @@ export const ORGS: Record<OrgId, OrgConfig> = {
     basePath: '/bellator',
     sourceName: 'ESPN and Wikipedia',
     sourceUrl: 'https://www.espn.com/mma/',
-    tagline: 'Archive 2009–2023: fighters, events and champions.',
-    hasPredictions: false,
+    tagline: 'Archive 2009–2023: fighters, events, champions and what-if predictions.',
+    hasPredictions: true,
+    probabilitiesEased: true,
     archived: 'Archive 2009–2023. Bellator held its last event in 2023.',
     hasRankings: false,
     hasChampions: true,

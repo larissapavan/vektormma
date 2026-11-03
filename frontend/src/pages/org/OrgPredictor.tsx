@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ArrowLeftRight, LoaderCircle, Sparkles, Swords, Zap } from 'lucide-react'
+import { ArrowLeftRight, Info, LoaderCircle, Sparkles, Swords, Zap } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { L } from '../../i18n/lang'
-import { orgEs } from '../../shared/data/orgs'
+import { orgEs, type OrgConfig } from '../../shared/data/orgs'
 import { translateHometown } from '../../shared/data/fightLabels'
 import { getDivisionName } from '../../shared/data/divisions'
 import { ChampionBelt } from '../../shared/components/ChampionBelt'
@@ -195,6 +195,7 @@ export function OrgPredictor() {
 
       {/* Main Predictor Matchup Arena */}
       <div className="p-4 sm:p-6">
+        <OutsideUfcNotice org={org} />
         <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
           {/* Corner Red (A) */}
           <CornerCard
@@ -264,6 +265,47 @@ export function OrgPredictor() {
         />
       ) : null}
     </div>
+  )
+}
+
+/** Says, before anyone reads a percentage, that the model comes from UFC fights and what this organization's data lacks. */
+function OutsideUfcNotice({ org }: { org: OrgConfig }) {
+  const { i18n } = useTranslation()
+  const lang = i18n.language
+  return (
+    <aside
+      aria-label={L(lang, 'Aviso sobre as previsões', 'About these predictions', 'À propos de ces prévisions', 'Sobre estos pronósticos')}
+      className="metric-tile mb-4 flex items-start gap-2.5 px-3 py-2.5 sm:mb-6"
+    >
+      <Info aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-[#C8102E]" />
+      <p className="text-xs leading-5">
+        {L(
+          lang,
+          `O modelo foi treinado com lutas do UFC e só foi validado nelas. Os dados do ${org.shortName} trazem cartel, idade e medidas, mas não a precisão de golpes nem de quedas: nesses pontos o modelo usa médias.`,
+          `The model is trained on UFC fights and has only been validated on them. The ${org.shortName} data has record, age and measurements, but no striking or takedown accuracy, so the model uses averages for those.`,
+          `Le modèle est entraîné sur des combats UFC et n'a été validé que sur eux. Les données ${org.shortName} donnent le bilan, l'âge et les mensurations, mais pas la précision en frappe ni aux takedowns : le modèle utilise des moyennes.`,
+          `El modelo se entrena con peleas de la UFC y solo se validó con ellas. Los datos de ${orgEs(org)} traen récord, edad y medidas, pero no la precisión de golpes ni de derribos: en esos puntos el modelo usa promedios.`,
+        )}{' '}
+        {org.probabilitiesEased
+          ? L(
+              lang,
+              'Por cautela, as chances mostradas ficam na metade do caminho entre o resultado do modelo e 50%.',
+              "To be safe, the chances shown sit halfway between the model's output and 50%.",
+              'Par prudence, les chances affichées se situent à mi-chemin entre le résultat du modèle et 50 %.',
+              'Por precaución, las probabilidades mostradas quedan a medio camino entre el resultado del modelo y 50 %.',
+            )
+          : null}{' '}
+        {org.archived
+          ? L(
+              lang,
+              'Esta organização não realiza mais eventos: os confrontos são hipotéticos.',
+              'This organization no longer holds events, so every matchup here is hypothetical.',
+              "Cette organisation n'organise plus d'événements : tous les combats sont hypothétiques.",
+              'Esta organización ya no realiza eventos: todos los cruces son hipotéticos.',
+            )
+          : null}
+      </p>
+    </aside>
   )
 }
 

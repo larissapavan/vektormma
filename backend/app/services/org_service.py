@@ -587,21 +587,29 @@ def is_mma(discipline: str | None) -> bool:
     return (discipline or "").strip().upper() == "MMA"
 
 
+# Organizations that only hold MMA bouts, so their files have no sport column to say so.
+MMA_ONLY_ORGS = frozenset({"pfl", "bellator"})
+
+
 def get_org_upcoming_predictions(org_id: str, service: Any) -> list[dict[str, Any]]:
     """Calculate upcoming matchup predictions for an organization using the predictive model.
 
     The model is trained on MMA fights only, so a bout gets a prediction only when its source says it is MMA: not one of another
-    sport, and not one whose sport is not named."""
+    sport, and not one whose sport is not named (unless the organization holds nothing but MMA, see MMA_ONLY_ORGS)."""
     if service is None:
         return []
 
     events = get_org_upcoming_events(org_id)
+    mma_only = org_id.lower() in MMA_ONLY_ORGS
     picks: list[dict[str, Any]] = []
     for event in events:
         for fight in event.get("fights", []):
             fighter_1 = fight.get("fighter_1")
             fighter_2 = fight.get("fighter_2")
-            if not fighter_1 or not fighter_2 or not is_mma(fight.get("discipline")):
+            if not fighter_1 or not fighter_2:
+                continue
+            discipline = fight.get("discipline")
+            if not (is_mma(discipline) or (mma_only and not discipline)):
                 continue
             try:
                 result = service.predict_pick(fighter_1, fighter_2)

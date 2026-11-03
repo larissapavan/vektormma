@@ -521,6 +521,8 @@ def get_fighter_profile(name: str) -> dict:
                         "title_status": _nullable_string(found.get("title_status")),
                         "ranking": _nullable_string(found.get("ranking")),
                         "org_fights": int(found.get("org_fights") or 0),
+                        # Built from this organization's own file, which has no striking, takedown or stance numbers: the ones above are averages.
+                        "data_origin": org_id,
                     }
             except Exception:
                 pass

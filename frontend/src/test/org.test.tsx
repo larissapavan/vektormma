@@ -51,7 +51,9 @@ describe('organization paths', () => {
     expect(switchOrgPath(ORGS.pfl, '/events')).toBe('/pfl/events')
     expect(switchOrgPath(ORGS.pfl, '/rankings')).toBe('/pfl/rankings')
     expect(switchOrgPath(ORGS.ufc, '/pfl/fighters')).toBe('/fighters')
-    expect(switchOrgPath(ORGS.pfl, '/predictor')).toBe('/pfl')
+    expect(switchOrgPath(ORGS.pfl, '/predictor')).toBe('/pfl/predictor')
+    expect(switchOrgPath(ORGS.bellator, '/predictor')).toBe('/bellator/predictor')
+    expect(switchOrgPath(ORGS.rizin, '/predictor')).toBe('/rizin')  // no predictor there: its home page
     expect(switchOrgPath(ORGS.ufc, '/pfl')).toBe('/home')
     expect(switchOrgPath(ORGS.pfl, '/')).toBe('/pfl')  // from the chooser there is no section to keep
   })
@@ -102,7 +104,9 @@ describe('the page that chooses an organization', () => {
   it('choosing one opens its home page, where the switcher and the logo lead back', async () => {
     renderAt('/')
     await userEvent.click(await screen.findByRole('link', { name: 'Open Professional Fighters League' }, WAIT))
-    expect(await screen.findByText(/PFL Vektor MMA/i, undefined, WAIT)).toBeInTheDocument()
+    // The PFL has predictions now, so its home is the same page as the UFC's and ONE's: the next card first.
+    expect(await screen.findByRole('heading', { name: 'PFL Future' }, WAIT)).toBeInTheDocument()
+    expect(document.documentElement.dataset.org).toBe('pfl')
     expect(screen.getByRole('group', { name: 'Organization' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Vektor MMA home' })).toHaveAttribute('href', '/')
   })
@@ -424,8 +428,27 @@ describe('the organization switcher', () => {
     expect(links).toContain('/pfl/fighters')
     expect(links).toContain('/pfl/rankings')
     expect(links).toContain('/pfl/champions')
+    expect(links).toContain('/pfl/predictor')
     expect(links).not.toContain('/predictor')
     expect(links).not.toContain('/champions')
+  })
+
+  it.each([
+    { path: '/pfl/predictor', short: 'PFL', eased: true, archive: false },
+    { path: '/bellator/predictor', short: 'Bellator', eased: true, archive: true },
+    { path: '/one/predictor', short: 'ONE', eased: true, archive: false },
+  ])('the $short predictor says the model comes from UFC fights, and what is different here', async ({ path, short, eased, archive }) => {
+    renderAt(path)
+    const notice = await screen.findByRole('complementary', { name: 'About these predictions' }, WAIT)
+    expect(within(notice).getByText(/trained on UFC fights and has only been validated on them/)).toBeInTheDocument()
+    expect(within(notice).getByText(new RegExp(`The ${short} data has record, age and measurements, but no striking or takedown accuracy`))).toBeInTheDocument()
+    expect(/halfway between the model's output and 50%/.test(notice.textContent ?? '')).toBe(eased)
+    expect(/every matchup here is hypothetical/.test(notice.textContent ?? '')).toBe(archive)
+  })
+
+  it('a league without a predictor has no predictor page', async () => {
+    renderAt('/rizin/predictor')
+    expect(await screen.findByRole('heading', { name: /page not found/i }, WAIT)).toBeInTheDocument()
   })
 
   it('the PFL and Bellator champions pages show current/final champions, division history and greatest champions', async () => {

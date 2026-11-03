@@ -102,6 +102,21 @@ def pretty_feature_name(feature_name: str) -> str:
 # depend on which fighter was typed first.
 TIE_TOLERANCE = 1e-12
 
+# The model learned from UFC fights. A fighter taken from one of these organizations' own files comes with a record, age,
+# height and reach but no striking, takedown or stance numbers (the model uses averages for them), and a record earned
+# outside the UFC is not worth the same against UFC-level opposition. The probabilities for those fighters are pulled this
+# far toward 50%. It is a fixed, cautious factor, not one fitted to results: nothing outside the UFC has been checked yet.
+# frontend/src/shared/data/orgs.ts marks the same organizations with `probabilitiesEased`.
+EASED_ORIGINS = frozenset({"pfl", "bellator", "one"})
+PROBABILITY_SHRINK = 0.5
+
+
+def _eased(probability: float, *profiles: dict) -> float:
+    """Chance that the first fighter wins, pulled toward 50% when either fighter comes from EASED_ORIGINS."""
+    if any(profile.get("data_origin") in EASED_ORIGINS for profile in profiles):
+        return 0.5 + (probability - 0.5) * PROBABILITY_SHRINK
+    return probability
+
 
 def _counterpart(column: str) -> str:
     """The column that holds the same fighter's value once the corners are swapped.
@@ -200,7 +215,7 @@ class PredictionService:
         """Just the pick and its probability (no SHAP), for lists that show many fights at once."""
         fighter_a = get_fighter_profile(fighter_a_name)
         fighter_b = get_fighter_profile(fighter_b_name)
-        fighter_a_probability = self._symmetric_probability(*self._both_orders(fighter_a, fighter_b, context))
+        fighter_a_probability = _eased(self._symmetric_probability(*self._both_orders(fighter_a, fighter_b, context)), fighter_a, fighter_b)
         winner_is_a = _first_wins(fighter_a_probability, fighter_a["name"], fighter_b["name"])
         return {
             "predicted_winner": fighter_a["name"] if winner_is_a else fighter_b["name"],
@@ -251,7 +266,7 @@ class PredictionService:
         fighter_b = get_fighter_profile(fighter_b_name)
 
         x_ab, x_ba = self._both_orders(fighter_a, fighter_b)
-        fighter_a_probability = self._symmetric_probability(x_ab, x_ba)
+        fighter_a_probability = _eased(self._symmetric_probability(x_ab, x_ba), fighter_a, fighter_b)
         fighter_b_probability = 1.0 - fighter_a_probability
         predicted_winner = (
             fighter_a["name"]

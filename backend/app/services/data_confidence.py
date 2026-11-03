@@ -50,6 +50,10 @@ def _fighter_issues(profile: dict, today: date) -> tuple[int, list[str]]:
         points += 2 if layoff >= VERY_LONG_LAYOFF_DAYS else 1
         reasons.append(f"{name} last fought in the UFC about {_duration(layoff)} ago; the model sees no sign of ring rust.")
 
+    if profile.get("data_origin"):
+        points += 1
+        reasons.append(f"{name} has no striking or takedown numbers on file outside the UFC, so the model used averages for them.")
+
     missing = [label for key, label in (("age", "age"), ("height_cm", "height"), ("reach_cm", "reach")) if profile.get(key) is None]
     if missing:
         points += 1

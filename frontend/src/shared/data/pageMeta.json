@@ -156,6 +156,14 @@
         "title": "Simulador de Lutas do ONE Championship",
         "description": "Escolha dois atletas do ONE Championship e receba a probabilidade de vitória e os fatores decisivos."
       },
+      "/pfl/predictor": {
+        "title": "Simulador de Lutas da PFL",
+        "description": "Escolha dois atletas da PFL e veja a probabilidade de vitória, com o aviso de que o modelo foi treinado com lutas do UFC."
+      },
+      "/bellator/predictor": {
+        "title": "Simulador de Lutas do Bellator",
+        "description": "Monte confrontos hipotéticos entre atletas do Bellator e veja a probabilidade de vitória, com o aviso de que o modelo foi treinado com lutas do UFC."
+      },
       "/one/champions": {
         "title": "Campeões do ONE Championship",
         "description": "Campeões mundiais atuais do ONE Championship, histórico por categoria e maiores campeões."
@@ -417,6 +425,14 @@
       "/one/predictor": {
         "title": "ONE Championship predictor",
         "description": "Pick two ONE Championship fighters and get a win probability with the stats that drove it."
+      },
+      "/pfl/predictor": {
+        "title": "PFL fight predictor",
+        "description": "Pick two PFL fighters and see a win probability, with a note that the model is trained on UFC fights."
+      },
+      "/bellator/predictor": {
+        "title": "Bellator fight predictor",
+        "description": "Set up what-if matchups between Bellator fighters and see a win probability, with a note that the model is trained on UFC fights."
       },
       "/one/champions": {
         "title": "ONE Championship champions",
@@ -680,6 +696,14 @@
         "title": "Prédire un combat ONE Championship",
         "description": "Choisissez deux combattants ONE Championship et obtenez une probabilité de victoire avec les stats qui l'ont produite."
       },
+      "/pfl/predictor": {
+        "title": "Prédire un combat PFL",
+        "description": "Choisissez deux combattants PFL et voyez une probabilité de victoire, avec la précision que le modèle est entraîné sur des combats UFC."
+      },
+      "/bellator/predictor": {
+        "title": "Prédire un combat Bellator",
+        "description": "Imaginez des combats hypothétiques entre combattants Bellator et voyez une probabilité de victoire, le modèle étant entraîné sur des combats UFC."
+      },
       "/one/champions": {
         "title": "Champions ONE Championship",
         "description": "Champions actuels de ONE Championship, lignée par catégorie et plus grands champions."
@@ -941,6 +965,14 @@
       "/one/predictor": {
         "title": "Pronosticar una pelea de ONE Championship",
         "description": "Elige a dos peleadores de ONE Championship y obtén una probabilidad de victoria con las estadísticas que la explican."
+      },
+      "/pfl/predictor": {
+        "title": "Pronosticar una pelea de la PFL",
+        "description": "Elige a dos peleadores de la PFL y mira una probabilidad de victoria, con el aviso de que el modelo se entrena con peleas de la UFC."
+      },
+      "/bellator/predictor": {
+        "title": "Pronosticar una pelea de Bellator",
+        "description": "Arma cruces hipotéticos entre peleadores de Bellator y mira una probabilidad de victoria, con el aviso de que el modelo se entrena con peleas de la UFC."
       },
       "/one/champions": {
         "title": "Campeones de ONE Championship",
