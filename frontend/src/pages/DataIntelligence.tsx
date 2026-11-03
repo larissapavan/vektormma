@@ -11,7 +11,10 @@ import {
 import { L, localeTag } from '../i18n/lang'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { SectionHeading } from '../shared/components/SectionHeading'
+import { historyRange } from '../shared/data/history'
 import { useDataInfo } from '../shared/hooks/useDataInfo'
+
+const HISTORY_RANGE = historyRange()
 
 const DATA_ECOSYSTEM_SOURCES = [
   {
@@ -19,10 +22,10 @@ const DATA_ECOSYSTEM_SOURCES = [
     name: 'UFCStats.com & UFC.com',
     href: 'http://www.ufcstats.com',
     accent: '#E11D48',
-    scopePt: 'Telemetria oficial round a round, golpes significativos, controle de solo e biometria dos lutadores (1993–2026).',
-    scopeEn: 'Official round-by-round fight telemetry, significant strikes, ground control time, and biometrics (1993–2026).',
-    scopeFr: 'Télémétrie officielle round par round, frappes significatives, contrôle au sol et biométrie (1993–2026).',
-    scopeEs: 'Telemetría oficial asalto por asalto, golpes significativos, control en el suelo y biometría de los peleadores (1993–2026).',
+    scopePt: `Telemetria oficial round a round, golpes significativos, controle de solo e biometria dos lutadores (${HISTORY_RANGE}).`,
+    scopeEn: `Official round-by-round fight telemetry, significant strikes, ground control time, and biometrics (${HISTORY_RANGE}).`,
+    scopeFr: `Télémétrie officielle round par round, frappes significatives, contrôle au sol et biométrie (${HISTORY_RANGE}).`,
+    scopeEs: `Telemetría oficial asalto por asalto, golpes significativos, control en el suelo y biometría de los peleadores (${HISTORY_RANGE}).`,
   },
   {
     org: 'PFL',

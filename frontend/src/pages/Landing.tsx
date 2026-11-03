@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 
 import { L } from '../i18n/lang'
 import { AnimatedCounter } from '../shared/components/editorial/AnimatedCounter'
+import { historyDecades, historyRange } from '../shared/data/history'
 import { SocialLinks } from '../shared/components/SocialLinks'
 import { SiteLinks } from '../shared/components/SiteLinks'
 import { FeaturedMatchup } from '../shared/components/FeaturedMatchup'
@@ -16,6 +17,7 @@ import { OrganizationsSection } from './landing/OrganizationsSection'
 const FALLBACK_FIGHTS = 8985
 const FALLBACK_FIGHTERS = 2796
 const FALLBACK_FEATURES = 46
+const HISTORY_RANGE = historyRange()
 
 export function Landing() {
   const { i18n } = useTranslation()
@@ -150,7 +152,10 @@ export function Landing() {
                   className="relative z-10 w-full h-full flex items-center justify-center"
                 >
                   <img
-                    src="/vektor_mma_championship_belt.png"
+                    src="/vektor_mma_championship_belt.webp"
+                    width={720}
+                    height={537}
+                    decoding="async"
                     alt={L(i18n.language, 'Cinturão de campeão da Vektor MMA', 'Vektor MMA championship belt', 'Ceinture de champion Vektor MMA', 'Cinturón de campeón de Vektor MMA')}
                     className="h-auto w-full object-contain filter drop-shadow-[0_20px_35px_rgba(225,29,72,0.25)] select-none pointer-events-none"
                   />
@@ -219,12 +224,12 @@ export function Landing() {
             <div className="pt-4 lg:pt-0 lg:px-6 text-left">
               <div className="flex items-baseline gap-1">
                 <span className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--text-primary)] dark:text-white tracking-tight tabular-nums">
-                  30
+                  {historyDecades()}
                 </span>
                 <span className="text-[#B45309] dark:text-[#F59E0B] font-display font-extrabold text-2xl sm:text-3xl">+</span>
               </div>
               <p className="mt-1 font-sans text-xs uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400 font-medium">
-                {L(i18n.language, 'Anos de Histórico (1993–2026)', 'Years of History (1993–2026)', 'Années d’Histoire (1993–2026)', 'Años de historia (1993–2026)')}
+                {L(i18n.language, `Anos de Histórico (${HISTORY_RANGE})`, `Years of History (${HISTORY_RANGE})`, `Années d’Histoire (${HISTORY_RANGE})`, `Años de historia (${HISTORY_RANGE})`)}
               </p>
             </div>
           </div>
