@@ -406,3 +406,92 @@ def test_fighters_are_linked_to_the_photos_that_are_on_disk(tmp_path, monkeypatc
     fighters = [{"slug": "ana-silva", "image_url": ""}, {"slug": "bia-costa", "image_url": "/stale.webp"}]
     pfl.attach_local_photos(fighters)
     assert [fighter["image_url"] for fighter in fighters] == ["/fighter-photos/pfl/ana-silva.webp", ""]
+
+
+# --------------------------------------------------------------------------- season stats on a fighter page
+
+
+def season_block(year, rows):
+    items = "".join(f'<div class="col-12"><div class="border"><div class="row"><div class="col-7"><h5>{label}</h5></div><div class="col-5 text-end"><h5>{value}</h5></div></div></div></div>' for label, value in rows)
+    return f'<div class="tab-pane"><div class="row"><div class="col-6"><h3></h3><h6>{year} PFL SEASON</h6></div></div><div class="row">{items}</div></div>'
+
+
+FULL_SEASON = [
+    ("MAX PUNCH SPEED", "17.55 MPH"), ("strikes", "76 / 144"), ("arm strikes", "27 / 53"), ("leg strikes", "38 / 80"),
+    ("ground strikes", "11 / 11"), ("takedowns", "1 / 1"), ("inner zone", "50.54%"), ("outer zone", "49.46%"),
+]
+EMPTY_SEASON = [(label, "-") for label, _ in FULL_SEASON]
+
+
+def stats_page(*blocks):
+    from bs4 import BeautifulSoup
+
+    return BeautifulSoup("<html><body>" + "".join(blocks) + "<h6>Lightweight World Title (155)</h6><h5>PFL</h5></body></html>", "html.parser")
+
+
+def test_a_season_block_is_read_as_the_site_prints_it():
+    [season] = pfl.parse_season_stats(stats_page(season_block(2024, FULL_SEASON)))
+    assert season == {
+        "season": "2024", "max_punch_speed_mph": "17.55", "strikes": "76/144", "arm_strikes": "27/53", "leg_strikes": "38/80",
+        "ground_strikes": "11/11", "takedowns": "1/1", "inner_zone_pct": "50.54", "outer_zone_pct": "49.46",
+    }
+
+
+def test_dashes_are_empty_and_a_season_with_nothing_printed_is_left_out():
+    page = stats_page(season_block(2025, EMPTY_SEASON), season_block(2024, [("MAX PUNCH SPEED", "-"), *FULL_SEASON[1:6], ("inner zone", "-"), ("outer zone", "-")]))
+    seasons = pfl.parse_season_stats(page)
+    assert [season["season"] for season in seasons] == ["2024"]
+    assert seasons[0]["max_punch_speed_mph"] == "" and seasons[0]["inner_zone_pct"] == "" and seasons[0]["strikes"] == "76/144"
+
+
+def test_seasons_come_newest_first_and_the_same_season_twice_is_read_once():
+    page = stats_page(season_block(2023, FULL_SEASON), season_block(2025, FULL_SEASON), season_block(2025, FULL_SEASON))
+    assert [season["season"] for season in pfl.parse_season_stats(page)] == ["2025", "2023"]
+
+
+def test_a_value_in_a_shape_nobody_planned_for_is_left_empty_instead_of_guessed():
+    page = stats_page(season_block(2024, [("strikes", "about 80"), ("takedowns", "3 / 4"), ("MAX PUNCH SPEED", "fast")]))
+    [season] = pfl.parse_season_stats(page)
+    assert (season["strikes"], season["takedowns"], season["max_punch_speed_mph"]) == ("", "3/4", "")
+
+
+def test_a_page_without_season_blocks_has_no_stats():
+    assert pfl.parse_season_stats(stats_page()) == []
+
+
+def test_merging_replaces_the_fighters_read_and_marks_the_ones_without_stats():
+    old = [
+        {"slug": "ana", "season": "2024", "strikes": "1/2", "checked": "2026-01-01"},
+        {"slug": "bia", "season": "2023", "strikes": "3/4", "checked": "2026-01-01"},
+        {"slug": "gone", "season": "2023", "strikes": "5/6", "checked": "2026-01-01"},
+    ]
+    read = {"ana": [{"season": "2025", "strikes": "9/9"}, {"season": "2024", "strikes": "1/2"}], "cris": []}
+    merged = pfl.merge_season_stats(old, read, "2026-11-03", {"ana", "bia", "cris"})
+    assert [(row["slug"], row["season"]) for row in merged] == [("ana", "2025"), ("ana", "2024"), ("bia", "2023"), ("cris", "")]
+    assert next(row for row in merged if row["slug"] == "cris")["strikes"] == ""  # the marker says "read, nothing printed"
+
+
+# --------------------------------------------------------------------------- names with the page title stuck to them
+
+
+@pytest.mark.parametrize(
+    ("title", "name"),
+    [
+        ("Ali Taleb PFL Fighter: Records, Stats & Career Highlights", "Ali Taleb"),
+        ("Abdullah Al-Qahtani PFL Fighter: Profile & Career Highlights", "Abdullah Al-Qahtani"),
+        ("Mohsen Mohammadseifi PFL Fighter: MMA Achievements", "Mohsen Mohammadseifi"),
+        ("Usman Nurmagomedov", "Usman Nurmagomedov"),
+        ("Pfl Fighter Smith", "Pfl Fighter Smith"),  # a name that merely contains the words is not cut
+    ],
+)
+def test_the_page_title_text_is_cut_off_a_fighter_name(title, name):
+    assert pfl.clean_fighter_name(title) == name
+
+
+def test_a_profile_page_whose_title_is_the_search_result_title_still_gives_the_plain_name():
+    html = (
+        '<html><head><meta property="og:title" content="Ali Taleb PFL Fighter: Records, Stats &amp; Career Highlights | PFL"></head>'
+        '<body><div class="fighter-dl-inner"><h2>Taleb</h2><h4>Career Record: 12-2-0</h4></div></body></html>'
+    )
+    parsed = pfl.parse_fighter_page(html, "https://pflmma.com/mena-fighter/ali-taleb")
+    assert parsed["profile"]["name"] == "Ali Taleb"

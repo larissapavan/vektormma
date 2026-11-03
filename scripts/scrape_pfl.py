@@ -10,11 +10,15 @@ What each page gives:
 - fighter page profile (record, age, height, reach, country, camp, photo) and every fight of that fighter with its
                weight class, stage (Semifinal, Championship...), method, round and time.
 - rankings     the champions (vacant, interim) and the top 10 of each division and the men's pound-for-pound.
+- season stats the "<year> PFL SEASON" blocks of a fighter page (strikes, takedowns, punch speed, as the site prints them),
+               written as they are: the site's own counts, not comparable to the UFC's significant strikes.
 
 Output (data/raw/pfl/):
     fights.csv    one row per bout, announced or fought, with the event on every row
     fighters.csv  one row per fighter
     rankings.csv  same layout as data/raw/rankings.csv (rank 0 = champion) plus the title status
+    fighter_stats.csv  one row per fighter and PFL season with stats; a row with an empty season only says the page was read
+                       and prints none (so it is not read again)
 
 The first run reads about 1,400 fighter pages (about 15 minutes at the default delay). Later runs only re-read events
 of the last REFRESH_DAYS days and upcoming ones, the fighters on them, new fighters and the ranked ones.
@@ -23,6 +27,7 @@ Usage (from the repo root):
     python -m scripts.scrape_pfl --dry-run              # parse and report, write nothing
     python -m scripts.scrape_pfl                        # incremental refresh
     python -m scripts.scrape_pfl --full                 # re-read every event and fighter page
+    python -m scripts.scrape_pfl --stats-only           # only read the fighter pages never read for season stats (writes fighter_stats.csv alone)
     python -m scripts.scrape_pfl --photos --limit 300   # also download headshots as small WebP files
     python -m scripts.scrape_pfl --cache-dir .pfl-cache # keep downloaded pages, so an interrupted run can resume
 """
@@ -59,6 +64,7 @@ OUTPUT_DIR = RAW_DATA_DIR / "pfl"
 FIGHTS_PATH = OUTPUT_DIR / "fights.csv"
 FIGHTERS_PATH = OUTPUT_DIR / "fighters.csv"
 RANKINGS_PATH = OUTPUT_DIR / "rankings.csv"
+STATS_PATH = OUTPUT_DIR / "fighter_stats.csv"
 # Bouts announced before pflmma.com lists them. The next scrape puts them back if the site still does not have the pairing.
 ANNOUNCED_PATH = OUTPUT_DIR / "announced_fights.csv"
 PHOTOS_DIR = BASE_DIR / "frontend" / "public" / "fighter-photos" / "pfl"
@@ -86,6 +92,23 @@ FIGHTER_FIELDS = [
     "first_fight_date", "last_fight_date", "checked",
 ]
 RANKING_FIELDS = ["category", "is_p4p", "rank", "fighter", "rank_change", "status", "athlete_url"]
+# What a fighter page prints for a season, label -> column. strikes ... takedowns are "landed / attempted" stored as "76/144"
+# (the site's sub-counts do not always add up to the total, so nothing is derived from them); the zones are percentages.
+SEASON_LABELS = {
+    "max punch speed": "max_punch_speed_mph",
+    "strikes": "strikes",
+    "arm strikes": "arm_strikes",
+    "leg strikes": "leg_strikes",
+    "ground strikes": "ground_strikes",
+    "takedowns": "takedowns",
+    "inner zone": "inner_zone_pct",
+    "outer zone": "outer_zone_pct",
+}
+STAT_FIELDS = ["slug", "season", *SEASON_LABELS.values(), "checked"]
+SEASON_HEADING = re.compile(r"\b(\d{4})\s+PFL SEASON\b", re.IGNORECASE)
+RATIO = re.compile(r"^(\d+)\s*/\s*(\d+)$")
+SPEED = re.compile(r"^(\d+(?:\.\d+)?)\s*MPH$", re.IGNORECASE)
+PERCENT = re.compile(r"^(\d+(?:\.\d+)?)\s*%$")
 
 # profile URL family -> where the fighter competes
 CIRCUITS = {
@@ -169,6 +192,15 @@ class Fetcher:
 
 def clean(value: str | None) -> str:
     return re.sub(r"\s+", " ", (value or "").replace("\xa0", " ")).strip()
+
+
+# A few pages carry the search-result title in og:title ("Ali Taleb PFL Fighter: Records, Stats & Career Highlights | PFL"):
+# the name is what comes before "PFL Fighter".
+PAGE_TITLE_TAIL = re.compile(r"\s+PFL Fighter\b.*$", re.IGNORECASE)
+
+
+def clean_fighter_name(text: str | None) -> str:
+    return PAGE_TITLE_TAIL.sub("", clean(text)).strip()
 
 
 def clean_nickname(text: str | None) -> str:
@@ -462,11 +494,49 @@ def parse_fighter_fight_rows(soup: BeautifulSoup, last_name: str) -> list[dict]:
     return rows
 
 
+def season_value(column: str, text: str) -> str:
+    """One printed value in its stored form, or "" for a dash or anything that is not in a shape we know."""
+    text = clean(text)
+    if column.endswith("_mph"):
+        match = SPEED.match(text)
+        return match.group(1) if match else ""
+    if column.endswith("_pct"):
+        match = PERCENT.match(text)
+        return match.group(1) if match else ""
+    match = RATIO.match(text)
+    return f"{match.group(1)}/{match.group(2)}" if match else ""
+
+
+def parse_season_stats(soup: BeautifulSoup) -> list[dict]:
+    """The "<year> PFL SEASON" blocks of a fighter page, newest first; a season in which the site prints only dashes is left out."""
+    seasons: dict[str, dict] = {}
+    for heading in soup.find_all("h6"):
+        match = SEASON_HEADING.search(heading.get_text(" "))
+        if not match or match.group(1) in seasons:
+            continue
+        values: dict[str, str] = {}
+        label = ""
+        for element in heading.find_all_next(["h5", "h6"]):
+            if element.name == "h6":
+                break
+            text = clean(element.get_text(" "))
+            if label:
+                values[SEASON_LABELS[label]] = season_value(SEASON_LABELS[label], text)
+                label = ""
+            elif text.lower() in SEASON_LABELS:
+                label = text.lower()
+            if len(values) == len(SEASON_LABELS):
+                break
+        if any(values.values()):
+            seasons[match.group(1)] = {"season": match.group(1), **{column: values.get(column, "") for column in SEASON_LABELS.values()}}
+    return sorted(seasons.values(), key=lambda row: row["season"], reverse=True)
+
+
 def parse_fighter_page(html: str, url: str) -> dict | None:
     """A fighter profile plus his or her fight rows; None when the page is not a fighter profile."""
     soup = BeautifulSoup(html, "html.parser")
     title = soup.find("meta", property="og:title")
-    name = clean((title or {}).get("content", "")).split("|")[0].strip() if title else ""
+    name = clean_fighter_name((title or {}).get("content", "").split("|")[0]) if title else ""
     banner = soup.select_one(".fighter-dl-inner")
     if not name or banner is None:
         return None
@@ -513,6 +583,7 @@ def parse_fighter_page(html: str, url: str) -> dict | None:
         },
         "last_name": last_name,
         "fights": fight_rows,
+        "season_stats": parse_season_stats(soup),
     }
 
 
@@ -776,6 +847,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--full", action="store_true", help="re-read every event and fighter page")
     parser.add_argument("--photos", action="store_true", help="download headshots as WebP into frontend/public/fighter-photos/pfl")
     parser.add_argument("--limit", type=int, default=400, help="max photos to download in one run (default 400)")
+    parser.add_argument("--stats-only", action="store_true", help="read only the fighter pages never read for season stats and write fighter_stats.csv alone (about 10 minutes the first time)")
     parser.add_argument("--max-fighters", type=int, help="stop reading fighter pages after this many (testing)")
     parser.add_argument("--delay", type=float, default=REQUEST_DELAY_SECONDS)
     parser.add_argument("--cache-dir", type=Path, help="keep downloaded pages here so an interrupted run can resume")
@@ -783,6 +855,8 @@ def main(argv: list[str] | None = None) -> int:
 
     fetcher = Fetcher(delay=args.delay, cache_dir=args.cache_dir)
     today = date.today()
+    if args.stats_only:
+        return read_stats_only(fetcher, today.isoformat(), args.full, args.max_fighters, args.dry_run)
     window_start = today - timedelta(days=REFRESH_DAYS)
 
     old_fights = load_rows(FIGHTS_PATH)
@@ -842,7 +916,10 @@ def main(argv: list[str] | None = None) -> int:
         if url:
             wanted.setdefault(url, key)
 
+    old_stats = load_rows(STATS_PATH)
+
     profiles: dict[str, dict] = {}
+    season_stats: dict[str, list[dict]] = {}
     fight_counts: dict[str, int] = {}
     details: dict[str, list[dict]] = {}
     failures: list[str] = []
@@ -863,6 +940,7 @@ def main(argv: list[str] | None = None) -> int:
         if profile["slug"] in profiles and len(parsed["fights"]) < fight_counts[profile["slug"]]:
             continue
         profiles[profile["slug"]] = profile
+        season_stats[profile["slug"]] = parsed["season_stats"]
         fight_counts[profile["slug"]] = len(parsed["fights"])
         owner = name_key(profile["name"])
         for row in parsed["fights"]:
@@ -902,8 +980,61 @@ def main(argv: list[str] | None = None) -> int:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     save_csv(FIGHTS_PATH, FIGHT_FIELDS, all_fights)
     save_csv(FIGHTERS_PATH, FIGHTER_FIELDS, ordered_fighters)
+    stat_rows = merge_season_stats(old_stats, season_stats, today.isoformat(), {row["slug"] for row in ordered_fighters})
+    if stat_rows:
+        save_csv(STATS_PATH, STAT_FIELDS, stat_rows)
+        print(f"[info] season stats for {len({row['slug'] for row in stat_rows if row['season']})} fighters, {len(stat_rows)} rows")
     if rankings:
         save_csv(RANKINGS_PATH, RANKING_FIELDS, rankings)
+    return 0
+
+
+def merge_season_stats(old: list[dict], read: dict[str, list[dict]], today: str, slugs: set[str]) -> list[dict]:
+    """The stored stats with the fighters read now replaced. A fighter read with no stats gets one row with an empty season,
+    which only records that the page was looked at."""
+    kept = [row for row in old if row["slug"] not in read and row["slug"] in slugs]
+    fresh: list[dict] = []
+    for slug, seasons in read.items():
+        if seasons:
+            fresh.extend({"slug": slug, **season, "checked": today} for season in seasons)
+        else:
+            fresh.append({"slug": slug, "season": "", **{column: "" for column in SEASON_LABELS.values()}, "checked": today})
+    return sorted(kept + fresh, key=lambda row: (row["slug"], -int(row["season"] or 0)))
+
+
+def read_stats_only(fetcher: Fetcher, today: str, everyone: bool, limit: int | None, dry_run: bool) -> int:
+    """Read the fighter pages of the fighters in fighters.csv that have no row in fighter_stats.csv yet (all of them with
+    --full) and write fighter_stats.csv alone: no event, fight or fighter file is touched."""
+    fighters = load_rows(FIGHTERS_PATH)
+    old_stats = load_rows(STATS_PATH)
+    have = {row["slug"] for row in old_stats}
+    targets = [row for row in fighters if row.get("profile_url") and (everyone or row["slug"] not in have)]
+    if limit:
+        targets = targets[:limit]
+    print(f"[info] {len(targets)} fighter pages to read for season stats")
+    read: dict[str, list[dict]] = {}
+    failures = 0
+    for count, row in enumerate(targets, 1):
+        try:
+            parsed = parse_fighter_page(fetcher.get(row["profile_url"]), row["profile_url"])
+        except RuntimeError as error:
+            failures += 1
+            print(f"[warn] {error}")
+            continue
+        # A page that is not a fighter profile any more says nothing about the stats: leave the fighter for the next run.
+        if parsed is not None:
+            read[row["slug"]] = parsed["season_stats"]
+        if count % 100 == 0:
+            print(f"[info] {count}/{len(targets)} fighter pages")
+    rows = merge_season_stats(old_stats, read, today, {row["slug"] for row in fighters})
+    with_stats = len({row["slug"] for row in rows if row["season"]})
+    print(f"[info] {len(read)} pages read ({failures} failures): {with_stats} fighters with season stats, {len(rows)} rows")
+    if dry_run:
+        print("[dry-run] nothing written")
+        return 0
+    if rows:
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        save_csv(STATS_PATH, STAT_FIELDS, rows)
     return 0
 
 
