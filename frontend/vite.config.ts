@@ -9,6 +9,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { UI_LANGS, langPath, type UiLang } from './src/i18n/lang'
 import { athleteBody, athleteText, fightBody, fightText, fightersListBody, type SeoData } from './src/seo/athletes'
 import { bodyHtml, routeHtml, sitemapXml, type BodyLink, type RouteText, type SiteInfo } from './src/seo/htmlMeta'
+import { athleteJsonLd, fightJsonLd, type Trail } from './src/seo/structuredData'
 import { CONTACT_EMAIL, infoPage, INFO_PATHS, type InfoPageId } from './src/shared/data/legal'
 
 interface PageMetaFile {
@@ -81,15 +82,21 @@ function seoPages(): Plugin {
         const homeMeta = lang === 'pt' ? null : { title: data.homeTitle[lang], description: siteDescription }
         write(lang, '/', routeHtml(template, data.site, '/', homeMeta, home, { lang, siteDescription, rawTitle: true }))
 
+        // Home > Fighters > athlete, and Home > Events > fight, for the breadcrumb of each page.
+        const athleteTrail: Trail = { site: data.site.name, list: table('/fighters').title, listPath: '/fighters' }
+        const fightTrail: Trail = { site: data.site.name, list: table('/events').title, listPath: '/events' }
         for (const athlete of seo.athletes) {
           const path = `/athlete/${athlete.slug}`
           const image = imageFor('athletes', athlete.slug)
-          write(lang, path, routeHtml(template, data.site, path, athleteText(lang, athlete), bodyHtml(athleteBody(lang, athlete, seo.fights), nav), { lang, siteDescription, image }))
+          const text = athleteText(lang, athlete)
+          const jsonLd = athleteJsonLd(data.site.url, lang, athlete, text, athleteTrail)
+          write(lang, path, routeHtml(template, data.site, path, text, bodyHtml(athleteBody(lang, athlete, seo.fights), nav), { lang, siteDescription, image, jsonLd }))
         }
         for (const fight of seo.fights) {
           const path = `/fight/${fight.slug}`
           const image = imageFor('fights', fight.slug)
-          write(lang, path, routeHtml(template, data.site, path, fightText(lang, fight), bodyHtml(fightBody(lang, fight), nav), { lang, siteDescription, image }))
+          const jsonLd = fightJsonLd(data.site.url, lang, fight, fightTrail, image)
+          write(lang, path, routeHtml(template, data.site, path, fightText(lang, fight), bodyHtml(fightBody(lang, fight), nav), { lang, siteDescription, image, jsonLd }))
         }
       }
 

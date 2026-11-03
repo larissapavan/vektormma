@@ -4,6 +4,7 @@ import { langPath, splitLangPath } from '../i18n/lang'
 import { athleteBody, athleteSlug, athleteText, fightBody, fightText, fightersListBody, splitFightSlug, type SeoData } from '../seo/athletes'
 import seo from '../seo/athletes.json'
 import { bodyHtml, hreflangLinks, routeHtml, sitemapXml } from '../seo/htmlMeta'
+import { athleteJsonLd, fightJsonLd, type Trail } from '../seo/structuredData'
 import pageMeta from '../shared/data/pageMeta.json'
 import indexHtml from '../../index.html?raw'
 
@@ -166,5 +167,73 @@ describe('index.html and the page table', () => {
   it('has a title and a description for every page in every language', () => {
     const paths = Object.keys(pageMeta.pages.pt)
     for (const lang of ['en', 'fr', 'es'] as const) expect(Object.keys(pageMeta.pages[lang]).sort()).toEqual(paths.slice().sort())
+  })
+})
+
+describe('structured data', () => {
+  const trail: Trail = { site: 'Vektor MMA', list: 'Fighters', listPath: '/fighters' }
+  const athlete = { ...data.athletes[0], name: 'Test </script><b>Fighter', nickname: 'The "Test"', slug: 'test-fighter', photo: 'test-fighter.webp', countryCode: 'br' }
+  const fight = data.fights[0]
+
+  interface PersonJson {
+    '@type': string
+    url: string
+    image: string
+    jobTitle: string
+    nationality: { name: string }
+  }
+  interface CrumbsJson {
+    '@type': string
+    itemListElement: Array<{ item: string }>
+  }
+  interface EventJson {
+    '@type': string
+    startDate: string
+    competitor: Array<{ url: string }>
+    location?: unknown
+  }
+
+  function blocks(html: string): Array<Record<string, unknown>> {
+    return [...html.matchAll(/<script type="application\/ld\+json" data-page-ld="[^"]*">(.*?)<\/script>/g)].map((match) => JSON.parse(match[1]) as Record<string, unknown>)
+  }
+
+  it('describes an athlete as a person and gives the page a breadcrumb', () => {
+    const [person, crumbs] = athleteJsonLd(site.url, 'en', athlete, { title: athlete.name, description: 'D.' }, trail) as unknown as [PersonJson, CrumbsJson]
+    expect(person['@type']).toBe('Person')
+    expect(person.url).toBe('https://www.vektormma.com/en/athlete/test-fighter')
+    expect(person.image).toBe('https://www.vektormma.com/fighter-photos/test-fighter.webp')
+    expect(person.nationality.name).toBe('Brazil')
+    expect(person.jobTitle).toBe('MMA fighter')
+    expect(crumbs['@type']).toBe('BreadcrumbList')
+    expect(crumbs.itemListElement.map((step) => step.item)).toEqual([
+      'https://www.vektormma.com/en',
+      'https://www.vektormma.com/en/fighters',
+      'https://www.vektormma.com/en/athlete/test-fighter',
+    ])
+  })
+
+  it('describes a fight as a sports event with both competitors, and no invented venue or forecast', () => {
+    expect(fight).toBeDefined()
+    const [event] = fightJsonLd(site.url, 'fr', fight, { ...trail, list: 'Événements', listPath: '/events' }, '/og/fights/x.jpg') as unknown as [EventJson]
+    expect(event['@type']).toBe('SportsEvent')
+    expect(event.startDate).toBe(fight.date)
+    expect(event.competitor).toHaveLength(2)
+    expect(event.competitor[0].url).toMatch(/^https:\/\/www\.vektormma\.com\/fr\/athlete\//)
+    expect(event.location).toBeUndefined()
+    expect(JSON.stringify(event)).not.toContain('pick')
+  })
+
+  it('is written into the page as JSON that a name cannot break out of', () => {
+    const jsonLd = athleteJsonLd(site.url, 'pt', athlete, { title: athlete.name, description: 'D.' }, trail)
+    const html = routeHtml(template, site, '/athlete/test-fighter', { title: athlete.name, description: 'D.' }, undefined, { lang: 'pt', jsonLd })
+    expect(html.match(/<\/script>/g)).toHaveLength(1 + 2) // the site's block and the two of the page
+    expect(html).toContain('data-page-ld="https://www.vektormma.com/athlete/test-fighter"')
+    const [person] = blocks(html)
+    expect(person.name).toBe('Test </script><b>Fighter')
+    expect(person.alternateName).toBe('The "Test"')
+  })
+
+  it('leaves a page without structured data alone', () => {
+    expect(routeHtml(template, site, '/model', { title: 'Model', description: 'D.' }, undefined, { lang: 'pt' })).not.toContain('data-page-ld')
   })
 })

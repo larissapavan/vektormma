@@ -73,7 +73,7 @@ function record(athlete: Pick<AthleteSeo, 'wins' | 'losses' | 'draws'>): string 
   return `${athlete.wins}-${athlete.losses}-${athlete.draws ?? 0}`
 }
 
-function countryName(code: string | null, language: string): string | null {
+export function countryName(code: string | null, language: string): string | null {
   if (!code) return null
   try {
     return new Intl.DisplayNames([language], { type: 'region' }).of(code.toUpperCase()) ?? null

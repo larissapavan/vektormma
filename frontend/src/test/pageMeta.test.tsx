@@ -24,6 +24,15 @@ beforeEach(() => {
 })
 
 describe('PageMeta', () => {
+  it('drops the structured data of the page the visitor left, and keeps the one of the page they are on', () => {
+    const block = (url: string) => `<script type="application/ld+json" data-page-ld="${url}">{}</script>`
+    document.head.innerHTML = block('https://www.vektormma.com/en/athlete/aaron-pico') + block('https://www.vektormma.com/en/predictor')
+    renderAt('/predictor')
+
+    const left = Array.from(document.head.querySelectorAll('script[data-page-ld]')).map((script) => script.getAttribute('data-page-ld'))
+    expect(left).toEqual(['https://www.vektormma.com/en/predictor'])
+  })
+
   it('sets the title, description, canonical address and share tags of a page', () => {
     renderAt('/predictor')
 

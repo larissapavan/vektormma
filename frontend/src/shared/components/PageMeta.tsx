@@ -147,6 +147,10 @@ export function PageMeta() {
     const shareImage = image ? absoluteUrl(SITE_URL, image) : SITE_IMAGE
 
     document.title = title
+    // The structured data in the static HTML describes the address it was built for: drop it once the visitor is on another page.
+    document.head.querySelectorAll('script[data-page-ld]').forEach((script) => {
+      if (script.getAttribute('data-page-ld') !== url) script.remove()
+    })
     setMeta('name', 'description', description)
     setMeta('property', 'og:title', title)
     setMeta('property', 'og:description', description)

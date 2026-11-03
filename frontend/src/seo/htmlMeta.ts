@@ -90,6 +90,21 @@ export interface RouteOptions {
   rawTitle?: boolean
   /** The site description for the JSON-LD block, in the language of the page. */
   siteDescription?: string
+  /** Structured data of the page itself (a person, a fight, a breadcrumb), written after the site's block. */
+  jsonLd?: object[]
+}
+
+/**
+ * <script type="application/ld+json"> blocks for the page. The `<` of the text is written as < so a name can never
+ * close the script; `data-page-ld` carries the page's address so the app can drop the block when the visitor moves on.
+ */
+export function jsonLdScripts(objects: object[], url: string, indent = '    '): string {
+  return objects
+    .map((object) => {
+      const json = JSON.stringify(object).replace(new RegExp('[<\\u2028\\u2029]', 'g'), (char) => `\\u${char.charCodeAt(0).toString(16).padStart(4, '0')}`)
+      return `${indent}<script type="application/ld+json" data-page-ld="${escapeHtml(url)}">${json}</script>`
+    })
+    .join('\n')
 }
 
 /**
@@ -134,7 +149,8 @@ function localize(template: string, site: SiteInfo, path: string, options: Route
     html = setTag(html, '<meta name="twitter:image"', 'content', image)
   }
   const alternates = hreflangLinks(site.url, path)
-  return html.includes('</head>') ? html.replace('</head>', () => `${alternates}\n  </head>`) : html
+  const structured = options.jsonLd?.length ? `\n${jsonLdScripts(options.jsonLd, absoluteUrl(site.url, langPath(options.lang, path)))}` : ''
+  return html.includes('</head>') ? html.replace('</head>', () => `${alternates}${structured}\n  </head>`) : html
 }
 
 /**
