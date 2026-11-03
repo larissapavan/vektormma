@@ -52,7 +52,7 @@ export function AthleteDossier() {
 
   const opponentName = useMemo(() => searchParams.get('b') || searchParams.get('vs') || undefined, [searchParams])
 
-  if (fighterName === null) return <LoadingSkeleton className="h-96 w-full" label="Loading" />
+  if (fighterName === null) return <LoadingSkeleton className="min-h-screen w-full" label="Loading" />
 
   return (
     <EditorialFighterDossier

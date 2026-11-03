@@ -367,7 +367,7 @@ export function EditorialFighterDossier({
               {/* Fighter Name and Nickname */}
               <div>
                 {profile?.nickname && (
-                  <p className="font-mono text-sm sm:text-base font-bold uppercase tracking-[0.2em] text-[#c8102e]">
+                  <p className="font-mono text-sm sm:text-base font-bold uppercase tracking-[0.2em] text-[#c8102e] dark:text-[#ff4d6a]">
                     “{profile.nickname}”
                   </p>
                 )}
@@ -380,7 +380,7 @@ export function EditorialFighterDossier({
               <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 text-sm text-slate-600 dark:text-zinc-400 font-mono">
                 {profile?.hometown && (
                   <span className="inline-flex items-center gap-1.5">
-                    <Globe2 className="h-4 w-4 text-slate-500 dark:text-zinc-500" />
+                    <Globe2 className="h-4 w-4 text-slate-500 dark:text-zinc-400" />
                     {translateHometown(profile.hometown, i18n.language)}
                   </span>
                 )}
@@ -410,8 +410,8 @@ export function EditorialFighterDossier({
                   </span>
                   <span className="font-black text-2xl sm:text-3xl tracking-tight text-slate-900 dark:text-white">
                     {profile?.wins ?? 0}
-                    <span className="text-slate-500 dark:text-zinc-500 font-normal">{L(i18n.language, 'V', 'W', 'V', 'V')}</span> — {profile?.losses ?? 0}
-                    <span className="text-slate-500 dark:text-zinc-500 font-normal">{L(i18n.language, 'D', 'L', 'D', 'D')}</span>
+                    <span className="text-slate-500 dark:text-zinc-400 font-normal">{L(i18n.language, 'V', 'W', 'V', 'V')}</span> — {profile?.losses ?? 0}
+                    <span className="text-slate-500 dark:text-zinc-400 font-normal">{L(i18n.language, 'D', 'L', 'D', 'D')}</span>
                     {profile?.draws ? ` — ${profile.draws}${L(i18n.language, 'E', 'D', 'N', 'E')}` : ''}
                   </span>
                   <span className="ml-2 rounded-md bg-[#22c55e]/20 px-2 py-0.5 text-xs font-bold text-green-700 dark:text-[#4ade80]">
@@ -478,7 +478,7 @@ export function EditorialFighterDossier({
                   ) : null}
                 </div>
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#c8102e]">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#c8102e] dark:text-[#ff4d6a]">
                     {L(i18n.language, 'CÓRNER VERMELHO', 'CORNER RED', 'COIN ROUGE', 'ESQUINA ROJA')}
                   </span>
                   <h3 className="text-xl font-black uppercase text-slate-900 dark:text-white">{activeFighterName}</h3>
@@ -540,14 +540,14 @@ export function EditorialFighterDossier({
         <section className="mt-12 sm:mt-16">
           <div className="mb-6 flex items-baseline justify-between border-b border-slate-200 dark:border-white/10 pb-3">
             <div>
-              <p className="font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-[#c8102e]">
+              <p className="font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-[#c8102e] dark:text-[#ff4d6a]">
                 {L(i18n.language, 'MÉTRICAS VITAIS DE IMPACTO', 'VITAL IMPACT METRICS', 'MÉTRIQUES D’IMPACT', 'MÉTRICAS CLAVE DE IMPACTO')}
               </p>
               <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-slate-900 dark:text-white">
                 {L(i18n.language, 'Anatomia Estatística do Atleta', 'Statistical Anatomy', 'Anatomie Statistique', 'Anatomía estadística')}
               </h2>
             </div>
-            <span className="font-mono text-xs text-slate-500 dark:text-zinc-500">
+            <span className="font-mono text-xs text-slate-500 dark:text-zinc-400">
               {L(i18n.language, 'DADOS OFICIAIS UFC // IA', 'UFC OFFICIAL // AI METRICS', 'DONNÉES OFFICIELLES', 'DATOS OFICIALES DE LA UFC // IA')}
             </span>
           </div>
@@ -570,13 +570,13 @@ export function EditorialFighterDossier({
                 <span className="font-display font-extrabold text-3xl sm:text-4xl tracking-tight text-[var(--text-primary)] dark:text-white tabular-nums">
                   <AnimatedCounter value={metricsA.finishRate} />
                 </span>
-                <span className="font-display font-extrabold text-3xl sm:text-4xl text-[#c8102e]">%</span>
+                <span className="font-display font-extrabold text-3xl sm:text-4xl text-[#c8102e] dark:text-[#ff4d6a]">%</span>
               </div>
 
               <p className="mt-2 font-sans text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-neutral-300">
                 {L(i18n.language, 'Taxa de Nocaute / Finalização', 'Finishing Rate (KO / SUB)', 'Taux de victoires avant la limite (KO / soumission)', 'Tasa de finalización (KO / sumisión)')}
               </p>
-              <p className="mt-1 font-mono text-[11px] text-slate-500 dark:text-zinc-500 leading-relaxed">
+              <p className="mt-1 font-mono text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed">
                 {metricsA.koSub} {L(i18n.language, 'vitórias antes do gongo final', 'victories inside the distance', 'victoires avant la limite', 'victorias antes del límite')}.
               </p>
 
@@ -611,7 +611,7 @@ export function EditorialFighterDossier({
               <p className="mt-2 font-sans text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-neutral-300">
                 {L(i18n.language, 'Diferencial de Golpes / Min', 'Striking Differential (SLpM - SApM)', 'Différentiel de Frappe', 'Diferencial de golpeo (SLpM - SApM)')}
               </p>
-              <p className="mt-1 font-mono text-[11px] text-slate-500 dark:text-zinc-500 leading-relaxed">
+              <p className="mt-1 font-mono text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed">
                 {metricsA.slpm} {L(i18n.language, 'conectados vs', 'landed vs', 'portés vs', 'conectados vs')} {metricsA.sapm} {L(i18n.language, 'absorvidos/min', 'absorbed/min', 'absorbés/min', 'recibidos/min')}.
               </p>
 
@@ -649,7 +649,7 @@ export function EditorialFighterDossier({
               <p className="mt-2 font-sans text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-neutral-300">
                 {L(i18n.language, 'Defesa de Quedas (TDD)', 'Takedown Defense (TDD %)', 'Défense d’Amenée au Sol', 'Defensa de derribos (TDD %)')}
               </p>
-              <p className="mt-1 font-mono text-[11px] text-slate-500 dark:text-zinc-500 leading-relaxed">
+              <p className="mt-1 font-mono text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed">
                 {L(i18n.language, 'Eficácia ao evitar a queda e manter a luta em pé', 'Sprawl efficiency keeping the bout upright', 'Efficacité à maintenir le combat debout', 'Eficacia para mantener la pelea de pie')}.
               </p>
 
@@ -684,7 +684,7 @@ export function EditorialFighterDossier({
               <p className="mt-2 font-sans text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-neutral-300">
                 {L(i18n.language, 'Acurácia Histórica da IA', 'Model Historical Reliability', 'Fiabilité Historique du Modèle', 'Fiabilidad histórica del modelo')}
               </p>
-              <p className="mt-1 font-mono text-[11px] text-slate-500 dark:text-zinc-500 leading-relaxed">
+              <p className="mt-1 font-mono text-[11px] text-slate-500 dark:text-zinc-400 leading-relaxed">
                 {L(i18n.language, 'Taxa de acerto em lutas deste perfil', 'Accuracy across bouts fitting this profile', 'Précision sur les combats de ce profil', 'Precisión en peleas con este perfil')}.
               </p>
 
@@ -701,7 +701,7 @@ export function EditorialFighterDossier({
         {/* SECTION 3: STORYTELLING TIMELINE (PHASES) */}
         <section className="mt-16 sm:mt-20">
           <div className="mb-8 border-b border-slate-200 dark:border-white/10 pb-4">
-            <span className="font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-[#c8102e]">
+            <span className="font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-[#c8102e] dark:text-[#ff4d6a]">
               {L(i18n.language, 'LINHA DO TEMPO EDITORIAL // NARRATIVA', 'EDITORIAL TIMELINE // STORYTELLING', 'CHRONOLOGIE ÉDITORIALE // RÉCIT', 'LÍNEA DE TIEMPO EDITORIAL // NARRATIVA')}
             </span>
             <h2 className="mt-1 text-3xl sm:text-4xl font-black uppercase tracking-tight text-slate-900 dark:text-white">
@@ -732,7 +732,7 @@ export function EditorialFighterDossier({
                   {/* Chapter number & period */}
                   <div className="lg:col-span-3 flex lg:flex-col justify-between items-baseline lg:items-start border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-white/10 pb-4 lg:pb-0 lg:pr-6">
                     <div>
-                      <span className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-[#c8102e]">
+                      <span className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-[#c8102e] dark:text-[#ff4d6a]">
                         {L(i18n.language, `CAPÍTULO ${phase.chapterNumber}`, `CHAPTER ${phase.chapterNumber}`, `CHAPITRE ${phase.chapterNumber}`, `CAPÍTULO ${phase.chapterNumber}`)}
                       </span>
                       <p className="mt-1 font-mono text-2xl font-black text-slate-900 dark:text-white">
@@ -759,7 +759,7 @@ export function EditorialFighterDossier({
                     {/* Key Bouts in phase */}
                     {phase.keyBouts.length > 0 && (
                       <div className="mt-4 pt-3 border-t border-slate-200 dark:border-white/10">
-                        <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-500">
+                        <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
                           {L(i18n.language, 'LUTAS MARCANTES DESTA FASE', 'NOTABLE BOUTS IN THIS ERA', 'COMBATS MARQUANTS', 'PELEAS DESTACADAS DE ESTA ETAPA')}
                         </span>
                         <div className="mt-2 flex flex-wrap gap-2">
@@ -768,12 +768,12 @@ export function EditorialFighterDossier({
                               key={bIdx}
                               className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-slate-900/[0.04] dark:bg-white/5 px-2.5 py-1 text-xs font-mono"
                             >
-                              <span className={bout.result === 'win' ? 'text-green-700 dark:text-[#4ade80] font-bold' : 'text-[#c8102e]'}>
+                              <span className={bout.result === 'win' ? 'text-green-700 dark:text-[#4ade80] font-bold' : 'text-[#c8102e] dark:text-[#ff4d6a]'}>
                                 {bout.result === 'win' ? L(i18n.language, 'V', 'W', 'V', 'V') : L(i18n.language, 'D', 'L', 'D', 'D')}
                               </span>
                               <span className="text-slate-900 dark:text-white font-medium">{bout.opponent}</span>
                               {bout.method && (
-                                <span className="text-slate-500 dark:text-zinc-500 text-[10px]">
+                                <span className="text-slate-500 dark:text-zinc-400 text-[10px]">
                                   ({translateFightMethod(bout.method, i18n.language)})
                                 </span>
                               )}
@@ -787,7 +787,7 @@ export function EditorialFighterDossier({
                   {/* Phase Stats Mini-Scoreboard */}
                   <div className="lg:col-span-3 grid grid-cols-2 gap-3 bg-slate-900/[0.04] dark:bg-white/[0.03] p-4 rounded-2xl border border-slate-200 dark:border-white/5">
                     <div>
-                      <span className="font-mono text-[10px] uppercase text-slate-500 dark:text-zinc-500">
+                      <span className="font-mono text-[10px] uppercase text-slate-500 dark:text-zinc-400">
                         {L(i18n.language, 'CARTEL NA FASE', 'ERA RECORD', 'PALMARÈS', 'RÉCORD EN LA ETAPA')}
                       </span>
                       <p className="text-xl font-black text-slate-900 dark:text-white">
@@ -796,14 +796,14 @@ export function EditorialFighterDossier({
                     </div>
 
                     <div>
-                      <span className="font-mono text-[10px] uppercase text-slate-500 dark:text-zinc-500">
+                      <span className="font-mono text-[10px] uppercase text-slate-500 dark:text-zinc-400">
                         {L(i18n.language, 'TAXA FINALIZAÇÃO', 'FINISH RATE', 'AVANT LA LIMITE', 'TASA DE FINALIZACIÓN')}
                       </span>
                       <p className="text-xl font-black text-amber-700 dark:text-[#f59e0b]">{phase.finishRate}%</p>
                     </div>
 
                     <div className="col-span-2 pt-1 border-t border-slate-200 dark:border-white/5">
-                      <span className="font-mono text-[10px] uppercase text-slate-500 dark:text-zinc-500">
+                      <span className="font-mono text-[10px] uppercase text-slate-500 dark:text-zinc-400">
                         {L(i18n.language, 'TOTAL DE COMBATES', 'TOTAL FIGHTS', 'TOTAL COMBATS', 'TOTAL DE PELEAS')}
                       </span>
                       <p className="text-sm font-bold text-slate-700 dark:text-zinc-300">
@@ -870,7 +870,7 @@ export function EditorialFighterDossier({
                           {getDivisionName(f.division, i18n.language) || 'UFC'} • {f.wins}{L(i18n.language, 'V', 'W', 'V', 'V')} - {f.losses}{L(i18n.language, 'D', 'L', 'D', 'D')}
                         </p>
                       </div>
-                      <ChevronRight className="h-4 w-4 text-slate-500 dark:text-zinc-500" />
+                      <ChevronRight className="h-4 w-4 text-slate-500 dark:text-zinc-400" />
                     </button>
                   ))}
                 </div>
