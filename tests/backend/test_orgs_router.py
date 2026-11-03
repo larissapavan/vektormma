@@ -297,3 +297,43 @@ def test_a_prediction_is_made_only_for_a_bout_the_source_says_is_mma(mixed_sport
 )
 def test_only_a_bout_named_mma_counts_as_mma(discipline, expected):
     assert org_service.is_mma(discipline) is expected
+
+
+STRIKING_FIELDS = (
+    "sig_str_acc", "sig_strikes_landed_per_min", "sig_strikes_absorbed_per_min", "striking_defense",
+    "takedown_avg_per_15min", "takedown_acc", "takedown_defense", "submission_avg_per_15min",
+)
+
+
+def test_a_fighter_with_no_ufc_statistics_has_no_striking_numbers_instead_of_estimated_ones(org):
+    # The API does not send these fields, but the model profile and the predictor are built from the same data.
+    for fighter in org_service.get_org_fighters("test"):
+        assert [fighter[field] for field in STRIKING_FIELDS] == [None] * len(STRIKING_FIELDS), fighter["name"]
+
+
+def test_the_model_profile_of_such_a_fighter_leaves_blank_what_the_file_does_not_have(org):
+    from backend.app.services.catalog_service import get_fighter_profile
+
+    profile = get_fighter_profile("Caio Dias")
+    assert profile["data_origin"] == "test"
+    assert profile["wins"] == 12
+    # Age, height, reach and the striking numbers are not in the file: blank, not an average shown as if measured.
+    assert [profile[field] for field in ("age", "height_cm", "reach_cm", "weight_lbs", "sig_str_acc", "takedown_acc")] == [None] * 6
+
+
+def test_season_stats_come_with_the_fighter_newest_first_and_a_page_without_stats_adds_nothing(client, org):
+    _write(
+        org.data_dir / "fighter_stats.csv",
+        ["slug", "season", "max_punch_speed_mph", "strikes", "arm_strikes", "takedowns", "checked"],
+        [
+            {"slug": "ana-silva", "season": "2024", "strikes": "9/28", "takedowns": "0/0"},
+            {"slug": "ana-silva", "season": "2025", "max_punch_speed_mph": "17.55", "strikes": "76/144", "arm_strikes": "27/53"},
+            {"slug": "bia-costa", "season": ""},  # the page was read and printed nothing
+        ],
+    )
+    by_name = {fighter["name"]: fighter for fighter in client.get("/orgs/test/fighters").json()}
+    ana = by_name["Ana Silva"]["season_stats"]
+    assert [season["season"] for season in ana] == [2025, 2024]
+    assert ana[0]["strikes"] == "76/144" and ana[0]["max_punch_speed_mph"] == "17.55" and ana[0]["arm_strikes"] == "27/53"
+    assert ana[1]["max_punch_speed_mph"] is None and ana[1]["takedowns"] == "0/0"
+    assert by_name["Bia Costa"]["season_stats"] == [] and by_name["Caio Dias"]["season_stats"] == []

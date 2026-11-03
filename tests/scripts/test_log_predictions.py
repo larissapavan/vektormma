@@ -120,3 +120,26 @@ def test_refresh_unresolved_keeps_the_pick_of_a_fighter_who_left_the_catalog(log
     assert log_predictions.refresh_unresolved(FakeService(), today="2026-10-20") == 1
     kept = track_record_service.load_log().set_index("fight_key").loc["future-open"]
     assert (kept["predicted_winner"], kept["logged_at"]) == ("Fighter Two", "2026-10-15")
+
+
+def test_each_pick_is_saved_with_the_model_that_made_it(log_file, monkeypatch):
+    class Prefight(FakeService):
+        model_key = "prefight"
+
+    upcoming(monkeypatch, [("Fighter One", "Fighter Two")])
+    log_predictions.log_upcoming(Prefight(), today="2026-11-01")
+    upcoming(monkeypatch, [("Fighter Three", "Fighter Four")])
+    log_predictions.log_upcoming(FakeService(), today="2026-11-02")  # a service with no model_key is the current model
+    assert track_record_service.load_log()["model"].tolist() == ["prefight", "current"]
+
+
+def test_refreshing_the_unresolved_picks_records_the_new_model(log_file, monkeypatch):
+    upcoming(monkeypatch, [("Fighter One", "Fighter Two")])
+    log_predictions.log_upcoming(FakeService(), today="2026-11-01")
+
+    class Prefight(FakeService):
+        model_key = "prefight"
+
+    assert log_predictions.refresh_unresolved(Prefight(), today="2026-11-02") == 1
+    row = track_record_service.load_log().iloc[0]
+    assert (row["model"], row["logged_at"]) == ("prefight", "2026-11-02")

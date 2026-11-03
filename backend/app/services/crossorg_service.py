@@ -23,7 +23,7 @@ from backend.app.services.org_service import ORGS, _name_key, get_org_fighter_fi
 MAX_DIVISION_GAP = 2
 MEN_ORDER = ["strawweight", "flyweight", "bantamweight", "featherweight", "lightweight", "welterweight", "middleweight", "light heavyweight", "heavyweight"]
 
-_cache: dict = {"catalog": None, "ufc": {}, "photos": {}}
+_cache: dict = {"catalog": None, "ufc": {}, "everyone": {}, "photos": {}}
 
 
 def _womens(division: str | None) -> bool | None:
@@ -37,19 +37,36 @@ def _division_rank(division: str | None) -> int | None:
     return MEN_ORDER.index(name) if name in MEN_ORDER else None
 
 
-def _ufc_index() -> dict[str, tuple[str, str | None]]:
-    """name key -> (UFC name, division) for every UFC fighter whose key is unique and who has fought in the UFC."""
+def _build_indexes() -> None:
     catalog = get_fighter_catalog()
     if _cache["catalog"] is not catalog:
         seen: dict[str, list[tuple[str, str | None]]] = {}
+        everyone: dict[str, list[tuple[str, str | None]]] = {}
         for record in catalog.to_dict(orient="records"):
             division = record.get("division")
-            if record.get("ufc_status") == "never":
-                continue
-            seen.setdefault(_name_key(record["name"]), []).append((record["name"], division if isinstance(division, str) else None))
+            entry = (record["name"], division if isinstance(division, str) else None)
+            everyone.setdefault(_name_key(record["name"]), []).append(entry)
+            if record.get("ufc_status") != "never":
+                seen.setdefault(_name_key(record["name"]), []).append(entry)
         photos = {_name_key(name): image for name, image in zip(catalog["name"], catalog["image_url"]) if isinstance(image, str) and image}
-        _cache.update(catalog=catalog, ufc={key: rows[0] for key, rows in seen.items() if len(rows) == 1}, photos=photos)
+        _cache.update(
+            catalog=catalog,
+            ufc={key: rows[0] for key, rows in seen.items() if len(rows) == 1},
+            everyone={key: rows[0] for key, rows in everyone.items() if len(rows) == 1},
+            photos=photos,
+        )
+
+
+def _ufc_index() -> dict[str, tuple[str, str | None]]:
+    """name key -> (UFC name, division) for every UFC fighter whose key is unique and who has fought in the UFC."""
+    _build_indexes()
     return _cache["ufc"]
+
+
+def _catalog_index() -> dict[str, tuple[str, str | None]]:
+    """The same for everyone in the catalog, the people who never fought in the UFC too (their numbers come from the same files)."""
+    _build_indexes()
+    return _cache["everyone"]
 
 
 def ufc_photo(ufc_name: str) -> str | None:
@@ -66,15 +83,40 @@ def _linked(ufc: tuple[str, str | None], org_division: str | None) -> bool:
     return ufc_rank is None or org_rank is None or abs(ufc_rank - org_rank) <= MAX_DIVISION_GAP
 
 
+def ufc_name_for(name: str, division: str | None) -> str | None:
+    """The UFC name of the same person as an organization's fighter, or None when no name passes every guard above."""
+    index = _ufc_index()
+    match = index.get(_name_key(name)) or index.get(_name_key(canonical_name(name) or ""))
+    return match[0] if match and _linked(match, division) else None
+
+
+def catalog_matcher():
+    """A function (name, division) -> the catalog name of the same person, whether or not they ever fought in the UFC.
+
+    For the career numbers the catalog holds, which are the person's own whatever promotion they fought in. Same guards on the
+    name (unique) and the division (same sex, at most MAX_DIVISION_GAP apart), but not the one about having fought in the UFC.
+    The index is read once, so a whole organization can be matched without asking for it again on every fighter."""
+    index = _catalog_index()
+
+    def match_name(name: str, division: str | None) -> str | None:
+        match = index.get(_name_key(name)) or index.get(_name_key(canonical_name(name) or ""))
+        return match[0] if match and _linked(match, division) else None
+
+    return match_name
+
+
+def catalog_name_for(name: str, division: str | None) -> str | None:
+    """One-off form of catalog_matcher."""
+    return catalog_matcher()(name, division)
+
+
 def ufc_names_for_org(org_id: str) -> dict[str, str]:
     """Org fighter name key -> the UFC name of the same person, for the fighters of that organization who fought in the UFC."""
-    index = _ufc_index()
     links: dict[str, str] = {}
     for fighter in get_org_fighters(org_id):
-        key = _name_key(fighter["name"])
-        match = index.get(key) or index.get(_name_key(canonical_name(fighter["name"]) or ""))
-        if match and _linked(match, fighter["division"]):
-            links[key] = match[0]
+        ufc_name = ufc_name_for(fighter["name"], fighter["division"])
+        if ufc_name:
+            links[_name_key(fighter["name"])] = ufc_name
     return links
 
 

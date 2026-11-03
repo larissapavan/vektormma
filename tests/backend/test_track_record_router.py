@@ -80,3 +80,37 @@ def test_no_note_when_every_pick_comes_from_the_current_model(client, fake_log):
     service.save_log(pd.DataFrame([row("new", 0.6, "")], columns=service.LOG_COLUMNS))  # logged 2026-11-01
     body = client.get("/track-record").json()
     assert body["earlier_model_picks"] == 0 and body["earlier_model_note"] is None
+
+
+def test_one_model_alone_has_no_per_model_table_and_no_change_note(client, fake_log):
+    service.save_log(pd.DataFrame([row("a", 0.6, "True", winner="A"), row("b", 0.7, "")], columns=service.LOG_COLUMNS))
+    body = client.get("/track-record").json()
+    assert body["models"] == [] and body["model_change_note"] is None
+
+
+def test_picks_of_the_prefight_model_are_counted_apart_from_the_earlier_ones(client, fake_log):
+    old_right = {**row("o1", 0.9, "True", winner="A"), "logged_at": "2026-10-25"}  # no "model": saved before the column existed
+    old_wrong = {**row("o2", 0.8, "False", winner="B"), "logged_at": "2026-10-26"}
+    new_right = {**row("n1", 0.6, "True", winner="A"), "logged_at": "2026-11-10", "model": "prefight"}
+    new_pending = {**row("n2", 0.65, ""), "logged_at": "2026-11-10", "model": "prefight"}
+    service.save_log(pd.DataFrame([old_right, old_wrong, new_right, new_pending], columns=service.LOG_COLUMNS))
+
+    body = client.get("/track-record").json()
+    current, prefight = body["models"]
+    assert (current["model"], current["label"], current["since"]) == ("current", "Current model", "2026-10-25")
+    assert (current["logged"], current["resolved"], current["correct"], current["accuracy"]) == (2, 2, 1, 0.5)
+    assert (prefight["model"], prefight["label"], prefight["since"]) == ("prefight", "Pre-fight model", "2026-11-10")
+    assert (prefight["logged"], prefight["resolved"], prefight["correct"], prefight["accuracy"]) == (2, 1, 1, 1.0)
+    assert body["model_change_note"] == (
+        "2 of these picks were saved by the pre-fight model, in use since 2026-11-10. "
+        "Earlier picks came from the model it replaced and are kept exactly as they were shown. "
+        "The record of each model is counted separately below."
+    )
+    assert body["logged"] == 4  # the overall numbers still count every pick
+
+
+def test_a_log_file_from_before_the_model_column_still_loads(client, fake_log):
+    old = pd.DataFrame([row("a", 0.6, "True", winner="A")], columns=service.LOG_COLUMNS).drop(columns=["model"])
+    old.to_csv(fake_log, index=False)
+    assert service.load_log()["model"].tolist() == [""]
+    assert client.get("/track-record").json()["logged"] == 1

@@ -25,11 +25,16 @@ LOG_COLUMNS = [
     "winner",
     "correct",
     "resolved_at",
+    "model",
 ]
 CONFIDENCE_BANDS = [(0.5, 0.6, "50-60%"), (0.6, 0.7, "60-70%"), (0.7, 0.8, "70-80%"), (0.8, 1.01, "80%+")]
 # Picks saved before this day came from the first version of the model, which answered differently depending on which
 # fighter was listed first. From this day on the pick is the average of both orders.
 SYMMETRIC_MODEL_SINCE = "2026-10-20"
+# The model that made a pick is stored with it. A row saved before the column existed has none: it came from the only
+# model there was.
+DEFAULT_MODEL = "current"
+MODEL_LABELS = {"current": "Current model", "prefight": "Pre-fight model"}
 RECENT_LIMIT = 15
 MISS_LIMIT = 5
 
@@ -39,7 +44,10 @@ _cache: dict = {"signature": None, "data": None}
 def load_log() -> pd.DataFrame:
     if not PREDICTION_LOG_PATH.exists():
         return pd.DataFrame(columns=LOG_COLUMNS)
-    return pd.read_csv(PREDICTION_LOG_PATH, keep_default_na=False, dtype=str)
+    log = pd.read_csv(PREDICTION_LOG_PATH, keep_default_na=False, dtype=str)
+    if "model" not in log:
+        log["model"] = ""
+    return log
 
 
 def save_log(log: pd.DataFrame) -> None:
@@ -66,6 +74,8 @@ def _build(log: pd.DataFrame) -> dict:
             "pending": 0,
             "earlier_model_picks": 0,
             "earlier_model_note": None,
+            "model_change_note": None,
+            "models": [],
             "next_event": None,
             "bands": [],
             "recent": [],
@@ -103,6 +113,7 @@ def _build(log: pd.DataFrame) -> dict:
     misses = resolved[~resolved["correct_flag"]].sort_values("confidence", ascending=False)
 
     earlier = int((log["logged_at"] < SYMMETRIC_MODEL_SINCE).sum())
+    models = _by_model(log)
     return {
         "tracking_since": log["logged_at"].min() or None,
         "logged": int(len(log)),
@@ -113,6 +124,8 @@ def _build(log: pd.DataFrame) -> dict:
         "pending": int(len(pending)),
         "earlier_model_picks": earlier,
         "earlier_model_note": _earlier_model_note(earlier),
+        "model_change_note": _model_change_note(log, models),
+        "models": models,
         "next_event": next_event,
         "bands": bands,
         "recent": recent,
@@ -127,6 +140,44 @@ def _earlier_model_note(count: int) -> str | None:
         f"{count} of these picks were saved before {SYMMETRIC_MODEL_SINCE}, by an earlier version of the model that gave "
         "a different answer depending on which fighter was listed first. They are kept exactly as they were shown. "
         "Picks saved from that day on use the corrected version."
+    )
+
+
+def _by_model(log: pd.DataFrame) -> list[dict]:
+    """Each model's own record, oldest model first. Empty while only one model has made picks: there is nothing to tell apart."""
+    keys = log["model"].where(log["model"] != "", DEFAULT_MODEL)
+    if keys.nunique() < 2:
+        return []
+    settled = log["correct"].isin(["True", "False"])
+    rows = []
+    for key in sorted(keys.unique(), key=lambda k: log.loc[keys == k, "logged_at"].min()):
+        own = keys == key
+        resolved = int((own & settled).sum())
+        correct = int((own & (log["correct"] == "True")).sum())
+        rows.append(
+            {
+                "model": key,
+                "label": MODEL_LABELS.get(key, key),
+                "since": log.loc[own, "logged_at"].min(),
+                "logged": int(own.sum()),
+                "resolved": resolved,
+                "correct": correct,
+                "accuracy": correct / resolved if resolved else None,
+            }
+        )
+    return rows
+
+
+def _model_change_note(log: pd.DataFrame, models: list[dict]) -> str | None:
+    """Said once picks of a newer model sit in the log next to the earlier ones."""
+    newer = [m for m in models if m["model"] != DEFAULT_MODEL]
+    if not newer:
+        return None
+    latest = newer[-1]
+    return (
+        f"{latest['logged']} of these picks were saved by the {latest['label'].lower()}, in use since {latest['since']}. "
+        "Earlier picks came from the model it replaced and are kept exactly as they were shown. "
+        "The record of each model is counted separately below."
     )
 
 

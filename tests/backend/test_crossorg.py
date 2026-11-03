@@ -112,3 +112,15 @@ def test_the_prediction_does_not_change_when_the_history_is_shown(client, monkey
     client.get(f"/fighters/{PICO}/other-organizations")
     after = client.post("/predict", json={"fighter_a": PICO, "fighter_b": "Sean O'Malley"})
     assert after.json()["fighter_a_probability"] == before.json()["fighter_a_probability"]
+
+
+def test_the_career_numbers_of_a_namesake_in_another_division_are_not_borrowed():
+    # Steven Graham is a UFC heavyweight; the Bellator Steven Graham is a bantamweight: not the same person.
+    assert crossorg.catalog_name_for("Steven Graham", "Bantamweight") is None
+    assert crossorg.catalog_name_for("Steven Graham", "Heavyweight") == "Steven Graham"
+
+
+def test_the_career_numbers_of_someone_who_never_fought_in_the_ufc_are_still_theirs():
+    # AJ McKee never fought in the UFC, yet the catalog holds his own numbers: the link to a UFC profile needs the UFC fight, the numbers do not.
+    assert crossorg.ufc_name_for("AJ McKee", "Featherweight") is None
+    assert crossorg.catalog_name_for("AJ McKee", "Featherweight") == "AJ McKee"

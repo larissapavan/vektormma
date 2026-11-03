@@ -88,9 +88,8 @@ def picks_for(monkeypatch, org_id, discipline):
     return org_service.get_org_upcoming_predictions(org_id, FakeService())
 
 
-def test_a_pfl_or_bellator_bout_gets_a_pick_although_their_files_have_no_sport_column(monkeypatch):
+def test_a_pfl_bout_gets_a_pick_although_its_file_has_no_sport_column(monkeypatch):
     assert len(picks_for(monkeypatch, "pfl", None)) == 1
-    assert len(picks_for(monkeypatch, "bellator", None)) == 1
 
 
 def test_a_bout_that_names_another_sport_gets_no_pick_anywhere(monkeypatch):
@@ -102,3 +101,4 @@ def test_a_bout_that_names_another_sport_gets_no_pick_anywhere(monkeypatch):
 def test_an_organization_that_does_not_name_the_sport_and_is_not_mma_only_gets_no_pick(monkeypatch):
     assert picks_for(monkeypatch, "one", None) == []
     assert picks_for(monkeypatch, "rizin", None) == []
+    assert picks_for(monkeypatch, "bellator", None) == []  # an archive: no predictions on its page, so none are made for it

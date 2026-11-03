@@ -41,9 +41,9 @@ def fight_key(event_date: str, fighter_1: str, fighter_2: str) -> str:
 def log_upcoming(service=None, today: str | None = None) -> int:
     """Add a prediction for every announced fight that is not in the log yet. Returns how many were added."""
     if service is None:
-        from backend.app.services.prediction_service import PredictionService
+        from backend.app.services.prefight_service import build_prediction_service
 
-        service = PredictionService()
+        service = build_prediction_service()  # the model the site is serving (PREDICTION_MODEL)
     today = today or date.today().isoformat()
     log = load_log()
     known = set(log["fight_key"])
@@ -78,6 +78,7 @@ def log_upcoming(service=None, today: str | None = None) -> int:
                     "winner": "",
                     "correct": "",
                     "resolved_at": "",
+                    "model": getattr(service, "model_key", "current"),
                 }
             )
     if added:
@@ -92,9 +93,9 @@ def refresh_unresolved(service=None, today: str | None = None) -> int:
     place stays exactly as it was shown, and so does every settled one: the log records what the site said at the time,
     not what a newer model would have said. A re-made pick is still made before its fight, so it stays a real prediction."""
     if service is None:
-        from backend.app.services.prediction_service import PredictionService
+        from backend.app.services.prefight_service import build_prediction_service
 
-        service = PredictionService()
+        service = build_prediction_service()
     today = today or date.today().isoformat()
     log = load_log()
 
@@ -104,11 +105,12 @@ def refresh_unresolved(service=None, today: str | None = None) -> int:
             result = service.predict_pick(log.at[index, "fighter_1"], log.at[index, "fighter_2"])
         except KeyError:
             continue  # no longer in the catalog: leave the saved pick as it is
-        log.loc[index, ["prob_fighter_1", "predicted_winner", "confidence", "logged_at"]] = [
+        log.loc[index, ["prob_fighter_1", "predicted_winner", "confidence", "logged_at", "model"]] = [
             f"{result['fighter_a_probability']:.4f}",
             result["predicted_winner"],
             f"{result['probability']:.4f}",
             today,
+            getattr(service, "model_key", "current"),
         ]
         refreshed += 1
     if refreshed:

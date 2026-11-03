@@ -192,7 +192,7 @@ def _integer(value) -> int | None:
 def _signature(org: Org) -> tuple:
     return tuple(
         (org.data_dir / name).stat().st_mtime_ns if (org.data_dir / name).exists() else None
-        for name in ("fights.csv", "fighters.csv", "rankings.csv")
+        for name in ("fights.csv", "fighters.csv", "rankings.csv", "fighter_stats.csv")
     )
 
 
@@ -335,6 +335,7 @@ def _build_fighters(
     rankings: list[dict],
     upcoming: dict[str, dict],
     today: str,
+    season_stats: dict[str, list[dict]] | None = None,
 ) -> list[dict]:
     """One entry per person: when a person has two profile pages, the one with the latest fight wins."""
     chosen: dict[str, dict] = {}
@@ -355,6 +356,11 @@ def _build_fighters(
                 positions.setdefault(key, f"{'Interim ' if entry['status'] == 'interim' else ''}Champion · {category['category']}")
             elif entry["rank"] > 0:
                 positions.setdefault(key, f"#{entry['rank']} {category['category'].replace('Pound-for-Pound', 'P4P')}")
+
+    from backend.app.services.crossorg_service import catalog_matcher  # imported here: crossorg_service imports this module
+
+    ufc_stats = _get_ufc_career_stats()
+    match_catalog = catalog_matcher() if ufc_stats else (lambda name, division: None)
 
     fighters = []
     for key, row in chosen.items():
@@ -385,9 +391,10 @@ def _build_fighters(
             else:
                 break
 
-        # Striking & Grappling stats (from UFC career stats if crossover, else calculated from combat performance)
-        ufc_stat = _get_ufc_career_stats().get(key)
-        wr = round(wins / decided, 4) if wins is not None and decided else 0.5
+        # Striking & grappling stats: only a fighter who also has UFC career stats has any, and only when the name passes
+        # the same name and division guards as the link to the UFC profile (a namesake in another division is not the same person).
+        catalog_name = match_catalog(row["name"], division)
+        ufc_stat = ufc_stats.get(_name_key(catalog_name)) if catalog_name else None
 
         if ufc_stat:
             try:
@@ -422,18 +429,9 @@ def _build_fighters(
                 sub_avg = float(ufc_stat.get("sub_avg", 0)) if ufc_stat.get("sub_avg") else None
             except (ValueError, TypeError):
                 sub_avg = None
-        elif len(fights) > 0 or (wins or 0) > 0:
-            eff_ko = ko_rate if ko_rate is not None else 0.4
-            eff_sub = sub_rate if sub_rate is not None else 0.2
-            sig_str_acc = round(min(0.70, max(0.40, 0.48 + eff_ko * 0.16 + (wr - 0.5) * 0.08)), 2)
-            slpm = round(min(7.5, max(2.5, 3.8 + eff_ko * 2.4 + (1.2 if (row.get("circuit") == "ONE Championship" and "muay" in (row.get("camp", "") or "").lower()) else 0))), 2)
-            sapm = round(max(1.8, min(5.5, 3.2 - (wr - 0.5) * 1.5 + eff_ko * 0.6)), 2)
-            str_def = round(min(0.75, max(0.48, 0.56 + (wr - 0.5) * 0.12)), 2)
-            td_avg = round(min(5.0, max(0.0, (eff_sub * 2.8) if eff_sub > 0.1 else 0.6)), 2)
-            td_acc = round(min(0.70, max(0.30, 0.42 + eff_sub * 0.2)), 2)
-            td_def = round(min(0.90, max(0.55, 0.65 + (wr - 0.5) * 0.25)), 2)
-            sub_avg = round(min(3.5, max(0.0, eff_sub * 2.2)), 2)
         else:
+            # No measured numbers outside the UFC: these stay empty. They used to be estimated here from the win rate and the
+            # finish rates and shown as if measured, which also made the model read the record a second time.
             sig_str_acc = None
             slpm = None
             sapm = None
@@ -488,10 +486,32 @@ def _build_fighters(
                 "ko_rate": ko_rate,
                 "sub_rate": sub_rate,
                 "win_streak": win_streak,
+                "season_stats": (season_stats or {}).get(row.get("slug") or "", []),
             }
         )
     fighters.sort(key=lambda fighter: (not fighter["is_active"], _name_key(fighter["name"])))
     return fighters
+
+
+SEASON_STAT_FIELDS = (
+    "max_punch_speed_mph", "strikes", "arm_strikes", "leg_strikes", "ground_strikes", "takedowns", "inner_zone_pct", "outer_zone_pct",
+)
+
+
+def _season_stats(org: Org) -> dict[str, list[dict]]:
+    """slug -> the seasons an organization prints stats for (fighter_stats.csv), newest first. A row with an empty season only
+    records that the fighter's page was read and prints none."""
+    seasons: dict[str, list[dict]] = {}
+    for row in _read_rows(org.data_dir / "fighter_stats.csv"):
+        season = _integer(row.get("season"))
+        if season is None:
+            continue
+        seasons.setdefault(row["slug"], []).append(
+            {"season": season, **{field: _text(row.get(field)) for field in SEASON_STAT_FIELDS}}
+        )
+    for rows in seasons.values():
+        rows.sort(key=lambda item: item["season"], reverse=True)
+    return seasons
 
 
 def _build(org: Org) -> dict:
@@ -522,10 +542,11 @@ def _build(org: Org) -> dict:
     fighter_rows = _read_rows(org.data_dir / "fighters.csv")
 
     # Rankings need the win rates, the fighters need the titles: build the fighters twice, the first time without titles.
-    provisional = _build_fighters(fighter_rows, history, [], next_fight, today)
+    season_stats = _season_stats(org)
+    provisional = _build_fighters(fighter_rows, history, [], next_fight, today, season_stats)
     provisional_by_key = {_name_key(fighter["name"]): fighter for fighter in provisional}
     rankings = _build_rankings(ranking_rows, provisional_by_key, last_fight)
-    fighters = _build_fighters(fighter_rows, history, rankings, next_fight, today)
+    fighters = _build_fighters(fighter_rows, history, rankings, next_fight, today, season_stats)
 
     checked = sorted(row.get("checked") or "" for row in fighter_rows)
     return {
@@ -588,7 +609,7 @@ def is_mma(discipline: str | None) -> bool:
 
 
 # Organizations that only hold MMA bouts, so their files have no sport column to say so.
-MMA_ONLY_ORGS = frozenset({"pfl", "bellator"})
+MMA_ONLY_ORGS = frozenset({"pfl"})
 
 
 def get_org_upcoming_predictions(org_id: str, service: Any) -> list[dict[str, Any]]:

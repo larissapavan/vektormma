@@ -54,6 +54,8 @@ def _heavier_division(*divisions: str | None) -> str:
 
 
 class PrefightPredictionService(PredictionService):
+    model_key = PREFIGHT
+
     def __init__(self, model_path=PREFIGHT_MODEL_PATH, raw_dir=RAW_DATA_DIR) -> None:
         if not model_path.exists():
             raise FileNotFoundError(

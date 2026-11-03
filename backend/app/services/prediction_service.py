@@ -137,6 +137,9 @@ def _first_wins(probability: float, name_first: str, name_second: str) -> bool:
 
 
 class PredictionService:
+    # What the track record writes next to every pick it saves, so picks of different models are counted apart.
+    model_key = "current"
+
     def __init__(self) -> None:
         if not MODEL_PATH.exists():
             raise FileNotFoundError(

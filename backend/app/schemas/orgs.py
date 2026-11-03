@@ -20,6 +20,21 @@ class NextFight(BaseModel):
     opponent: str
 
 
+class OrgSeasonStats(BaseModel):
+    """What an organization prints for one fighter in one season, as it prints it. The tallies are "landed/attempted"
+    ("76/144"); they are the organization's own counts and are not comparable to the UFC's significant strikes."""
+
+    season: int
+    max_punch_speed_mph: str | None = None
+    strikes: str | None = None
+    arm_strikes: str | None = None
+    leg_strikes: str | None = None
+    ground_strikes: str | None = None
+    takedowns: str | None = None
+    inner_zone_pct: str | None = None
+    outer_zone_pct: str | None = None
+
+
 class OrgFighter(BaseModel):
     """A fighter of an organisation other than the UFC (data/raw/<org>/fighters.csv)."""
 
@@ -55,6 +70,7 @@ class OrgFighter(BaseModel):
     first_fight_date: str | None = None
     last_fight_date: str | None = None
     next_fight: NextFight | None = None
+    season_stats: list[OrgSeasonStats] = []  # newest season first; empty for an organization that prints none
 
 
 class OrgFight(FightResult):

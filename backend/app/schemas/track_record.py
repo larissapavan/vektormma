@@ -19,6 +19,18 @@ class ConfidenceBand(BaseModel):
     accuracy: float
 
 
+class ModelRecord(BaseModel):
+    """One model's own record, shown once more than one model has made picks."""
+
+    model: str  # "current" | "prefight"
+    label: str
+    since: str  # the day of its first saved pick
+    logged: int
+    resolved: int
+    correct: int
+    accuracy: float | None = None
+
+
 class NextEvent(BaseModel):
     name: str
     date: str
@@ -34,6 +46,8 @@ class TrackRecordResponse(BaseModel):
     pending: int
     earlier_model_picks: int = 0
     earlier_model_note: str | None = None
+    model_change_note: str | None = None
+    models: list[ModelRecord] = []
     next_event: NextEvent | None = None
     bands: list[ConfidenceBand]
     recent: list[TrackedFight]
