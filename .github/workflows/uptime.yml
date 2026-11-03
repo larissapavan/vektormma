@@ -1,0 +1,29 @@
+name: Uptime
+
+# Every half hour: is the site up, is the API answering, is the data fresh (scripts/check_site.py)?
+# A failing run is the alert: GitHub e-mails the person who last edited this schedule.
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: uptime
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check the site, the API and the freshness of the data
+        run: python -m scripts.check_site
