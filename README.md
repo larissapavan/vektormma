@@ -1,233 +1,124 @@
 # Vektor MMA
 
-<p align="center">
-  <strong>More than fight statistics. A new perspective on MMA intelligence.</strong>
-</p>
+![Vektor MMA](frontend/public/og-image.jpg)
 
-<p align="center">
-  Explore fighters, compare matchups, analyze historical data and discover the science behind every prediction.
-</p>
+Vektor MMA is a free website about mixed martial arts. You can look up fighters, follow events and rankings, and see the win probability my model gives for upcoming UFC fights, together with the reasons behind it.
 
-<p align="center">
-  <a href="https://www.vektormma.com/">
-    <strong>EXPLORE VEKTOR MMA →</strong>
-  </a>
-</p>
+**Live site: [www.vektormma.com](https://www.vektormma.com/)**
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
-  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Machine_Learning-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white" alt="Machine Learning" />
-  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" alt="FastAPI" />
-</p>
+This is a personal project. I designed it, wrote it and keep it running on my own: the data collection, the prediction model, the API behind the site and the website itself. It is available in Portuguese, English, French and Spanish.
 
-<p align="center">
-  <a href="https://www.youtube.com/@Vektor-MMA"><img src="https://img.shields.io/badge/YouTube-@Vektor--MMA-FF0000?style=flat-square&logo=youtube&logoColor=white" alt="YouTube" /></a>
-  <a href="https://www.instagram.com/vektormma"><img src="https://img.shields.io/badge/Instagram-@vektormma-E4405F?style=flat-square&logo=instagram&logoColor=white" alt="Instagram" /></a>
-  <a href="https://www.tiktok.com/@vektormma"><img src="https://img.shields.io/badge/TikTok-@vektormma-000000?style=flat-square&logo=tiktok&logoColor=white" alt="TikTok" /></a>
-</p>
+## What you can do on the site
 
----
+There is nothing to install. Open the link and try any of these:
 
-## About Vektor MMA
+- **Home page.** The next UFC main event, with the model's pick and a link to the factors behind it.
+- **[Fight predictor](https://www.vektormma.com/predictor).** Choose any two fighters and see the probability for each side, plus the factors that pushed it that way.
+- **[Fighters](https://www.vektormma.com/fighters).** Search for an athlete and open a profile with the full career record, fight history and physical stats.
+- **[Track record](https://www.vektormma.com/track-record).** Every prediction the model made, saved before the fight and checked after it. The wrong ones are there too.
+- **[Rankings](https://www.vektormma.com/rankings), [champions](https://www.vektormma.com/champions) and [events](https://www.vektormma.com/events).** Divisional and pound-for-pound rankings, title history, upcoming cards and past results.
+- **Ten other organizations.** PFL, ONE Championship, Bellator, RIZIN, KSW, LFA, Cage Warriors, OKTAGON, Jungle Fight and Invicta FC, each with its own fighters and events.
+- **[How the model works](https://www.vektormma.com/model).** The same explanation as below, with the live numbers.
 
-**Vektor MMA** is an independent MMA intelligence platform built to transform combat sports data into meaningful insights.
+## How a prediction is made
 
-Combining historical fight records, statistical analysis, Machine Learning and explainable AI, the platform provides an interactive environment for exploring the world of mixed martial arts.
+1. **Collect.** The site stores the results of thousands of past fights and the statistics of each fighter: age, height, reach, win record, how accurately they strike and take opponents down.
+2. **Learn.** A program looks at those past fights and finds patterns. For example, how an age gap or a reach advantage relates to winning. This is what people mean by machine learning.
+3. **Predict.** For two fighters, the program compares their numbers and returns a probability for each. It runs the comparison twice, once with each fighter listed first, and averages the two answers. Without that step the result could change depending on who is called "red corner" and who is "blue corner".
+4. **Explain.** A method called SHAP breaks the answer down and shows which numbers pushed it toward one fighter or the other.
 
-From individual fighter profiles to predictive matchup analysis, Vektor MMA brings together the information, context and technology behind the sport.
+## How good is it?
 
-Whether you're an MMA enthusiast, analyst or researcher, the platform offers a deeper way to understand fighters, organizations and the dynamics of combat sports.
+Not as good as the first number I saw, and the site says so.
 
-## Explore the Platform
+I measured the model on 1,753 UFC fights from June 2023 to October 2026, using each fighter's age and record as they stood on the day of the fight:
 
-### Fight Predictions & Matchup Intelligence
-
-Explore predictive analysis for matchups between professional fighters.
-
-- Machine Learning-based fight predictions.
-- Estimated winning probabilities for both fighters.
-- Statistical comparison of fighter attributes.
-- Hypothetical matchup simulations.
-- SHAP-powered explanations highlighting the factors influencing predictions.
-
-Understand not only who the model favors, but also which statistical characteristics contribute to its assessment.
-
-### Fighter Profiles
-
-Discover detailed information about professional MMA athletes.
-
-- Complete professional career records.
-- UFC-specific fight history.
-- Physical attributes and fighting stance.
-- Career timelines organized by year.
-- Fight results, methods of victory and championship appearances.
-- Historical participation across multiple organizations.
-
-Explore each fighter's career beyond their most recent performance.
-
-### Rankings & Champions
-
-Follow the competitive landscape of MMA.
-
-- Divisional rankings.
-- Pound-for-Pound rankings.
-- Current and former champions.
-- Championship history and title lineage.
-- Performance statistics and fighter records.
-
-### Events & Fight History
-
-Stay connected to the sport through historical and upcoming events.
-
-- Upcoming fight cards.
-- Historical event information.
-- Fight results and methods of victory.
-- Championship bouts and special title designations.
-- Referee and judging information where available.
-
-### Multi-Organization Coverage
-
-Explore information from different organizations across the combat sports ecosystem.
-
-| Organization | Coverage |
+| Way of picking the winner | Fights picked right |
 |---|---|
-| UFC | Historical fights, fighters, rankings and predictive analysis |
-| PFL | Events, athletes and tournament information |
-| ONE Championship | Fighters, events and organizational data |
-| Bellator MMA | Historical records and organizational information |
-| RIZIN Fighting Federation | Fighter profiles and event results (ESPN to 2024, Sherdog from 2025) |
-| KSW | Fighter profiles and event results (ESPN to 2024, Sherdog from 2025) |
-| LFA | Fighter profiles and event results (ESPN coverage) |
-| Cage Warriors | Fighter profiles and event results (ESPN coverage) |
-| OKTAGON MMA | Fighter profiles, event results and upcoming cards (from its own site) |
-| Jungle Fight | Fighter profiles and event results (Sherdog coverage) |
-| Invicta FC | Fighter profiles and event results (Sherdog coverage) |
+| Flip a coin | 50% |
+| Always pick the fighter with more UFC wins | 48.7% |
+| Always pick the fighter with the better Elo rating | 55.5% |
+| **Vektor MMA model** | **62.2%** |
 
-### Prediction Track Record
+What that means in practice:
 
-Transparency is an important part of predictive modeling.
+- 62% is clearly better than guessing, and it is far from certain. MMA is hard to predict, and a single punch can change a fight. Treat the number as an informed estimate.
+- The probabilities are too confident. When the model was 90% sure or more, it was right about 71% of the time. The site tells visitors to read its percentages as rough.
+- The model file I started with claimed 74.7% accuracy. That figure came from training data that is not in this repository, and I could not reproduce it. I replaced it with the measured result above, on the site and here.
+- I also trained a second model that only uses what was known before each fight and is tested on later fights than it trained on. It scores about the same (62.4%) with better calibrated probabilities. It is documented in [`docs/`](docs/) and is not live yet.
+- The live track record starts on 15 October 2026. It is a small sample so far, so I would not draw conclusions from it yet. The current numbers are on the [track record page](https://www.vektormma.com/track-record).
 
-The platform includes historical prediction records and evaluation metrics to help users understand model performance.
+This is a learning project, not betting advice.
 
-- Historical predictions.
-- Overall accuracy.
-- Brier Score.
-- Probability calibration.
-- Model performance analysis.
+## What it is made of
 
-### Gyms & Training Teams
+| Part | What it does | Main tools |
+|---|---|---|
+| Data collection | Reads public sources, cleans and checks the data, and refreshes it every day at 07:00 UTC | Python, pandas, GitHub Actions |
+| Prediction model | Estimates the winner of a fight and explains why | scikit-learn (gradient boosting, 46 inputs), SHAP |
+| API | Serves the data and the predictions to the website | FastAPI, Docker, Railway |
+| Website | What visitors see and click | React 19, TypeScript, Vite, Tailwind CSS, Recharts, Framer Motion, Vercel |
 
-Explore the connections between professional fighters and their training environments.
+The data covers about 18,000 fighter profiles and more than 25,000 fights across 11 organizations.
 
-Discover teams, gyms and fighter affiliations from different parts of the MMA world.
+## Engineering notes
 
-### Multilingual Experience
+For readers who want to see how it was built.
 
-Vektor MMA is available in four languages:
+**Data**
+- A daily GitHub Actions job pulls fresh results, rankings and photos, validates them, runs the test suite and commits the result. The API then redeploys with the new data. If one source fails, the rest of the day's data is still validated and committed, and the run is marked as failed so the problem is visible.
+- Scrapers wait between requests and stay within each site's published `robots.txt` rules where one applies. When a source blocks automated access, I do not try to get around it.
+- The historical UFC data is also published as a [public dataset on Kaggle](https://www.kaggle.com/datasets/larissapavan/ufc-historical-fight-dataset-19942026).
 
-- Portuguese (Brazil)
-- English
-- French
-- Spanish (Latin America)
+**Model**
+- Most of the 46 inputs are differences between the two fighters (age, reach, win rate, striking accuracy) rather than raw values.
+- Predictions are saved before each event and settled automatically afterwards. When I fixed a bug in the model, the earlier picks were kept exactly as they were shown, and the site marks them as coming from the earlier version.
+- A confidence table on the site compares how sure the model said it was with how often it was right.
 
-Each language is written out in full with the terms MMA coverage uses in that language, not translated word for word: only fighter names, event and organization names, and a few terms with no real equivalent are shared. The glue is `frontend/src/i18n/lang.ts`: `L(language, pt, en, fr, es)` needs all four texts, so a missing translation is a compile error.
+**Website**
+- The site is a single-page React app, which search engines and link previews read poorly. A build step writes a static HTML page for every route, every active UFC fighter and every announced fight, in each of the four languages: over 3,000 addresses. Each page has its own title, description, share image, language tags and structured data.
+- Every piece of text exists in all four languages. A small helper, `L(language, pt, en, fr, es)`, requires all four, so a missing translation fails the build. The texts are written the way MMA coverage is written in each language, not translated word for word.
+- Accessibility: keyboard focus is visible, color contrast was measured in both the dark and light themes, and automated accessibility checks run in a real browser.
+- Pages load on demand, and the API answers are cached by the browser, to keep the first visit fast.
 
----
+**Quality and operation**
+- About 1,100 automated tests: Python tests for the API, the data pipeline and the model, TypeScript tests for every page, and browser tests for language switching and the HTML that search engines receive. They run on every change in GitHub Actions, together with the linter and the type checker.
+- A separate job checks every 30 minutes that the site and the API are up and that the data is recent.
+- The API limits how often one visitor can call it, the site sends security headers, and the API has a health check that Railway uses when it deploys, and restarts itself if it crashes.
+- A cookie consent notice is set up for visitors in Europe. There is a privacy policy, and the site's own analytics do not use cookies.
 
-## The Technology Behind the Platform
+## Words used above
 
-Vektor MMA combines modern web development with data science and artificial intelligence.
+- **API.** The part of the system that the website asks for data. It sits between the stored data and what you see on screen.
+- **Machine learning.** A program that learns patterns from past examples instead of following rules written by hand.
+- **Calibration.** Whether "70% sure" really means "right 70% of the time". A well calibrated model is not overconfident.
+- **SHAP.** A method that shows how much each input pushed a prediction up or down.
+- **Elo rating.** A scoring system, first used in chess, that goes up when you win and down when you lose, depending on how strong the opponent was.
+- **Scraping.** Reading information from public web pages with a program.
+- **Single-page app.** A website that loads once and then changes the screen with JavaScript, instead of loading a new page for each click.
 
-| Area | Technologies |
-|---|---|
-| Frontend | React, TypeScript, Vite |
-| Backend | Python, FastAPI |
-| Machine Learning | Scikit-learn |
-| Explainable AI | SHAP |
-| Data Processing | Pandas, NumPy |
-| Data Visualization | Recharts |
-| Styling & Animation | Tailwind CSS, Framer Motion |
-| Automated Data Updates | GitHub Actions |
-| Deployment | Vercel, Railway |
+## Data sources
 
-### Machine Learning & Explainable AI
+Data comes from public sources: [UFCStats](http://ufcstats.com/), [UFC](https://www.ufc.com/), [ESPN MMA](https://www.espn.com/mma/), [Tapology](https://www.tapology.com/), [Sherdog](https://www.sherdog.com/), [PFL](https://pflmma.com/), [ONE Championship](https://www.onefc.com/) and [OKTAGON MMA](https://oktagonmma.com/). Coverage varies by organization. The full list, with what each source is used for, is on the site's [about page](https://www.vektormma.com/about).
 
-The predictive engine uses a HistGradientBoostingClassifier model to estimate fight outcomes based on historical data and fighter attributes.
+## Where things are in the repository
 
-Probability calibration helps produce more meaningful estimates, while SHAP provides insights into the contribution of individual features.
-
-The system also evaluates matchups in both fighter orders to reduce red/blue corner positional bias.
-
-The goal is to make predictive analysis more transparent and understandable, rather than presenting predictions as unquestionable results.
-
-### Data & Automation
-
-The platform integrates information from multiple public sources, supported by automated data collection, validation and scheduled updates.
-
-Data sources include:
-
-- [UFCStats](http://ufcstats.com/)
-- [UFC](https://www.ufc.com/)
-- [ESPN MMA](https://www.espn.com/mma/)
-- [Tapology](https://www.tapology.com/)
-- [Sherdog](https://www.sherdog.com/)
-- [PFL](https://pflmma.com/)
-- [ONE Championship](https://www.onefc.com/)
-- [OKTAGON MMA](https://oktagonmma.com/)
-
-Source availability and data coverage may vary.
-
----
-
-## Why Vektor MMA?
-
-MMA is more than wins and losses.
-
-Every matchup involves different fighting styles, physical attributes, technical skills and historical performances.
-
-Vektor MMA brings these elements together in one platform, combining sports knowledge with data-driven analysis.
-
-**Explore the numbers. Understand the matchups. Discover the intelligence behind the fight.**
-
----
-
-## Visit Vektor MMA
-
-<p align="center">
-  <a href="https://www.vektormma.com/">
-    <strong>ACCESS THE PLATFORM →</strong>
-  </a>
-</p>
-
-Explore the platform, discover your favorite fighters and experience a different approach to MMA analytics.
-
----
-
-## Disclaimer
-
-Vektor MMA is an independent project and is not affiliated with, sponsored by or officially endorsed by the UFC, PFL, ONE Championship, Bellator MMA, RIZIN Fighting Federation, KSW, LFA, Cage Warriors, OKTAGON MMA, Jungle Fight, Invicta FC, ESPN or Sherdog.
-
-All predictions are statistical estimates provided for informational and analytical purposes. They do not guarantee fight outcomes.
-
-All third-party trademarks and names belong to their respective owners.
-
----
+- `frontend/` the website (React and TypeScript)
+- `backend/` the API (FastAPI)
+- `src/` and `models/` model training code and the trained models
+- `scripts/` data collection, validation, daily update and monitoring
+- `tests/` Python tests
+- `docs/` model reports and the Kaggle dataset description
+- `.github/workflows/` the CI, daily update and uptime jobs
 
 ## Author
 
-**Larissa Pavan**
+**Larissa Pavan**, software developer working with Python, artificial intelligence and machine learning.
 
-Software Developer | Python | Artificial Intelligence | Machine Learning
+[GitHub](https://github.com/larissapavan) · [LinkedIn](https://www.linkedin.com/in/larissacpavan/) · [YouTube](https://www.youtube.com/@Vektor-MMA) · [Instagram](https://www.instagram.com/vektormma) · [TikTok](https://www.tiktok.com/@vektormma)
 
-[GitHub](https://github.com/larissapavan) · [LinkedIn](https://www.linkedin.com/in/larissacpavan/)
+## Disclaimer
 
-### Vektor MMA Oficial
-- **YouTube**: [@Vektor-MMA](https://www.youtube.com/@Vektor-MMA)
-- **Instagram**: [@vektormma](https://www.instagram.com/vektormma)
-- **TikTok**: [@vektormma](https://www.tiktok.com/@vektormma)
+Vektor MMA is an independent project. It is not affiliated with, sponsored by or endorsed by the UFC, PFL, ONE Championship, Bellator MMA, RIZIN Fighting Federation, KSW, LFA, Cage Warriors, OKTAGON MMA, Jungle Fight, Invicta FC, ESPN or Sherdog. All names and trademarks belong to their owners.
 
-<p align="center">
-  <strong>Built with technology, data and passion for combat sports.</strong>
-</p>
+Predictions are statistical estimates for information only. They do not guarantee any result.
