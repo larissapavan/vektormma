@@ -13,7 +13,7 @@ import { L, localeTag } from '../../i18n/lang'
 import { getDivisionName } from '../../shared/data/divisions'
 import { buildDivisionReigns } from '../../shared/data/orgChampions'
 import { compareDivisions, formatDate, formatRecord } from '../../shared/data/orgFormat'
-import { orgEs, orgPath, type OrgConfig } from '../../shared/data/orgs'
+import { orgEs, orgPath, orgPt, type OrgConfig } from '../../shared/data/orgs'
 import { translateHometown } from '../../shared/data/fightLabels'
 import { useGyms } from '../../shared/hooks/useGyms'
 import { useOrg } from '../../shared/hooks/useOrg'
@@ -195,7 +195,7 @@ export function OrgHome() {
             i18n.language,
             'O Bellator realizou seu último evento em 2023 e foi absorvido pela PFL, portanto este é um arquivo histórico: os dados aqui não são mais atualizados.',
             org.archived ?? 'Archive 2009–2023. Bellator held its last event in 2023.',
-            "Le Bellator a organisé son dernier événement en 2023 avant d'être absorbé par la PFL : il s'agit donc d'archives historiques qui ne sont plus mises à jour.",
+            "Le Bellator a organisé son dernier événement en 2023 avant d’être absorbé par la PFL : il s’agit donc d’archives historiques qui ne sont plus mises à jour.",
             'Bellator realizó su último evento en 2023 y fue absorbido por la PFL, así que este es un archivo histórico: los datos ya no se actualizan.',
           )}
         </p>
@@ -204,8 +204,8 @@ export function OrgHome() {
       {isArchived ? (
         <section aria-label={L(i18n.language, 'Seções do arquivo', 'Archive sections', 'Sections d’archive', 'Secciones del archivo')} className="space-y-3">
           <SectionHeading
-            eyebrow={L(i18n.language, 'Seções do Arquivo', 'Archive sections', "Sections d'archive", 'Secciones del archivo')}
-            title={L(i18n.language, 'Navegue pelo Arquivo Histórico', 'Explore the archive', "Explorer l'archive", 'Explora el archivo histórico')}
+            eyebrow={L(i18n.language, 'Seções do Arquivo', 'Archive sections', "Sections d’archive", 'Secciones del archivo')}
+            title={L(i18n.language, 'Navegue pelo Arquivo Histórico', 'Explore the archive', "Explorer l’archive", 'Explora el archivo histórico')}
           />
           <div className="grid gap-3 sm:grid-cols-3">
             <Link to={orgPath(org, 'events')} className="surface-card rounded-2xl p-4 transition hover:bg-[var(--bg-surface-hover)]">
@@ -244,7 +244,7 @@ export function OrgHome() {
               eyebrow={L(i18n.language, isArchived ? 'Últimos Campeões (2023)' : 'Cinturões', isArchived ? 'Final champions (2023)' : 'Titles', isArchived ? 'Derniers champions (2023)' : 'Ceintures', isArchived ? 'Últimos campeones (2023)' : 'Cinturones')}
               title={L(
                 i18n.language,
-                isArchived ? `Últimos Campeões do ${org.shortName}` : `Campeões do ${org.shortName}`,
+                isArchived ? `Últimos Campeões ${orgPt(org, 'de')}` : `Campeões ${orgPt(org, 'de')}`,
                 isArchived ? `Final ${org.shortName} champions` : `${org.shortName} champions`,
                 isArchived ? `Derniers champions ${org.shortName}` : `Champions ${org.shortName}`,
                 isArchived ? `Últimos campeones de ${orgEs(org)}` : `Campeones de ${orgEs(org)}`,
@@ -289,7 +289,7 @@ export function OrgHome() {
             </ul>
           ) : (
             <p className="text-sm text-[var(--text-muted)]">
-              {L(i18n.language, 'Lista de campeões indisponível no momento.', 'Champions are not available yet.', 'La liste des champions n\'est pas encore disponible.', 'La lista de campeones aún no está disponible.')}
+              {L(i18n.language, 'Lista de campeões indisponível no momento.', 'Champions are not available yet.', 'La liste des champions n’est pas encore disponible.', 'La lista de campeones aún no está disponible.')}
             </p>
           )}
         </section>
@@ -382,7 +382,7 @@ export function OrgHome() {
               i18n.language,
               `Arquivo histórico compilado a partir de ${org.sourceName === 'ESPN and Wikipedia' ? 'ESPN e Wikipedia' : org.sourceName}.`,
               `Archive built from ${org.sourceName}.`,
-              `Archives historiques compilées à partir d'${org.sourceName === 'ESPN and Wikipedia' ? 'ESPN et Wikipédia' : org.sourceName}.`,
+              `Archives historiques compilées à partir d’${org.sourceName === 'ESPN and Wikipedia' ? 'ESPN et Wikipédia' : org.sourceName}.`,
               `Archivo histórico compilado a partir de ${org.sourceName === 'ESPN and Wikipedia' ? 'ESPN y Wikipedia' : org.sourceName}.`,
             )
           : org.partialCoverage
@@ -390,7 +390,7 @@ export function OrgHome() {
                 i18n.language,
                 `Dados de ${org.sourceName}, conforme a cobertura da fonte nesta liga: podem faltar eventos e lutas, e a atualização não é diária. Sem cinturões nem rankings.`,
                 `Data from ${org.sourceName}, as far as the source covers this league: events and fights may be missing, and it is not refreshed daily. No belts or rankings.`,
-                `Données de ${org.sourceName}, dans la mesure où la source couvre cette ligue : des événements et des combats peuvent manquer, et la mise à jour n'est pas quotidienne. Ni ceintures ni classements.`,
+                `Données de ${org.sourceName}, dans la mesure où la source couvre cette ligue : des événements et des combats peuvent manquer, et la mise à jour n’est pas quotidienne. Ni ceintures ni classements.`,
                 `Datos de ${org.sourceName}, según la cobertura de la fuente en esta liga: pueden faltar eventos y peleas, y no se actualiza a diario. Sin cinturones ni rankings.`,
               )
             : L(i18n.language, `Dados oficiais via ${org.sourceName}, sincronizados diariamente.`, `Data from ${org.sourceName}, refreshed daily.`, `Données officielles via ${org.sourceName}, synchronisées chaque jour.`, `Datos oficiales de ${org.sourceName}, actualizados a diario.`)}{' '}
@@ -399,19 +399,19 @@ export function OrgHome() {
               i18n.language,
               'As previsões vêm de um modelo treinado com lutas do UFC e validado só nelas; fora do UFC são menos confiáveis. O histórico de acertos é só do UFC.',
               'Predictions come from a model trained on UFC fights and validated only on them, so outside the UFC they are less reliable. The track record is UFC-only.',
-              "Les prévisions viennent d'un modèle entraîné sur des combats UFC et validé uniquement sur eux : hors UFC, elles sont moins fiables. Le bilan des pronostics ne concerne que l'UFC.",
+              "Les prévisions viennent d’un modèle entraîné sur des combats UFC et validé uniquement sur eux : hors UFC, elles sont moins fiables. Le bilan des pronostics ne concerne que l’UFC.",
               'Los pronósticos vienen de un modelo entrenado con peleas de la UFC y validado solo con ellas; fuera de la UFC son menos fiables. El historial de aciertos es solo de la UFC.',
             )
           : L(
               i18n.language,
               'As previsões da IA e o histórico detalhado estão focados no UFC atualmente, onde o modelo preditivo foi validado.',
               'Predictions, head-to-head and the track record are UFC-only for now: the model is trained on UFC fights.',
-              'Les prévisions, le face-à-face et le bilan des pronostics restent pour l\'instant limités à l\'UFC : le modèle est entraîné sur des combats UFC.',
+              'Les prévisions, le face-à-face et le bilan des pronostics restent pour l’instant limités à l’UFC : le modèle est entraîné sur des combats UFC.',
               'Los pronósticos, el cara a cara y el historial de aciertos son solo de la UFC por ahora: el modelo se entrena con peleas de la UFC.',
             )}{' '}
         <Link to={org.hasPredictions ? orgPath(org, 'predictor') : '/predictor'} className="font-semibold underline decoration-2 underline-offset-2 hover:bg-[#F2C230] hover:text-[#0E0E0E]">
           {org.hasPredictions
-            ? L(i18n.language, `Simular lutas no ${org.shortName} →`, `Try the ${org.shortName} predictor`, `Simuler des combats ${org.shortName} →`, `Probar el pronosticador de ${orgEs(org)} →`)
+            ? L(i18n.language, `Simular lutas ${orgPt(org, 'em')} →`, `Try the ${org.shortName} predictor`, `Simuler des combats ${org.shortName} →`, `Probar el pronosticador de ${orgEs(org)} →`)
             : L(i18n.language, 'Simular lutas no UFC →', 'Try the UFC predictor', 'Simuler des combats UFC →', 'Probar el pronosticador de la UFC →')}
         </Link>
       </p>
@@ -522,7 +522,7 @@ function ChampionTile({
         ) : (
           <p className="mt-0.5 text-sm font-bold text-[var(--text-muted)]">
             {archived
-              ? L(i18n.language, 'Desativado / Vago', 'Inactive / Vacant', 'Inactif / Vacant', 'Desactivado / Vacante')
+              ? L(i18n.language, 'Desativado / Vago', 'Inactive / Vacant', 'Inactif / vacant', 'Desactivado / vacante')
               : L(i18n.language, 'Cinturão Vago', 'Vacant', 'Ceinture vacante', 'Cinturón vacante')}
           </p>
         )}

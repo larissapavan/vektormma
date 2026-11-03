@@ -23,7 +23,7 @@ export function usePrediction() {
       return response
     } catch {
       if (id === requestId.current) {
-        setError(L(i18n.language, 'A análise do combate falhou. Verifique se o servidor está funcionando corretamente.', 'Fight analysis failed. Check whether the backend is running correctly.', 'L’analyse du combat a échoué. Vérifiez que le serveur fonctionne correctement.', 'Falló el análisis de la pelea. Comprueba que el servidor funcione correctamente.'))
+        setError(L(i18n.language, 'A análise do combate falhou. Verifique se o servidor está funcionando corretamente.', 'Fight analysis failed. Check whether the backend is running correctly.', 'L’analyse du combat a échoué. Vérifiez que le serveur fonctionne correctement.', 'Falló el análisis de la pelea. Verifica que el servidor funcione correctamente.'))
       }
       return null
     } finally {

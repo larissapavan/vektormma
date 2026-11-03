@@ -52,7 +52,7 @@ export function OrgFightRow({
           <div className="inline-flex items-center gap-1.5 rounded-full border border-[#F2C230]/40 bg-[#F2C230]/10 px-3 py-1 text-xs">
             <Sparkles className="h-3 w-3 text-[#F2C230]" />
             <span className="font-bold uppercase tracking-wider text-[#F2C230]">
-              {L(i18n.language, 'Predição:', 'AI Pick:', 'Pronostic :', 'Pronóstico:')}
+              {L(i18n.language, 'Palpite da IA:', 'AI Pick:', 'Pronostic :', 'Pronóstico:')}
             </span>
             <span className="font-extrabold text-[var(--text-main)]">
               {pick.predicted_winner}

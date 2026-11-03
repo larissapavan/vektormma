@@ -17,7 +17,7 @@ There is nothing to install. Open the link and try any of these:
 - **[Fighters](https://www.vektormma.com/fighters).** Search for an athlete and open a profile with the full career record, fight history and physical stats.
 - **[Track record](https://www.vektormma.com/track-record).** Every prediction the model made, saved before the fight and checked after it. The wrong ones are there too.
 - **[Rankings](https://www.vektormma.com/rankings), [champions](https://www.vektormma.com/champions) and [events](https://www.vektormma.com/events).** Divisional and pound-for-pound rankings, title history, upcoming cards and past results.
-- **Ten other organizations.** PFL, ONE Championship, Bellator, RIZIN, KSW, LFA, Cage Warriors, OKTAGON, Jungle Fight and Invicta FC, each with its own fighters and events. ONE, PFL and Bellator also have a predictor, with a note that the model learned from UFC fights.
+- **Ten other organizations.** PFL, ONE Championship, Bellator, RIZIN, KSW, LFA, Cage Warriors, OKTAGON, Jungle Fight and Invicta FC, each with its own fighters and events. ONE and PFL also have a predictor, with a note that the model learned from UFC fights.
 - **[How the model works](https://www.vektormma.com/model).** The same explanation as below, with the live numbers.
 
 ## How a prediction is made
@@ -46,7 +46,7 @@ What that means in practice:
 - The probabilities are too confident. When the model was 90% sure or more, it was right about 71% of the time. The site tells visitors to read its percentages as rough.
 - The model file I started with claimed 74.7% accuracy. That figure came from training data that is not in this repository, and I could not reproduce it. I replaced it with the measured result above, on the site and here.
 - I also trained a second model that only uses what was known before each fight and is tested on later fights than it trained on. It scores about the same (62.4%) with better calibrated probabilities. It is documented in [`docs/`](docs/) and is not live yet.
-- Outside the UFC it is less reliable, and I have not measured it there. The predictor also works for ONE Championship, PFL and Bellator, but those organizations' data has a record, age, height and reach and no striking or takedown numbers, so the model fills those in with averages. For fighters of those three who have no UFC profile I pull the probability halfway toward 50%, a fixed cautious factor and not a fitted one. Each of those pages says this before the first number.
+- Outside the UFC it is less reliable, and I have not measured it there. The predictor also works for ONE Championship and the PFL, but those organizations' data has a record, age, height and reach and no striking or takedown numbers, so the model fills those in with averages. For fighters of those two who have no UFC profile I pull the probability halfway toward 50%, a fixed cautious factor and not a fitted one. Each of those pages says this before the first number.
 - The live track record starts on 15 October 2026. It is a small sample so far, so I would not draw conclusions from it yet. The current numbers are on the [track record page](https://www.vektormma.com/track-record).
 
 This is a learning project, not betting advice.

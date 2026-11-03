@@ -271,15 +271,15 @@ export function FighterProfileModal({
       } else if (isFirstUfcFight) {
         milestone = L(i18n.language, 'Estreia no UFC', 'UFC Debut', 'Début UFC', 'Debut en la UFC')
       } else if (seasonFights.some((f) => f.result === 'win' && f.title_fight && !f.interim_title)) {
-        milestone = L(i18n.language, 'Campeão Linear', 'Undisputed Champion', 'Champion Incontesté', 'Campeón indiscutido')
+        milestone = L(i18n.language, 'Campeão Linear', 'Undisputed Champion', 'Champion incontesté', 'Campeón indiscutido')
       } else if (seasonFights.some((f) => f.result === 'win' && f.bmf_title)) {
         milestone = L(i18n.language, 'Cinturão BMF', 'BMF Champion', 'Ceinture BMF', 'Campeón BMF')
       } else if (seasonFights.some((f) => f.result === 'win' && f.interim_title)) {
-        milestone = L(i18n.language, 'Campeão Interino', 'Interim Champion', 'Champion Intérimaire', 'Campeón interino')
+        milestone = L(i18n.language, 'Campeão Interino', 'Interim Champion', 'Champion intérimaire', 'Campeón interino')
       } else if (year === 2018 && seasonWins >= 3) {
-        milestone = L(i18n.language, 'Início da Série Histórica', 'Historic Streak Began', 'Début de Série Historique', 'Inicio de la racha histórica')
+        milestone = L(i18n.language, 'Início da Série Histórica', 'Historic Streak Began', 'Début de série historique', 'Inicio de la racha histórica')
       } else if (seasonWins >= 3 && seasonLosses === 0) {
-        milestone = L(i18n.language, 'Série Histórica', 'Historic Streak', 'Série Historique', 'Racha histórica')
+        milestone = L(i18n.language, 'Série Histórica', 'Historic Streak', 'Série historique', 'Racha histórica')
       }
 
       return {
@@ -391,9 +391,9 @@ export function FighterProfileModal({
                     <span>
                       {L(
                         i18n.language,
-                        `Atual Campeão ${getDivisionName(championDivision, i18n.language)}`,
+                        `Campeão Atual ${getDivisionName(championDivision, i18n.language)}`,
                         `Current ${getDivisionName(championDivision, i18n.language)} Champion`,
-                        `Champion Actuel ${getDivisionName(championDivision, i18n.language)}`,
+                        `Champion actuel ${getDivisionName(championDivision, i18n.language)}`,
                         `Campeón actual de ${getDivisionName(championDivision, i18n.language)}`
                       )}
                     </span>
@@ -403,13 +403,13 @@ export function FighterProfileModal({
                 {isCurrentBmf && (
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/50 bg-amber-400/15 px-2.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.2)]">
                     <Sparkles className="h-3 w-3 text-amber-400" />
-                    <span>{L(i18n.language, 'Atual Campeão BMF', 'Current BMF Champion', 'Champion BMF Actuel', 'Campeón BMF actual')}</span>
+                    <span>{L(i18n.language, 'Campeão BMF Atual', 'Current BMF Champion', 'Champion BMF actuel', 'Campeón BMF actual')}</span>
                   </span>
                 )}
 
                 {isFormerBmf && (
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-neutral-300 backdrop-blur-sm">
-                    <span>✦ {L(i18n.language, 'Ex-Campeão BMF', 'Former BMF Champion', 'Ancien Champion BMF', 'Excampeón BMF')}</span>
+                    <span>✦ {L(i18n.language, 'Ex-Campeão BMF', 'Former BMF Champion', 'Ancien champion BMF', 'Excampeón BMF')}</span>
                   </span>
                 )}
 
@@ -423,7 +423,7 @@ export function FighterProfileModal({
                         i18n.language,
                         `Ex-Campeão ${getDivisionName(title, i18n.language)}`,
                         `Former ${getDivisionName(title, i18n.language)} Champion`,
-                        `Ancien Champion ${getDivisionName(title, i18n.language)}`,
+                        `Ancien champion ${getDivisionName(title, i18n.language)}`,
                         `Excampeón de ${getDivisionName(title, i18n.language)}`
                       )}
                     </span>
@@ -440,7 +440,7 @@ export function FighterProfileModal({
                         i18n.language,
                         `Ex-Campeão Interino ${getDivisionName(title, i18n.language)}`,
                         `Former Interim ${getDivisionName(title, i18n.language)} Champion`,
-                        `Ancien Champion Intérimaire ${getDivisionName(title, i18n.language)}`,
+                        `Ancien champion Intérimaire ${getDivisionName(title, i18n.language)}`,
                         `Excampeón interino de ${getDivisionName(title, i18n.language)}`
                       )}
                     </span>
@@ -478,7 +478,7 @@ export function FighterProfileModal({
                     <div className="flex items-center gap-2">
                       <span className="h-1.5 w-1.5 rounded-full bg-[#E11D48] animate-pulse" />
                       <p className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-neutral-400 font-bold">
-                        {L(i18n.language, 'CARTEL NO OCTÓGONO (UFC)', 'UFC OCTAGON RECORD', 'PALMARÈS DANS L\'OCTOGONE (UFC)', 'RÉCORD EN EL OCTÁGONO (UFC)')}
+                        {L(i18n.language, 'CARTEL NO OCTÓGONO (UFC)', 'UFC OCTAGON RECORD', 'PALMARÈS DANS L’OCTOGONE (UFC)', 'RÉCORD EN EL OCTÁGONO (UFC)')}
                       </p>
                     </div>
 
@@ -491,7 +491,7 @@ export function FighterProfileModal({
                           {ufcRecord.wins} {L(i18n.language, 'VITÓRIAS', 'WINS', 'VICTOIRES', 'VICTORIAS')} • {ufcRecord.losses} {L(i18n.language, 'DERROTAS', 'LOSSES', 'DÉFAITES', 'DERROTAS')}{ufcRecord.nc ? ` • ${ufcRecord.nc} NC` : ''}
                         </p>
                         <p className="font-sans text-[11px] text-neutral-400">
-                          {L(i18n.language, `${ufcRecord.win_rate}% de aproveitamento oficial no octógono`, `${ufcRecord.win_rate}% official UFC win rate`, `${ufcRecord.win_rate}% de victoires à l'UFC`, `${ufcRecord.win_rate}% de victorias oficiales en la UFC`)}
+                          {L(i18n.language, `${ufcRecord.win_rate}% de aproveitamento oficial no octógono`, `${ufcRecord.win_rate}% official UFC win rate`, `${ufcRecord.win_rate} % de victoires à l’UFC`, `${ufcRecord.win_rate} % de victorias oficiales en la UFC`)}
                         </p>
                       </div>
                     </div>
@@ -565,7 +565,7 @@ export function FighterProfileModal({
 
                     <div className="col-span-2 sm:col-span-1">
                       <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-semibold">
-                        {L(i18n.language, 'POSTURA', 'STANCE', 'GARDE', 'GUARDIA')}
+                        {L(i18n.language, 'BASE', 'STANCE', 'GARDE', 'GUARDIA')}
                       </p>
                       <p className="font-mono text-sm font-bold text-white truncate mt-0.5">
                         {profile?.stance
@@ -573,7 +573,7 @@ export function FighterProfileModal({
                           : '—'}
                       </p>
                       <p className="font-mono text-[10px] text-neutral-400 truncate">
-                        {profile?.stance ? L(i18n.language, 'Postura marcial', profile.stance, 'Garde de combat', 'Guardia de combate') : ''}
+                        {profile?.stance ? L(i18n.language, 'Base de luta', profile.stance, 'Garde de combat', 'Guardia de combate') : ''}
                       </p>
                     </div>
                   </div>
@@ -660,7 +660,7 @@ export function FighterProfileModal({
                             <span>{L(i18n.language, 'PRÓXIMO COMBATE', 'NEXT BOUT', 'PROCHAIN COMBAT', 'PRÓXIMA PELEA')} // {nextBout.event_name}</span>
                             <span className="text-amber-400 font-bold">
                               {isOpponentTbd
-                                ? L(i18n.language, 'BUSCA POR OPONENTE', 'SEEKING OPPONENT', 'RECHERCHE D\'ADVERSAIRE', 'BUSCA RIVAL')
+                                ? L(i18n.language, 'BUSCA POR OPONENTE', 'SEEKING OPPONENT', 'RECHERCHE D’ADVERSAIRE', 'BUSCA RIVAL')
                                 : L(i18n.language, 'PROGNÓSTICO POR IA', 'AI WIN FORECAST', 'PRONOSTIC IA', 'PRONÓSTICO DE LA IA')}
                             </span>
                           </div>
@@ -713,13 +713,13 @@ export function FighterProfileModal({
                           )}
 
                           <div className="flex items-center justify-between font-sans text-[11px] text-neutral-400">
-                            <span>{nextBout.weight_class ? getDivisionName(nextBout.weight_class, i18n.language) : L(i18n.language, 'Card Principal', 'Main Card', 'Carte Principale', 'Cartelera principal')}</span>
+                            <span>{nextBout.weight_class ? getDivisionName(nextBout.weight_class, i18n.language) : L(i18n.language, 'Card Principal', 'Main Card', 'Carte principale', 'Cartelera principal')}</span>
                             <span className="font-mono text-[10px] uppercase text-neutral-400">
                               {isOpponentTbd
-                                ? L(i18n.language, '✦ Luta Mantida • Buscando Substituto', '✦ Bout Booked • Seeking Opponent', '✦ Combat Confirmé • En recherche d\'adversaire', '✦ Pelea confirmada • Busca rival')
+                                ? L(i18n.language, '✦ Luta Mantida • Buscando Substituto', '✦ Bout Booked • Seeking Opponent', '✦ Combat confirmé • En recherche d’adversaire', '✦ Pelea confirmada • Busca rival')
                                 : nextBout.title_fight
-                                  ? L(i18n.language, '✦ Disputa de Cinturão', '✦ Title Fight', '✦ Combat pour le Titre', '✦ Pelea por el título')
-                                  : L(i18n.language, 'Combate Confirmado', 'Confirmed Bout', 'Combat Confirmé', 'Pelea confirmada')}
+                                  ? L(i18n.language, '✦ Disputa de Cinturão', '✦ Title Fight', '✦ Combat pour le titre', '✦ Pelea por el título')
+                                  : L(i18n.language, 'Combate Confirmado', 'Confirmed Bout', 'Combat confirmé', 'Pelea confirmada')}
                             </span>
                           </div>
                         </>
@@ -729,14 +729,14 @@ export function FighterProfileModal({
                 ) : (
                   <div className="space-y-1.5 pt-1">
                     <p className="font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-semibold">
-                      {L(i18n.language, 'PRÓXIMO COMBATE // AGUARDANDO CASAMENTO DE LUTA', 'NEXT BOUT // AWAITING FIGHT SCHEDULING', 'PROCHAIN COMBAT // EN ATTENTE D\'ANNONCE', 'PRÓXIMA PELEA // A LA ESPERA DE PROGRAMACIÓN')}
+                      {L(i18n.language, 'PRÓXIMO COMBATE // AGUARDANDO CASAMENTO DE LUTA', 'NEXT BOUT // AWAITING FIGHT SCHEDULING', 'PROCHAIN COMBAT // EN ATTENTE D’ANNONCE', 'PRÓXIMA PELEA // A LA ESPERA DE PROGRAMACIÓN')}
                     </p>
                     <p className="font-sans text-xs text-neutral-400 leading-relaxed">
                       {L(
                         i18n.language,
                         'Atleta ativo no plantel do UFC • Telemetria analítica e modelo de predição prontos para o octógono.',
                         'Active athlete on the UFC roster • Analytical telemetry and prediction model ready for the Octagon.',
-                        'Athlète actif de l\'UFC • Télémétrie analytique et modèle de prédiction prêts pour l\'Octogone.',
+                        'Athlète actif de l’UFC • Télémétrie analytique et modèle de prédiction prêts pour l’Octogone.',
                         'Atleta activo en el plantel de la UFC • Telemetría analítica y modelo de pronóstico listos para el octágono.'
                       )}
                     </p>
@@ -750,7 +750,7 @@ export function FighterProfileModal({
                       {profile?.sig_strikes_landed_per_min ? profile.sig_strikes_landed_per_min.toFixed(2) : '3.82'}
                     </p>
                     <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-medium">
-                      {L(i18n.language, 'Golpes / Min (SLpM)', 'Strikes / Min (SLpM)', 'Coups / Min (SLpM)', 'Golpes / min (SLpM)')}
+                      {L(i18n.language, 'Golpes / Min (SLpM)', 'Strikes / Min (SLpM)', 'Coups / min (SLpM)', 'Golpes / min (SLpM)')}
                     </p>
                   </div>
                   <div>
@@ -758,7 +758,7 @@ export function FighterProfileModal({
                       {profile?.striking_defense ? `${Math.round(profile.striking_defense * 100)}%` : '53%'}
                     </p>
                     <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-medium">
-                      {L(i18n.language, 'Defesa de Golpes', 'Striking Defense', 'Défense Frappes', 'Defensa de golpes')}
+                      {L(i18n.language, 'Defesa de Golpes', 'Striking Defense', 'Défense des frappes', 'Defensa de golpes')}
                     </p>
                   </div>
                   <div>

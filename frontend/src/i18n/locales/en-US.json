@@ -23,9 +23,9 @@
     "apiOfflineTitle": "API offline",
     "apiWakingTitle": "Starting API server...",
     "searchPlaceholder": "Search fighter...",
-    "themeLight": "Light",
-    "themeDark": "Dark",
-    "switchTheme": "Switch to {{theme}}",
+    "themeLight": "light",
+    "themeDark": "dark",
+    "switchTheme": "Switch to {{theme}} mode",
     "github": "GitHub"
   },
   "language": {
@@ -140,7 +140,7 @@
     "viewProfile": "View Profile",
     "stats": "Stats",
     "strikes": "Sig. Str. / Min",
-    "takedowns": "Takedowns / 15m"
+    "takedowns": "Takedowns / 15 min"
   },
   "events": {
     "eyebrow": "Events Archive",
@@ -251,6 +251,9 @@
     "whoText1": "This project is built and maintained entirely independently by Larissa Pavan.",
     "whoText2": "It has no affiliation, partnership, sponsorship or endorsement from the UFC, Zuffa LLC, TKO, Professional Fighters League (PFL), Bellator MMA, RIZIN Fighting Federation, KSW, Legacy Fighting Alliance (LFA), Cage Warriors, OKTAGON MMA, Jungle Fight, Invicta FC, ESPN, Sherdog, FightHub, Wikipedia or any other organization mentioned.",
     "whoText3": "All trademarks, fighter names, and photos belong to their respective owners, used here strictly for informational and study purposes.",
+    "name": "Why Vektor?",
+    "nameText1": "The name comes from vector, the mathematics and data science term for a list of numbers. That is how the model sees every fight: two fighters become two lists of numbers (age, reach, record, striking accuracy), and what drives the prediction is the difference between them.",
+    "nameText2": "The arrow in the logo, inside the octagon, is a vector too. “Vektor” is simply “vector” spelled with a K.",
     "dataAndSystem": "Data & System",
     "disclaimer": "Important disclaimer",
     "disclaimerText1": "Predictions are statistical estimates, made as a hobby and for study. They are not a guarantee of any outcome and they are not betting advice.",

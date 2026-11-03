@@ -121,7 +121,7 @@ describe('the organizations section', () => {
     const root = await section()
 
     for (const [name, badge] of [
-      [/open professional fighters league/i, 'Tournament'],
+      [/open professional fighters league/i, 'AI Predictions'],
       [/open one championship/i, 'AI Predictions'],
       [/open bellator mma/i, 'Historical Archive'],
     ] as const) {

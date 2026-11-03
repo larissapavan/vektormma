@@ -69,7 +69,7 @@
         "description": "Campeões atuais do UFC, maiores reinados da história e recordistas de cinturão."
       },
       "/record-book": {
-        "title": "Livro dos Recordes",
+        "title": "Livro de Recordes",
         "description": "Líderes históricos de todas as 32 estatísticas oficiais do UFC: lutas, tempo, trocação e luta no chão."
       },
       "/about": {
@@ -160,10 +160,6 @@
         "title": "Simulador de Lutas da PFL",
         "description": "Escolha dois atletas da PFL e veja a probabilidade de vitória, com o aviso de que o modelo foi treinado com lutas do UFC."
       },
-      "/bellator/predictor": {
-        "title": "Simulador de Lutas do Bellator",
-        "description": "Monte confrontos hipotéticos entre atletas do Bellator e veja a probabilidade de vitória, com o aviso de que o modelo foi treinado com lutas do UFC."
-      },
       "/one/champions": {
         "title": "Campeões do ONE Championship",
         "description": "Campeões mundiais atuais do ONE Championship, histórico por categoria e maiores campeões."
@@ -209,16 +205,16 @@
         "description": "Legacy Fighting Alliance (LFA): lutadores, resultados de eventos e academias."
       },
       "/lfa/fighters": {
-        "title": "Lutadores do LFA",
-        "description": "Atletas do LFA: cartel, medidas, equipes e combates."
+        "title": "Lutadores da LFA",
+        "description": "Atletas da LFA: cartel, medidas, equipes e combates."
       },
       "/lfa/events": {
-        "title": "Eventos do LFA",
-        "description": "Eventos do LFA com cards e resultados."
+        "title": "Eventos da LFA",
+        "description": "Eventos da LFA com cards e resultados."
       },
       "/lfa/gyms": {
-        "title": "Academias do LFA",
-        "description": "Academias e equipes dos atletas do LFA."
+        "title": "Academias da LFA",
+        "description": "Academias e equipes dos atletas da LFA."
       },
       "/cage-warriors": {
         "title": "Cage Warriors",
@@ -430,10 +426,6 @@
         "title": "PFL fight predictor",
         "description": "Pick two PFL fighters and see a win probability, with a note that the model is trained on UFC fights."
       },
-      "/bellator/predictor": {
-        "title": "Bellator fight predictor",
-        "description": "Set up what-if matchups between Bellator fighters and see a win probability, with a note that the model is trained on UFC fights."
-      },
       "/one/champions": {
         "title": "ONE Championship champions",
         "description": "Current ONE Championship belt holders, division lineage and greatest champions."
@@ -582,10 +574,10 @@
       },
       "/predictor": {
         "title": "Prédire un combat",
-        "description": "Choisissez deux combattants UFC et obtenez une probabilité de victoire avec les stats qui l'ont produite."
+        "description": "Choisissez deux combattants UFC et obtenez une probabilité de victoire avec les stats qui l’ont produite."
       },
       "/head-to-head": {
-        "title": "Historique face à face",
+        "title": "Historique des face-à-face",
         "description": "Chaque fois que deux combattants UFC se sont affrontés, qui a gagné et comment, plus leurs adversaires communs."
       },
       "/matchup-intelligence": {
@@ -610,11 +602,11 @@
       },
       "/record-book": {
         "title": "Livre des records",
-        "description": "Les leaders historiques de l'UFC sur 32 statistiques : combats, temps, frappe et lutte au sol."
+        "description": "Les leaders historiques de l’UFC sur 32 statistiques : combats, temps, frappe et lutte au sol."
       },
       "/about": {
         "title": "À propos",
-        "description": "Qui fait ce site, d'où viennent les données et quelles sont leurs limites."
+        "description": "Qui fait ce site, d’où viennent les données et quelles sont leurs limites."
       },
       "/data": {
         "title": "Données",
@@ -626,7 +618,7 @@
       },
       "/track-record": {
         "title": "Bilan des pronostics",
-        "description": "Comment les pronostics du modèle tiennent face aux vrais combats : enregistrés avant l'événement, vérifiés après."
+        "description": "Comment les pronostics du modèle tiennent face aux vrais combats : enregistrés avant l’événement, vérifiés après."
       },
       "/pfl": {
         "title": "PFL",
@@ -642,11 +634,11 @@
       },
       "/gyms": {
         "title": "Salles",
-        "description": "Où les combattants UFC s'entraînent : chaque salle et équipe, avec ses combattants, champions et palmarès."
+        "description": "Où les combattants UFC s’entraînent : chaque salle et équipe, avec ses combattants, champions et palmarès."
       },
       "/pfl/gyms": {
         "title": "Salles de la PFL",
-        "description": "Où les combattants PFL s'entraînent : chaque salle et équipe, avec ses combattants et palmarès."
+        "description": "Où les combattants PFL s’entraînent : chaque salle et équipe, avec ses combattants et palmarès."
       },
       "/pfl/champions": {
         "title": "Champions de la PFL",
@@ -654,7 +646,7 @@
       },
       "/bellator": {
         "title": "Bellator",
-        "description": "Les archives Bellator : chaque événement de 2009 à 2023, ses combattants et les champions avec lesquels elle s'est achevée."
+        "description": "Les archives Bellator : chaque événement de 2009 à 2023, ses combattants et les champions avec lesquels elle s’est achevée."
       },
       "/bellator/fighters": {
         "title": "Combattants Bellator",
@@ -666,7 +658,7 @@
       },
       "/bellator/gyms": {
         "title": "Salles Bellator",
-        "description": "Où les combattants Bellator s'entraînaient : chaque salle et équipe, avec ses combattants."
+        "description": "Où les combattants Bellator s’entraînaient : chaque salle et équipe, avec ses combattants."
       },
       "/bellator/champions": {
         "title": "Champions Bellator",
@@ -694,15 +686,11 @@
       },
       "/one/predictor": {
         "title": "Prédire un combat ONE Championship",
-        "description": "Choisissez deux combattants ONE Championship et obtenez une probabilité de victoire avec les stats qui l'ont produite."
+        "description": "Choisissez deux combattants ONE Championship et obtenez une probabilité de victoire avec les stats qui l’ont produite."
       },
       "/pfl/predictor": {
         "title": "Prédire un combat PFL",
-        "description": "Choisissez deux combattants PFL et voyez une probabilité de victoire, avec la précision que le modèle est entraîné sur des combats UFC."
-      },
-      "/bellator/predictor": {
-        "title": "Prédire un combat Bellator",
-        "description": "Imaginez des combats hypothétiques entre combattants Bellator et voyez une probabilité de victoire, le modèle étant entraîné sur des combats UFC."
+        "description": "Choisissez deux combattants PFL et voyez une probabilité de victoire, en précisant que le modèle est entraîné sur des combats UFC."
       },
       "/one/champions": {
         "title": "Champions ONE Championship",
@@ -710,7 +698,7 @@
       },
       "/one/gyms": {
         "title": "Salles ONE Championship",
-        "description": "Où s'entraînent les combattants ONE Championship : chaque salle et équipe."
+        "description": "Où s’entraînent les combattants ONE Championship : chaque salle et équipe."
       },
       "/rizin": {
         "title": "RIZIN",
@@ -726,7 +714,7 @@
       },
       "/rizin/gyms": {
         "title": "Salles RIZIN",
-        "description": "Où s'entraînent les combattants RIZIN : salles et équipes, avec leurs combattants."
+        "description": "Où s’entraînent les combattants RIZIN : salles et équipes, avec leurs combattants."
       },
       "/ksw": {
         "title": "KSW",
@@ -742,7 +730,7 @@
       },
       "/ksw/gyms": {
         "title": "Salles KSW",
-        "description": "Où s'entraînent les combattants KSW : salles et équipes, avec leurs combattants."
+        "description": "Où s’entraînent les combattants KSW : salles et équipes, avec leurs combattants."
       },
       "/lfa": {
         "title": "LFA",
@@ -758,7 +746,7 @@
       },
       "/lfa/gyms": {
         "title": "Salles LFA",
-        "description": "Où s'entraînent les combattants LFA : salles et équipes, avec leurs combattants."
+        "description": "Où s’entraînent les combattants LFA : salles et équipes, avec leurs combattants."
       },
       "/cage-warriors": {
         "title": "Cage Warriors",
@@ -774,7 +762,7 @@
       },
       "/cage-warriors/gyms": {
         "title": "Salles Cage Warriors",
-        "description": "Où s'entraînent les combattants Cage Warriors : salles et équipes, avec leurs combattants."
+        "description": "Où s’entraînent les combattants Cage Warriors : salles et équipes, avec leurs combattants."
       },
       "/oktagon": {
         "title": "OKTAGON",
@@ -790,7 +778,7 @@
       },
       "/oktagon/gyms": {
         "title": "Salles OKTAGON",
-        "description": "Où s'entraînent les combattants OKTAGON : salles et équipes, avec leurs combattants."
+        "description": "Où s’entraînent les combattants OKTAGON : salles et équipes, avec leurs combattants."
       },
       "/jungle-fight": {
         "title": "Jungle Fight",
@@ -806,7 +794,7 @@
       },
       "/jungle-fight/gyms": {
         "title": "Salles Jungle Fight",
-        "description": "Où s'entraînent les combattants Jungle Fight : salles et équipes, avec leurs combattants."
+        "description": "Où s’entraînent les combattants Jungle Fight : salles et équipes, avec leurs combattants."
       },
       "/invicta": {
         "title": "Invicta FC",
@@ -822,11 +810,11 @@
       },
       "/invicta/gyms": {
         "title": "Salles Invicta FC",
-        "description": "Où s'entraînent les combattants Invicta FC : salles et équipes, avec leurs combattants."
+        "description": "Où s’entraînent les combattants Invicta FC : salles et équipes, avec leurs combattants."
       },
       "/about-model": {
         "title": "À propos du modèle",
-        "description": "Un projet complet d'IA appliquée : chaîne de données, modèle et API."
+        "description": "Un projet complet d’IA appliquée : chaîne de données, modèle et API."
       },
       "/guide": {
         "title": "Comment lire les prévisions",
@@ -860,7 +848,7 @@
       },
       "/matchup-intelligence": {
         "title": "Análisis del enfrentamiento",
-        "description": "Números de golpeo, lucha en el suelo y físicos de dos peleadores de la UFC, y los factores que más pesó el modelo."
+        "description": "Números de golpeo, lucha en el suelo y físicos de dos peleadores de la UFC, y los factores a los que el modelo dio más peso."
       },
       "/fighters": {
         "title": "Peleadores",
@@ -970,10 +958,6 @@
         "title": "Pronosticar una pelea de la PFL",
         "description": "Elige a dos peleadores de la PFL y mira una probabilidad de victoria, con el aviso de que el modelo se entrena con peleas de la UFC."
       },
-      "/bellator/predictor": {
-        "title": "Pronosticar una pelea de Bellator",
-        "description": "Arma cruces hipotéticos entre peleadores de Bellator y mira una probabilidad de victoria, con el aviso de que el modelo se entrena con peleas de la UFC."
-      },
       "/one/champions": {
         "title": "Campeones de ONE Championship",
         "description": "Campeones actuales de ONE Championship, linaje por división y mejores campeones."
@@ -1019,16 +1003,16 @@
         "description": "Legacy Fighting Alliance (LFA): peleadores, resultados de eventos y gimnasios."
       },
       "/lfa/fighters": {
-        "title": "Peleadores de LFA",
-        "description": "Perfiles de peleadores de LFA: récords, medidas, campamentos y cada pelea."
+        "title": "Peleadores de la LFA",
+        "description": "Perfiles de peleadores de la LFA: récords, medidas, campamentos y cada pelea."
       },
       "/lfa/events": {
-        "title": "Eventos de LFA",
-        "description": "Eventos de LFA con carteleras y resultados."
+        "title": "Eventos de la LFA",
+        "description": "Eventos de la LFA con carteleras y resultados."
       },
       "/lfa/gyms": {
-        "title": "Gimnasios de LFA",
-        "description": "Dónde entrenan los peleadores de LFA: gimnasios y equipos con sus peleadores."
+        "title": "Gimnasios de la LFA",
+        "description": "Dónde entrenan los peleadores de la LFA: gimnasios y equipos con sus peleadores."
       },
       "/cage-warriors": {
         "title": "Cage Warriors",

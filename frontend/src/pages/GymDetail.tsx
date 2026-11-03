@@ -11,7 +11,7 @@ import { FlagIcon } from '../shared/components/FlagIcon'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { OrgFighterModal } from '../shared/components/OrgFighterModal'
 import { SectionHeading } from '../shared/components/SectionHeading'
-import { ORGS, orgPath, type OrgId } from '../shared/data/orgs'
+import { orgPath, orgPt, ORGS, type OrgId } from '../shared/data/orgs'
 import { useGym } from '../shared/hooks/useGyms'
 import { useOrg } from '../shared/hooks/useOrg'
 import type { GymFighter } from '../shared/types/api'
@@ -41,7 +41,7 @@ export function GymDetail() {
       className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-main)] underline decoration-2 underline-offset-4 hover:bg-[#F2C230] hover:text-[#0E0E0E]"
     >
       <ArrowLeft className="h-3.5 w-3.5" />
-      {L(i18n.language, `Todas as academias ${org.shortName}`, `All ${org.shortName} gyms`, `Toutes les salles ${org.shortName}`, `Todos los gimnasios de ${org.shortName}`)}
+      {L(i18n.language, `Todas as academias ${orgPt(org, 'de')}`, `All ${org.shortName} gyms`, `Toutes les salles ${org.shortName}`, `Todos los gimnasios de ${org.shortName}`)}
     </Link>
   )
 

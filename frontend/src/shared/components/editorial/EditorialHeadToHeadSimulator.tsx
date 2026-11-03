@@ -131,7 +131,7 @@ export function EditorialHeadToHeadSimulator({
             className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)] dark:border-white/15 dark:bg-white/5 dark:text-zinc-300 dark:hover:bg-white/10 dark:hover:text-white transition cursor-pointer"
           >
             <ArrowLeftRight className="h-3.5 w-3.5" />
-            <span>{L(i18n.language, 'Inverter Cantos', 'Swap Corners', 'Inverser les Coins', 'Intercambiar esquinas')}</span>
+            <span>{L(i18n.language, 'Inverter Cantos', 'Swap Corners', 'Inverser les coins', 'Intercambiar esquinas')}</span>
           </button>
         </div>
       </div>
@@ -313,7 +313,7 @@ export function EditorialHeadToHeadSimulator({
             i18n.language,
             'Golpes Significativos Conectados / Min (SLpM)',
             'Significant Strikes Landed / Min (SLpM)',
-            'Coups Significatifs Réussis / Min (SLpM)',
+            'Coups significatifs réussis / min (SLpM)',
             'Golpes significativos conectados / min (SLpM)',
           )}
           valA={profileA?.sig_strikes_landed_per_min ?? 4.2}
@@ -327,7 +327,7 @@ export function EditorialHeadToHeadSimulator({
             i18n.language,
             'Precisão de Golpes (%)',
             'Striking Accuracy (Strike Accuracy %)',
-            'Précision des Coups (Précision %)',
+            'Précision des coups (%)',
             'Precisión de golpes (%)',
           )}
           valA={Math.round((profileA?.sig_str_acc ?? 0.5) * 100)}
@@ -341,7 +341,7 @@ export function EditorialHeadToHeadSimulator({
             i18n.language,
             'Defesa de Quedas (TDD %)',
             'Takedown Defense (TDD %)',
-            'Défense d’Amenées au Sol (TDD %)',
+            'Défense des amenées au sol (TDD %)',
             'Defensa de derribos (TDD %)',
           )}
           valA={Math.round((profileA?.takedown_defense ?? 0.75) * 100)}
@@ -385,8 +385,8 @@ export function EditorialHeadToHeadSimulator({
               <div className="flex items-center justify-between border-b border-[var(--border-subtle)] dark:border-white/10 pb-4">
                 <h3 className="text-lg font-black uppercase text-[var(--text-primary)] dark:text-white">
                   {selectingCorner === 'a'
-                    ? L(i18n.language, 'Selecionar Canto Vermelho', 'Select Red Corner', 'Sélectionner le Coin Rouge', 'Seleccionar esquina roja')
-                    : L(i18n.language, 'Selecionar Canto Azul', 'Select Blue Corner', 'Sélectionner le Coin Bleu', 'Seleccionar esquina azul')}
+                    ? L(i18n.language, 'Selecionar Canto Vermelho', 'Select Red Corner', 'Sélectionner le coin rouge', 'Seleccionar esquina roja')
+                    : L(i18n.language, 'Selecionar Canto Azul', 'Select Blue Corner', 'Sélectionner le coin bleu', 'Seleccionar esquina azul')}
                 </h3>
                 <button
                   type="button"

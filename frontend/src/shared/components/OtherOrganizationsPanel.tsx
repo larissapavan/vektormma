@@ -1,3 +1,4 @@
+import { orgEs, orgFr, orgPt } from '../data/orgs'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -31,7 +32,7 @@ export function OtherOrganizationsPanel({ name }: { name: string }) {
 
   if (found.length === 0) return null
   return (
-    <section aria-label={L(i18n.language, 'Lutas em outras organizações', 'Fights in other organizations', 'Combats dans d\'autres organisations', 'Peleas en otras organizaciones')} className="mt-3 space-y-3">
+    <section aria-label={L(i18n.language, 'Lutas em outras organizações', 'Fights in other organizations', 'Combats dans d’autres organisations', 'Peleas en otras organizaciones')} className="mt-3 space-y-3">
       {found.map((item) => (
         <OrgHistory key={item.org_id} item={item} />
       ))}
@@ -43,15 +44,16 @@ function OrgHistory({ item }: { item: OtherOrganization }) {
   const { i18n } = useTranslation()
   const [all, setAll] = useState(false)
   const shown = all ? item.fights : item.fights.slice(0, FIRST_SHOWN)
+  const other = { id: item.org_id, shortName: item.short_name }
   return (
     <div className="metric-tile rounded-2xl p-3">
       <p className="broadcast-label text-[11px] text-[var(--text-muted)]">
         {L(
           i18n.language,
-          `Também lutou no ${item.short_name}${item.org_record ? ` · ${item.org_record} por lá` : ''}`,
+          `Também lutou ${orgPt(other, 'em')}${item.org_record ? ` · ${item.org_record} por lá` : ''}`,
           `Also fought in the ${item.short_name}${item.org_record ? ` · ${item.org_record} there` : ''}`,
-          `A aussi combattu dans ${item.short_name}${item.org_record ? ` · ${item.org_record} là-bas` : ''}`,
-          `También peleó en ${item.short_name}${item.org_record ? ` · ${item.org_record} allí` : ''}`,
+          `A aussi combattu ${orgFr(other, 'à')}${item.org_record ? ` · ${item.org_record} là-bas` : ''}`,
+          `También peleó en ${orgEs(other)}${item.org_record ? ` · ${item.org_record} allí` : ''}`,
         )}
       </p>
       <ul className="mt-2 space-y-2">
@@ -68,7 +70,7 @@ function OrgHistory({ item }: { item: OtherOrganization }) {
         >
           {all
             ? L(i18n.language, 'Mostrar menos', 'Show fewer', 'Afficher moins', 'Mostrar menos')
-            : L(i18n.language, `Mostrar todas as ${item.fights.length} lutas no ${item.short_name}`, `Show all ${item.fights.length} ${item.short_name} fights`, `Afficher les ${item.fights.length} combats ${item.short_name}`, `Mostrar las ${item.fights.length} peleas en ${item.short_name}`)}
+            : L(i18n.language, `Mostrar todas as ${item.fights.length} lutas ${orgPt(other, 'em')}`, `Show all ${item.fights.length} ${item.short_name} fights`, `Afficher les ${item.fights.length} combats ${item.short_name}`, `Mostrar las ${item.fights.length} peleas en ${orgEs(other)}`)}
         </button>
       ) : null}
       <p className="theme-muted mt-2 text-[11px] leading-4">

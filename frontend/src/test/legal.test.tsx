@@ -98,3 +98,16 @@ describe('the pages on screen', () => {
     }
   })
 })
+
+describe('the About page', () => {
+  it('explains where the name Vektor comes from', async () => {
+    render(
+      <MemoryRouter initialEntries={['/about']}>
+        <App />
+      </MemoryRouter>,
+    )
+    expect(await screen.findByRole('heading', { level: 2, name: 'Why Vektor?' })).toBeInTheDocument()
+    expect(screen.getByText(/The name comes from vector, the mathematics and data science term for a list of numbers/)).toBeInTheDocument()
+    expect(screen.getByText(/The arrow in the logo, inside the octagon, is a vector too/)).toBeInTheDocument()
+  })
+})

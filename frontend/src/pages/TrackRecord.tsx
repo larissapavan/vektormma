@@ -10,7 +10,7 @@ import { shownMetrics } from '../shared/data/modelAccuracy'
 import { useModelInfo } from '../shared/hooks/useModelInfo'
 import { useTrackRecord } from '../shared/hooks/useTrackRecord'
 import { syncTrackRecord } from '../shared/services/api'
-import type { ConfidenceBand, RecentEvaluation, TrackedFight } from '../shared/types/api'
+import type { ConfidenceBand, ModelRecord, RecentEvaluation, TrackedFight } from '../shared/types/api'
 
 const percent = (value: number | null | undefined) => (value == null ? '—' : `${Math.round(value * 100)}%`)
 
@@ -107,6 +107,8 @@ export function TrackRecord() {
             <CalibrationCard title={L(i18n.language, 'Calibração ao Vivo: taxa real de acerto por faixa de confiança', 'Live picks: when the model says X%, how often is it right?', 'Pronostics en direct : quand le modèle dit X %, à quelle fréquence a-t-il raison ?', 'Pronósticos en vivo: cuando el modelo dice X %, ¿con qué frecuencia acierta?')} bands={data.bands} />
           ) : null}
 
+          {data.models && data.models.length > 1 ? <ModelsCard models={data.models} /> : null}
+
           {modelInfo?.recent_evaluation?.baselines?.length ? <BaselineCard evaluation={modelInfo.recent_evaluation} /> : null}
 
           {modelInfo?.recent_evaluation?.calibration?.length ? (
@@ -137,6 +139,7 @@ export function TrackRecord() {
               <li>{L(i18n.language, 'Assim que o evento termina, o resultado oficial é confrontado com o palpite prévio. Empates e lutas sem resultado são desconsiderados.', 'After the event the result is matched to the saved pick. Draws and no contests count for neither side.', 'Après l’événement, le résultat est rapproché du choix enregistré. Les nuls et les sans-décision ne comptent pour personne.', 'Después del evento, el resultado se cruza con el pronóstico guardado. Los empates y las peleas sin resultado no cuentan para ningún lado.')}</li>
               <li>{L(i18n.language, 'As previsões ao vivo são o teste definitivo de desempenho no mundo real, sem qualquer viés retrospectivo.', 'Live picks are the true measure of predictive skill, evaluated strictly forward in time.', 'Les pronostics en direct sont la vraie mesure du modèle, évalués strictement vers l’avenir.', 'Los pronósticos en vivo son la verdadera medida de la capacidad predictiva, evaluados estrictamente hacia adelante en el tiempo.')}</li>
               {data.earlier_model_note ? <li>{localizeApiText(data.earlier_model_note, i18n.language)}</li> : null}
+              {data.model_change_note ? <li>{localizeApiText(data.model_change_note, i18n.language)}</li> : null}
             </ul>
           </section>
         </>
@@ -200,6 +203,65 @@ function CalibrationCard({ title, note, bands }: { title: string; note?: string;
             </div>
             <Bar label={L(i18n.language, 'Probabilidade média projetada', 'Model said', 'Le modèle disait', 'El modelo decía')} value={band.average_confidence} tone="muted" />
             <Bar label={L(i18n.language, 'Taxa real de acerto', 'Actually right', 'Réellement juste', 'Acierto real')} value={band.accuracy} tone="strong" />
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+/** The record of each model that has made live picks, side by side: they are different models, so they are not averaged. */
+function ModelsCard({ models }: { models: ModelRecord[] }) {
+  const { i18n } = useTranslation()
+  const lang = uiLang(i18n.language)
+  const name = (model: ModelRecord) =>
+    model.model === 'prefight'
+      ? L(lang, 'Modelo pré-luta', 'Pre-fight model', 'Modèle pré-combat', 'Modelo previo a la pelea')
+      : L(lang, 'Modelo atual', 'Current model', 'Modèle actuel', 'Modelo actual')
+
+  return (
+    <section className="surface-card rounded-[20px] p-3 sm:p-4">
+      <div className="flex items-center gap-2">
+        <Scale className="h-4 w-4 text-[#C8102E]" />
+        <h2 className="broadcast-label text-xs text-[var(--text-main)]">
+          {L(lang, 'Palpites ao vivo por modelo', 'Live picks by model', 'Pronostics en direct par modèle', 'Pronósticos en vivo por modelo')}
+        </h2>
+      </div>
+      <p className="theme-muted mt-0.5 text-xs">
+        {L(
+          lang,
+          'Cada modelo é contado à parte: os números acima somam os dois.',
+          'Each model is counted on its own: the numbers above add both together.',
+          'Chaque modèle est compté à part : les chiffres ci-dessus additionnent les deux.',
+          'Cada modelo se cuenta aparte: las cifras de arriba suman los dos.',
+        )}
+      </p>
+      <ul className="mt-3 grid gap-3">
+        {models.map((model) => (
+          <li key={model.model}>
+            <div className="flex items-baseline justify-between gap-2 text-sm text-[var(--text-main)]">
+              <span className="font-bold">{name(model)}</span>
+              <span className="theme-muted text-xs">
+                {L(lang, `desde ${model.since}`, `since ${model.since}`, `depuis le ${model.since}`, `desde ${model.since}`)}
+              </span>
+            </div>
+            <p className="mt-0.5 text-xs text-[var(--text-main)]">
+              {model.resolved
+                ? L(
+                    lang,
+                    `${model.correct} de ${model.resolved} certos (${percent(model.accuracy)}), ${model.logged - model.resolved} ainda sem resultado.`,
+                    `${model.correct} of ${model.resolved} right (${percent(model.accuracy)}), ${model.logged - model.resolved} still to be settled.`,
+                    `${model.correct} sur ${model.resolved} justes (${percent(model.accuracy)}), ${model.logged - model.resolved} pas encore réglés.`,
+                    `${model.correct} de ${model.resolved} acertados (${percent(model.accuracy)}), ${model.logged - model.resolved} sin resultado aún.`,
+                  )
+                : L(
+                    lang,
+                    `${model.logged} palpites salvos, nenhum com resultado ainda.`,
+                    `${model.logged} picks saved, none settled yet.`,
+                    `${model.logged} pronostics enregistrés, aucun réglé pour l’instant.`,
+                    `${model.logged} pronósticos guardados, ninguno con resultado aún.`,
+                  )}
+            </p>
           </li>
         ))}
       </ul>

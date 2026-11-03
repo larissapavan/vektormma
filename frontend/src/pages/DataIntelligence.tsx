@@ -167,7 +167,7 @@ export function DataIntelligence() {
                 {L(i18n.language, 'ECOSSISTEMA', 'ECOSYSTEM', 'ÉCOSYSTÈME', 'ECOSISTEMA')}
               </span>
               <h3 className="mt-1 font-display font-bold text-lg sm:text-xl uppercase tracking-tight text-[var(--text-primary)] dark:text-white">
-                {L(i18n.language, 'Fontes de Dados & Cobertura Analítica', 'Data Sources & Coverage', 'Sources de Données & Couverture', 'Fuentes de datos y cobertura analítica')}
+                {L(i18n.language, 'Fontes de Dados & Cobertura Analítica', 'Data Sources & Coverage', 'Sources de données & couverture', 'Fuentes de datos y cobertura analítica')}
               </h3>
             </div>
 
@@ -182,7 +182,7 @@ export function DataIntelligence() {
                       className="rounded-md px-2 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider"
                       style={{ backgroundColor: `${src.accent}15`, color: src.accent }}
                     >
-                      {src.org === 'Camps & Gyms' ? L(i18n.language, 'Academias & Camps', 'Camps & Gyms', 'Salles & Camps', 'Gimnasios y campamentos') : src.org}
+                      {src.org === 'Camps & Gyms' ? L(i18n.language, 'Academias & Camps', 'Camps & Gyms', 'Salles & camps', 'Gimnasios y campamentos') : src.org}
                     </span>
                     <a
                       href={src.href}
@@ -248,7 +248,7 @@ function ModernDataPipeline() {
         <div className="flex items-center justify-center gap-2">
           <Database className="h-4 w-4 text-[#38BDF8]" />
           <h4 className="font-display font-bold text-sm uppercase tracking-wider text-[var(--text-primary)] dark:text-white">
-            {L(i18n.language, 'Ingestão de Dados Brutos', 'Raw Ingestion Layer', 'Couche de Données Brutes', 'Capa de ingesta de datos en bruto')}
+            {L(i18n.language, 'Ingestão de Dados Brutos', 'Raw Ingestion Layer', 'Couche de données brutes', 'Capa de ingesta de datos en bruto')}
           </h4>
         </div>
         <p className="mt-1 text-[11px] text-[var(--text-secondary)] dark:text-neutral-400">
@@ -269,7 +269,7 @@ function ModernDataPipeline() {
         <div className="flex items-center justify-center gap-2">
           <Layers className="h-4 w-4 text-[#A855F7]" />
           <h4 className="font-display font-bold text-sm uppercase tracking-wider text-[var(--text-primary)] dark:text-white">
-            {L(i18n.language, 'Tratamento & Resolução de Entidades', 'Cleansing & Entity Resolution', 'Nettoyage & Résolution d’Entités', 'Depuración y resolución de entidades')}
+            {L(i18n.language, 'Tratamento & Resolução de Entidades', 'Cleansing & Entity Resolution', 'Nettoyage & résolution d’entités', 'Depuración y resolución de entidades')}
           </h4>
         </div>
         <p className="mt-1 text-[11px] text-[var(--text-secondary)] dark:text-neutral-400">
@@ -291,7 +291,7 @@ function ModernDataPipeline() {
           <div className="flex items-center justify-center gap-2">
             <Cpu className="h-4 w-4 text-[#F59E0B]" />
             <h4 className="font-display font-bold text-sm sm:text-base uppercase tracking-wider text-[var(--text-primary)] dark:text-white">
-              {L(i18n.language, 'Engenharia de Variáveis (46 Variáveis Preditivas)', 'Feature Engineering (46 Predictive Features)', 'Ingénierie des Variables (46 variables prédictives)', 'Ingeniería de variables (46 variables predictivas)')}
+              {L(i18n.language, 'Engenharia de Variáveis (46 Variáveis Preditivas)', 'Feature Engineering (46 Predictive Features)', 'Ingénierie des variables (46 variables prédictives)', 'Ingeniería de variables (46 variables predictivas)')}
             </h4>
           </div>
           <p className="mt-1 text-[11px] text-[var(--text-secondary)] dark:text-neutral-400">
@@ -344,20 +344,20 @@ function ModernDataPipeline() {
         </div>
       </div>
 
-      <PipelineFlowDown label={L(i18n.language, 'Validação Temporal com Janela Expansiva (Sem Vazamento de Dados)', 'Chronological Walk-Forward Split (Zero Lookahead)', 'Validation Temporelle sans Fuite de Données', 'Validación temporal con ventana expansiva (sin fuga de datos)')} />
+      <PipelineFlowDown label={L(i18n.language, 'Validação Temporal com Janela Expansiva (Sem Vazamento de Dados)', 'Chronological Walk-Forward Split (Zero Lookahead)', 'Validation temporelle sans fuite de données', 'Validación temporal con ventana expansiva (sin fuga de datos)')} />
 
       {/* 5. Previsão & Explicabilidade */}
       <div className="w-full max-w-xl rounded-2xl border border-[#C8102E]/30 bg-[#C8102E]/10 p-4 sm:p-5 text-center shadow-lg shadow-[#C8102E]/5">
         <div className="flex items-center justify-center gap-2">
           <Sparkles className="h-4 w-4 text-[#FF2E54]" />
           <h4 className="font-display font-extrabold text-sm sm:text-base uppercase tracking-wider text-white">
-            {L(i18n.language, 'Previsão de Vitória & Explicabilidade SHAP', 'Win Probability & SHAP Explainability', 'Probabilité de Victoire & Explicabilité SHAP', 'Probabilidad de victoria y explicabilidad SHAP')}
+            {L(i18n.language, 'Previsão de Vitória & Explicabilidade SHAP', 'Win Probability & SHAP Explainability', 'Probabilité de victoire & explicabilité SHAP', 'Probabilidad de victoria y explicabilidad SHAP')}
           </h4>
         </div>
         <p className="mt-1 text-[11px] sm:text-xs text-neutral-300 leading-relaxed max-w-lg mx-auto">
           {L(
             i18n.language,
-            'Conjunto de Gradient Boosting calibrado estatisticamente por probabilidade. Os valores SHAP revelam exatamente quais fatores justificam o favoritismo de cada córner.',
+            'Conjunto de Gradient Boosting com probabilidades calibradas. Os valores SHAP revelam exatamente quais fatores justificam o favoritismo de cada canto.',
             'Calibrated Gradient Boosting ensemble outputting true probabilities. TreeSHAP explains exactly which features drove the odds for each corner.',
             'Ensemble de Gradient Boosting calibré en probabilités. Les valeurs SHAP explicitent les variables clés favorisant chaque coin.',
             'Conjunto de Gradient Boosting calibrado estadísticamente por probabilidad. Los valores SHAP revelan exactamente qué factores justifican el favoritismo de cada esquina.',

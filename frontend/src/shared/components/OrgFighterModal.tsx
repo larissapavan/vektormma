@@ -8,12 +8,12 @@ import { L } from '../../i18n/lang'
 import { getDivisionName } from '../data/divisions'
 import { formatDate, formatMethod, nonMmaDiscipline, originLine, profileSource } from '../data/orgFormat'
 import { OrgSportTag } from './OrgFightRow'
-import { orgEs, type OrgConfig } from '../data/orgs'
+import { orgEs, orgFr, orgPt, type OrgConfig } from '../data/orgs'
 import { translateHometown } from '../data/fightLabels'
 import { normalizeFighterName } from '../hooks/useFighterImages'
 import { useOrgFighterFights, useOrgFighters } from '../hooks/useOrgData'
 import { useUpcomingPicks } from '../hooks/useUpcomingPicks'
-import type { FightRecord } from '../types/api'
+import type { FightRecord, OrgSeasonStats } from '../types/api'
 import { FighterProfileModal } from './FighterProfileModal'
 import { FlagIcon } from './FlagIcon'
 import { PhotoCredit } from './PhotoCredit'
@@ -203,7 +203,7 @@ function OrgOnlyFighterModal({
       const losses = seasonFights.filter((fight) => fight.result === 'loss').length
       let milestone: string | undefined
       if (index === 0) {
-        milestone = L(lang, `Estreia no ${org.shortName}`, `${org.shortName} Debut`, `Début ${org.shortName}`, `Debut en ${orgEs(org)}`)
+        milestone = L(lang, `Estreia ${orgPt(org, 'em')}`, `${org.shortName} Debut`, `Début ${org.shortName}`, `Debut en ${orgEs(org)}`)
       } else if (seasonFights.some((fight) => fight.result === 'win' && fight.title_fight)) {
         milestone = L(lang, 'Cinturão Conquistado', 'Won the Title', 'Titre conquis', 'Título conquistado')
       } else if (wins >= 3 && losses === 0) {
@@ -246,7 +246,7 @@ function OrgOnlyFighterModal({
     >
       <motion.section
         role="dialog"
-        aria-label={L(lang, `${name}, perfil no ${org.shortName}`, `${name}, ${org.shortName} fighter profile`, `${name}, profil ${org.shortName}`, `${name}, perfil de peleador de ${orgEs(org)}`)}
+        aria-label={L(lang, `${name}, perfil ${orgPt(org, 'em')}`, `${name}, ${org.shortName} fighter profile`, `${name}, profil ${org.shortName}`, `${name}, perfil de peleador de ${orgEs(org)}`)}
         className="relative flex h-[min(90vh,880px)] w-full max-w-6xl flex-col overflow-hidden rounded-[24px] sm:rounded-[32px] border border-white/[0.08] bg-[#08090C] text-white shadow-[0_0_80px_rgba(0,0,0,0.8)]"
         initial={{ opacity: 0, y: 16, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -308,9 +308,9 @@ function OrgOnlyFighterModal({
                     <Trophy className="h-3.5 w-3.5 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
                     <span>
                       {isInterim
-                        ? L(lang, 'Campeão Interino', 'Interim Champion', 'Champion Intérimaire', 'Campeón interino')
+                        ? L(lang, 'Campeão Interino', 'Interim Champion', 'Champion intérimaire', 'Campeón interino')
                         : archived
-                          ? L(lang, 'Último Campeão', 'Final Champion', 'Dernier Champion', 'Último campeón')
+                          ? L(lang, 'Último Campeão', 'Final Champion', 'Dernier champion', 'Último campeón')
                           : L(lang, 'Campeão', 'Champion', 'Champion', 'Campeón')}
                       {championDivision ? ` ${getDivisionName(championDivision, lang)}` : ''}
                     </span>
@@ -326,7 +326,7 @@ function OrgOnlyFighterModal({
                       lang,
                       `Ex-Campeão ${getDivisionName(title, 'pt')}`,
                       `Former ${getDivisionName(title, 'en')} Champion`,
-                      `Ancien Champion ${getDivisionName(title, 'fr')}`,
+                      `Ancien champion ${getDivisionName(title, 'fr')}`,
                       `Excampeón de ${getDivisionName(title, 'es')}`,
                     )}
                   </span>
@@ -380,7 +380,7 @@ function OrgOnlyFighterModal({
                           {orgRecord.draws ? ` • ${orgRecord.draws} ${L(lang, 'EMPATES', 'DRAWS', 'NULS', 'EMPATES')}` : ''}
                         </p>
                         <p className="font-sans text-[11px] text-neutral-400">
-                          {L(lang, `${orgWinRate}% de aproveitamento no ${org.shortName}`, `${orgWinRate}% ${org.shortName} win rate`, `${orgWinRate}% de victoires chez ${org.shortName}`, `${orgWinRate}% de victorias en ${orgEs(org)}`)}
+                          {L(lang, `${orgWinRate}% de aproveitamento ${orgPt(org, 'em')}`, `${orgWinRate}% ${org.shortName} win rate`, `${orgWinRate} % de victoires chez ${org.shortName}`, `${orgWinRate} % de victorias en ${orgEs(org)}`)}
                         </p>
                         {otherSports > 0 ? (
                           <p className="font-sans text-[11px] text-neutral-400">
@@ -424,7 +424,7 @@ function OrgOnlyFighterModal({
                         {archived
                           ? L(lang, `Arquivo ${org.shortName}`, `${org.shortName} archive`, `Archives ${org.shortName}`, `Archivo de ${orgEs(org)}`)
                           : profile?.is_active
-                            ? L(lang, `Ativo no ${org.shortName}`, `Active ${org.shortName}`, `Actif ${org.shortName}`, `Activo en ${orgEs(org)}`)
+                            ? L(lang, `Ativo ${orgPt(org, 'em')}`, `Active ${org.shortName}`, `Actif ${org.shortName}`, `Activo en ${orgEs(org)}`)
                             : L(lang, `Plantel ${org.shortName}`, `${org.shortName} Roster`, `Effectif ${org.shortName}`, `Plantel de ${orgEs(org)}`)}
                       </p>
                     </div>
@@ -490,7 +490,7 @@ function OrgOnlyFighterModal({
                             <span className="min-w-0 truncate">{L(lang, 'PRÓXIMO COMBATE', 'NEXT BOUT', 'PROCHAIN COMBAT', 'PRÓXIMA PELEA')} // {nextBout.event}</span>
                             <span className="shrink-0 text-amber-400 font-bold">
                               {opponentTbd
-                                ? L(lang, 'BUSCA POR OPONENTE', 'SEEKING OPPONENT', 'RECHERCHE D\'ADVERSAIRE', 'BUSCA RIVAL')
+                                ? L(lang, 'BUSCA POR OPONENTE', 'SEEKING OPPONENT', 'RECHERCHE D’ADVERSAIRE', 'BUSCA RIVAL')
                                 : nextPrediction
                                   ? L(lang, 'PROGNÓSTICO POR IA', 'AI WIN FORECAST', 'PRONOSTIC IA', 'PRONÓSTICO DE LA IA')
                                   : formatDate(nextBout.date, true, lang).toUpperCase()}
@@ -537,13 +537,13 @@ function OrgOnlyFighterModal({
                           ) : null}
 
                           <div className="flex items-center justify-between font-sans text-[11px] text-neutral-400">
-                            <span className="inline-flex flex-wrap items-center gap-1.5">{nextDetails?.weight_class ? getDivisionName(nextDetails.weight_class, lang) : L(lang, 'Card Principal', 'Main Card', 'Carte Principale', 'Cartelera principal')}<OrgSportTag discipline={nextDetails?.discipline} /></span>
+                            <span className="inline-flex flex-wrap items-center gap-1.5">{nextDetails?.weight_class ? getDivisionName(nextDetails.weight_class, lang) : L(lang, 'Card Principal', 'Main Card', 'Carte principale', 'Cartelera principal')}<OrgSportTag discipline={nextDetails?.discipline} /></span>
                             <span className="font-mono text-[10px] uppercase text-neutral-400">
                               {opponentTbd
-                                ? L(lang, '✦ Luta Mantida • Buscando Substituto', '✦ Bout Booked • Seeking Opponent', '✦ Combat Confirmé • En recherche d\'adversaire', '✦ Pelea confirmada • Busca rival')
+                                ? L(lang, '✦ Luta Mantida • Buscando Substituto', '✦ Bout Booked • Seeking Opponent', '✦ Combat confirmé • En recherche d’adversaire', '✦ Pelea confirmada • Busca rival')
                                 : nextDetails?.title_fight
-                                  ? L(lang, '✦ Disputa de Cinturão', '✦ Title Fight', '✦ Combat pour le Titre', '✦ Pelea por el título')
-                                  : L(lang, 'Combate Confirmado', 'Confirmed Bout', 'Combat Confirmé', 'Pelea confirmada')}
+                                  ? L(lang, '✦ Disputa de Cinturão', '✦ Title Fight', '✦ Combat pour le titre', '✦ Pelea por el título')
+                                  : L(lang, 'Combate Confirmado', 'Confirmed Bout', 'Combat confirmé', 'Pelea confirmada')}
                             </span>
                           </div>
                         </>
@@ -553,17 +553,42 @@ function OrgOnlyFighterModal({
                 ) : archived ? null : (
                   <div className="space-y-1.5 pt-1">
                     <p className="font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-semibold">
-                      {L(lang, 'PRÓXIMO COMBATE // AGUARDANDO CASAMENTO DE LUTA', 'NEXT BOUT // AWAITING FIGHT SCHEDULING', 'PROCHAIN COMBAT // EN ATTENTE D\'ANNONCE', 'PRÓXIMA PELEA // A LA ESPERA DE PROGRAMACIÓN')}
+                      {L(lang, 'PRÓXIMO COMBATE // AGUARDANDO CASAMENTO DE LUTA', 'NEXT BOUT // AWAITING FIGHT SCHEDULING', 'PROCHAIN COMBAT // EN ATTENTE D’ANNONCE', 'PRÓXIMA PELEA // A LA ESPERA DE PROGRAMACIÓN')}
                     </p>
                   </div>
                 )}
 
-                {/* 4. Striking numbers */}
-                <div className="grid grid-cols-3 gap-6 pt-3 border-t border-white/[0.06]">
-                  <Metric value={profile?.sig_strikes_landed_per_min != null ? profile.sig_strikes_landed_per_min.toFixed(2) : '—'} label={L(lang, 'Golpes / Min (SLpM)', 'Strikes / Min (SLpM)', 'Coups / Min (SLpM)', 'Golpes / min (SLpM)')} />
-                  <Metric value={profile?.striking_defense != null ? `${Math.round(profile.striking_defense * 100)}%` : '—'} label={L(lang, 'Defesa de Golpes', 'Striking Defense', 'Défense Frappes', 'Defensa de golpes')} />
-                  <Metric value={profile?.takedown_defense != null ? `${Math.round(profile.takedown_defense * 100)}%` : '—'} label={L(lang, 'Defesa de Quedas', 'Takedown Defense', 'Défense au sol', 'Defensa de derribos')} />
-                </div>
+                {/* 4. Striking numbers: the organization's own season stats when it prints them (the PFL), else nothing is measured */}
+                {org.hasSeasonStats && profile?.season_stats?.length ? (
+                  <SeasonStatsTable org={org} seasons={profile.season_stats} lang={lang} />
+                ) : (
+                  <div className="space-y-2 pt-3 border-t border-white/[0.06]">
+                    <div className="grid grid-cols-3 gap-6">
+                      <Metric value={profile?.sig_strikes_landed_per_min != null ? profile.sig_strikes_landed_per_min.toFixed(2) : '—'} label={L(lang, 'Golpes / Min (SLpM)', 'Strikes / Min (SLpM)', 'Coups / min (SLpM)', 'Golpes / min (SLpM)')} />
+                      <Metric value={profile?.striking_defense != null ? `${Math.round(profile.striking_defense * 100)}%` : '—'} label={L(lang, 'Defesa de Golpes', 'Striking Defense', 'Défense Frappes', 'Defensa de golpes')} />
+                      <Metric value={profile?.takedown_defense != null ? `${Math.round(profile.takedown_defense * 100)}%` : '—'} label={L(lang, 'Defesa de Quedas', 'Takedown Defense', 'Défense au sol', 'Defensa de derribos')} />
+                    </div>
+                    {profile?.sig_strikes_landed_per_min == null && profile?.striking_defense == null && profile?.takedown_defense == null ? (
+                      <p className="font-sans text-[11px] text-neutral-400">
+                        {org.hasSeasonStats
+                          ? L(
+                              lang,
+                              `${orgPt(org, 'O')} não publicou estatísticas de golpes e quedas para este atleta.`,
+                              `${org.shortName} has not published striking or takedown statistics for this fighter.`,
+                              `${orgFr(org, 'Le')} n’a pas publié de statistiques de frappe ni de takedowns pour ce combattant.`,
+                              `${orgEs(org)} no ha publicado estadísticas de golpes ni de derribos de este peleador.`,
+                            )
+                          : L(
+                              lang,
+                              `${orgPt(org, 'O')} não publica estatísticas de golpes e quedas.`,
+                              `${org.shortName} does not publish striking or takedown statistics.`,
+                              `${orgFr(org, 'Le')} ne publie pas de statistiques de frappe ni de takedowns.`,
+                              `${orgEs(org)} no publica estadísticas de golpes ni de derribos.`,
+                            )}
+                      </p>
+                    ) : null}
+                  </div>
+                )}
 
                 {profile?.profile_url ? (
                   <a
@@ -607,8 +632,8 @@ function OrgOnlyFighterModal({
           {timelineEras.length === 0 ? (
             <p className="font-sans text-xs text-neutral-400 py-2">
               {loading
-                ? L(lang, 'Carregando histórico…', 'Loading history…', 'Chargement de l\'historique…', 'Cargando historial…')
-                : L(lang, `Nenhuma luta no ${org.shortName} registrada ainda.`, `No ${org.shortName} fights recorded yet.`, `Aucun combat ${org.shortName} enregistré pour l'instant.`, `Aún no hay peleas registradas en ${orgEs(org)}.`)}
+                ? L(lang, 'Carregando histórico…', 'Loading history…', 'Chargement de l’historique…', 'Cargando historial…')
+                : L(lang, `Nenhuma luta ${orgPt(org, 'em')} registrada ainda.`, `No ${org.shortName} fights recorded yet.`, `Aucun combat ${org.shortName} enregistré pour l’instant.`, `Aún no hay peleas registradas en ${orgEs(org)}.`)}
             </p>
           ) : (
             <SeasonTimeline
@@ -622,6 +647,57 @@ function OrgOnlyFighterModal({
       </motion.section>
     </motion.div>,
     document.body,
+  )
+}
+
+/** The organization's own season tallies, as it prints them ("landed / attempted"): one row per season, newest first. */
+function SeasonStatsTable({ org, seasons, lang }: { org: OrgConfig; seasons: OrgSeasonStats[]; lang: string }) {
+  const tally = (value?: string | null) => (value ? value.replace('/', ' / ') : '—')
+  const columns: { label: string; value: (season: OrgSeasonStats) => string }[] = [
+    { label: L(lang, 'Golpes', 'Strikes', 'Coups', 'Golpes'), value: (season) => tally(season.strikes) },
+    { label: L(lang, 'Braço', 'Arm', 'Bras', 'Brazo'), value: (season) => tally(season.arm_strikes) },
+    { label: L(lang, 'Perna', 'Leg', 'Jambe', 'Pierna'), value: (season) => tally(season.leg_strikes) },
+    { label: L(lang, 'Solo', 'Ground', 'Sol', 'Suelo'), value: (season) => tally(season.ground_strikes) },
+    { label: L(lang, 'Quedas', 'Takedowns', 'Amenées', 'Derribos'), value: (season) => tally(season.takedowns) },
+    { label: L(lang, 'Vel. do soco', 'Punch speed', 'Vitesse du coup', 'Velocidad del golpe'), value: (season) => (season.max_punch_speed_mph ? `${season.max_punch_speed_mph} mph` : '—') },
+  ]
+  return (
+    <div className="space-y-2 pt-3 border-t border-white/[0.06]">
+      <p className="font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-semibold">
+        {L(lang, `ESTATÍSTICAS POR TEMPORADA // ${org.shortName}`, `SEASON STATS // ${org.shortName}`, `STATS PAR SAISON // ${org.shortName}`, `ESTADÍSTICAS POR TEMPORADA // ${org.shortName}`)}
+      </p>
+      <div className="overflow-x-auto no-scrollbar">
+        <table className="w-full min-w-[460px] whitespace-nowrap text-left font-mono text-xs tabular-nums">
+          <thead>
+            <tr className="text-[10px] uppercase tracking-wider text-neutral-400">
+              <th scope="col" className="py-1 pr-3 font-medium">{L(lang, 'Temporada', 'Season', 'Saison', 'Temporada')}</th>
+              {columns.map((column) => (
+                <th key={column.label} scope="col" className="py-1 pr-3 font-medium">{column.label}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {seasons.map((season) => (
+              <tr key={season.season} className="border-t border-white/[0.06] text-white">
+                <th scope="row" className="py-1.5 pr-3 font-bold">{season.season}</th>
+                {columns.map((column) => (
+                  <td key={column.label} className="py-1.5 pr-3">{column.value(season)}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="font-sans text-[11px] text-neutral-400">
+        {L(
+          lang,
+          `Números como ${orgPt(org, 'o')} os publica (acertos / tentativas), por temporada. É a contagem ${orgPt(org, 'de')}, não comparável às estatísticas do UFC.`,
+          `Numbers as ${org.shortName} publishes them (landed / attempted), by season. It is ${org.shortName}'s own count, not comparable to UFC statistics.`,
+          `Chiffres tels que ${orgFr(org, 'le')} les publie (réussis / tentés), par saison. C’est le décompte ${orgFr(org, 'de')}, non comparable aux statistiques de l’UFC.`,
+          `Cifras tal como las publica ${orgEs(org)} (acertados / intentados), por temporada. Es el conteo de ${orgEs(org)}, no comparable con las estadísticas de la UFC.`,
+        )}
+      </p>
+    </div>
   )
 }
 

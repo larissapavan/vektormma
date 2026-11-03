@@ -138,9 +138,9 @@ const STANCE_NAMES: Record<UiLang, Record<string, string> | null> = {
     Orthodox: 'Destro (Ortodoxo)',
     Southpaw: 'Canhoto',
     Switch: 'Ambidestro (Troca de base)',
-    Open: 'Base Aberta',
-    'Open Stance': 'Base Aberta',
-    Sideways: 'Base Lateral',
+    Open: 'Base aberta',
+    'Open Stance': 'Base aberta',
+    Sideways: 'Base lateral',
     Unknown: 'Desconhecida',
     'All stances': 'Todas as bases',
   },
@@ -378,7 +378,7 @@ export function Fighters() {
               'Tente ajustar os termos de busca ou mudar os filtros para encontrar outros lutadores.',
               'Adjust the search or filter to explore another fighter profile in the database.',
               'Ajustez la recherche ou les filtres pour trouver un autre profil dans la base.',
-              'Prueba a ajustar la búsqueda o los filtros para explorar otro perfil de la base de datos.',
+              'Intenta ajustar la búsqueda o los filtros para explorar otro perfil de la base de datos.',
             )}
           </p>
         </div>
@@ -764,7 +764,7 @@ function FighterDivisionCard({
           <MiniStat icon={CalendarDays} label={L(i18n.language, 'Idade', 'Age', 'Âge', 'Edad')} value={fighter.age ? `${Math.floor(fighter.age)} ${L(i18n.language, 'anos', 'yrs', 'ans', 'años')}` : '—'} />
           <MiniStat
             icon={Swords}
-            label={L(i18n.language, 'Postura', 'Style', 'Garde', 'Guardia')}
+            label={L(i18n.language, 'Base', 'Stance', 'Garde', 'Guardia')}
             value={fighter.stance ? stanceLabel(fighter.stance, i18n.language) : L(i18n.language, 'Não informada', 'Unknown', 'Inconnue', 'No informada')}
           />
           <MiniStat icon={Shield} label={L(i18n.language, 'Aproveitamento', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias')} value={formatPercent(fighter.win_rate)} />
@@ -777,7 +777,7 @@ function FighterDivisionCard({
             className="primary-action inline-flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-white"
           >
             <Award className="h-3.5 w-3.5" />
-            {L(i18n.language, 'Ver Perfil', 'Performance', 'Profil', 'Perfil')}
+            {L(i18n.language, 'Ver Perfil', 'View profile', 'Profil', 'Perfil')}
           </button>
           {fighter.fighter_url ? (
             <a

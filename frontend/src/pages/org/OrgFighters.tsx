@@ -30,7 +30,7 @@ import { MiniStat } from '../../shared/components/MiniStat'
 import { OrgFighterModal } from '../../shared/components/OrgFighterModal'
 import { SectionHeading } from '../../shared/components/SectionHeading'
 import { L, localeTag } from '../../i18n/lang'
-import { orgEs } from '../../shared/data/orgs'
+import { orgEs, orgFr, orgPt } from '../../shared/data/orgs'
 import { getDivisionName } from '../../shared/data/divisions'
 import { compareDivisions, formatHeight, formatReach, formatRecord } from '../../shared/data/orgFormat'
 import { normalizeFighterName } from '../../shared/hooks/useFighterImages'
@@ -133,22 +133,22 @@ export function OrgFighters() {
         <div className="grid gap-3 xl:grid-cols-[1.2fr_0.8fr] xl:items-end">
           <SectionHeading
             level={1}
-            eyebrow={L(i18n.language, `Atletas do ${org.shortName}`, `${org.shortName} roster`, `Combattants ${org.shortName}`, `Peleadores de ${orgEs(org)}`)}
-            title={L(i18n.language, `Lutadores do ${org.shortName}`, `${org.shortName} fighters`, `Combattants ${org.shortName}`, `Peleadores de ${orgEs(org)}`)}
+            eyebrow={L(i18n.language, `Atletas ${orgPt(org, 'de')}`, `${org.shortName} roster`, `Combattants ${org.shortName}`, `Peleadores de ${orgEs(org)}`)}
+            title={L(i18n.language, `Lutadores ${orgPt(org, 'de')}`, `${org.shortName} fighters`, `Combattants ${org.shortName}`, `Peleadores de ${orgEs(org)}`)}
             description={
               isArchived
                 ? L(
                     i18n.language,
-                    `Arquivo histórico completo de atletas que lutaram no ${org.shortName} (2009–2023), com cartel, envergadura, academia e histórico detalhado.`,
+                    `Arquivo histórico completo de atletas que lutaram ${orgPt(org, 'em')} (2009–2023), com cartel, envergadura, academia e histórico detalhado.`,
                     `Historical archive of every fighter who stepped into the ${org.shortName} cage (2009–2023), with record, camp and bout history.`,
-                    `Archives complètes de tous les combattants ayant combattu au ${org.shortName} (2009–2023), avec palmarès, salle et combats.`,
+                    `Archives complètes de tous les combattants ayant combattu ${orgFr(org, 'à')} (2009–2023), avec palmarès, salle et combats.`,
                     `Archivo histórico completo de los peleadores que pelearon en ${orgEs(org)} (2009–2023), con récord, alcance, gimnasio e historial detallado.`,
                   )
                 : L(
                     i18n.language,
-                    `Todos os atletas cadastrados do ${org.shortName}, com cartel completo, dados físicos, volume de golpes e academia. Lutadores ativos em destaque.`,
+                    `Todos os atletas cadastrados ${orgPt(org, 'de')}, com cartel completo, dados físicos, volume de golpes e academia. Lutadores ativos em destaque.`,
                     `Every fighter on the ${org.shortName} roster, with record, physical stats, striking telemetry and camps. Active fighters first.`,
-                    `Tous les combattants répertoriés à ${org.shortName}, avec palmarès, mensurations, frappes et salles. Combattants actifs en tête.`,
+                    `Tous les combattants répertoriés ${orgFr(org, 'à')}, avec palmarès, mensurations, frappes et salles. Combattants actifs en tête.`,
                     `Todos los peleadores registrados de ${orgEs(org)}, con récord completo, datos físicos, volumen de golpes y gimnasio. Primero los peleadores activos.`,
                   )
             }
@@ -347,7 +347,7 @@ export function OrgFighters() {
               >
                 {L(
                   i18n.language,
-                  `Carregar mais ${Math.min(PAGE_SIZE, matches.length - shown)}`,
+                  `Mostrar mais ${Math.min(PAGE_SIZE, matches.length - shown)}`,
                   `Show ${Math.min(PAGE_SIZE, matches.length - shown)} more`,
                   `Afficher plus`,
                   `Mostrar ${Math.min(PAGE_SIZE, matches.length - shown)} más`,
@@ -380,7 +380,7 @@ export function OrgFighters() {
               'Tente ajustar os termos de busca ou mudar os filtros de categoria.',
               'Adjust the search or filter to explore other fighter profiles.',
               'Ajustez la recherche ou les filtres pour trouver un autre profil.',
-              'Prueba a ajustar la búsqueda o el filtro de división.',
+              'Intenta ajustar la búsqueda o el filtro de división.',
             )}
           </p>
         </div>
@@ -645,7 +645,7 @@ function FighterCard({
         <div className="mt-auto grid grid-cols-2 gap-2 border-t border-[var(--border-subtle)] pt-3">
           <MiniStat
             icon={Shield}
-            label={L(i18n.language, 'Aproveitamento', 'Win Rate', 'Victoires', 'Porcentaje de victorias')}
+            label={L(i18n.language, 'Aproveitamento', 'Win Rate', 'Taux de victoire', 'Porcentaje de victorias')}
             value={winRate ?? '—'}
           />
           <MiniStat
@@ -655,12 +655,12 @@ function FighterCard({
           />
           <MiniStat
             icon={Target}
-            label={L(i18n.language, 'Precisão Golpes', 'Str. Acc', 'Préc. coups', 'Prec. golpes')}
+            label={L(i18n.language, 'Precisão de golpes', 'Str. Acc', 'Préc. coups', 'Prec. golpes')}
             value={strAcc ?? '—'}
           />
           <MiniStat
             icon={Zap}
-            label={L(i18n.language, 'Via Rápida', 'Finish Rate', 'Avant la limite', 'Tasa de finalización')}
+            label={L(i18n.language, 'Taxa de finalização', 'Finish Rate', 'Avant la limite', 'Tasa de finalización')}
             value={finishRate ?? (fighter.org_record ? fighter.org_record : '—')}
           />
         </div>
@@ -673,7 +673,7 @@ function FighterCard({
             className="primary-action inline-flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-white"
           >
             <Award className="h-3.5 w-3.5" />
-            {L(i18n.language, 'Ver Perfil', 'View profile', 'Voir profil', 'Ver perfil')}
+            {L(i18n.language, 'Ver Perfil', 'View profile', 'Voir le profil', 'Ver perfil')}
           </button>
           {fighter.profile_url ? (
             <a

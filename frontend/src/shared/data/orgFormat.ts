@@ -49,7 +49,7 @@ const METHOD_NAMES: Record<UiLang, Record<string, string>> = {
     DQ: 'Descalificación (DQ)',
     'NO CONTEST': 'Sin resultado (NC)',
     Draw: 'Empate',
-    Walkover: 'Incomparecencia',
+    Walkover: 'Walkover',
   },
 }
 
@@ -78,7 +78,7 @@ export function nonMmaDiscipline(discipline: string | null | undefined): string 
 }
 
 export function nonMmaHint(language: string | boolean = false) {
-  return L(language, 'Esta luta não é de MMA, mas conta no cartel.', 'Not an MMA bout, but it counts in the record.', "Ce combat n'est pas du MMA, mais il compte dans le palmarès.", 'Esta pelea no es de MMA, pero cuenta en el récord.')
+  return L(language, 'Esta luta não é de MMA, mas conta no cartel.', 'Not an MMA bout, but it counts in the record.', "Ce combat n’est pas du MMA, mais il compte dans le palmarès.", 'Esta pelea no es de MMA, pero cuenta en el récord.')
 }
 
 /** "KO/TKO · R2 · 4:07" for a fought bout, null for one that has not happened. */

@@ -102,7 +102,7 @@ export function HeadToHead() {
           'Não foi possível carregar o histórico de confrontos. Verifique se o servidor está disponível.',
           'Unable to load head-to-head history. Check whether the backend is available.',
           'Impossible de charger l’historique des confrontations. Vérifiez si le serveur est disponible.',
-          'No se pudo cargar el historial cara a cara. Comprueba que el servidor esté disponible.',
+          'No se pudo cargar el historial cara a cara. Verifica que el servidor esté disponible.',
         ),
       )
       setResult(null)

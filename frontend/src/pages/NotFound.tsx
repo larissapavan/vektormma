@@ -22,7 +22,7 @@ export function NotFound() {
             i18n.language,
             'A página que você procura não existe ou foi movida.',
             "The page you're looking for doesn't exist or may have moved.",
-            "La page que vous cherchez n'existe pas ou a été déplacée.",
+            "La page que vous cherchez n’existe pas ou a été déplacée.",
             'La página que buscas no existe o pudo haberse movido.',
           )}
         </p>
@@ -30,7 +30,7 @@ export function NotFound() {
           to="/"
           className="primary-action mx-auto mt-4 inline-flex w-fit items-center justify-center gap-2 rounded-full px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-white"
         >
-          {L(i18n.language, 'Voltar ao início', 'Back to home', "Retour à l'accueil", 'Volver al inicio')}
+          {L(i18n.language, 'Voltar ao início', 'Back to home', "Retour à l’accueil", 'Volver al inicio')}
         </Link>
       </div>
     </div>

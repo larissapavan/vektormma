@@ -220,7 +220,7 @@ export function SeasonFightsPanel({
                               lang,
                               divPt ? `Cinturão Interino (${divPt})` : 'Cinturão Interino',
                               divEn ? `Interim ${divEn} Title` : 'Interim Title Fight',
-                              divFr ? `Ceinture Intérimaire (${divFr})` : 'Ceinture Intérimaire',
+                              divFr ? `Ceinture intérimaire (${divFr})` : 'Ceinture intérimaire',
                               divEs ? `Cinturón interino (${divEs})` : 'Cinturón interino',
                             )}
                           </span>
@@ -233,7 +233,7 @@ export function SeasonFightsPanel({
                             lang,
                             divPt ? `Disputa de Cinturão (${divPt})` : 'Disputa de Cinturão',
                             divEn ? `${divEn} Title Fight` : 'Title Fight',
-                            divFr ? `Combat pour le Titre (${divFr})` : 'Combat pour le Titre',
+                            divFr ? `Combat pour le titre (${divFr})` : 'Combat pour le titre',
                             divEs ? `Pelea por el título (${divEs})` : 'Pelea por el título',
                           )}
                         </span>

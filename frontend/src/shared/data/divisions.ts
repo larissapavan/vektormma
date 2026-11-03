@@ -89,7 +89,7 @@ export function getDivisionName(division: string | null | undefined, language: s
 const POUND_FOR_POUND: Record<Exclude<UiLang, 'en'>, { men: string; women: string; any: string }> = {
   pt: { men: 'Peso por Peso Masculino', women: 'Peso por Peso Feminino', any: 'Peso por Peso' },
   fr: { men: 'Livre pour livre masculin', women: 'Livre pour livre féminin', any: 'Livre pour livre' },
-  es: { men: 'Libra por Libra Masculino', women: 'Libra por Libra Femenino', any: 'Libra por Libra' },
+  es: { men: 'Libra por libra masculino', women: 'Libra por libra femenino', any: 'Libra por libra' },
 }
 
 /** "Men's Pound-for-Pound" in the active language (the ranking categories come from the API in English). */

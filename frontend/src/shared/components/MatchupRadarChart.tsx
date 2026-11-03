@@ -127,7 +127,7 @@ export function MatchupRadarChart({
           i18n.language,
           'Volume de golpes e média de quedas calibrados nas escalas do UFC (0 a 100) para comparação direta entre os atletas.',
           'Output and takedown offense are scaled to typical UFC ranges so both corners sit on the same 0–100 axes.',
-          'Le volume de frappes et la moyenne d\'amenées au sol sont calibrés sur les échelles de l\'UFC (0 à 100) pour comparer directement les athlètes.',
+          'Le volume de frappes et la moyenne d’amenées au sol sont calibrés sur les échelles de l’UFC (0 à 100) pour comparer directement les athlètes.',
           'El volumen de golpes y los derribos se escalan a los rangos habituales de la UFC (0 a 100) para que ambas esquinas queden en los mismos ejes.',
         )}
       </p>

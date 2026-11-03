@@ -19,7 +19,7 @@ export function PickChip({ pick, className = '' }: { pick: UpcomingPick | undefi
         i18n.language,
         `Palpite do modelo baseado em dados estatísticos. Não é recomendação de aposta.`,
         `The model's pick (${edgeLabel(pick.probability).toLowerCase()}), based on each fighter's current stats. Not betting advice.`,
-        `Pronostic du modèle (${edgeLabel(pick.probability, 'fr').toLowerCase()}), fondé sur les stats actuelles de chaque combattant. Ce n'est pas un conseil de pari.`,
+        `Pronostic du modèle (${edgeLabel(pick.probability, 'fr').toLowerCase()}), fondé sur les stats actuelles de chaque combattant. Ce n’est pas un conseil de pari.`,
         `El pronóstico del modelo (${edgeLabel(pick.probability, 'es').toLowerCase()}), basado en las estadísticas actuales de cada peleador. No es un consejo de apuestas.`,
       )}
     >

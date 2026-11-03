@@ -11,7 +11,7 @@ import { WinProbabilityBar } from '../../shared/components/WinProbabilityBar'
 import { L, localeTag } from '../../i18n/lang'
 import { getDivisionName } from '../../shared/data/divisions'
 import { formatDate } from '../../shared/data/orgFormat'
-import { orgEs, orgPath, type OrgConfig } from '../../shared/data/orgs'
+import { orgEs, orgFr, orgPath, orgPt, type OrgConfig } from '../../shared/data/orgs'
 import { useOrgFighterLookup } from '../../shared/hooks/useOrgFighterLookup'
 import type { OrgEvent, OrgFighter, OrgRankingCategory, UpcomingPick } from '../../shared/types/api'
 
@@ -70,9 +70,9 @@ export function FeaturedHero({
       <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--text-muted)] sm:text-base font-normal">
         {L(
           lang,
-          `O que vem a seguir no ${org.shortName}: a próxima luta principal, o palpite da IA, o momento dos lutadores e os líderes do ranking peso por peso.`,
+          `O que vem a seguir ${orgPt(org, 'em')}: a próxima luta principal, o palpite da IA, o momento dos lutadores e os líderes do ranking peso por peso.`,
           `What's next in ${org.shortName}: the upcoming main event, the model's pick for it, how the fighters are trending and the top of the pound-for-pound ranking.`,
-          `La suite au ${org.shortName} : le prochain combat principal, le choix du modèle, la forme des combattants et le haut du classement livre pour livre.`,
+          `La suite ${orgFr(org, 'à')} : le prochain combat principal, le choix du modèle, la forme des combattants et le haut du classement livre pour livre.`,
           `Lo que viene en ${orgEs(org)}: la próxima pelea estelar, el pronóstico del modelo, cómo vienen los peleadores y la cima del ranking libra por libra.`,
         )}
       </p>
@@ -95,7 +95,7 @@ export function FeaturedHero({
 
       <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
         <MiniStat
-          label={L(lang, 'Lutadores no banco', 'Fighters tracked', 'Combattants suivis', 'Peleadores registrados')}
+          label={L(lang, 'Lutadores na base', 'Fighters tracked', 'Combattants suivis', 'Peleadores registrados')}
           value={fightersCount ? fightersCount.toLocaleString(localeTag(lang)) : '—'}
           icon={Swords}
         />
@@ -137,7 +137,7 @@ export function CatalogStrip({ org, fights, events, active }: { org: OrgConfig; 
         <div>
           <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(lang, 'Lutas Analisadas', 'Fights analyzed', 'Combats analysés', 'Peleas analizadas')}</p>
           <p className="data-value text-xl font-bold text-[var(--text-main)]">{figure(fights)}</p>
-          <p className="text-[11px] text-[var(--text-muted)]">{L(lang, `histórico oficial do ${org.shortName}`, 'career bouts on file', 'combats de carrière au dossier', 'peleas de carrera registradas')}</p>
+          <p className="text-[11px] text-[var(--text-muted)]">{L(lang, `histórico oficial ${orgPt(org, 'de')}`, 'career bouts on file', 'combats de carrière au dossier', 'peleas de carrera registradas')}</p>
         </div>
         <div>
           <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(lang, 'Eventos', 'Events', 'Événements', 'Eventos')}</p>
@@ -180,7 +180,7 @@ export function MainEventCard({
         <p className="text-sm leading-6 text-[var(--text-muted)]">
           {L(
             lang,
-            `Nenhum evento do ${org.shortName} agendado no momento.`,
+            `Nenhum evento ${orgPt(org, 'de')} agendado no momento.`,
             `No upcoming ${org.shortName} events are scheduled right now.`,
             `Aucun événement ${org.shortName} n’est programmé pour le moment.`,
             `No hay eventos de ${orgEs(org)} programados por ahora.`,
@@ -197,7 +197,7 @@ export function MainEventCard({
     <article className="surface-card rounded-[20px] p-4 sm:p-6">
       <div className="min-w-0">
         <p className="broadcast-label text-[11px] text-[var(--accent-red)]">
-          {L(lang, `Próximo Evento do ${org.shortName}`, `Upcoming ${org.shortName} event`, `Prochain événement ${org.shortName}`, `Próximo evento de ${orgEs(org)}`)}
+          {L(lang, `Próximo Evento ${orgPt(org, 'de')}`, `Upcoming ${org.shortName} event`, `Prochain événement ${org.shortName}`, `Próximo evento de ${orgEs(org)}`)}
         </p>
         <h2 className="mt-1 text-2xl font-black uppercase leading-tight tracking-[0.03em] text-[var(--text-main)] sm:text-4xl">{event.name}</h2>
         <p className="mt-2 flex items-center gap-1.5 text-sm text-[var(--text-muted)]">

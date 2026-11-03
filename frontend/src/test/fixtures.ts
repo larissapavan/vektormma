@@ -192,6 +192,10 @@ export const pflContender = orgFighter('Dax Moore', {
   country: 'Brazil',
   hometown: 'Sao Paulo, Brazil',
   next_fight: { event: 'PFL Future', date: '2030-02-02', opponent: 'Riko Stone' },
+  season_stats: [
+    { season: 2025, max_punch_speed_mph: '17.55', strikes: '76/144', arm_strikes: '27/53', leg_strikes: '38/80', ground_strikes: '11/11', takedowns: '1/1', inner_zone_pct: null, outer_zone_pct: null },
+    { season: 2024, max_punch_speed_mph: null, strikes: '9/28', arm_strikes: null, leg_strikes: null, ground_strikes: null, takedowns: '0/0', inner_zone_pct: null, outer_zone_pct: null },
+  ],
 })
 export const pflVeteran = orgFighter('Lena Ortiz', { is_active: false, division: 'Heavyweight', ranking: null })
 
@@ -390,7 +394,7 @@ export const routes: Record<string, unknown> = {
     categories: [{ name: 'Fights', stats: [{ key: 'TotalFights', title: 'Total Fights', note: null, unit: 'Fights', leaders: [{ rank: 1, fighter: 'Alpha One', value: '30', profile_name: 'Alpha One', ufc_url: null }] }] }],
   },
   '/news': { source_name: 'ESPN', source_url: 'https://www.espn.com/mma/', items: [{ title: 'Alpha One retains the title', summary: null, url: 'https://www.espn.com/ufc/story/1', image_url: null, published: '2026-10-15T10:00:00Z', kind: 'story' }] },
-  '/track-record': { tracking_since: '2026-10-15', logged: 4, resolved: 0, correct: 0, accuracy: null, average_confidence: null, pending: 4, earlier_model_picks: 1, earlier_model_note: '1 of these picks were saved before 2026-10-20, by an earlier version of the model.', next_event: { name: 'UFC 900: Alpha vs. Beta', date: '2030-01-01' }, bands: [], recent: [], biggest_misses: [] },
+  '/track-record': { tracking_since: '2026-10-15', logged: 4, resolved: 0, correct: 0, accuracy: null, average_confidence: null, pending: 4, earlier_model_picks: 1, earlier_model_note: '1 of these picks were saved before 2026-10-20, by an earlier version of the model.', model_change_note: '1 of these picks were saved by the pre-fight model, in use since 2026-11-10. Earlier picks came from the model it replaced and are kept exactly as they were shown. The record of each model is counted separately below.', models: [{ model: 'current', label: 'Current model', since: '2026-10-15', logged: 3, resolved: 2, correct: 1, accuracy: 0.5 }, { model: 'prefight', label: 'Pre-fight model', since: '2026-11-10', logged: 1, resolved: 0, correct: 0, accuracy: null }], next_event: { name: 'UFC 900: Alpha vs. Beta', date: '2030-01-01' }, bands: [], recent: [], biggest_misses: [] },
   '/head-to-head': { fighter_a: 'Alpha One', fighter_b: 'Beta Two', fighter_a_wins: 1, fighter_b_wins: 0, no_contests: 0, meetings: [], common_opponents: [], network_path: [], degrees_of_separation: 0 },
   '/fighters/Alpha One/other-organizations': [
     {

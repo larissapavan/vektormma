@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { L } from '../../i18n/lang'
-import { orgEs, type OrgConfig } from '../../shared/data/orgs'
+import { orgEs, orgFr, orgPt, type OrgConfig } from '../../shared/data/orgs'
 import { translateHometown } from '../../shared/data/fightLabels'
 import { getDivisionName } from '../../shared/data/divisions'
 import { ChampionBelt } from '../../shared/components/ChampionBelt'
@@ -118,9 +118,9 @@ export function OrgPredictor() {
         <p className="mt-2 max-w-xl text-sm font-medium leading-relaxed text-[var(--text-muted)]">
           {L(
             i18n.language,
-            `Selecione dois atletas do ${org.shortName}. O modelo de IA calcula as chances de vitória e os fatores determinantes.`,
+            `Selecione dois atletas ${orgPt(org, 'de')}. O modelo de IA calcula as chances de vitória e os fatores determinantes.`,
             `Pick any two ${org.shortName} fighters. The machine learning model projects the odds and shows the numbers driving the prediction.`,
-            `Sélectionnez deux combattants de ${org.shortName}. Le modèle d’IA calcule les cotes et détaille les facteurs décisifs.`,
+            `Sélectionnez deux combattants ${orgFr(org, 'de')}. Le modèle d’IA calcule les cotes et détaille les facteurs décisifs.`,
             `Elige a dos peleadores de ${orgEs(org)}. El modelo de aprendizaje automático proyecta las probabilidades y muestra los números que impulsan el pronóstico.`,
           )}
         </p>
@@ -281,9 +281,9 @@ function OutsideUfcNotice({ org }: { org: OrgConfig }) {
       <p className="text-xs leading-5">
         {L(
           lang,
-          `O modelo foi treinado com lutas do UFC e só foi validado nelas. Os dados do ${org.shortName} trazem cartel, idade e medidas, mas não a precisão de golpes nem de quedas: nesses pontos o modelo usa médias.`,
+          `O modelo foi treinado com lutas do UFC e só foi validado nelas. Os dados ${orgPt(org, 'de')} trazem cartel, idade e medidas, mas não a precisão de golpes nem de quedas: nesses pontos o modelo usa médias.`,
           `The model is trained on UFC fights and has only been validated on them. The ${org.shortName} data has record, age and measurements, but no striking or takedown accuracy, so the model uses averages for those.`,
-          `Le modèle est entraîné sur des combats UFC et n'a été validé que sur eux. Les données ${org.shortName} donnent le bilan, l'âge et les mensurations, mais pas la précision en frappe ni aux takedowns : le modèle utilise des moyennes.`,
+          `Le modèle est entraîné sur des combats UFC et n’a été validé que sur eux. Les données ${org.shortName} donnent le bilan, l’âge et les mensurations, mais pas la précision en frappe ni aux takedowns : le modèle utilise des moyennes.`,
           `El modelo se entrena con peleas de la UFC y solo se validó con ellas. Los datos de ${orgEs(org)} traen récord, edad y medidas, pero no la precisión de golpes ni de derribos: en esos puntos el modelo usa promedios.`,
         )}{' '}
         {org.probabilitiesEased
@@ -295,15 +295,7 @@ function OutsideUfcNotice({ org }: { org: OrgConfig }) {
               'Por precaución, las probabilidades mostradas quedan a medio camino entre el resultado del modelo y 50 %.',
             )
           : null}{' '}
-        {org.archived
-          ? L(
-              lang,
-              'Esta organização não realiza mais eventos: os confrontos são hipotéticos.',
-              'This organization no longer holds events, so every matchup here is hypothetical.',
-              "Cette organisation n'organise plus d'événements : tous les combats sont hypothétiques.",
-              'Esta organización ya no realiza eventos: todos los cruces son hipotéticos.',
-            )
-          : null}
+
       </p>
     </aside>
   )
@@ -434,11 +426,11 @@ function CornerCard({
                 <span className="text-sm font-bold text-[var(--text-main)]">{fighter.sig_str_acc ? `${Math.round(fighter.sig_str_acc * 100)}%` : '—'}</span>
               </div>
               <div className="rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] p-2">
-                <span className="block text-[10px] text-[var(--text-muted)] uppercase">{L(i18n.language, 'Quedas / 15m', 'TD / 15m', 'Amenées / 15 min', 'Derribos / 15 min')}</span>
+                <span className="block text-[10px] text-[var(--text-muted)] uppercase">{L(i18n.language, 'Quedas / 15 min', 'TD / 15 min', 'Amenées / 15 min', 'Derribos / 15 min')}</span>
                 <span className="text-sm font-bold text-[var(--text-main)]">{fighter.takedown_avg_per_15min != null ? fighter.takedown_avg_per_15min.toFixed(2) : '—'}</span>
               </div>
               <div className="rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] p-2">
-                <span className="block text-[10px] text-[var(--text-muted)] uppercase">{L(i18n.language, 'Via rápida', 'Finish Rate', 'Avant la limite', 'Tasa de finalización')}</span>
+                <span className="block text-[10px] text-[var(--text-muted)] uppercase">{L(i18n.language, 'Taxa de finalização', 'Finish Rate', 'Avant la limite', 'Tasa de finalización')}</span>
                 <span className="text-sm font-bold text-[var(--text-main)]">{fighter.finish_rate != null ? `${Math.round(fighter.finish_rate * 100)}%` : '—'}</span>
               </div>
             </div>

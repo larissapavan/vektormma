@@ -42,7 +42,7 @@ export function DivisionMatrixCard({ category }: { category: string }) {
           i18n.language,
           'Cada lutador do top 8 contra todos os outros, segundo o modelo. A probabilidade média de vitória sobre os demais permite avaliar toda a categoria de uma vez. Não é uma previsão de torneio: nenhuma chave é simulada.',
           'Every fighter in the top 8 against every other, by the model. The average chance of beating the rest is a way to read the whole division at once. It is not a tournament forecast: no bracket is simulated.',
-          'Chaque combattant du top 8 contre tous les autres, selon le modèle. La probabilité moyenne de battre le reste permet de lire toute la catégorie d\'un coup. Ce n\'est pas une prévision de tournoi : aucun tableau n\'est simulé.',
+          'Chaque combattant du top 8 contre tous les autres, selon le modèle. La probabilité moyenne de battre le reste permet de lire toute la catégorie d’un coup. Ce n’est pas une prévision de tournoi : aucun tableau n’est simulé.',
           'Cada peleador del top 8 contra todos los demás, según el modelo. La probabilidad media de ganarle al resto sirve para leer toda la división de una vez. No es un pronóstico de torneo: no se simula ninguna llave.',
         )}
       </p>

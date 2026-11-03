@@ -98,7 +98,7 @@ export function Home() {
             i18n.language,
             'O que vem a seguir no UFC: a próxima luta principal, o palpite da IA, o momento dos lutadores e os líderes do ranking peso por peso.',
             "What's next in the UFC: the upcoming main event, the model's pick for it, how the fighters are trending and the top of the pound-for-pound ranking, all from the same data the model uses.",
-            "La suite à l'UFC : le prochain combat principal, le choix du modèle, la forme des combattants et le haut du classement livre pour livre, à partir des mêmes données que le modèle.",
+            "La suite à l’UFC : le prochain combat principal, le choix du modèle, la forme des combattants et le haut du classement livre pour livre, à partir des mêmes données que le modèle.",
             'Lo que viene en la UFC: la próxima pelea estelar, el pronóstico del modelo, cómo vienen los peleadores y la cima del ranking libra por libra, todo con los mismos datos que usa el modelo.',
           )}
         </p>
@@ -121,7 +121,7 @@ export function Home() {
 
         <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
           <MiniStat
-            label={L(i18n.language, 'Lutadores no banco', 'Fighters tracked', 'Combattants suivis', 'Peleadores registrados')}
+            label={L(i18n.language, 'Lutadores na base', 'Fighters tracked', 'Combattants suivis', 'Peleadores registrados')}
             value={health?.fighters_loaded ? health.fighters_loaded.toLocaleString(localeTag(i18n.language)) : '—'}
             icon={Swords}
           />

@@ -177,7 +177,7 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
               type="button"
               onClick={swapCorners}
               disabled={!fighterAName && !fighterBName}
-              title={L(i18n.language, 'Inverter cantos (Vermelho ⇄ Azul)', 'Swap corners (Red ⇄ Blue)', 'Inverser les coins (Rouge ⇄ Bleu)', 'Intercambiar esquinas (Roja ⇄ Azul)')}
+              title={L(i18n.language, 'Inverter cantos (Vermelho ⇄ Azul)', 'Swap corners (Red ⇄ Blue)', 'Inverser les coins (rouge ⇄ bleu)', 'Intercambiar esquinas (roja ⇄ azul)')}
               aria-label={L(i18n.language, 'Inverter cantos', 'Swap corners', 'Inverser les coins', 'Intercambiar esquinas')}
               className="ghost-action inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--text-muted)] transition hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
             >

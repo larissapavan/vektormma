@@ -223,7 +223,7 @@ export function FighterSelect({
                       i18n.language,
                       'Busque por nome, apelido, categoria, cartel ou ranking. Lutador selecionado no outro canto fica indisponível.',
                       'Search by name, nickname, weight class, record, or ranking. A fighter selected in the opposite corner is locked.',
-                      'Cherchez par nom, surnom, catégorie, palmarès ou classement. Le combattant choisi dans l\'autre coin est indisponible.',
+                      'Cherchez par nom, surnom, catégorie, palmarès ou classement. Le combattant choisi dans l’autre coin est indisponible.',
                       'Busca por nombre, apodo, división de peso, récord o ranking. Un peleador elegido en la esquina opuesta queda bloqueado.',
                     )}
                   </p>
@@ -320,7 +320,7 @@ export function FighterSelect({
                       const divDisplay = rawDiv ? getDivisionName(rawDiv, i18n.language) : rawDiv
                       const stanceDisplay = fighter.stance
                         ? translateStance(fighter.stance, i18n.language)
-                        : L(i18n.language, 'Estilo não informado', 'Style unavailable', 'Garde non renseignée', 'Guardia no informada')
+                        : L(i18n.language, 'Base não informada', 'Stance unavailable', 'Garde non renseignée', 'Guardia no informada')
 
                       return (
                         <button

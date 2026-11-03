@@ -229,7 +229,7 @@ export function Landing() {
                 <span className="text-[#B45309] dark:text-[#F59E0B] font-display font-extrabold text-2xl sm:text-3xl">+</span>
               </div>
               <p className="mt-1 font-sans text-xs uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-400 font-medium">
-                {L(i18n.language, `Anos de Histórico (${HISTORY_RANGE})`, `Years of History (${HISTORY_RANGE})`, `Années d’Histoire (${HISTORY_RANGE})`, `Años de historia (${HISTORY_RANGE})`)}
+                {L(i18n.language, `Anos de Histórico (${HISTORY_RANGE})`, `Years of History (${HISTORY_RANGE})`, `Années d’histoire (${HISTORY_RANGE})`, `Años de historia (${HISTORY_RANGE})`)}
               </p>
             </div>
           </div>
@@ -277,7 +277,7 @@ export function Landing() {
                     {L(i18n.language, 'Sistema de IA', 'ML System', 'Système d’IA', 'Sistema de IA')}
                   </Link>
                   <Link to="/track-record" className="inline-flex min-h-6 items-center hover:text-[var(--text-primary)] dark:hover:text-white transition">
-                    {L(i18n.language, 'Acurácia', 'Track Record', 'Historique', 'Historial')}
+                    {L(i18n.language, 'Desempenho', 'Track Record', 'Bilan', 'Historial')}
                   </Link>
                 </nav>
 
@@ -294,7 +294,7 @@ export function Landing() {
                   i18n.language,
                   'Projeto analítico independente. Não afiliado ao UFC, PFL, Bellator, ONE Championship, RIZIN, KSW, LFA, Cage Warriors, OKTAGON, Jungle Fight ou Invicta FC.',
                   'Independent analytics project. Not affiliated with UFC, PFL, Bellator, ONE Championship, RIZIN, KSW, LFA, Cage Warriors, OKTAGON, Jungle Fight, or Invicta FC.',
-                  'Projet analytique indépendant. Non affilié à l’UFC, au PFL, au Bellator, au ONE Championship, à RIZIN, à KSW, à la LFA, à Cage Warriors, à OKTAGON, au Jungle Fight ou à Invicta FC.',
+                  'Projet analytique indépendant. Non affilié à l’UFC, à la PFL, au Bellator, à ONE Championship, à RIZIN, à KSW, à la LFA, à Cage Warriors, à OKTAGON, au Jungle Fight ou à Invicta FC.',
                   'Proyecto analítico independiente. No afiliado a la UFC, la PFL, Bellator, ONE Championship, RIZIN, KSW, la LFA, Cage Warriors, OKTAGON, Jungle Fight ni Invicta FC.',
                 )}
               </p>

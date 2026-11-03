@@ -78,7 +78,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
       i18n.language,
       `🥊 MEUS PALPITES VS IA • ${event.name}\n`,
       `🥊 MY PICKS VS AI • ${event.name}\n`,
-      `🥊 MES PRONOSTICS CONTRE L'IA • ${event.name}\n`,
+      `🥊 MES PRONOSTICS CONTRE L’IA • ${event.name}\n`,
       `🥊 MIS PRONÓSTICOS VS. LA IA • ${event.name}\n`,
     )
     
@@ -97,7 +97,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
         const matchesAi = aiPick && aiPick.predicted_winner.toLowerCase() === userChoice.toLowerCase()
         const aiInfo = aiPick ? `🤖 IA: ${aiPick.predicted_winner} (${Math.round(aiPick.probability * 100)}%)` : ''
         const verdict = matchesAi
-          ? L(i18n.language, '🤝 [CONCORDO]', '🤝 [AGREE]', '🤝 [D\'ACCORD]', '🤝 [COINCIDO]')
+          ? L(i18n.language, '🤝 [CONCORDO]', '🤝 [AGREE]', '🤝 [D’ACCORD]', '🤝 [COINCIDO]')
           : L(i18n.language, '⚡ [ZEBRA/DIVERGÊNCIA]', '⚡ [UPSET/DISAGREE]', '⚡ [SURPRISE/DÉSACCORD]', '⚡ [SORPRESA/DESACUERDO]')
         text += `• ${fight.fighter_1} vs ${fight.fighter_2}\n  👉 ${L(i18n.language, 'Meu palpite', 'My pick', 'Mon pronostic', 'Mi pronóstico')}: ${userChoice} | ${aiInfo} ${verdict}\n\n`
       }
@@ -108,8 +108,8 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
         i18n.language,
         `📊 Concordância com o Modelo de IA: ${stats.agreementPct}% (${stats.agreedWithAi}/${stats.totalWithAi} lutas)\n`,
         `📊 Agreement with AI Model: ${stats.agreementPct}% (${stats.agreedWithAi}/${stats.totalWithAi} fights)\n`,
-        `📊 Accord avec le modèle d'IA : ${stats.agreementPct}% (${stats.agreedWithAi}/${stats.totalWithAi} combats)\n`,
-        `📊 Coincidencia con el modelo de IA: ${stats.agreementPct}% (${stats.agreedWithAi}/${stats.totalWithAi} peleas)\n`,
+        `📊 Accord avec le modèle d’IA : ${stats.agreementPct} % (${stats.agreedWithAi}/${stats.totalWithAi} combats)\n`,
+        `📊 Coincidencia con el modelo de IA: ${stats.agreementPct} % (${stats.agreedWithAi}/${stats.totalWithAi} peleas)\n`,
       )
     }
     text += L(i18n.language, `Faça seus palpites no site: https://www.vektormma.com/`, `Make your picks at: https://www.vektormma.com/`, `Faites vos pronostics sur le site : https://www.vektormma.com/`, 'Haz tus pronósticos en: https://www.vektormma.com/')
@@ -154,7 +154,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
             </div>
             <div>
               <h2 className="text-base font-bold uppercase tracking-wide text-[var(--text-main)] sm:text-lg">
-                {L(i18n.language, 'Simulador de Card: Você vs. IA', 'Card Simulator: You vs. AI', 'Simulateur de carte : vous contre l\'IA', 'Simulador de cartelera: tú vs. la IA')}
+                {L(i18n.language, 'Simulador de Card: Você vs. IA', 'Card Simulator: You vs. AI', 'Simulateur de carte : vous contre l’IA', 'Simulador de cartelera: tú vs. la IA')}
               </h2>
               <p className="theme-muted truncate text-xs">{event.name}</p>
             </div>
@@ -178,7 +178,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
               </div>
               <div className="h-3 w-px bg-[var(--line-soft)]" />
               <div>
-                <span className="text-xs text-[var(--text-muted)]">{L(i18n.language, 'Concordância c/ IA', 'AI Agreement', 'Accord avec l\'IA', 'Coincidencia con la IA')}: </span>
+                <span className="text-xs text-[var(--text-muted)]">{L(i18n.language, 'Concordância c/ IA', 'AI Agreement', 'Accord avec l’IA', 'Coincidencia con la IA')}: </span>
                 <span className="font-bold text-[#F2C230]">{stats.agreementPct}%</span>
                 <span className="text-xs text-[var(--text-muted)]"> ({stats.agreedWithAi}/{stats.totalWithAi})</span>
               </div>
@@ -263,7 +263,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
                     </div>
                     {isF1Ai ? (
                       <span className="mt-1 text-[10px] text-[#F2C230] font-medium">
-                        ★ {L(i18n.language, 'Palpite da IA', 'AI Pick', 'Pronostic de l\'IA', 'Pronóstico de la IA')}
+                        ★ {L(i18n.language, 'Palpite da IA', 'AI Pick', 'Pronostic de l’IA', 'Pronóstico de la IA')}
                       </span>
                     ) : null}
                   </button>
@@ -284,7 +284,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
                     </div>
                     {isF2Ai ? (
                       <span className="mt-1 text-[10px] text-[#F2C230] font-medium">
-                        ★ {L(i18n.language, 'Palpite da IA', 'AI Pick', 'Pronostic de l\'IA', 'Pronóstico de la IA')}
+                        ★ {L(i18n.language, 'Palpite da IA', 'AI Pick', 'Pronostic de l’IA', 'Pronóstico de la IA')}
                       </span>
                     ) : null}
                   </button>
@@ -295,11 +295,11 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
                   <div className="mt-2 text-center text-[11px]">
                     {userChoice.toLowerCase() === aiPick.predicted_winner.toLowerCase() ? (
                       <span className="inline-flex items-center gap-1 text-emerald-400 font-medium">
-                        <Check className="h-3 w-3" /> {L(i18n.language, 'Você e a IA concordam no vencedor', 'You agree with AI', 'Vous et l\'IA êtes d\'accord sur le vainqueur', 'Coincides con la IA en el ganador')}
+                        <Check className="h-3 w-3" /> {L(i18n.language, 'Você e a IA concordam no vencedor', 'You agree with AI', 'Vous et l’IA êtes d’accord sur le vainqueur', 'Coincides con la IA en el ganador')}
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 text-amber-400 font-medium">
-                        ⚡ {L(i18n.language, 'Seu palpite vai contra a IA (aposta na zebra)', 'Upset pick against AI', 'Votre pronostic va à l\'encontre de l\'IA (pari sur la surprise)', 'Pronóstico sorpresa contra la IA')}
+                        ⚡ {L(i18n.language, 'Seu palpite vai contra a IA (aposta na zebra)', 'Upset pick against AI', 'Votre pronostic va à l’encontre de l’IA (pari sur la surprise)', 'Pronóstico sorpresa contra la IA')}
                       </span>
                     )}
                   </div>

@@ -149,6 +149,14 @@ const TEMPLATES: Template[] = [
     },
   },
   {
+    pattern: /^(\d+) of these picks were saved by the ([\w -]+), in use since (\d{4}-\d{2}-\d{2})\. Earlier picks came from the model it replaced and are kept exactly as they were shown\. The record of each model is counted separately below\.$/,
+    text: {
+      pt: (m, l) => `${m[1]} destes palpites foram salvos pelo ${MODEL_NAMES[m[2]]?.pt ?? m[2]}, em uso desde ${longDate(m[3], l)}. Os palpites anteriores vieram do modelo que ele substituiu e foram mantidos exatamente como foram exibidos. O histórico de cada modelo é contado separadamente abaixo.`,
+      fr: (m, l) => `${m[1]} de ces pronostics ont été enregistrés par le ${MODEL_NAMES[m[2]]?.fr ?? m[2]}, utilisé depuis le ${longDate(m[3], l)}. Les pronostics précédents venaient du modèle qu’il a remplacé et sont conservés exactement tels qu’ils ont été affichés. Le bilan de chaque modèle est compté séparément ci-dessous.`,
+      es: (m, l) => `${m[1]} de estos pronósticos los guardó el ${MODEL_NAMES[m[2]]?.es ?? m[2]}, en uso desde el ${longDate(m[3], l)}. Los pronósticos anteriores vinieron del modelo que reemplazó y se conservan exactamente como se mostraron. El historial de cada modelo se cuenta por separado más abajo.`,
+    },
+  },
+  {
     pattern: /^(\d+) of these picks were saved before (\d{4}-\d{2}-\d{2}), by an earlier version of the model that gave a different answer depending on which fighter was listed first\. They are kept exactly as they were shown\. Picks saved from that day on use the corrected version\.$/,
     text: {
       pt: (m, l) => `${m[1]} destes palpites foram salvos antes de ${longDate(m[2], l)}, por uma versão anterior do modelo que dava respostas diferentes conforme o lutador listado primeiro. Eles foram mantidos exatamente como foram exibidos. Os palpites salvos a partir desse dia usam a versão corrigida.`,
@@ -157,6 +165,12 @@ const TEMPLATES: Template[] = [
     },
   },
 ]
+
+/** The model names the API puts in a sentence (lower case, as in "saved by the pre-fight model"). */
+const MODEL_NAMES: Record<string, { pt: string; fr: string; es: string }> = {
+  'pre-fight model': { pt: 'modelo pré-luta', fr: 'modèle pré-combat', es: 'modelo previo a la pelea' },
+  'current model': { pt: 'modelo atual', fr: 'modèle actuel', es: 'modelo actual' },
+}
 
 /** An English sentence from the API, in the language on screen. */
 export function localizeApiText(text: string | null | undefined, language: string | boolean = false): string {

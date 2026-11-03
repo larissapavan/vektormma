@@ -698,7 +698,7 @@ const GUIDE: ByLang<InfoPage> = {
       {
         heading: 'Quanto ele acerta',
         paragraphs: [
-          'Em lutas recentes, que o modelo não viu no treino, ele acerta o vencedor em cerca de 6 de cada 10 lutas, melhor que o cara ou coroa (5 em 10), mas longe de infalível. A página Acurácia mostra esse resultado com as lutas reais e compara com regras simples, como escolher o lutador com mais vitórias.',
+          'Em lutas recentes, que o modelo não viu no treino, ele acerta o vencedor em cerca de 6 de cada 10 lutas, melhor que o cara ou coroa (5 em 10), mas longe de infalível. A página Desempenho mostra esse resultado com as lutas reais e compara com regras simples, como escolher o lutador com mais vitórias.',
         ],
         links: [
           { label: 'Ver o modelo e as métricas', href: '/model' },
@@ -806,7 +806,7 @@ const GUIDE: ByLang<InfoPage> = {
       {
         heading: 'Son taux de réussite',
         paragraphs: [
-          'Sur des combats récents qu’il n’a pas vus à l’entraînement, il trouve le vainqueur environ 6 fois sur 10, mieux que pile ou face (5 sur 10), mais loin d’être infaillible. La page Historique le montre sur de vrais combats et le compare à des règles simples, comme choisir le combattant qui a le plus de victoires.',
+          'Sur des combats récents qu’il n’a pas vus à l’entraînement, il trouve le vainqueur environ 6 fois sur 10, mieux que pile ou face (5 sur 10), mais loin d’être infaillible. La page Bilan le montre sur de vrais combats et le compare à des règles simples, comme choisir le combattant qui a le plus de victoires.',
         ],
         links: [
           { label: 'Voir le modèle et ses mesures', href: '/model' },
@@ -848,7 +848,7 @@ const GUIDE: ByLang<InfoPage> = {
       {
         heading: 'Qué quiere decir una probabilidad',
         paragraphs: [
-          'Si el modelo le da 65% de probabilidad a un peleador, eso no es una promesa de que vaya a ganar. Significa que, de 100 peleas parecidas, el favorito ganó cerca de 65. Dicho de otro modo, el no favorito todavía gana más de una de cada tres veces. Las probabilidades cercanas al 50% indican una pelea pareja.',
+          'Si el modelo le da 65 % de probabilidad a un peleador, eso no es una promesa de que vaya a ganar. Significa que, de 100 peleas parecidas, el favorito ganó cerca de 65. Dicho de otro modo, el no favorito todavía gana más de una de cada tres veces. Las probabilidades cercanas al 50 % indican una pelea pareja.',
         ],
       },
       {

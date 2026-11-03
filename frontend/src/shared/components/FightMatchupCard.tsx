@@ -68,7 +68,7 @@ export function FightMatchupCard({
         <TitleFightBadge fight={titleFightInfo} />
         {isTbdMatchup ? (
           <span className="selector-chip border-amber-400/40 bg-amber-400/10 text-amber-500 dark:text-amber-300 font-mono text-[11px] font-bold uppercase tracking-wider">
-            {L(i18n.language, '✦ Buscando Substituto', '✦ Seeking Replacement', '✦ En recherche d\'adversaire', '✦ Busca reemplazo')}
+            {L(i18n.language, '✦ Buscando Substituto', '✦ Seeking Replacement', '✦ En recherche d’adversaire', '✦ Busca reemplazo')}
           </span>
         ) : (
           <span className="pointer-events-auto">

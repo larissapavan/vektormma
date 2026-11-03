@@ -8,7 +8,7 @@ import { LoadingSkeleton } from '../../shared/components/LoadingSkeleton'
 import { OrgFighterModal } from '../../shared/components/OrgFighterModal'
 import { SectionHeading } from '../../shared/components/SectionHeading'
 import { L } from '../../i18n/lang'
-import { orgEs } from '../../shared/data/orgs'
+import { orgEs, orgPt } from '../../shared/data/orgs'
 import { getDivisionName, poundForPoundLabel } from '../../shared/data/divisions'
 import { formatDate } from '../../shared/data/orgFormat'
 import { useOrg } from '../../shared/hooks/useOrg'
@@ -37,7 +37,7 @@ export function OrgRankings() {
       <section className="page-hero rounded-[20px] px-3 py-3 sm:px-4 sm:py-4">
         <SectionHeading
           level={1}
-          eyebrow={L(i18n.language, `Rankings oficiais do ${org.shortName}`, `Official ${org.shortName} rankings`, `Classements officiels ${org.shortName}`, `Ranking oficial de ${orgEs(org)}`)}
+          eyebrow={L(i18n.language, `Rankings oficiais ${orgPt(org, 'de')}`, `Official ${org.shortName} rankings`, `Classements officiels ${org.shortName}`, `Ranking oficial de ${orgEs(org)}`)}
           title={L(i18n.language, 'Rankings por categoria e peso por peso', 'Divisional & pound-for-pound rankings', 'Classements par catégorie et livre pour livre', 'Ranking por división y libra por libra')}
           description={L(
             i18n.language,

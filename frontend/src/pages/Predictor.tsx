@@ -81,7 +81,7 @@ export function Predictor() {
           'Falha na previsão. Verifique a conexão com o servidor e tente novamente.',
           'Prediction failed. Check whether the backend is available and try again.',
           'Échec du calcul. Vérifiez que le serveur est accessible et réessayez.',
-          'Falló el pronóstico. Comprueba que el servidor esté disponible e inténtalo de nuevo.',
+          'Falló el pronóstico. Verifica que el servidor esté disponible e inténtalo de nuevo.',
         ),
       )
     }
@@ -152,7 +152,7 @@ export function Predictor() {
               type="button"
               onClick={swapCorners}
               disabled={!nameA && !nameB}
-              title={L(i18n.language, 'Inverter cantos (Vermelho ⇄ Azul)', 'Swap corners (Red ⇄ Blue)', 'Inverser les coins (Rouge ⇄ Bleu)', 'Intercambiar esquinas (Roja ⇄ Azul)')}
+              title={L(i18n.language, 'Inverter cantos (Vermelho ⇄ Azul)', 'Swap corners (Red ⇄ Blue)', 'Inverser les coins (rouge ⇄ bleu)', 'Intercambiar esquinas (roja ⇄ azul)')}
               aria-label={L(i18n.language, 'Inverter cantos', 'Swap corners', 'Inverser les coins', 'Intercambiar esquinas')}
               className={`poster-display group relative grid h-14 w-14 -rotate-6 place-items-center rounded-full border border-[var(--border-default)] bg-[var(--bg-surface-elevated)] text-2xl shadow-sm transition ${
                 nameA || nameB ? 'cursor-pointer hover:rotate-0 hover:scale-105 active:scale-95 text-[var(--text-primary)]' : 'cursor-default text-[var(--text-muted)]'
@@ -299,7 +299,7 @@ function FighterSheet({ fighter, imageUrl, onOpenProfile }: { fighter: FighterPr
     [L(i18n.language, 'Altura', 'Height', 'Taille', 'Estatura'), fighter.height_cm ? `${fighter.height_cm.toFixed(0)} cm` : '—'],
     [L(i18n.language, 'Envergadura', 'Reach', 'Allonge', 'Alcance'), fighter.reach_cm ? `${fighter.reach_cm.toFixed(0)} cm` : '—'],
     [L(i18n.language, 'Peso', 'Weight', 'Poids', 'Peso'), fighter.weight_lbs ? `${fighter.weight_lbs.toFixed(0)} lb` : '—'],
-    [L(i18n.language, 'Postura', 'Stance', 'Garde', 'Guardia'), fighter.stance || '—'],
+    [L(i18n.language, 'Base', 'Stance', 'Garde', 'Guardia'), fighter.stance || '—'],
     [L(i18n.language, 'Taxa de vitória', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias'), fighter.win_rate != null ? `${(fighter.win_rate * 100).toFixed(1)}%` : '—'],
   ]
 
@@ -457,7 +457,7 @@ function Drivers({ factors }: { factors: MainFactor[] }) {
               <p className="mt-1 text-xs text-[var(--text-muted)]">
                 {L(
                   i18n.language,
-                  `${localizeFeature(factor.feature, i18n.language)} favoreceu a previsão para ${factor.impact}.`,
+                  `${localizeFeature(factor.feature, i18n.language)} pesou a favor de ${factor.impact}.`,
                   factor.explanation,
                   `${localizeFeature(factor.feature, i18n.language)} a pesé en faveur de ${factor.impact}.`,
                   `${localizeFeature(factor.feature, i18n.language)} inclinó el pronóstico a favor de ${factor.impact}.`,

@@ -31,6 +31,20 @@ describe('pre-fight model texts', () => {
     for (const language of LANGUAGES) expect(localizeApiText(note, language)).not.toMatch(/\bfights\b|\bmorning\b/)
   })
 
+  it('translates the note about the pre-fight model replacing the earlier one, with its count and day', () => {
+    const note =
+      '12 of these picks were saved by the pre-fight model, in use since 2026-11-10. Earlier picks came from the model it replaced and are kept exactly as they were shown. ' +
+      'The record of each model is counted separately below.'
+    expect(localizeApiText(note, 'en-US')).toBe(note)
+    expect(localizeApiText(note, 'pt-BR')).toContain('12 destes palpites foram salvos pelo modelo pré-luta')
+    expect(localizeApiText(note, 'fr-FR')).toContain('12 de ces pronostics ont été enregistrés par le modèle pré-combat')
+    expect(localizeApiText(note, 'es-419')).toContain('12 de estos pronósticos los guardó el modelo previo a la pelea')
+    for (const language of LANGUAGES) {
+      for (const english of ['picks', 'saved', ' model ']) expect(localizeApiText(note, language), language).not.toContain(english)
+      expect(localizeApiText(note, language), language).toMatch(/2026|nov/i)
+    }
+  })
+
   it('names the new baselines in each language', () => {
     expect(baselineName('dummy_prior', 'en-US')).toBe('always 50/50')
     expect(baselineName('dummy_prior', 'pt-BR')).toBe('sempre 50/50')

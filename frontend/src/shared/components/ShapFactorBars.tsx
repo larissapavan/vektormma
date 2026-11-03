@@ -27,7 +27,7 @@ export function ShapFactorBars({
     <article className="surface-card rounded-[20px] p-3 sm:p-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Explicabilidade da IA (SHAP)', 'SHAP explainability', 'Explicabilité de l\'IA (SHAP)', 'Explicabilidad de la IA (SHAP)')}</p>
+          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Explicabilidade da IA (SHAP)', 'SHAP explainability', 'Explicabilité de l’IA (SHAP)', 'Explicabilidad de la IA (SHAP)')}</p>
           <h2 className="mt-0.5 text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{L(i18n.language, 'Fatores Decisivos do Combate', 'Key matchup factors', 'Facteurs décisifs du combat', 'Factores decisivos del enfrentamiento')}</h2>
         </div>
         <div className="flex flex-wrap items-center gap-3 text-[11px] font-bold uppercase tracking-[0.12em]">
@@ -46,7 +46,7 @@ export function ShapFactorBars({
           i18n.language,
           'As barras indicam qual lutador foi favorecido por cada métrica estatística. Barras maiores indicam impacto mais forte.',
           'Bars are colored by the fighter they favored. Longer means a stronger push.',
-          'Les barres indiquent quel combattant a été favorisé par chaque métrique. Plus la barre est longue, plus l\'effet est fort.',
+          'Les barres indiquent quel combattant a été favorisé par chaque métrique. Plus la barre est longue, plus l’effet est fort.',
           'Las barras se colorean según el peleador al que favorecieron. Más largas significa un empuje más fuerte.',
         )}
       </p>
@@ -62,7 +62,7 @@ export function ShapFactorBars({
           const featureTitle = localizeFeature(factor.feature, i18n.language)
           const explanation = L(
             i18n.language,
-            `${featureTitle} favoreceu a previsão para ${favoredName}.`,
+            `${featureTitle} pesou a favor de ${favoredName}.`,
             factor.explanation,
             `${featureTitle} a favorisé la prévision pour ${favoredName}.`,
             `${featureTitle} inclinó el pronóstico a favor de ${favoredName}.`,

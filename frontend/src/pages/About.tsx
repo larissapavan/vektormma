@@ -1,6 +1,6 @@
 import type { ComponentType, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AlertTriangle, Database, ExternalLink, Mail, Users } from 'lucide-react'
+import { AlertTriangle, Compass, Database, ExternalLink, Mail, Users } from 'lucide-react'
 
 import { L, pick, type ByLang } from '../i18n/lang'
 import { YouTubeIcon, InstagramIcon, TikTokIcon } from '../shared/components/SocialLinks'
@@ -201,14 +201,21 @@ export function About() {
         </ul>
       </AboutSection>
 
+      <AboutSection id="name" icon={Compass} title={t('about.name')}>
+        <ul className="list-disc space-y-2 pl-5 marker:text-[#C8102E]">
+          <li>{t('about.nameText1')}</li>
+          <li>{t('about.nameText2')}</li>
+        </ul>
+      </AboutSection>
+
       <AboutSection id="data" icon={Database} title={t('about.dataAndSystem')}>
         <p>
           {L(
             i18n.language,
             'Perfis de atletas, eventos, resultados e rankings são coletados de fontes públicas (UFCStats.com, ESPN, Next-Fight e UFC.com; pflmma.com para a PFL; ESPN e Wikipedia para o Bellator; ESPN para RIZIN, KSW, LFA e Cage Warriors (e Sherdog para RIZIN e KSW de 2025 em diante); oktagonmma.com para o OKTAGON; Sherdog para Jungle Fight e Invicta FC; FightHub para as academias). O histórico de títulos é compilado à mão a partir de registros publicados do UFC, e tudo é salvo em arquivos CSV que uma rotina automática atualiza todos os dias. A cada confronto, o sistema compara os dois atletas e entrega essas diferenças a um modelo de aprendizado de máquina que estima a chance de vitória de cada um.',
-            "Fighter profiles, events, results and rankings are collected from public sources (UFCStats.com, ESPN, Next-Fight and UFC.com; pflmma.com for the PFL; ESPN and Wikipedia for Bellator; ESPN for RIZIN, KSW, the LFA and Cage Warriors (and Sherdog for RIZIN and KSW from 2025 on); oktagonmma.com for OKTAGON; Sherdog for Jungle Fight and Invicta FC; FightHub for the gyms), the title history is compiled by hand from published UFC title records, and everything is saved as CSV files that an automated job refreshes daily. For each matchup the system compares the two fighters and feeds those differences into a machine-learning model that estimates each fighter's chance of winning.",
-            "Les profils des combattants, les événements, les résultats et les classements sont collectés à partir de sources publiques (UFCStats.com, ESPN, Next-Fight et UFC.com ; pflmma.com pour la PFL ; ESPN et Wikipedia pour le Bellator ; ESPN pour RIZIN, KSW, la LFA et Cage Warriors (et Sherdog pour RIZIN et KSW à partir de 2025) ; oktagonmma.com pour OKTAGON ; Sherdog pour Jungle Fight et Invicta FC ; FightHub pour les salles). L'historique des titres est compilé à la main à partir des historiques de titres UFC publiés, et le tout est enregistré en fichiers CSV qu'une tâche automatisée actualise chaque jour. Pour chaque affrontement, le système compare les deux combattants et transmet ces écarts à un modèle d'apprentissage automatique qui estime les chances de victoire de chacun.",
-            'Los perfiles de peleadores, los eventos, los resultados y el ranking se recopilan de fuentes públicas (UFCStats.com, ESPN, Next-Fight y UFC.com; pflmma.com para la PFL; ESPN y Wikipedia para Bellator; ESPN para RIZIN, KSW, la LFA y Cage Warriors (y Sherdog para RIZIN y KSW desde 2025); oktagonmma.com para OKTAGON; Sherdog para Jungle Fight e Invicta FC; FightHub para los gimnasios). El historial de títulos se compila a mano a partir de los registros de títulos de la UFC publicados, y todo se guarda en archivos CSV que un proceso automático actualiza a diario. Para cada enfrentamiento, el sistema compara a los dos peleadores y alimenta esas diferencias a un modelo de aprendizaje automático que estima la probabilidad de victoria de cada uno.',
+            "Fighter profiles, events, results and rankings are collected from public sources (UFCStats.com, ESPN, Next-Fight and UFC.com; pflmma.com for the PFL; ESPN and Wikipedia for Bellator; ESPN for RIZIN, KSW, the LFA and Cage Warriors (and Sherdog for RIZIN and KSW from 2025 on); oktagonmma.com for OKTAGON; Sherdog for Jungle Fight and Invicta FC; FightHub for the gyms). The title history is compiled by hand from published UFC title records, and everything is saved as CSV files that an automated job refreshes daily. For each matchup the system compares the two fighters and feeds those differences into a machine-learning model that estimates each fighter's chance of winning.",
+            "Les profils des combattants, les événements, les résultats et les classements sont collectés à partir de sources publiques (UFCStats.com, ESPN, Next-Fight et UFC.com ; pflmma.com pour la PFL ; ESPN et Wikipedia pour le Bellator ; ESPN pour RIZIN, KSW, la LFA et Cage Warriors (et Sherdog pour RIZIN et KSW à partir de 2025) ; oktagonmma.com pour OKTAGON ; Sherdog pour Jungle Fight et Invicta FC ; FightHub pour les salles). L’historique des titres est compilé à la main à partir des historiques de titres UFC publiés, et le tout est enregistré en fichiers CSV qu’une tâche automatisée actualise chaque jour. Pour chaque affrontement, le système compare les deux combattants et transmet ces écarts à un modèle d’apprentissage automatique qui estime les chances de victoire de chacun.",
+            'Los perfiles de peleadores, los eventos, los resultados y el ranking se recopilan de fuentes públicas (UFCStats.com, ESPN, Next-Fight y UFC.com; pflmma.com para la PFL; ESPN y Wikipedia para Bellator; ESPN para RIZIN, KSW, la LFA y Cage Warriors (y Sherdog para RIZIN y KSW desde 2025); oktagonmma.com para OKTAGON; Sherdog para Jungle Fight e Invicta FC; FightHub para los gimnasios). El historial de títulos se compila a mano a partir de los registros de títulos de la UFC publicados, y todo se guarda en archivos CSV que un proceso automático actualiza a diario. Para cada enfrentamiento, el sistema compara a los dos peleadores y alimenta con esas diferencias a un modelo de aprendizaje automático que estima la probabilidad de victoria de cada uno.',
           )}
         </p>
       </AboutSection>
@@ -230,7 +237,7 @@ export function About() {
 
         <div className="mt-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-3.5">
           <p className="font-mono text-xs uppercase tracking-wider text-[var(--text-main)] font-bold mb-2.5">
-            {L(i18n.language, 'Canais Oficiais // Vektor MMA', 'Official Channels // Vektor MMA', 'Canaux Officiels // Vektor MMA', 'Canales oficiales // Vektor MMA')}
+            {L(i18n.language, 'Canais Oficiais // Vektor MMA', 'Official Channels // Vektor MMA', 'Canaux officiels // Vektor MMA', 'Canales oficiales // Vektor MMA')}
           </p>
           <div className="flex flex-wrap gap-4 text-xs font-medium">
             <a

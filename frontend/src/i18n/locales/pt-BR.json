@@ -23,9 +23,9 @@
     "apiOfflineTitle": "API offline",
     "apiWakingTitle": "Iniciando servidor API...",
     "searchPlaceholder": "Buscar lutador...",
-    "themeLight": "Claro",
-    "themeDark": "Escuro",
-    "switchTheme": "Mudar para {{theme}}",
+    "themeLight": "claro",
+    "themeDark": "escuro",
+    "switchTheme": "Mudar para o modo {{theme}}",
     "github": "GitHub"
   },
   "language": {
@@ -115,12 +115,12 @@
     "backend": "Servidor",
     "onAir": "Ao Vivo",
     "active": "ativo",
-    "redCorner": "Córner Vermelho",
-    "blueCorner": "Córner Azul",
+    "redCorner": "Canto Vermelho",
+    "blueCorner": "Canto Azul",
     "searchPlaceholder": "Buscar lutador...",
     "predictMatchup": "Simular Combate",
     "predicting": "Simulando...",
-    "swap": "Inverter córners",
+    "swap": "Inverter cantos",
     "pickTwoPrompt": "Escolha dois lutadores para simular o combate.",
     "selectTwoDifferent": "Selecione dois lutadores diferentes",
     "winningChance": "Probabilidade de Vitória",
@@ -140,7 +140,7 @@
     "viewProfile": "Ver Perfil",
     "stats": "Estatísticas",
     "strikes": "Golpes Sig. / Min",
-    "takedowns": "Quedas / 15m"
+    "takedowns": "Quedas / 15 min"
   },
   "events": {
     "eyebrow": "Arquivo de Eventos",
@@ -151,7 +151,7 @@
     "searchPlaceholder": "Buscar evento, data ou local...",
     "allYears": "Todos os anos",
     "allMonths": "Todos os meses",
-    "numberedEvents": "Eventos Numerados",
+    "numberedEvents": "Eventos numerados",
     "fightNight": "Fight Night",
     "upcomingSection": "Cards Confirmados",
     "noEventsFound": "Nenhum evento encontrado.",
@@ -251,6 +251,9 @@
     "whoText1": "Este projeto é concebido, desenvolvido e mantido de forma 100% individual por Larissa Pavan, entusiasta de artes marciais mistas (MMA) e ciência de dados.",
     "whoText2": "Não possui nenhuma afiliação, parceria, patrocínio ou endosso institucional do UFC, Zuffa LLC, TKO Group, PFL, Bellator MMA, RIZIN Fighting Federation, KSW, Legacy Fighting Alliance (LFA), Cage Warriors, OKTAGON MMA, Jungle Fight, Invicta FC, ESPN, Sherdog, FightHub ou Wikipedia.",
     "whoText3": "Todas as marcas registradas, fotos e nomes de atletas pertencem aos seus respectivos proprietários, sendo aqui utilizados exclusivamente para fins informativos, analíticos e de estudo esportivo.",
+    "name": "Por que Vektor?",
+    "nameText1": "O nome vem de vetor, o termo da matemática e da ciência de dados para uma lista de números. É assim que o modelo enxerga cada luta: dois lutadores viram duas listas de números (idade, envergadura, cartel, precisão de golpes), e o que pesa na previsão são as diferenças entre elas.",
+    "nameText2": "A seta no logo, dentro do octógono, também é um vetor. “Vektor” é a grafia com K de “vetor”.",
     "dataAndSystem": "Dados & Metodologia",
     "disclaimer": "Aviso legal importante",
     "disclaimerText1": "As previsões aqui geradas são estimativas estatísticas probabilísticas produzidas como projeto de estudo e entretenimento. Não representam garantia de resultado nem recomendação de apostas financeiras.",
@@ -286,7 +289,7 @@
     "description": "Trocação, luta no chão e biometria dos dois atletas, mais os fatores determinantes do modelo.",
     "analyze": "Analisar Combate",
     "analyzing": "Analisando...",
-    "radar": "Perfil Radar",
+    "radar": "Perfil radar",
     "recentFights": "Lutas Recentes"
   },
   "fighterProfile": {

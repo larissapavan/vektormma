@@ -89,6 +89,16 @@ describe('the pages that depend on the API', () => {
     expect(await screen.findByText(/saved before 2026-10-20, by an earlier version of the model/i, undefined, { timeout: 10000 })).toBeInTheDocument()
   })
 
+  it('the track record counts each model apart once a newer one has made picks', async () => {
+    renderAt('/track-record')
+    expect(await screen.findByText('Live picks by model', undefined, { timeout: 10000 })).toBeInTheDocument()
+    expect(screen.getByText('Current model')).toBeInTheDocument()
+    expect(screen.getByText('1 of 2 right (50%), 1 still to be settled.')).toBeInTheDocument()
+    expect(screen.getByText('Pre-fight model')).toBeInTheDocument()
+    expect(screen.getByText('1 picks saved, none settled yet.')).toBeInTheDocument()
+    expect(screen.getByText(/saved by the pre-fight model, in use since 2026-11-10/)).toBeInTheDocument()
+  })
+
   it('the track record compares the model with simple rules and shows its back-tested calibration', async () => {
     renderAt('/track-record')
     expect(await screen.findByText('Does it beat simple rules?', undefined, { timeout: 10000 })).toBeInTheDocument()

@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 
 import App from '../App'
-import { ORGS, orgFromPathname, orgPath, switchOrgPath } from '../shared/data/orgs'
+import { ORGS, orgEs, orgFr, orgFromPathname, orgPath, orgPt, switchOrgPath } from '../shared/data/orgs'
 import { compareDivisions, fightSummary, formatHeight, formatMethod, formatReach, formatRecord, profileSource } from '../shared/data/orgFormat'
 import { respond } from './fixtures'
 
@@ -52,10 +52,44 @@ describe('organization paths', () => {
     expect(switchOrgPath(ORGS.pfl, '/rankings')).toBe('/pfl/rankings')
     expect(switchOrgPath(ORGS.ufc, '/pfl/fighters')).toBe('/fighters')
     expect(switchOrgPath(ORGS.pfl, '/predictor')).toBe('/pfl/predictor')
-    expect(switchOrgPath(ORGS.bellator, '/predictor')).toBe('/bellator/predictor')
+    expect(switchOrgPath(ORGS.bellator, '/predictor')).toBe('/bellator')  // an archive: no predictor
     expect(switchOrgPath(ORGS.rizin, '/predictor')).toBe('/rizin')  // no predictor there: its home page
     expect(switchOrgPath(ORGS.ufc, '/pfl')).toBe('/home')
     expect(switchOrgPath(ORGS.pfl, '/')).toBe('/pfl')  // from the chooser there is no section to keep
+  })
+})
+
+describe('the article an organization takes in each language', () => {
+  it('Portuguese: "a PFL" and "a LFA", "o Bellator" and "o UFC", with the preposition fused', () => {
+    expect(orgPt(ORGS.pfl, 'em')).toBe('na PFL')
+    expect(orgPt(ORGS.pfl, 'de')).toBe('da PFL')
+    expect(orgPt(ORGS.lfa, 'O')).toBe('A LFA')
+    expect(orgPt(ORGS.bellator, 'de')).toBe('do Bellator')
+    expect(orgPt(ORGS.bellator, 'em')).toBe('no Bellator')
+    expect(orgPt(ORGS.ufc, 'o')).toBe('o UFC')
+  })
+
+  it('French: "l’UFC", "la PFL", "le Bellator" and none at all for ONE, RIZIN or OKTAGON', () => {
+    expect(orgFr(ORGS.ufc, 'à')).toBe('à l’UFC')
+    expect(orgFr(ORGS.ufc, 'de')).toBe('de l’UFC')
+    expect(orgFr(ORGS.pfl, 'à')).toBe('à la PFL')
+    expect(orgFr(ORGS.pfl, 'de')).toBe('de la PFL')
+    expect(orgFr(ORGS.pfl, 'Le')).toBe('La PFL')
+    expect(orgFr(ORGS.bellator, 'à')).toBe('au Bellator')
+    expect(orgFr(ORGS.bellator, 'de')).toBe('du Bellator')
+    expect(orgFr(ORGS['jungle-fight'], 'le')).toBe('le Jungle Fight')
+    expect(orgFr(ORGS.one, 'de')).toBe('d’ONE')
+    expect(orgFr(ORGS.oktagon, 'de')).toBe('d’OKTAGON')
+    expect(orgFr(ORGS.rizin, 'de')).toBe('de RIZIN')
+    expect(orgFr(ORGS.rizin, 'à')).toBe('à RIZIN')
+    expect(orgFr(ORGS.ufc, 'Le')).toBe('L’UFC')
+  })
+
+  it('Spanish: "la UFC", "la PFL" and "la LFA", but "Bellator" and "ONE Championship" without one', () => {
+    expect(orgEs(ORGS.lfa)).toBe('la LFA')
+    expect(orgEs(ORGS.pfl)).toBe('la PFL')
+    expect(orgEs(ORGS.one)).toBe('ONE Championship')
+    expect(orgEs(ORGS.bellator)).toBe('Bellator')
   })
 })
 
@@ -81,7 +115,7 @@ describe('the page that chooses an organization', () => {
     const section = chooser()
     const links = within(section).getAllByRole('link')
     expect(links.map((link) => link.getAttribute('href'))).toEqual(['/home', '/pfl', '/one', '/bellator', '/rizin', '/ksw', '/lfa', '/cage-warriors', '/oktagon', '/jungle-fight', '/invicta'])
-    expect(within(section).getAllByText('AI Predictions')).toHaveLength(2)  // the UFC and ONE
+    expect(within(section).getAllByText('AI Predictions')).toHaveLength(3)  // the UFC, the PFL and ONE
     expect(within(section).getByText('Historical Archive')).toBeInTheDocument()  // Bellator
     // The other seven (fighters and events only) are one line each under a single caption, not a badge apiece.
     expect(within(section).getByText('Events, results and fighters of each league.')).toBeInTheDocument()
@@ -204,6 +238,14 @@ describe('the PFL pages', () => {
     expect(within(dialog).getByText('5\'9"')).toBeInTheDocument()
     expect(within(dialog).getByText(/CONTENDER #1/)).toBeInTheDocument()
     expect(within(dialog).getByText(/NEXT BOUT/)).toBeInTheDocument()
+    // The PFL prints season tallies on its pages: they are shown as printed, newest season first, with what they are.
+    const seasonRows = within(within(dialog).getByRole('table')).getAllByRole('row')
+    expect(seasonRows.map((row) => row.textContent)).toEqual([
+      expect.stringContaining('SeasonStrikes'),
+      '202576 / 14427 / 5338 / 8011 / 111 / 117.55 mph',
+      '20249 / 28———0 / 0—',
+    ])
+    expect(within(dialog).getByText(/PFL's own count, not comparable to UFC statistics/)).toBeInTheDocument()
 
     // The season timeline opens the bouts of a year, with how each one ended.
     // jsdom has no scrolling or pointer capture, which the timeline uses to centre a year and to drag.
@@ -435,7 +477,6 @@ describe('the organization switcher', () => {
 
   it.each([
     { path: '/pfl/predictor', short: 'PFL', eased: true, archive: false },
-    { path: '/bellator/predictor', short: 'Bellator', eased: true, archive: true },
     { path: '/one/predictor', short: 'ONE', eased: true, archive: false },
   ])('the $short predictor says the model comes from UFC fights, and what is different here', async ({ path, short, eased, archive }) => {
     renderAt(path)
@@ -444,6 +485,26 @@ describe('the organization switcher', () => {
     expect(within(notice).getByText(new RegExp(`The ${short} data has record, age and measurements, but no striking or takedown accuracy`))).toBeInTheDocument()
     expect(/halfway between the model's output and 50%/.test(notice.textContent ?? '')).toBe(eased)
     expect(/every matchup here is hypothetical/.test(notice.textContent ?? '')).toBe(archive)
+  })
+
+  it('the Bellator archive has no predictor page and no predictor in its menu', async () => {
+    renderAt('/bellator/predictor')
+    expect(await screen.findByRole('heading', { name: /page not found/i }, WAIT)).toBeInTheDocument()
+    expect(screen.getAllByRole('link').map((link) => link.getAttribute('href'))).not.toContain('/bellator/predictor')
+  })
+
+  it('a PFL fighter with no season stats says so, and ONE says it does not publish any', async () => {
+    renderAt('/pfl/fighters?fighter=Lena%20Ortiz')
+    const pfl = await screen.findByRole('dialog', { name: /Lena Ortiz/ }, WAIT)
+    expect(await within(pfl).findByText('PFL has not published striking or takedown statistics for this fighter.', undefined, WAIT)).toBeInTheDocument()
+    expect(within(pfl).queryByRole('table')).not.toBeInTheDocument()
+  })
+
+  it('ONE shows no season table, even for a fighter the fixture gives season stats', async () => {
+    renderAt('/one/fighters?fighter=Dax%20Moore')
+    const one = await screen.findByRole('dialog', { name: /Dax Moore/ }, WAIT)
+    expect(await within(one).findByText('ONE does not publish striking or takedown statistics.', undefined, WAIT)).toBeInTheDocument()
+    expect(within(one).queryByRole('table')).not.toBeInTheDocument()
   })
 
   it('a league without a predictor has no predictor page', async () => {

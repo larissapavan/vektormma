@@ -8,7 +8,7 @@ import { OrgFightRow } from '../../shared/components/OrgFightRow'
 import { OrgFighterModal } from '../../shared/components/OrgFighterModal'
 import { SectionHeading } from '../../shared/components/SectionHeading'
 import { L, localeTag } from '../../i18n/lang'
-import { orgEs } from '../../shared/data/orgs'
+import { orgEs, orgPt } from '../../shared/data/orgs'
 import { translateHometown } from '../../shared/data/fightLabels'
 import { formatDate } from '../../shared/data/orgFormat'
 import { useOrg } from '../../shared/hooks/useOrg'
@@ -94,7 +94,7 @@ export function OrgEvents() {
           <SectionHeading
             level={1}
             eyebrow={L(i18n.language, 'Histórico de Eventos', 'Event archive', 'Historique des événements', 'Archivo de eventos')}
-            title={L(i18n.language, `Cards e Lutas do ${org.shortName}`, `${org.shortName} fight cards`, `Cartes et combats ${org.shortName}`, `Carteleras y peleas de ${orgEs(org)}`)}
+            title={L(i18n.language, `Cards e Lutas ${orgPt(org, 'de')}`, `${org.shortName} fight cards`, `Cartes et combats ${org.shortName}`, `Carteleras y peleas de ${orgEs(org)}`)}
             description={L(
               i18n.language,
               'Histórico completo de eventos. Abra o card para ver todos os confrontos, vencedores, método e round.',
@@ -285,7 +285,7 @@ function EventCard({
             </div>
           ) : (
             <p className="text-sm text-[var(--text-muted)]">
-              {L(i18n.language, 'Nenhuma luta detalhada disponível para este card ainda.', 'No fight data available for this card yet.', 'Aucun combat détaillé n\'est encore disponible pour cette carte.', 'Todavía no hay datos detallados de peleas para esta cartelera.')}
+              {L(i18n.language, 'Nenhuma luta detalhada disponível para este card ainda.', 'No fight data available for this card yet.', 'Aucun combat détaillé n’est encore disponible pour cette carte.', 'Todavía no hay datos detallados de peleas para esta cartelera.')}
             </p>
           )}
         </div>

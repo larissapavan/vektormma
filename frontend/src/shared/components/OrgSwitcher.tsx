@@ -64,7 +64,7 @@ export function OrgSwitcher({ className = '', onNavigate }: { className?: string
             className="surface-card-elevated absolute! left-0 max-sm:left-auto max-sm:right-0 top-full z-50 mt-1.5 w-44 sm:w-48 p-1 backdrop-blur-xl animate-in fade-in-0 zoom-in-95"
           >
             <div className="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
-              {L(i18n.language, 'Selecionar Liga', 'Select League', 'Choisir la Ligue', 'Seleccionar liga')}
+              {L(i18n.language, 'Selecionar Liga', 'Select League', 'Choisir la ligue', 'Seleccionar liga')}
             </div>
             <div className="space-y-0.5">
               {ORG_LIST.map((org) => {

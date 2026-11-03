@@ -271,7 +271,7 @@ export function translateFightMethod(
 
 const STANCES: Record<UiLang, Record<string, string> | null> = {
   en: null,
-  pt: { orthodox: 'Destro', southpaw: 'Canhoto', switch: 'Ambidestro', 'open stance': 'Postura Aberta', sidestance: 'Postura Lateral', sideways: 'Postura Lateral', unknown: 'Desconhecida' },
+  pt: { orthodox: 'Destro', southpaw: 'Canhoto', switch: 'Ambidestro', 'open stance': 'Base aberta', sidestance: 'Base lateral', sideways: 'Base lateral', unknown: 'Desconhecida' },
   fr: { orthodox: 'Droitier', southpaw: 'Gaucher', switch: 'Ambidextre', 'open stance': 'Garde ouverte', sidestance: 'Garde de profil', sideways: 'Garde de profil', unknown: 'Inconnue' },
   es: { orthodox: 'Ortodoxo', southpaw: 'Zurdo', switch: 'Ambidiestro', 'open stance': 'Guardia abierta', sidestance: 'Guardia lateral', sideways: 'Guardia lateral', unknown: 'Desconocida' },
 }

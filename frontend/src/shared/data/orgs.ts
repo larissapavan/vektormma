@@ -18,6 +18,8 @@ export interface OrgConfig {
   /** True when the API pulls this organization's probabilities toward 50% (PROBABILITY_SHRINK in prediction_service.py):
    *  its fighters' records come without striking or takedown numbers, so the model works from averages for those. */
   probabilitiesEased?: boolean
+  /** True when the organization's own pages print season statistics (the PFL): the fighter profile shows them. */
+  hasSeasonStats?: boolean
   /** Set for an organization that no longer holds events: what happened to it. Its pages read as an archive. */
   archived?: string
   /** True when the data comes from a source that covers the organization only in part and is not refreshed every day
@@ -52,6 +54,7 @@ export const ORGS: Record<OrgId, OrgConfig> = {
     tagline: 'Fighters, events, league rankings and AI win predictions.',
     hasPredictions: true,
     probabilitiesEased: true,
+    hasSeasonStats: true,
     hasRankings: true,
     hasChampions: true,
   },
@@ -75,9 +78,8 @@ export const ORGS: Record<OrgId, OrgConfig> = {
     basePath: '/bellator',
     sourceName: 'ESPN and Wikipedia',
     sourceUrl: 'https://www.espn.com/mma/',
-    tagline: 'Archive 2009–2023: fighters, events, champions and what-if predictions.',
-    hasPredictions: true,
-    probabilitiesEased: true,
+    tagline: 'Archive 2009–2023: fighters, events and champions.',
+    hasPredictions: false,
     archived: 'Archive 2009–2023. Bellator held its last event in 2023.',
     hasRankings: false,
     hasChampions: true,
@@ -216,9 +218,45 @@ export function switchOrgPath(target: OrgConfig, currentPath: string): string {
   return orgPath(target, validSection)
 }
 
+/** What the article helpers need of an organization (the cross-organization panel only has its id as text). */
+type OrgName = { id: string; shortName: string }
+
 /** The organization the way Spanish names it: "la UFC" and "la PFL" take an article, "Bellator" and "ONE" do not. */
-export function orgEs(org: Pick<OrgConfig, 'id' | 'shortName'>): string {
-  return org.id === 'ufc' || org.id === 'pfl' ? `la ${org.shortName}` : org.id === 'one' ? 'ONE Championship' : org.shortName
+export function orgEs(org: OrgName): string {
+  return org.id === 'ufc' || org.id === 'pfl' || org.id === 'lfa' ? `la ${org.shortName}` : org.id === 'one' ? 'ONE Championship' : org.shortName
+}
+
+
+/** The leagues Portuguese calls "a": "a PFL", "a LFA". Every other organization is "o" ("o Bellator", "o UFC"). */
+const FEMININE_PT = new Set(['pfl', 'lfa'])
+
+/**
+ * The organization the way Portuguese says it, with the article and the preposition fused:
+ * 'o' "a PFL" / "o Bellator", 'O' the same with a capital, 'de' "da PFL" / "do Bellator", 'em' "na PFL" / "no Bellator".
+ */
+export function orgPt(org: OrgName, form: 'o' | 'O' | 'de' | 'em'): string {
+  const feminine = FEMININE_PT.has(org.id)
+  const article = form === 'O' ? (feminine ? 'A' : 'O') : form === 'o' ? (feminine ? 'a' : 'o') : form === 'de' ? (feminine ? 'da' : 'do') : feminine ? 'na' : 'no'
+  return `${article} ${org.shortName}`
+}
+
+/** Organizations French takes with "le" / "la" / "l’"; the rest (ONE, RIZIN, KSW, Cage Warriors, OKTAGON, Invicta FC) take none. */
+const ARTICLE_FR: Record<string, 'l’' | 'la' | 'le'> = { ufc: 'l’', pfl: 'la', lfa: 'la', bellator: 'le', 'jungle-fight': 'le' }
+
+/**
+ * The organization the way French says it: 'le' "la PFL" / "le Bellator" / "l’UFC" / "ONE", 'Le' the same with a capital,
+ * 'à' "à la PFL" / "au Bellator" / "à l’UFC" / "à ONE", 'de' "de la PFL" / "du Bellator" / "de l’UFC" / "d’ONE" / "de RIZIN".
+ */
+export function orgFr(org: OrgName, form: 'le' | 'Le' | 'à' | 'de'): string {
+  const article = ARTICLE_FR[org.id]
+  const name = org.shortName
+  if (form === 'le' || form === 'Le') {
+    const text = article ? (article === 'l’' ? `l’${name}` : `${article} ${name}`) : name
+    return form === 'Le' ? text.charAt(0).toUpperCase() + text.slice(1) : text
+  }
+  if (form === 'à') return !article ? `à ${name}` : article === 'l’' ? `à l’${name}` : article === 'la' ? `à la ${name}` : `au ${name}`
+  if (!article) return /^[AEIOUH]/i.test(name) ? `d’${name}` : `de ${name}`
+  return article === 'l’' ? `de l’${name}` : article === 'la' ? `de la ${name}` : `du ${name}`
 }
 
 /** The landing screen sits at "/", outside the organization hierarchy. */

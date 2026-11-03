@@ -458,6 +458,16 @@ export interface ConfidenceBand {
   accuracy: number
 }
 
+export interface ModelRecord {
+  model: 'current' | 'prefight' | string
+  label: string
+  since: string
+  logged: number
+  resolved: number
+  correct: number
+  accuracy: number | null
+}
+
 export interface TrackRecord {
   tracking_since: string | null
   logged: number
@@ -469,6 +479,10 @@ export interface TrackRecord {
   /** Picks saved by the first version of the model, before the two corners were averaged. */
   earlier_model_picks?: number
   earlier_model_note?: string | null
+  /** Said once picks of a newer model sit in the log beside the earlier ones. */
+  model_change_note?: string | null
+  /** Each model's own record, only once more than one model has made picks. */
+  models?: ModelRecord[]
   next_event: { name: string; date: string } | null
   bands: ConfidenceBand[]
   recent: TrackedFight[]
@@ -495,6 +509,19 @@ export interface NextFight {
   event: string
   date: string | null
   opponent: string
+}
+
+/** What an organization prints for one fighter in one season, as it prints it: tallies are "landed/attempted" ("76/144"). */
+export interface OrgSeasonStats {
+  season: number
+  max_punch_speed_mph?: string | null
+  strikes?: string | null
+  arm_strikes?: string | null
+  leg_strikes?: string | null
+  ground_strikes?: string | null
+  takedowns?: string | null
+  inner_zone_pct?: string | null
+  outer_zone_pct?: string | null
 }
 
 export interface OrgFighter {
@@ -529,6 +556,7 @@ export interface OrgFighter {
   org_record: string | null
   /** The UFC profile of the same person, when they have fought in the UFC too. */
   ufc_name?: string | null
+  season_stats?: OrgSeasonStats[]
   org_fights: number
   first_fight_date: string | null
   last_fight_date: string | null

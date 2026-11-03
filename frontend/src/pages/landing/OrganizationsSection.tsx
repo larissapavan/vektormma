@@ -7,7 +7,7 @@ import { L, localeTag } from '../../i18n/lang'
 import { MMAGlove } from '../../shared/components/MMAGlove'
 import { ORGS, orgPath, type OrgId } from '../../shared/data/orgs'
 
-type StatusKind = 'ai' | 'tournament' | 'archive' | 'results'
+type StatusKind = 'ai' | 'archive' | 'results'
 
 interface OrgCardInfo {
   id: OrgId
@@ -22,14 +22,13 @@ interface OrgCardInfo {
 
 const STATUS_LABELS: Record<StatusKind, { pt: string; en: string; fr: string; es: string; pulse: boolean }> = {
   ai: { pt: 'Previsões IA', en: 'AI Predictions', fr: 'Pronostics IA', es: 'Pronósticos IA', pulse: true },
-  tournament: { pt: 'Liga & Torneio', en: 'Tournament', fr: 'Tournoi Actif', es: 'Torneo', pulse: false },
   archive: { pt: 'Arquivo Histórico', en: 'Historical Archive', fr: 'Archives', es: 'Archivo histórico', pulse: false },
-  results: { pt: 'Eventos & Resultados', en: 'Events & Results', fr: 'Événements & Résultats', es: 'Eventos y resultados', pulse: false },
+  results: { pt: 'Eventos & Resultados', en: 'Events & Results', fr: 'Événements & résultats', es: 'Eventos y resultados', pulse: false },
 }
 
 const ORG_CARDS: OrgCardInfo[] = [
   { id: 'ufc', shortName: 'UFC', fullName: 'Ultimate Fighting Championship', accentColor: '#E11D48', glove: { src: '/mma-glove-ufc.webp', duration: '5.2s', delay: '0s' }, status: 'ai', counts: { events: 797, fighters: 2796, fights: 8985 } },
-  { id: 'pfl', shortName: 'PFL', fullName: 'Professional Fighters League', accentColor: '#2563EB', glove: { src: '/mma-glove-pfl.webp', duration: '4.6s', delay: '-1.4s' }, status: 'tournament', counts: { events: 141, fighters: 1054, fights: 1380 } },
+  { id: 'pfl', shortName: 'PFL', fullName: 'Professional Fighters League', accentColor: '#2563EB', glove: { src: '/mma-glove-pfl.webp', duration: '4.6s', delay: '-1.4s' }, status: 'ai', counts: { events: 141, fighters: 1054, fights: 1380 } },
   { id: 'one', shortName: 'ONE', fullName: 'ONE Championship', accentColor: '#F59E0B', glove: { src: '/mma-glove-one.webp', duration: '5.8s', delay: '-2.7s' }, status: 'ai', counts: { events: 453, fighters: 3637, fights: 4817 } },
   { id: 'bellator', shortName: 'BELLATOR', fullName: 'Bellator MMA', accentColor: '#10B981', glove: { src: '/mma-glove-bellator.webp', duration: '4.9s', delay: '-0.8s' }, status: 'archive', counts: { events: 311, fighters: 2283, fights: 3004 } },
   { id: 'rizin', shortName: 'RIZIN', fullName: 'RIZIN Fighting Federation', accentColor: '#A855F7', glove: { src: '/mma-glove-rizin.webp', duration: '5.4s', delay: '-1.9s' }, status: 'results', counts: { events: 83, fighters: 464, fights: 609 } },
@@ -216,7 +215,7 @@ export function OrganizationsSection() {
           {L(lang, 'LIGAS & ORGANIZAÇÕES', 'LEAGUES & ORGANIZATIONS', 'LIGUES & ORGANISATIONS', 'LIGAS Y ORGANIZACIONES')}
         </span>
         <h2 className="mt-1 font-display font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-[var(--text-primary)] dark:text-white">
-          {L(lang, 'Escolha uma Organização', 'Pick an Organization', 'Choisir une Organisation', 'Elige una organización')}
+          {L(lang, 'Escolha uma Organização', 'Pick an Organization', 'Choisir une organisation', 'Elige una organización')}
         </h2>
       </div>
 
