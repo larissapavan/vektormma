@@ -5,16 +5,16 @@
     "image": "/og-image.jpg?v=5"
   },
   "homeTitle": {
-    "pt": "Vektor MMA — Estatísticas e previsões de lutas do UFC",
-    "en": "Vektor MMA — UFC fight stats and predictions",
-    "fr": "Vektor MMA — Statistiques et pronostics des combats de l’UFC",
-    "es": "Vektor MMA — Estadísticas y pronósticos de peleas de la UFC"
+    "pt": "Vektor MMA — Estatísticas e previsões de MMA",
+    "en": "Vektor MMA — MMA stats and predictions",
+    "fr": "Vektor MMA — Stats et pronostics MMA",
+    "es": "Vektor MMA — Estadísticas y pronósticos de MMA"
   },
   "defaultDescription": {
-    "pt": "Compare lutadores e veja a probabilidade de vitória de cada luta do UFC, com os fatores que mais pesam no resultado.",
-    "en": "Compare fighters and see the win probability for every UFC fight, with the factors that weigh most on the result.",
-    "fr": "Comparez les combattants et découvrez la probabilité de victoire de chaque combat de l’UFC, avec les facteurs qui pèsent le plus dans le résultat.",
-    "es": "Compara peleadores y mira la probabilidad de victoria de cada pelea de la UFC, con los factores que más pesan en el resultado."
+    "pt": "Compare lutadores e veja a probabilidade de vitória nas lutas de MMA, com os fatores que mais pesam no resultado.",
+    "en": "Compare fighters and see the win probability in MMA fights, with the factors that weigh most on the result.",
+    "fr": "Comparez les combattants et découvrez la probabilité de victoire des combats de MMA, avec les facteurs qui pèsent le plus dans le résultat.",
+    "es": "Compara peleadores y mira la probabilidad de victoria en las peleas de MMA, con los factores que más pesan en el resultado."
   },
   "gymDetail": {
     "pt": {

@@ -40,7 +40,7 @@ export function Landing() {
         {/* =========================================================================
             1. HERO SECTION (Com Iluminação de Arena e Grelha Analítica - Espaçamento Compacto)
             ========================================================================= */}
-        <section className="relative px-4 sm:px-8 lg:px-16 pt-2 sm:pt-3 lg:pt-4 pb-4 sm:pb-5 lg:pb-6 flex items-center overflow-hidden">
+        <section className="relative px-3 sm:px-6 lg:px-[max(2rem,calc((100%-80rem)/2+2rem))] pt-2 sm:pt-3 lg:pt-4 pb-4 sm:pb-5 lg:pb-6 flex items-center overflow-hidden">
           {/* Refletores de Arena do Topo e Grelha Milimétrica Esportiva */}
           <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
             {/* Refletor Esquerdo: Tom Vermelho Volumétrico */}
@@ -74,10 +74,10 @@ export function Landing() {
               <p className="font-sans text-sm sm:text-base text-[var(--text-secondary)] dark:text-neutral-400 font-normal max-w-lg leading-relaxed">
                 {L(
                   i18n.language,
-                  'Compare lutadores e veja a probabilidade de vitória de cada luta do UFC, com os fatores que mais pesam no resultado.',
-                  'Compare fighters and see the win probability for every UFC fight, with the factors that weigh most on the result.',
-                  "Comparez les combattants et découvrez la probabilité de victoire de chaque combat de l’UFC, avec les facteurs qui pèsent le plus dans le résultat.",
-                  'Compara peleadores y mira la probabilidad de victoria de cada pelea de la UFC, con los factores que más pesan en el resultado.',
+                  'Compare lutadores e veja a probabilidade de vitória nas lutas de MMA, com os fatores que mais pesam no resultado.',
+                  'Compare fighters and see the win probability in MMA fights, with the factors that weigh most on the result.',
+                  "Comparez les combattants et découvrez la probabilité de victoire des combats de MMA, avec les facteurs qui pèsent le plus dans le résultat.",
+                  'Compara peleadores y mira la probabilidad de victoria en las peleas de MMA, con los factores que más pesan en el resultado.',
                 )}
               </p>
 
@@ -182,7 +182,7 @@ export function Landing() {
         {/* =========================================================================
             2. BARRA DE MÉTRICAS GLOBAIS (Editorial Big Numbers - Espaçamento Otimizado)
             ========================================================================= */}
-        <section className="border-y border-[var(--border-subtle)] bg-[var(--bg-surface)]/95 dark:border-white/10 dark:bg-[#0c0e14]/90 backdrop-blur-md py-3.5 sm:py-4 px-4 sm:px-8 lg:px-16">
+        <section className="border-y border-[var(--border-subtle)] bg-[var(--bg-surface)]/95 dark:border-white/10 dark:bg-[#0c0e14]/90 backdrop-blur-md py-3.5 sm:py-4 px-3 sm:px-6 lg:px-[max(2rem,calc((100%-80rem)/2+2rem))]">
           <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 divide-y lg:divide-y-0 lg:divide-x divide-[var(--border-subtle)] dark:divide-white/10">
             {/* Métrica 1: Lutas */}
             <div className="pt-4 lg:pt-0 lg:px-6 first:pl-0 text-left">
@@ -240,7 +240,7 @@ export function Landing() {
         {/* =========================================================================
             4. FOOTER EDITORIAL (Sobre o Projeto & Links Rápidos - Compacto e Elegante)
             ========================================================================= */}
-        <footer className="border-t border-[var(--border-subtle)] bg-[var(--bg-surface)]/75 dark:border-white/10 dark:bg-[#0B0C10] py-2 sm:py-2.5 px-4 sm:px-8 lg:px-16 mt-2">
+        <footer className="border-t border-[var(--border-subtle)] bg-[var(--bg-surface)]/75 dark:border-white/10 dark:bg-[#0B0C10] py-2 sm:py-2.5 px-3 sm:px-6 lg:px-[max(2rem,calc((100%-80rem)/2+2rem))] mt-2">
           <div className="max-w-7xl mx-auto space-y-1.5 sm:space-y-2">
             {/* Linha Superior: Marca à esquerda, Navegação e Redes à direita */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 sm:gap-4">

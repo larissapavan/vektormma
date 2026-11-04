@@ -115,7 +115,7 @@ export function GymDetail() {
       </section>
 
       {fighters.length ? (
-        <ul aria-label={L(i18n.language, 'Lutadores', 'Fighters', 'Combattants', 'Peleadores')} className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 min-[2000px]:grid-cols-5">
+        <ul aria-label={L(i18n.language, 'Lutadores', 'Fighters', 'Combattants', 'Peleadores')} className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
           {fighters.map((fighter) => (
             <li key={`${fighter.name}-${fighter.record}`}>
               <FighterCard fighter={fighter} onOpen={openProfile} />

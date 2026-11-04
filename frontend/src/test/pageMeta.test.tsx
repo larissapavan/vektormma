@@ -60,7 +60,7 @@ describe('PageMeta', () => {
   it('gives the site root its own title and the root address', () => {
     renderAt('/')
 
-    expect(document.title).toBe('Vektor MMA — UFC fight stats and predictions')
+    expect(document.title).toBe('Vektor MMA — MMA stats and predictions')
     expect(canonical()).toBe('https://www.vektormma.com/en')
   })
 

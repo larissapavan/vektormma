@@ -419,7 +419,7 @@ export function RestOfCardSection({ org, event, pickFor, onOpenFighter }: { org:
             : L(lang, `Card Completo • ${rest.length} lutas`, `Rest of the card • ${rest.length} fights`, `Reste de la carte • ${rest.length} combats`, `Resto de la cartelera • ${rest.length} peleas`)}
         </p>
       </div>
-      <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+      <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
         {rest.map((fight, index) => (
           <OrgFightRow key={fight.fight_url ?? index} org={org.id} fight={fight} scheduled pick={pickFor(event.name, fight.fighter_1, fight.fighter_2)} onOpenFighter={onOpenFighter} />
         ))}

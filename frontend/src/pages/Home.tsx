@@ -336,7 +336,7 @@ function FullCardSection({ nextEvent }: { nextEvent: EventSummary | null }) {
           {t('home.restOfCard', { count: restOfCard.length, defaultValue: `Rest of the card • ${restOfCard.length} fights` })}
         </p>
       </div>
-      <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+      <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
         {restOfCard.map((fight, index) => (
           <FightMatchupCard
             key={index}

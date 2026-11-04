@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
 import { L } from '../i18n/lang'
@@ -117,40 +116,22 @@ export function Model() {
           </section>
 
           <section className="grid gap-3 xl:grid-cols-[0.95fr_1.05fr]">
-            <article className="surface-card rounded-[20px] p-3 sm:p-4">
+            <article className="surface-card flex flex-col rounded-[20px] p-3 sm:p-4">
               <SectionHeading
                 eyebrow={L(i18n.language, 'Arquitetura do sistema', 'System design', 'Conception du système', 'Diseño del sistema')}
                 title={L(i18n.language, 'Do dado bruto ao site', 'From data to this site', 'Des données à ce site', 'De los datos a este sitio')}
                 description={L(i18n.language, 'Os dados são limpos, transformados em atributos e servidos via API.', 'Fight data is cleaned, turned into features and served by the API to this site.', 'Les données de combat sont nettoyées, transformées en variables et servies par l’API à ce site.', 'Los datos de las peleas se limpian, se convierten en variables y la API los sirve a este sitio.')}
               />
-              <div className="mt-3 space-y-2">
-                {modelInfo.highlights.map((item) => (
-                  <motion.div
-                    key={item}
-                    className="metric-tile rounded-xl px-3 py-2.5 text-xs leading-5 text-[#FFFFFF]"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.35 }}
-                  >
-                    {localizeApiText(item, i18n.language)}
-                  </motion.div>
-                ))}
-              </div>
+              <BulletPanel items={modelInfo.highlights.map((item) => localizeApiText(item, i18n.language))} />
             </article>
 
-            <article className="surface-card rounded-[20px] p-3 sm:p-4">
+            <article className="surface-card flex flex-col rounded-[20px] p-3 sm:p-4">
               <SectionHeading
                 eyebrow={L(i18n.language, 'Limitações', 'Limitations', 'Limites', 'Limitaciones')}
                 title={L(i18n.language, 'O que o modelo não prevê', "What it can't do", 'Ce qu’il ne peut pas faire', 'Lo que no puede hacer')}
                 description={L(i18n.language, 'Fatores intangíveis e limites da abordagem estatística.', 'Where the model falls short.', 'Là où le modèle atteint ses limites.', 'Dónde se queda corto el modelo.')}
               />
-              <div className="mt-3 rounded-2xl border border-[#C8102E]/18 bg-[#C8102E]/8 p-3">
-                <ul className="space-y-2 text-xs leading-5 text-[#FFFFFF]">
-                  {modelInfo.limitations.map((item) => (
-                    <li key={item}>• {localizeApiText(item, i18n.language)}</li>
-                  ))}
-                </ul>
-              </div>
+              <BulletPanel items={modelInfo.limitations.map((item) => localizeApiText(item, i18n.language))} tone="warning" />
               <div className="mt-3 grid grid-cols-2 gap-2.5">
                 <MetricCard label="API status" value={health?.model_loaded ? L(i18n.language, 'Online', 'Online', 'En ligne', 'En línea') : L(i18n.language, 'Offline', 'Offline', 'Hors ligne', 'Sin conexión')} compact />
                 <MetricCard label={L(i18n.language, 'Lutadores no modelo', 'Fighters loaded', 'Combattants chargés', 'Peleadores cargados')} value={`${health?.fighters_loaded ?? 0}`} compact />
@@ -171,5 +152,22 @@ function MetricCard({ label, value, compact = false }: { label: string; value: s
         {value}
       </p>
     </article>
+  )
+}
+
+/** Same bulleted panel for every list on this page; "warning" only tints it red. The marker hangs, so wrapped lines stay aligned. */
+function BulletPanel({ items, tone = 'neutral' }: { items: string[]; tone?: 'neutral' | 'warning' }) {
+  const surface =
+    tone === 'warning' ? 'border border-[#C8102E]/18 bg-[#C8102E]/8' : 'border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]'
+  return (
+    <div className={`mt-3 flex-1 rounded-2xl p-3 ${surface}`}>
+      <ul className="space-y-2 text-xs leading-5 text-[#FFFFFF]">
+        {items.map((item) => (
+          <li key={item} className="relative pl-4 before:absolute before:left-0.5 before:top-2 before:h-1.5 before:w-1.5 before:rounded-full before:bg-[#C8102E] before:content-['']">
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }

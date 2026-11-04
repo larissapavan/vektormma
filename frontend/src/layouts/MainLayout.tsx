@@ -84,7 +84,11 @@ export function MainLayout({ children }: { children: ReactNode }) {
         </div>
       </div>
 
-      <div className="mx-auto flex w-full max-w-[min(100%,2560px)] flex-1 flex-col px-[clamp(0.75rem,1.4vw,2rem)]">
+      {/* Inner pages share the header's width and side padding so the content lines up with the logo. The landing runs edge to
+          edge so its hero background has no visible box; its sections pad themselves to the same content column as the header. */}
+      <div
+        className={`mx-auto flex w-full flex-1 flex-col ${landing ? 'max-w-none px-0' : 'max-w-7xl px-3 sm:px-6 lg:px-8'}`}
+      >
         <ScrollToTop />
         <PageMeta />
         {apiState === 'down' && !opensAtOnce ? (
@@ -97,7 +101,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
           className={
             landing
               ? 'flex-1 flex flex-col w-full max-w-full my-0'
-              : 'flex-1 border-t border-[var(--border-subtle)] mt-3 pt-3 sm:mt-5 sm:pt-6 w-full max-w-full min-w-0'
+              : 'flex-1 pt-4 sm:pt-6 w-full max-w-full min-w-0'
           }
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
