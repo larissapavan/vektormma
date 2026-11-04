@@ -97,7 +97,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
           className={
             landing
               ? 'flex-1 flex flex-col w-full max-w-full my-0'
-              : 'flex-1 border-t border-[var(--border-subtle)] mt-3 pt-3 sm:mt-5 sm:pt-6 w-full max-w-full min-w-0'
+              : 'flex-1 pt-4 sm:pt-6 w-full max-w-full min-w-0'
           }
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
