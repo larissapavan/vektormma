@@ -209,7 +209,7 @@ export function OrganizationsSection() {
   const { i18n } = useTranslation()
   const lang = i18n.language
   return (
-    <section id="organizations-grid" className="scroll-mt-28 max-w-7xl mx-auto px-4 sm:px-8 lg:px-16 pt-6 sm:pt-8 pb-3 sm:pb-4 w-full">
+    <section id="organizations-grid" className="scroll-mt-28 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-3 sm:pb-4 w-full">
       <div className="mb-4 sm:mb-5">
         <span className="font-mono text-xs uppercase tracking-widest text-[#BE123C] dark:text-[#FB7185] font-bold">
           {L(lang, 'LIGAS & ORGANIZAÇÕES', 'LEAGUES & ORGANIZATIONS', 'LIGUES & ORGANISATIONS', 'LIGAS Y ORGANIZACIONES')}
