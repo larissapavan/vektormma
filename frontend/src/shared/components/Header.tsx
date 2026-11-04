@@ -222,7 +222,7 @@ export function Header() {
             ) : (
               <nav
                 aria-label={L(i18n.language, 'Navegação principal', 'Main navigation', 'Navigation principale', 'Navegación principal')}
-                className="hidden lg:flex items-center h-14 sm:h-16 gap-1 sm:gap-2"
+                className="hidden min-[1200px]:flex items-center h-14 sm:h-16 gap-1 sm:gap-2"
               >
                 {navItems.map((item) => {
                   const active = isItemActive(item, pathname)
@@ -230,7 +230,7 @@ export function Header() {
                     <NavLink
                       key={item.to}
                       to={item.to}
-                      className={`relative h-full flex shrink-0 items-center px-3 xl:px-3.5 text-xs xl:text-[13px] font-bold transition duration-200 whitespace-nowrap ${
+                      className={`relative h-full flex shrink-0 items-center px-3 xl:px-2.5 text-xs xl:text-[13px] font-bold transition duration-200 whitespace-nowrap ${
                         active
                           ? 'text-[var(--text-primary)] dark:text-white'
                           : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] dark:hover:text-white'
@@ -325,7 +325,7 @@ export function Header() {
           <div
             ref={tabsRef}
             style={moreTabsOnRight ? { maskImage: 'linear-gradient(to right, #000 calc(100% - 28px), transparent)', WebkitMaskImage: 'linear-gradient(to right, #000 calc(100% - 28px), transparent)' } : undefined}
-            className="lg:hidden min-w-0 border-t border-[var(--border-subtle)] px-2 py-1 overflow-x-auto no-scrollbar overscroll-x-contain"
+            className="min-[1200px]:hidden min-w-0 border-t border-[var(--border-subtle)] px-2 py-1 overflow-x-auto no-scrollbar overscroll-x-contain"
           >
             <nav
               aria-label={L(i18n.language, 'Navegação móvel', 'Mobile navigation', 'Navigation mobile', 'Navegación móvil')}
