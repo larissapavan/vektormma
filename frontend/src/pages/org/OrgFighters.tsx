@@ -310,7 +310,7 @@ export function OrgFighters() {
 
       {/* Fighters Grid */}
       {loading ? (
-        <section className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 min-[2000px]:grid-cols-6">
+        <section className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 8 }).map((_, index) => (
             <LoadingSkeleton key={index} className="h-[240px] rounded-[18px]" />
           ))}
@@ -327,7 +327,7 @@ export function OrgFighters() {
             )}
           </p>
 
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 min-[2000px]:grid-cols-6">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
             {matches.slice(0, shown).map((fighter) => (
               <FighterCard
                 key={fighter.name}

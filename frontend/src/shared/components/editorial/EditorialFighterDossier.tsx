@@ -269,7 +269,7 @@ export function EditorialFighterDossier({
         />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6">
+      <div className="relative z-10 w-full pt-6">
         {/* Top Editorial Nav / Stamp Bar */}
         <header className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--border-subtle)] dark:border-white/10 pb-4">
           <div className="flex items-center gap-3">

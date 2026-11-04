@@ -341,7 +341,7 @@ export function Fighters() {
       {error ? <p className="rounded-xl border border-[#C8102E]/25 bg-[#C8102E]/8 px-3 py-2 text-sm font-semibold text-[var(--text-red)]">{error}</p> : null}
 
       {loading ? (
-        <section className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 min-[2000px]:grid-cols-6">
+        <section className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 6 }).map((_, index) => (
             <LoadingSkeleton key={index} className="h-[210px]" />
           ))}
@@ -591,7 +591,7 @@ function DivisionPanel({
 
       <div className="border-t border-[var(--border-subtle)] px-3 py-3 xs:px-4 md:px-5">
         {fighters.length ? (
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 min-[2000px]:grid-cols-6">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
             {shown.map((fighter, index) => (
               <FighterDivisionCard
                 key={fighter.name}
