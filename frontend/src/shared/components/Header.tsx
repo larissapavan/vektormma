@@ -253,7 +253,8 @@ export function Header() {
 
             {!landing && !bare && <FighterSearch />}
 
-            {/* Minimalist LIVE Telemetry Status Pill */}
+            {/* Minimalist LIVE Telemetry Status Pill. Inner pages have no room for it next to the menu, the search and the switcher. */}
+            {landing || bare ? (
             <div
               title={apiTitle}
               className="hidden sm:inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] dark:border-white/10 dark:bg-white/[0.04] backdrop-blur-md cursor-default text-[var(--text-secondary)] shadow-xs transition-colors"
@@ -266,6 +267,7 @@ export function Header() {
                 {apiLabel}
               </span>
             </div>
+            ) : null}
 
             <LanguageSwitcher />
 
@@ -297,9 +299,12 @@ export function Header() {
                 <Maximize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </button>
 
-              <div className="hidden xl:inline-flex items-center gap-0.5">
-                <SocialLinks />
-              </div>
+              {/* Same on the social icons: the footer carries them on inner pages. */}
+              {landing || bare ? (
+                <div className="hidden xl:inline-flex items-center gap-0.5">
+                  <SocialLinks />
+                </div>
+              ) : null}
 
               <a
                 href="https://github.com/larissapavan"
