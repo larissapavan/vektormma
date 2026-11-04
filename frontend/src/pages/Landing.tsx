@@ -74,10 +74,10 @@ export function Landing() {
               <p className="font-sans text-sm sm:text-base text-[var(--text-secondary)] dark:text-neutral-400 font-normal max-w-lg leading-relaxed">
                 {L(
                   i18n.language,
-                  'Compare lutadores e veja a probabilidade de vitória de cada luta do UFC, com os fatores que mais pesam no resultado.',
-                  'Compare fighters and see the win probability for every UFC fight, with the factors that weigh most on the result.',
-                  "Comparez les combattants et découvrez la probabilité de victoire de chaque combat de l’UFC, avec les facteurs qui pèsent le plus dans le résultat.",
-                  'Compara peleadores y mira la probabilidad de victoria de cada pelea de la UFC, con los factores que más pesan en el resultado.',
+                  'Compare lutadores e veja a probabilidade de vitória nas lutas de MMA, com os fatores que mais pesam no resultado.',
+                  'Compare fighters and see the win probability in MMA fights, with the factors that weigh most on the result.',
+                  "Comparez les combattants et découvrez la probabilité de victoire des combats de MMA, avec les facteurs qui pèsent le plus dans le résultat.",
+                  'Compara peleadores y mira la probabilidad de victoria en las peleas de MMA, con los factores que más pesan en el resultado.',
                 )}
               </p>
 
