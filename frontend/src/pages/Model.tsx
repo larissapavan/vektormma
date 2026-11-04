@@ -144,13 +144,18 @@ export function Model() {
   )
 }
 
+/** A long class name such as "HistGradientBoostingClassifier" has no spaces; offer a line break before each capital so it wraps by word. */
+function breakCamelCase(value: string) {
+  return value.split(/(?=[A-Z][a-z])/).flatMap((part, index) => (index === 0 ? [part] : [<wbr key={index} />, part]))
+}
+
 function MetricCard({ label, value, compact = false }: { label: string; value: string; compact?: boolean }) {
+  // Long values get a smaller size so they stay inside the card; the break opportunities above do the rest.
+  const size = compact ? 'text-xl' : value.length > 16 ? 'text-lg sm:text-xl' : 'text-2xl'
   return (
-    <article className="metric-tile rounded-2xl p-3">
+    <article className="metric-tile min-w-0 rounded-2xl p-3">
       <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{label}</p>
-      <p className={`data-value mt-1.5 font-bold text-[#FFFFFF] ${compact ? 'text-xl' : 'text-2xl'}`}>
-        {value}
-      </p>
+      <p className={`data-value mt-1.5 break-words font-bold text-[#FFFFFF] ${size}`}>{breakCamelCase(value)}</p>
     </article>
   )
 }
