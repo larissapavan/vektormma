@@ -384,10 +384,12 @@ function PipelineFlowDown({ label }: { label?: string }) {
 }
 
 function StatCard({ label, value }: { label: string; value: string }) {
+  // A date such as "4 DE NOVEMBRO DE 2026" has a word wider than the card on a 320px phone, and the card clips what overflows.
+  const size = value.length > 10 ? 'text-base min-[360px]:text-lg min-[380px]:text-xl sm:text-2xl' : 'text-xl sm:text-2xl'
   return (
     <article className="metric-tile rounded-2xl p-3 sm:p-4">
       <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{label}</p>
-      <p className="data-value mt-1 text-xl sm:text-2xl font-bold text-[#FFFFFF]">{value}</p>
+      <p className={`data-value mt-1 font-bold text-[#FFFFFF] ${size}`}>{value}</p>
     </article>
   )
 }
