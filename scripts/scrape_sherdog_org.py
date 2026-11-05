@@ -331,8 +331,14 @@ def event_page(row: dict) -> str:
 
 
 def alike(one: str, other: str, floor: float = 0.75) -> bool:
-    """Two name keys that are one person written two ways: the same words in another order, or a letter or an accent apart."""
-    return one == other or sorted(one.split()) == sorted(other.split()) or SequenceMatcher(None, one, other).ratio() >= floor
+    """Two name keys that are one person written two ways: the same words in another order, the same letters split differently by an
+    apostrophe or a hyphen ("Tre'ston" is two words to name_key), or a letter or an accent apart."""
+    return (
+        one == other
+        or sorted(one.split()) == sorted(other.split())
+        or sorted(one.replace(" ", "")) == sorted(other.replace(" ", ""))
+        or SequenceMatcher(None, one, other).ratio() >= floor
+    )
 
 
 def same_bout(theirs: tuple[str, str], ours: tuple[str, str]) -> dict[str, str] | None:
@@ -439,7 +445,9 @@ def supplement(org: SherdogOrg, events: list[dict], fights: list[dict], fighters
         for event in fresh:
             found = best_match(event)
             for sherdog_name, stored_name in (found[3] if found else {}).items():
-                if stored_name in other_source and aliases.get(sherdog_name) != stored_name:
+                # Never a name the files already have as a fighter of their own (ESPN lists "David Oliva" and "David Olivia" as two
+                # profiles): the card still tells the bout is the same one, but renaming a fighter ESPN knows would swap two people.
+                if stored_name in other_source and sherdog_name not in other_source and aliases.get(sherdog_name) != stored_name:
                     aliases[sherdog_name] = stored_name
                     report["respelled"].append(f"{event['day']} {event['name']}: {sherdog_name} = {stored_name}")
         if len(aliases) == learned:

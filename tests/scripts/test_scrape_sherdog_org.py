@@ -640,3 +640,23 @@ def test_a_bout_between_two_people_with_one_name_is_left_out_and_listed():
     new = [r for r in combined if r["fight_url"].startswith("https://www.sherdog.com")]
     assert [(r["fighter_1"], r["fighter_2"]) for r in new] == [("Cal Three", "Dan Four")]  # a fighter booked against themself breaks every record in the files
     assert report["same_name"] == ["2025-03-08 KSW 104: Lucas Silva"] and "Lucas Silva" not in {p["name"] for p in people}
+
+
+def test_a_name_the_files_already_have_as_a_fighter_is_never_renamed_but_the_bout_is_still_recognised():
+    fights, fighters = base()
+    fights.append(espn_fight("d", "2025-01-10", "David Olivia", "Bia Two", winner="David Olivia"))
+    fighters += [espn_fighter("David Oliva"), espn_fighter("David Olivia")]  # ESPN lists one man under two spellings, as two profiles
+    event = sd_event(row(1, ("David Oliva", 60, "win"), BIA), day="2025-01-10", ident="640")
+    combined, people, report = sd.supplement(ALL, [event], fights, fighters, TODAY)
+    assert [r["event_slug"] for r in combined].count("ksw-d") == 1 and report["new_bouts"] == 0  # the same bout: not added again
+    assert report["respelled"] == []  # and no spelling is written down, which could swap the two ESPN profiles
+    assert {"David Oliva", "David Olivia"} <= {p["name"] for p in people}
+
+
+def test_an_apostrophe_does_not_make_two_spellings_two_people():
+    fights, fighters = base()
+    fights.append(espn_fight("t", "2025-01-10", "Jay Fuller", "Tre'ston Vines", winner="Jay Fuller"))
+    fighters.append(espn_fighter("Tre'ston Vines"))
+    event = sd_event(row(1, ("Jay Fuller", 70, "win"), ("Treston Vines", 71, "loss")), day="2025-01-10", ident="650")  # name_key reads Tre'ston as two words
+    combined, _, report = sd.supplement(ALL, [event], fights, fighters, TODAY)
+    assert [r["event_slug"] for r in combined].count("ksw-t") == 1 and report["new_bouts"] == 0
