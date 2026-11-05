@@ -117,28 +117,31 @@ describe('the organizations section', () => {
     expect(within(ufc).queryByText(/simulate/i)).toBeNull()
   })
 
-  it('shows PFL, ONE and Bellator as cards with their badge and counts', async () => {
+  it('shows PFL, ONE and Bellator as cards with their badge and a single number, the bouts', async () => {
     const root = await section()
 
-    for (const [name, badge] of [
-      [/open professional fighters league/i, 'AI Predictions'],
-      [/open one championship/i, 'AI Predictions'],
-      [/open bellator mma/i, 'Historical Archive'],
+    // PFL 1380, ONE 4817 and Bellator 3004 bouts, rounded down.
+    for (const [name, badge, bouts] of [
+      [/open professional fighters league/i, 'AI Predictions', '1,300+'],
+      [/open one championship/i, 'AI Predictions', '4,800+'],
+      [/open bellator mma/i, 'Historical Archive', '3,000+'],
     ] as const) {
       const card = within(root).getByRole('link', { name })
       expect(card).toHaveTextContent(badge)
-      expect(card.querySelectorAll('dd')).toHaveLength(3)
+      expect(card).toHaveTextContent(bouts)
+      expect(card).toHaveTextContent(/bouts/i)
+      expect(card.querySelectorAll('dd')).toHaveLength(0)
     }
   })
 
-  it('lists the other seven as one line each under "More leagues", without a badge or a glove', async () => {
+  it('lists the other seven as one chip each under "More leagues", with only the name: no badge, glove or counts', async () => {
     const root = await section()
     const list = within(root).getByRole('heading', { name: /more leagues/i }).parentElement!.querySelector('ul')!
 
     expect(list.querySelectorAll('li')).toHaveLength(7)
     expect(list).toHaveTextContent('RIZIN')
-    expect(list).toHaveTextContent('80+ events · 460+ fighters · 600+ bouts')
     expect(list.querySelector('img')).toBeNull()
-    expect(list).not.toHaveTextContent(/events & results/i)
+    expect(list.textContent).not.toMatch(/\d/)
+    expect(list).not.toHaveTextContent(/events|fighters|bouts/i)
   })
 })
