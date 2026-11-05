@@ -660,3 +660,18 @@ def test_an_apostrophe_does_not_make_two_spellings_two_people():
     event = sd_event(row(1, ("Jay Fuller", 70, "win"), ("Treston Vines", 71, "loss")), day="2025-01-10", ident="650")  # name_key reads Tre'ston as two words
     combined, _, report = sd.supplement(ALL, [event], fights, fighters, TODAY)
     assert [r["event_slug"] for r in combined].count("ksw-t") == 1 and report["new_bouts"] == 0
+
+
+def test_a_pair_judged_to_be_two_people_keeps_the_bout_recognised_but_is_never_written_as_one_name(monkeypatch):
+    monkeypatch.setitem(sd.NOT_SAME_PERSON, "ksw", {frozenset(("kendrik williams", "kendrick williams"))})
+    fights, fighters = base()
+    fights.append(espn_fight("k", "2025-01-10", "Kendrick Williams", "Bia Two", winner="Kendrick Williams"))
+    fighters.append(espn_fighter("Kendrick Williams"))
+    same_card = sd_event(row(1, ("Kendrik Williams", 20, "win"), BIA), day="2025-01-10", ident="660")
+    later = sd_event(row(1, ("Kendrik Williams", 20, "win"), CAL), day="2025-06-07", ident="661")
+    combined, people, report = sd.supplement(ALL, [same_card, later], fights, fighters, TODAY)
+    assert [r["event_slug"] for r in combined].count("ksw-k") == 1  # the same bout: not added twice
+    assert report["respelled"] == [] and report["kept_apart"] == ["kendrik williams / kendrick williams"]
+    [added] = [r for r in combined if r["event_slug"] == "ksw-sherdog-661"]
+    assert added["fighter_1"] == "Kendrik Williams"  # not renamed
+    assert {"Kendrick Williams", "Kendrik Williams"} <= {p["name"] for p in people}  # two profiles, the review lists them

@@ -106,6 +106,19 @@ SAME_PERSON: dict[str, dict[str, str]] = {
     "ksw": {"Oleksii Polishchuk": "Oleksii Polischuck", "Patryk Surdyn": "Patrick Surdyn"},
     "rizin": {"Kyung Pyo Kim": "KyeungPyo Kim"},
 }
+# Pairs of names a card put together (same event, same opponent) that I judged to be two people, or could not tell: the bout stays
+# recognised (it is not added twice), but neither name is written as the other for the rest of the files. name_key spellings.
+NOT_SAME_PERSON: dict[str, set[frozenset[str]]] = {
+    "rizin": {frozenset(("sasaki yuta", "sasaki ulka"))},
+    "lfa": {
+        frozenset(pair)
+        for pair in (
+            ("james wallace", "jesse wallace"), ("richardson santos", "richard santos"), ("cristobal renteria", "chris renteria"),
+            ("alejandro sanchez", "alex sanchez"), ("coughran j r", "coughran marty"), ("jarrion manning", "jay manning"),
+            ("kuziutina natalia", "kuziutina natasha"),
+        )
+    },
+}
 # Sherdog does not say which sex a bout is, and these division names exist for both.
 AMBIGUOUS_DIVISIONS = {"Atomweight", "Strawweight", "Flyweight", "Bantamweight", "Featherweight", "Lightweight"}
 
@@ -395,7 +408,7 @@ def supplement(org: SherdogOrg, events: list[dict], fights: list[dict], fighters
     `incremental` is the daily refresh: `events` are only the ones read again (see select_recent), so only the rows this script
     added to those events are replaced and every other row, Sherdog's included, stays. It also serves an organization built from
     Sherdog alone (no `since`), whose stored rows are all Sherdog's."""
-    report: dict = {"skipped_overlap": [], "completed": [], "respelled": [], "same_name": [], "possible_same": [], "womens_unresolved": 0, "womens_fixed": 0}
+    report: dict = {"skipped_overlap": [], "completed": [], "respelled": [], "same_name": [], "kept_apart": [], "possible_same": [], "womens_unresolved": 0, "womens_fixed": 0}
     # The files know a fighter by name, so a bout between two people who share one (two "Lucas Silva" on one card, two profiles) cannot be told
     # from a fighter booked against themself: it is left out and listed.
     fresh = []
@@ -440,6 +453,7 @@ def supplement(org: SherdogOrg, events: list[dict], fights: list[dict], fighters
 
     # A spelling a card settles holds for the whole organization, including a card that has it twice or in a bout whose two names
     # are both written differently: learn them from every card first (a name learned in one card can settle another), then match.
+    kept_apart: set[str] = set()
     for _ in range(3):
         learned = len(aliases)
         for event in fresh:
@@ -447,12 +461,15 @@ def supplement(org: SherdogOrg, events: list[dict], fights: list[dict], fighters
             for sherdog_name, stored_name in (found[3] if found else {}).items():
                 # Never a name the files already have as a fighter of their own (ESPN lists "David Oliva" and "David Olivia" as two
                 # profiles): the card still tells the bout is the same one, but renaming a fighter ESPN knows would swap two people.
-                if stored_name in other_source and sherdog_name not in other_source and aliases.get(sherdog_name) != stored_name:
+                if frozenset((sherdog_name, stored_name)) in NOT_SAME_PERSON.get(org.id, set()):
+                    kept_apart.add(f"{sherdog_name} / {stored_name}")
+                elif stored_name in other_source and sherdog_name not in other_source and aliases.get(sherdog_name) != stored_name:
                     aliases[sherdog_name] = stored_name
                     report["respelled"].append(f"{event['day']} {event['name']}: {sherdog_name} = {stored_name}")
         if len(aliases) == learned:
             break
 
+    report["kept_apart"] = sorted(kept_apart)
     added: list[dict] = []
     for event in fresh:
         best = best_match(event)
@@ -645,6 +662,8 @@ def collect_supplement(org: SherdogOrg, events: list[dict], *, dry_run: bool, in
         print(f"[info] {org.id}: {len(report['skipped_overlap'])} cards the files already have complete")
     if report["same_name"]:
         print(f"[review] {org.id}: {len(report['same_name'])} bouts between two people with the same name were left out (the files know a fighter by name): {report['same_name'][:4]}")
+    if report["kept_apart"]:
+        print(f"[review] {org.id}: names a card put together that are kept apart on purpose (NOT_SAME_PERSON): {report['kept_apart']}")
     if report["respelled"]:
         print(f"[review] {org.id}: {len(report['respelled'])} names settled by the card they are in (same opponent, same day), written the way the files already have them: {report['respelled'][:6]}")
     if report["possible_same"]:
