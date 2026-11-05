@@ -17,11 +17,17 @@ What Sherdog's event pages do NOT give, and what this script therefore leaves em
 - rankings or the list of champions: rankings.csv holds only its header (a title bout is flagged on the bout itself);
 - the gender of a division: Sherdog calls the women's strawweight just "Strawweight", and so does this data.
 
-KSW and RIZIN are a different case: ESPN covers them up to the end of 2024 (scripts/scrape_espn_org.py) and Sherdog has the
-events after that, so for them this script only ADDS the events from `since` on to the files ESPN wrote and never touches an
-ESPN row: fighters keep the spelling and profile ESPN gave them, an event the files already have is skipped, and a second run
-replaces only what an earlier run added (its event slug has "-sherdog-" in it). Name matching is exact (accents and case
-ignored); names that look alike but are not equal are listed for review, never merged.
+KSW, RIZIN and LFA are a different case: ESPN has only part of the bouts of most of their cards (a card with 1 or 2 bouts where
+Sherdog lists 10), and nothing for some events (ESPN stops in 2024 for KSW and RIZIN), so for them this script only ADDS to the
+files ESPN wrote and never takes an ESPN bout away:
+- an event ESPN does not have is added whole (its slug has "-sherdog-" in it);
+- an event ESPN has gets the bouts it is missing, under ESPN's own event (name, date, address, slug), so the site shows one
+  card; the bouts are told apart by a Sherdog address in `fight_url`. The card order of that event follows Sherdog's (main
+  event first, which ESPN's order does not always do); a bout only ESPN has goes after them;
+- fighters keep the spelling and profile ESPN gave them. A bout counts as the same one when it has the same two fighters, or
+  the same opponent and a fighter whose name differs by a letter or the order of the words (a spelling that card settles, and
+  that is listed in the report). Other names that look alike are listed for review, never merged;
+- a second run replaces only what an earlier run added.
 
 The daily refresh (`daily`, or --recent-days N) does not read every page again. Sherdog's sitemap has no modification dates,
 so it reads the events the files already have from the last N days (their results come in after the card) and the ones the
@@ -66,6 +72,7 @@ USER_AGENT = "FightIntelligenceBot/1.0 (+https://github.com/larissapavan; person
 REQUEST_DELAY_SECONDS = 1.0
 ACTIVE_WITHIN_DAYS = 730
 RECENT_DAYS = 45
+NEWEST_EVENTS = 25  # the daily refresh of an organization another source also writes reads this many of the newest Sherdog events
 DECISIONS = {"U-DEC", "S-DEC", "M-DEC", "DEC"}
 
 
@@ -75,25 +82,42 @@ class SherdogOrg:
     prefixes: tuple[str, ...]  # what the event's address starts with on Sherdog ("Jungle-Fight-156-...")
     name: str  # the organization as the event page names it
     womens: bool = False  # an all-women's promotion: Sherdog's "Bantamweight" there is the women's division
-    # Set for an organization whose earlier years come from another source: only events from this day on are added to the
-    # files that source wrote, instead of the files being built from Sherdog alone.
+    # Set for an organization whose files another source wrote: this script adds to them (events from this day on) instead of
+    # building the files from Sherdog alone.
     since: date | None = None
 
 
 ORGS: dict[str, SherdogOrg] = {
     "jungle-fight": SherdogOrg("jungle-fight", ("Jungle-Fight",), "Jungle Fight"),
     "invicta": SherdogOrg("invicta", ("Invicta",), "Invicta Fighting Championships", womens=True),
-    # ESPN has both up to the end of 2024 (KSW 101 on 2024-12-20, Rizin 49 on 2024-12-31); Sherdog has what came after.
-    "ksw": SherdogOrg("ksw", ("KSW-", "Konfrontacja"), "Konfrontacja Sztuk Walki", since=date(2025, 1, 1)),
-    "rizin": SherdogOrg("rizin", ("Rizin-", "RIZIN"), "Rizin Fighting Federation", since=date(2025, 1, 1)),
+    # ESPN has KSW and Rizin up to the end of 2024 (KSW 101 on 2024-12-20, Rizin 49 on 2024-12-31), and only part of the bouts of
+    # most cards; Sherdog has the rest and what came after.
+    "ksw": SherdogOrg("ksw", ("KSW-", "Konfrontacja"), "Konfrontacja Sztuk Walki", since=date(2004, 1, 1)),
+    "rizin": SherdogOrg("rizin", ("Rizin-", "RIZIN"), "Rizin Fighting Federation", since=date(2015, 1, 1)),
+    # ESPN lists LFA's cards from 2017 but only part of their bouts, and it stays the daily source of its own rows; Sherdog completes them.
+    "lfa": SherdogOrg("lfa", ("LFA-",), "Legacy Fighting Alliance (LFA)", since=date(2017, 1, 1)),
 }
 # What `all` runs: the organizations built from Sherdog alone. The others add to files another source wrote, so they run by name.
 STANDALONE = [org_id for org_id, org in ORGS.items() if org.since is None]
 # People the files already have under another spelling, confirmed by hand (Sherdog's spelling -> the one already in the files).
 # Only equal names are merged by the script; a name that merely looks alike is listed for review until it is added here.
+# (A spelling that a card settles by itself, see match_bouts, does not need to be here.)
 SAME_PERSON: dict[str, dict[str, str]] = {
     "ksw": {"Oleksii Polishchuk": "Oleksii Polischuck", "Patryk Surdyn": "Patrick Surdyn"},
     "rizin": {"Kyung Pyo Kim": "KyeungPyo Kim"},
+}
+# Pairs of names a card put together (same event, same opponent) that I judged to be two people, or could not tell: the bout stays
+# recognised (it is not added twice), but neither name is written as the other for the rest of the files. name_key spellings.
+NOT_SAME_PERSON: dict[str, set[frozenset[str]]] = {
+    "rizin": {frozenset(("sasaki yuta", "sasaki ulka"))},
+    "lfa": {
+        frozenset(pair)
+        for pair in (
+            ("james wallace", "jesse wallace"), ("richardson santos", "richard santos"), ("cristobal renteria", "chris renteria"),
+            ("alejandro sanchez", "alex sanchez"), ("coughran j r", "coughran marty"), ("jarrion manning", "jay manning"),
+            ("kuziutina natalia", "kuziutina natasha"),
+        )
+    },
 }
 # Sherdog does not say which sex a bout is, and these division names exist for both.
 AMBIGUOUS_DIVISIONS = {"Atomweight", "Strawweight", "Flyweight", "Bantamweight", "Featherweight", "Lightweight"}
@@ -233,15 +257,20 @@ def slug_prefix(org: SherdogOrg) -> str:
 
 
 def fight_rows(events: list[dict], org: SherdogOrg) -> list[dict]:
+    """The rows of the events. An event with `espn` (the stored row of a card ESPN already has) puts its bouts under that card:
+    ESPN's name, date, place, address and slug; a bout with `order` keeps the position it has on Sherdog's card."""
     rows = []
     for event in events:
-        for order, bout in enumerate(event["bouts"]):
+        card = event.get("espn") or {}
+        for position, bout in enumerate(event["bouts"]):
+            order = bout.get("order", position)
             one, two = bout["fighter_1"], bout["fighter_2"]
             title = bout["title_fight"]
             rows.append(
                 {
-                    "event_name": event["name"], "event_date": event["day"].isoformat(), "location": event["location"],
-                    "event_url": event["url"], "event_slug": f"{slug_prefix(org)}-{event['id']}", "circuit": "",
+                    "event_name": card.get("event_name", event["name"]), "event_date": card.get("event_date", event["day"].isoformat()),
+                    "location": card.get("location", event["location"]), "event_url": card.get("event_url", event["url"]),
+                    "event_slug": card.get("event_slug", f"{slug_prefix(org)}-{event['id']}"), "circuit": card.get("circuit", ""),
                     "fight_url": f"{event['url']}#fight-{order}", "card_order": order, "fighter_1": one["name"], "fighter_2": two["name"],
                     "fighter_1_url": one["url"], "fighter_2_url": two["url"], "winner": bout["winner"], "outcome": bout["outcome"],
                     "weight_class": bout["weight_class"], "stage": "Title Fight" if title else "", "title_fight": "true" if title else "",
@@ -304,33 +333,97 @@ def womens_names(fights: list[dict]) -> set[str]:
     return found
 
 
-def overlaps(row_pairs: dict[str, set[frozenset]], event: dict) -> bool:
-    """Whether an event the file already has (a day apart at most) holds one of this event's bouts: the same card twice."""
-    pairs = {frozenset((name_key(b["fighter_1"]["name"]), name_key(b["fighter_2"]["name"]))) for b in event["bouts"]}
-    for offset in (-1, 0, 1):
-        if pairs & row_pairs.get((event["day"] + timedelta(days=offset)).isoformat(), set()):
-            return True
-    return False
+def is_sherdog(row: dict) -> bool:
+    """A row this script wrote (its `fight_url` is a Sherdog address); ESPN's rows have ESPN's."""
+    return row["fight_url"].startswith(BASE_URL)
+
+
+def event_page(row: dict) -> str:
+    """The Sherdog event page a row of this script came from ("https://www.sherdog.com/events/KSW-100-...-103747")."""
+    return row["fight_url"].split("#", 1)[0]
+
+
+def alike(one: str, other: str, floor: float = 0.75) -> bool:
+    """Two name keys that are one person written two ways: the same words in another order, the same letters split differently by an
+    apostrophe or a hyphen ("Tre'ston" is two words to name_key), or a letter or an accent apart."""
+    return (
+        one == other
+        or sorted(one.split()) == sorted(other.split())
+        or sorted(one.replace(" ", "")) == sorted(other.replace(" ", ""))
+        or SequenceMatcher(None, one, other).ratio() >= floor
+    )
+
+
+def same_bout(theirs: tuple[str, str], ours: tuple[str, str]) -> dict[str, str] | None:
+    """The spellings that make a Sherdog bout the stored one, or None when it is another bout.
+
+    One fighter is the same in both and the other is written differently (an opponent in the same card cannot be anyone else), or
+    both are written a little differently and each is close to its counterpart."""
+    for x in (0, 1):
+        for y in (0, 1):
+            one, two, other_one, other_two = theirs[x], theirs[1 - x], ours[y], ours[1 - y]
+            if one == other_one and two != other_two and alike(two, other_two):
+                return {two: other_two}
+            if one != other_one and two != other_two and alike(one, other_one, 0.85) and alike(two, other_two, 0.85):
+                return {one: other_one, two: other_two}
+    return None
+
+
+def match_bouts(bouts: list[dict], rows: list[dict], aliases: dict[str, str] | None = None) -> tuple[dict[int, int], dict[str, str]]:
+    """Which Sherdog bout is which stored row of the same card: {bout position: row position}, and the spellings that settled it.
+
+    Same two fighters first (a name already known under another spelling, `aliases`, counts as that spelling). A bout left over
+    is the same one under another spelling only when it is the single candidate for a row and that row is the single candidate
+    for it; two doubtful bouts in a card are left apart rather than guessed."""
+    aliases = aliases or {}
+    theirs = [tuple(aliases.get(key, key) for key in (name_key(bout["fighter_1"]["name"]), name_key(bout["fighter_2"]["name"]))) for bout in bouts]
+    ours = [(name_key(row["fighter_1"]), name_key(row["fighter_2"])) for row in rows]
+    matched: dict[int, int] = {}
+    taken: set[int] = set()
+    for i, pair in enumerate(theirs):
+        for j, stored in enumerate(ours):
+            if j not in taken and frozenset(pair) == frozenset(stored):
+                matched[i] = j
+                taken.add(j)
+                break
+    open_rows = [j for j in range(len(ours)) if j not in taken]
+    candidates = {i: [(j, spelling) for j in open_rows if (spelling := same_bout(pair, ours[j])) is not None] for i, pair in enumerate(theirs) if i not in matched}
+    spellings: dict[str, str] = {}
+    for i, found in candidates.items():
+        if len(found) == 1 and sum(1 for other in candidates.values() if any(j == found[0][0] for j, _ in other)) == 1:
+            matched[i] = found[0][0]
+            spellings.update(found[0][1])
+    return matched, spellings
 
 
 def supplement(org: SherdogOrg, events: list[dict], fights: list[dict], fighters: list[dict], today: date, *, incremental: bool = False) -> tuple[list[dict], list[dict], dict]:
-    """The files another source wrote plus this organization's events from `org.since` on.
+    """The files another source wrote plus what Sherdog has for this organization from `org.since` on.
 
-    Nothing of the other source's is changed except two facts that the new bouts make stale, and only for a fighter who is on
-    a new card: the first/last fight date, and `status` (marked inactive and fought within two years: marked active, never
-    the other way round).
+    An event the files do not have is added whole. An event they have gets the bouts it is missing. No row of the other source is
+    taken away, and nothing in it is changed except three facts the new bouts make stale: the first/last fight date and `status` of
+    a fighter who is on a new bout (marked inactive and fought within two years: marked active, never the other way round), and the
+    `card_order` of the bouts of a card that was completed (Sherdog's order, a bout only the other source has goes after it).
     Rows an earlier run of this script added are replaced, so a second run gives the same files.
 
-    `incremental` is the daily refresh: `events` are only the ones read again (see select_recent), so only the stored rows of
-    those events are replaced and every other row, Sherdog's included, stays. It also serves an organization built from
+    `incremental` is the daily refresh: `events` are only the ones read again (see select_recent), so only the rows this script
+    added to those events are replaced and every other row, Sherdog's included, stays. It also serves an organization built from
     Sherdog alone (no `since`), whose stored rows are all Sherdog's."""
-    marker = f"{org.id}-sherdog-"
-    fresh_slugs = {f"{slug_prefix(org)}-{event['id']}" for event in events if org.since is None or event["day"] >= org.since}
+    report: dict = {"skipped_overlap": [], "completed": [], "respelled": [], "same_name": [], "kept_apart": [], "possible_same": [], "womens_unresolved": 0, "womens_fixed": 0}
+    # The files know a fighter by name, so a bout between two people who share one (two "Lucas Silva" on one card, two profiles) cannot be told
+    # from a fighter booked against themself: it is left out and listed.
+    fresh = []
+    for event in events:
+        if org.since is None or event["day"] >= org.since:
+            usable = [bout for bout in event["bouts"] if name_key(bout["fighter_1"]["name"]) != name_key(bout["fighter_2"]["name"])]
+            report["same_name"] += [f"{event['day']} {event['name']}: {bout['fighter_1']['name']}" for bout in event["bouts"] if bout not in usable]
+            if usable:
+                fresh.append({**event, "bouts": usable})
+    fresh_pages = {event["url"] for event in fresh}
     if incremental:
-        base_fights = [row for row in fights if row["event_slug"] not in fresh_slugs]
+        base_fights = [dict(row) for row in fights if event_page(row) not in fresh_pages]
         base_fighters = [dict(row) for row in fighters]
     else:
-        base_fights = [row for row in fights if not row["event_slug"].startswith(marker)]
+        base_fights = [dict(row) for row in fights if not is_sherdog(row)]
         base_fighters = [row for row in fighters if not row["profile_url"].startswith(BASE_URL)]
     known = {name_key(row["name"]): row for row in base_fighters}
     # Who is the same person is decided differently by source: inside Sherdog a person is their profile address (two fighters can
@@ -338,20 +431,68 @@ def supplement(org: SherdogOrg, events: list[dict], fights: list[dict], fighters
     other_source = {name_key(row["name"]): row for row in base_fighters if not row["profile_url"].startswith(BASE_URL)}
     known_urls = {row["profile_url"] for row in base_fighters}
     aliases = {name_key(sherdog): name_key(espn) for sherdog, espn in SAME_PERSON.get(org.id, {}).items() if name_key(espn) in other_source}
-    report: dict = {"skipped_overlap": [], "possible_same": [], "womens_unresolved": 0, "womens_fixed": 0}
 
-    pairs_by_day: dict[str, set[frozenset]] = {}
+    # The cards the other source has, by event: a Sherdog card is one of them when a day apart at most and a bout is the same one.
+    stored: dict[str, list[dict]] = {}
     for row in base_fights:
-        pairs_by_day.setdefault(row["event_date"], set()).add(frozenset((name_key(row["fighter_1"]), name_key(row["fighter_2"]))))
-    fresh = [event for event in events if org.since is None or event["day"] >= org.since]
-    kept = []
-    for event in fresh:
-        if org.since and overlaps(pairs_by_day, event):  # two sources: the same card could be in both
-            report["skipped_overlap"].append(f"{event['day']} {event['name']}")
-        else:
-            kept.append(event)
+        if not is_sherdog(row) or event_page(row) not in fresh_pages:
+            stored.setdefault(row["event_slug"], []).append(row)
+    by_day: dict[str, list[str]] = {}
+    for slug, rows in stored.items():
+        by_day.setdefault(rows[0]["event_date"], []).append(slug)
 
-    new_fights = fight_rows(kept, org)
+    def best_match(event: dict) -> tuple[int, str, dict[int, int], dict[str, str]] | None:
+        best = None
+        for offset in (-1, 0, 1):
+            for slug in by_day.get((event["day"] + timedelta(days=offset)).isoformat(), []):
+                rows = [row for row in stored[slug] if not is_sherdog(row)]
+                matched, spellings = match_bouts(event["bouts"], rows, aliases)
+                if matched and (best is None or len(matched) > best[0]):
+                    best = (len(matched), slug, matched, spellings)
+        return best
+
+    # A spelling a card settles holds for the whole organization, including a card that has it twice or in a bout whose two names
+    # are both written differently: learn them from every card first (a name learned in one card can settle another), then match.
+    kept_apart: set[str] = set()
+    for _ in range(3):
+        learned = len(aliases)
+        for event in fresh:
+            found = best_match(event)
+            for sherdog_name, stored_name in (found[3] if found else {}).items():
+                # Never a name the files already have as a fighter of their own (ESPN lists "David Oliva" and "David Olivia" as two
+                # profiles): the card still tells the bout is the same one, but renaming a fighter ESPN knows would swap two people.
+                if frozenset((sherdog_name, stored_name)) in NOT_SAME_PERSON.get(org.id, set()):
+                    kept_apart.add(f"{sherdog_name} / {stored_name}")
+                elif stored_name in other_source and sherdog_name not in other_source and aliases.get(sherdog_name) != stored_name:
+                    aliases[sherdog_name] = stored_name
+                    report["respelled"].append(f"{event['day']} {event['name']}: {sherdog_name} = {stored_name}")
+        if len(aliases) == learned:
+            break
+
+    report["kept_apart"] = sorted(kept_apart)
+    added: list[dict] = []
+    for event in fresh:
+        best = best_match(event)
+        if best is None:
+            added.append(event)
+            continue
+        _, slug, matched, _ = best
+        rows = [row for row in stored[slug] if not is_sherdog(row)]
+        missing = [{**bout, "order": position} for position, bout in enumerate(event["bouts"]) if position not in matched]
+        if missing:
+            # A card that gets bouts takes Sherdog's order for the bouts of both sources (main event first), and the bouts only the
+            # other source has go after them. A card that is already complete keeps the order it has.
+            for i, j in matched.items():
+                rows[j]["card_order"] = str(i)
+            left = sorted((row for position, row in enumerate(rows) if position not in matched.values()), key=lambda row: int(row["card_order"] or 0))
+            for offset, row in enumerate(left):
+                row["card_order"] = str(len(event["bouts"]) + offset)
+            added.append({**event, "bouts": missing, "espn": rows[0]})
+            report["completed"].append(f"{event['day']} {event['name']}: {len(rows)} -> {len(rows) + len(missing)} bouts")
+        else:
+            report["skipped_overlap"].append(f"{event['day']} {event['name']}")
+
+    new_fights = fight_rows(added, org)
     women = womens_names(base_fights)
     # A division the file only knows as a women's one (KSW's Strawweight and Flyweight: nine and ten "Women's" bouts, no men's)
     # is a women's division for the new bouts too, even between two fighters the file has not seen.
@@ -376,7 +517,7 @@ def supplement(org: SherdogOrg, events: list[dict], fights: list[dict], fighters
             else:
                 report["womens_unresolved"] += 1
 
-    new_people = [row for row in fighter_rows(kept, new_fights, today) if row["profile_url"] not in known_urls and row["profile_url"] not in substituted]
+    new_people = [row for row in fighter_rows(added, new_fights, today) if row["profile_url"] not in known_urls and row["profile_url"] not in substituted]
     taken = {row["slug"] for row in base_fighters}
     for person in new_people:  # a slug is not shared with a fighter the files already have (the photo path and the address follow it)
         if person["slug"] in taken:
@@ -406,7 +547,7 @@ def supplement(org: SherdogOrg, events: list[dict], fights: list[dict], fighters
                 row["status"] = "active"
         updated.append(row)
     all_fighters = sorted([*updated, *new_people], key=lambda row: row["name"].lower())
-    report.update(events=kept, new_bouts=len(new_fights), new_people=len(new_people))
+    report.update(events=added, new_bouts=len(new_fights), new_people=len(new_people))
     return combined, all_fighters, report
 
 
@@ -414,21 +555,24 @@ def event_id(url: str) -> str:
     return url.rsplit("-", 1)[-1]
 
 
-def select_recent(urls: list[str], known: dict[str, str], today: date, recent_days: int) -> list[str]:
+def select_recent(urls: list[str], known: dict[str, str], today: date, recent_days: int, newest: int = 0) -> list[str]:
     """The event pages the daily refresh reads: the known events from the last `recent_days` days (`known` is event id -> day),
     and the unknown ones created after the files' last recent event (a Sherdog id only grows, so an older unknown id is an
-    event the files never wanted: another promoter's, or one from before this organization's first day)."""
+    event the files never wanted: another promoter's, or one from before this organization's first day).
+
+    `newest` adds the pages with the highest ids: for an organization another source also writes, a card that source has only
+    just listed may be an event Sherdog created long before, whose id is older than every event this script put in the files."""
     cutoff = (today - timedelta(days=recent_days)).isoformat()
     number = lambda ident: int(ident) if ident.isdigit() else -1  # noqa: E731
     recent = [number(ident) for ident, day in known.items() if day >= cutoff]
     floor = min(recent) if recent else max((number(ident) for ident in known), default=0)
-    return [url for url in urls if (known[event_id(url)] >= cutoff if event_id(url) in known else number(event_id(url)) >= floor)]
+    latest = {url for url in sorted(urls, key=lambda url: number(event_id(url)))[-newest:]} if newest else set()
+    return [url for url in urls if url in latest or (known[event_id(url)] >= cutoff if event_id(url) in known else number(event_id(url)) >= floor)]
 
 
 def known_events(org: SherdogOrg, fights: list[dict]) -> dict[str, str]:
-    """Event id -> day of the events this script put in the files (for KSW and RIZIN, not ESPN's)."""
-    prefix = f"{slug_prefix(org)}-"
-    return {row["event_slug"][len(prefix):]: row["event_date"] for row in fights if row["event_slug"].startswith(prefix)}
+    """Event id -> day of the events this script put bouts in (Sherdog's rows, not ESPN's: they are told apart by their address)."""
+    return {event_id(event_page(row)): row["event_date"] for row in fights if is_sherdog(row)}
 
 
 # --------------------------------------------------------------------------- main
@@ -447,7 +591,7 @@ def collect(org: SherdogOrg, fetcher: Fetcher, sitemaps: list[str], *, dry_run: 
         if not (folder / "fights.csv").exists() or not (folder / "fighters.csv").exists():
             print(f"[error] {org.id}: no files to refresh in {folder}; run it once in full first")
             return 1
-        urls = select_recent(urls, known_events(org, load_csv(folder / "fights.csv")[1]), date.today(), recent_days)
+        urls = select_recent(urls, known_events(org, load_csv(folder / "fights.csv")[1]), date.today(), recent_days, NEWEST_EVENTS if org.since else 0)
         print(f"[info] {org.id}: {len(urls)} of them to read: the events of the last {recent_days} days and the ones not in the files yet")
     events: list[dict] = []
     skipped: list[str] = []
@@ -505,15 +649,23 @@ def collect_supplement(org: SherdogOrg, events: list[dict], *, dry_run: bool, in
             return 0
         print(f"[error] {org.id}: no event from {org.since} on; files left untouched")
         return 1
-    if incremental and len(combined) < len(fights) * 0.98:
-        print(f"[error] {org.id}: the refresh would drop rows ({len(fights)} -> {len(combined)}); files left untouched")
+    if len(combined) < len(fights) * 0.98:  # this script only adds: fewer rows than the files have means something went wrong
+        print(f"[error] {org.id}: the run would drop rows ({len(fights)} -> {len(combined)}); files left untouched")
         return 1
     since = f" from {org.since} on" if org.since else ""
     print(f"[info] {org.id}: {len(added)} events{since} ({min(e['day'] for e in added)} to {max(e['day'] for e in added)}), {report['new_bouts']} bouts, {report['new_people']} new fighters")
     print(f"[info] {org.id}: {sum(1 for e in added for b in e['bouts'] if not b['outcome'])} bouts still to come, {sum(1 for e in added for b in e['bouts'] if b['title_fight'])} title bouts")
     print(f"[info] {org.id}: {report['womens_fixed']} bouts marked as women's (a women's-only division here, or a woman the files already have); {report['womens_unresolved']} bouts in a division name both sexes use are left as Sherdog writes it (nearly all men's)")
+    if report["completed"]:
+        print(f"[info] {org.id}: {len(report['completed'])} cards the files already had were completed with the bouts they missed: {report['completed'][:3]}")
     if report["skipped_overlap"]:
-        print(f"[info] {org.id}: {len(report['skipped_overlap'])} events skipped, the files already have them: {report['skipped_overlap'][:4]}")
+        print(f"[info] {org.id}: {len(report['skipped_overlap'])} cards the files already have complete")
+    if report["same_name"]:
+        print(f"[review] {org.id}: {len(report['same_name'])} bouts between two people with the same name were left out (the files know a fighter by name): {report['same_name'][:4]}")
+    if report["kept_apart"]:
+        print(f"[review] {org.id}: names a card put together that are kept apart on purpose (NOT_SAME_PERSON): {report['kept_apart']}")
+    if report["respelled"]:
+        print(f"[review] {org.id}: {len(report['respelled'])} names settled by the card they are in (same opponent, same day), written the way the files already have them: {report['respelled'][:6]}")
     if report["possible_same"]:
         print(f"[review] {org.id}: new names that look like names the files already have (not merged): {report['possible_same'][:12]}")
     print(f"[info] {org.id}: files now {len(combined)} bouts and {len(people)} fighters (before: {len(fights)} and {len(fighters)})")

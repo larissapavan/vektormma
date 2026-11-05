@@ -10,8 +10,9 @@ import pytest
 from backend.app.services import crossorg_service as crossorg
 
 ESPN_ORGS = {"rizin": "RIZIN", "ksw": "KSW", "lfa": "LFA", "cage-warriors": "Cage Warriors"}
-# RIZIN and KSW stop at the end of 2024 on ESPN; their later events come from Sherdog, which also flags title bouts.
-SOURCES = {"rizin": ["espn.com", "sherdog.com"], "ksw": ["espn.com", "sherdog.com"], "lfa": ["espn.com"], "cage-warriors": ["espn.com"]}
+# ESPN has only part of the bouts of most RIZIN, KSW and LFA cards (and stops at the end of 2024 for RIZIN and KSW): Sherdog has the
+# rest, and it also flags title bouts.
+SOURCES = {"rizin": ["espn.com", "sherdog.com"], "ksw": ["espn.com", "sherdog.com"], "lfa": ["espn.com", "sherdog.com"], "cage-warriors": ["espn.com"]}
 SHERDOG_FROM = "2025-01-01"
 
 
@@ -45,9 +46,9 @@ def test_nothing_claims_a_title_a_ranking_or_a_photo_that_espn_did_not_give(clie
     fighters = client.get(f"/orgs/{org_id}/fighters").json()
     assert not any(fighter["belt"] or fighter["title_status"] or fighter["ranking"] for fighter in fighters)
     events = client.get(f"/orgs/{org_id}/events").json() + client.get(f"/orgs/{org_id}/events/upcoming").json()
-    # ESPN flags no title bout: any flagged one must be in an event Sherdog added (RIZIN and KSW, from 2025 on).
-    titled = [event["date"] for event in events for fight in event["fights"] if fight["title_fight"]]
-    assert all(day >= SHERDOG_FROM for day in titled) and (bool(titled) == (len(SOURCES[org_id]) == 2))
+    # ESPN flags no title bout: any flagged one must be a bout Sherdog gave (RIZIN, KSW and LFA).
+    titled = [fight for event in events for fight in event["fights"] if fight["title_fight"]]
+    assert all(fight["fight_url"].startswith("https://www.sherdog.com") for fight in titled) and (bool(titled) == (len(SOURCES[org_id]) == 2))
 
 
 @pytest.mark.parametrize("org_id", ESPN_ORGS)
@@ -89,10 +90,12 @@ def test_the_events_from_2025_on_come_after_espns_without_repeating_or_losing_an
     upcoming = client.get(f"/orgs/{org_id}/events/upcoming").json()
     before, after = [e for e in events if e["date"] < SHERDOG_FROM], [e for e in events if e["date"] >= SHERDOG_FROM]
     assert before and after and upcoming  # ESPN's years, the years Sherdog added, and the cards still to come
-    assert max(e["date"] for e in before) >= "2024-12-01"  # ESPN's last event is still the one it was
+    assert max(e["date"] for e in before if "-sherdog-" not in e["slug"]) >= "2024-12-01"  # ESPN's last event is still the one it was
     slugs = [e["slug"] for e in events + upcoming]
     assert len(slugs) == len(set(slugs))  # no card twice
-    assert all("-sherdog-" in e["slug"] for e in after + upcoming) and not any("-sherdog-" in e["slug"] for e in before)
+    # ESPN stops in 2024, so every later card is Sherdog's; before that, ESPN's cards are the rule and Sherdog adds the few ESPN lacks.
+    assert all("-sherdog-" in e["slug"] for e in after + upcoming)
+    assert sum("-sherdog-" not in e["slug"] for e in before) > 10 * sum("-sherdog-" in e["slug"] for e in before)
     # the same two people do not meet twice on the same day (the same card read from two sources)
     seen = set()
     for event in events + upcoming:
@@ -100,6 +103,20 @@ def test_the_events_from_2025_on_come_after_espns_without_repeating_or_losing_an
             key = (event["date"], frozenset((fight["fighter_1"], fight["fighter_2"])))
             assert key not in seen
             seen.add(key)
+
+
+@pytest.mark.parametrize("org_id", ["rizin", "ksw", "lfa"])
+def test_few_past_cards_are_left_with_five_bouts_or_fewer_now_that_sherdog_completes_espns(client, org_id):
+    events = client.get(f"/orgs/{org_id}/events").json()
+    thin = [event for event in events if event["fight_count"] <= 5]
+    assert len(thin) / len(events) < 0.1  # ESPN alone left between a third and two fifths of them like that
+
+
+@pytest.mark.parametrize("org_id", ["rizin", "ksw", "lfa"])
+def test_a_bout_completed_from_sherdog_sits_in_the_same_card_as_the_ones_espn_had(client, org_id):
+    events = client.get(f"/orgs/{org_id}/events").json()
+    mixed = [event for event in events if {fight["fight_url"].startswith("https://www.sherdog.com") for fight in event["fights"]} == {True, False}]
+    assert len(mixed) > 20  # cards ESPN had in part and Sherdog completed: a single card each, with bouts from both sources
 
 
 @pytest.mark.parametrize("org_id", ["rizin", "ksw"])

@@ -17,7 +17,7 @@ ufc.com page as the rankings, and fighters created from ESPN need their headshot
    10. ESPN orgs scripts.scrape_espn_org             LFA and Cage Warriors: the last 45 days and the cards to come (ESPN). RIZIN and KSW are
                                                      frozen there: Sherdog continues them (below)
    11. OKTAGON   scripts.scrape_oktagon              OKTAGON MMA: every event and result, rebuilt from the site (oktagonmma.com, about 2 minutes)
-   12. Sherdog   scripts.scrape_sherdog_org daily    Jungle Fight, Invicta FC, KSW and RIZIN: the events of the last 45 days and the new ones
+   12. Sherdog   scripts.scrape_sherdog_org daily    Jungle Fight, Invicta FC, KSW, RIZIN and LFA: the events of the last 45 days and the new ones (for KSW, RIZIN and LFA also the bouts ESPN misses)
    13. Gyms      scripts.scrape_gyms                 the gyms and the fighters who train in them (fighthub-app.com)
    14. Feed      scripts.build_feed                  the RSS feed of picks and results (frontend/public/feed.xml)
    15. SEO       scripts.build_seo_athletes          the data of the static athlete and fight pages (frontend/src/seo/athletes.json)
@@ -100,7 +100,7 @@ def run_oktagon(*, dry_run: bool) -> None:
 def run_sherdog(*, dry_run: bool) -> None:
     status = scrape_sherdog_org.main(["daily"] + (["--dry-run"] if dry_run else []))
     if status != 0:
-        raise RuntimeError("a Sherdog organization (Jungle Fight, Invicta FC, KSW or RIZIN) could not be refreshed; its files were left untouched")
+        raise RuntimeError("a Sherdog organization (Jungle Fight, Invicta FC, KSW, RIZIN or LFA) could not be refreshed; its files were left untouched")
 
 
 def run_gyms(*, dry_run: bool) -> None:
@@ -168,7 +168,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--skip-one", action="store_true")
     parser.add_argument("--skip-espn-orgs", action="store_true", help="skip LFA and Cage Warriors (ESPN)")
     parser.add_argument("--skip-oktagon", action="store_true")
-    parser.add_argument("--skip-sherdog", action="store_true", help="skip Jungle Fight, Invicta FC, KSW and RIZIN (Sherdog)")
+    parser.add_argument("--skip-sherdog", action="store_true", help="skip Jungle Fight, Invicta FC, KSW, RIZIN and LFA (Sherdog)")
     parser.add_argument("--skip-career-stats", action="store_true", help="skip the ufc.com career numbers (about ten minutes)")
     parser.add_argument("--skip-gyms", action="store_true")
     parser.add_argument("--skip-predictions", action="store_true")
@@ -209,8 +209,8 @@ def main(argv: list[str] | None = None) -> int:
             None if args.skip_espn_orgs else run_step("ESPN leagues (LFA, Cage Warriors)", lambda: run_espn_orgs(dry_run=True))
         )
         results["OKTAGON (oktagonmma.com)"] = None if args.skip_oktagon else run_step("OKTAGON (oktagonmma.com)", lambda: run_oktagon(dry_run=True))
-        results["Sherdog (Jungle Fight, Invicta, KSW, RIZIN)"] = (
-            None if args.skip_sherdog else run_step("Sherdog (Jungle Fight, Invicta, KSW, RIZIN)", lambda: run_sherdog(dry_run=True))
+        results["Sherdog (Jungle Fight, Invicta, KSW, RIZIN, LFA)"] = (
+            None if args.skip_sherdog else run_step("Sherdog (Jungle Fight, Invicta, KSW, RIZIN, LFA)", lambda: run_sherdog(dry_run=True))
         )
         results["Gyms (FightHub)"] = None if args.skip_gyms else run_step("Gyms (FightHub)", lambda: run_gyms(dry_run=True))
     else:
@@ -244,8 +244,8 @@ def main(argv: list[str] | None = None) -> int:
             None if args.skip_espn_orgs else run_step("ESPN leagues (LFA, Cage Warriors)", lambda: run_espn_orgs(dry_run=False))
         )
         results["OKTAGON (oktagonmma.com)"] = None if args.skip_oktagon else run_step("OKTAGON (oktagonmma.com)", lambda: run_oktagon(dry_run=False))
-        results["Sherdog (Jungle Fight, Invicta, KSW, RIZIN)"] = (
-            None if args.skip_sherdog else run_step("Sherdog (Jungle Fight, Invicta, KSW, RIZIN)", lambda: run_sherdog(dry_run=False))
+        results["Sherdog (Jungle Fight, Invicta, KSW, RIZIN, LFA)"] = (
+            None if args.skip_sherdog else run_step("Sherdog (Jungle Fight, Invicta, KSW, RIZIN, LFA)", lambda: run_sherdog(dry_run=False))
         )
         results["Gyms (FightHub)"] = None if args.skip_gyms else run_step("Gyms (FightHub)", lambda: run_gyms(dry_run=False))
         results["RSS feed"] = None if args.skip_predictions else run_step("RSS feed (picks and results)", build_feed.main)

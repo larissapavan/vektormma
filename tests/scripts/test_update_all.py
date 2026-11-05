@@ -112,7 +112,7 @@ def test_the_daily_update_refreshes_the_other_organizations_with_their_increment
 
 @pytest.mark.parametrize(
     ("module", "label"),
-    [("scrape_espn_org", "ESPN leagues (LFA, Cage Warriors)"), ("scrape_oktagon", "OKTAGON (oktagonmma.com)"), ("scrape_sherdog_org", "Sherdog (Jungle Fight, Invicta, KSW, RIZIN)")],
+    [("scrape_espn_org", "ESPN leagues (LFA, Cage Warriors)"), ("scrape_oktagon", "OKTAGON (oktagonmma.com)"), ("scrape_sherdog_org", "Sherdog (Jungle Fight, Invicta, KSW, RIZIN, LFA)")],
 )
 def test_a_failing_organization_step_fails_the_run_but_not_the_others(monkeypatch, calls, capsys, module, label):
     monkeypatch.setattr(getattr(update_all, module), "main", lambda argv=None: 1)

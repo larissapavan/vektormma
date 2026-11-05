@@ -9,10 +9,12 @@ What ESPN does NOT give for these leagues, and what this script therefore leaves
 - the weight class of most bouts: it comes from the bout when ESPN names it (some LFA cards), otherwise from the division
   both fighters' ESPN profiles agree on, otherwise from the division each fighter usually fights at.
 
-Coverage is whatever ESPN has, and it differs by league (checked 2 Nov 2026 by counting events per year):
+Coverage is whatever ESPN has (for most cards of RIZIN, KSW and LFA only part of their bouts: scripts/scrape_sherdog_org.py adds the rest,
+and its rows are kept when this script refreshes a card), and it differs by league (checked 2 Nov 2026 by counting events per year):
 RIZIN 2015-2024, KSW 2004-2024, LFA 2017-2026, Cage Warriors 2005-2026 (thin from 2025). Events ESPN does not list are
-not here. RIZIN and KSW from 2025 on are added from Sherdog (scripts/scrape_sherdog_org.py ksw|rizin), which adds to the
-files this script wrote and must run after it: running this script again rewrites them from ESPN alone.
+not here. What Sherdog has for RIZIN, KSW and LFA and ESPN does not (whole events, and the bouts missing from its cards) is added by
+scripts/scrape_sherdog_org.py ksw|rizin|lfa, which adds to the files this script wrote and must run after it: running this script
+again in full rewrites them from ESPN alone.
 
 Output (data/raw/<org>/), the same three files every non-UFC organization has (see backend/app/services/org_service.py):
     fights.csv, fighters.csv, rankings.csv
@@ -61,6 +63,7 @@ from scripts.scrape_pfl import FIGHT_FIELDS, FIGHTER_FIELDS, RANKING_FIELDS
 from src.ufc_predictor.config import BASE_DIR, RAW_DATA_DIR
 
 SCOREBOARD_URL = "https://site.api.espn.com/apis/site/v2/sports/mma/{league}/scoreboard"
+SHERDOG_URL = "https://www.sherdog.com"  # where the rows scripts/scrape_sherdog_org.py added to these files point
 CORE_URL = "https://sports.core.api.espn.com/v2/sports/mma/leagues/{league}"
 ATHLETE_URL = "https://sports.core.api.espn.com/v2/sports/mma/athletes/{athlete_id}?lang=en"
 ATHLETE_PAGE_URL = "https://www.espn.com/mma/fighter/_/id/{athlete_id}"
@@ -334,7 +337,15 @@ def refresh_rows(league: League, events: list[dict], methods: dict, bios: dict, 
     ids_by_name = {name_key(info["name"]): athlete_id for athlete_id, info in fighters.items()}
     fill_weight_classes(new_fights, bios, ids_by_name)
     slugs = {f"{league.id}-{event['id']}" for event in events}
-    base = [row for row in stored_fights if row["event_slug"] not in slugs]
+    # Bouts scripts/scrape_sherdog_org.py added to a card (a Sherdog address in `fight_url`) stay unless ESPN now has the same bout;
+    # the Sherdog refresh that follows this one in update_all puts its own back in order.
+    now_on_espn = {(row["event_slug"], frozenset((name_key(row["fighter_1"]), name_key(row["fighter_2"])))) for row in new_fights}
+    from_sherdog = [
+        row for row in stored_fights
+        if row["event_slug"] in slugs and row["fight_url"].startswith(SHERDOG_URL)
+        and (row["event_slug"], frozenset((name_key(row["fighter_1"]), name_key(row["fighter_2"])))) not in now_on_espn
+    ]
+    base = [*[row for row in stored_fights if row["event_slug"] not in slugs], *from_sherdog]
     # The division a fighter usually fights at is counted over the history, but only the new bouts are filled with it.
     propagate_weight_classes([*new_fights, *[row for row in base if row["weight_class"]]])
     combined = sorted([*new_fights, *base], key=lambda row: row["event_date"], reverse=True)  # stable: each card keeps its order
