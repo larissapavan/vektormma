@@ -232,7 +232,7 @@ def test_the_command_line_takes_one_organization_or_all_and_fails_if_the_sitemap
     ran.clear()
     assert sd.main(["all", "--dry-run"]) == 0 and ran == [("jungle-fight", None), ("invicta", None)]
     ran.clear()
-    assert sd.main(["daily", "--dry-run"]) == 0 and ran == [(org, sd.RECENT_DAYS) for org in ("jungle-fight", "invicta", "ksw", "rizin")]  # all four, the recent window
+    assert sd.main(["daily", "--dry-run"]) == 0 and ran == [(org, sd.RECENT_DAYS) for org in ("jungle-fight", "invicta", "ksw", "rizin", "lfa")]  # all five, the recent window
     ran.clear()
     assert sd.main(["ksw", "--recent-days", "10"]) == 0 and ran == [("ksw", 10)]
     monkeypatch.setattr(sd, "Fetcher", lambda delay, cache_dir, user_agent: FakeFetcher({}))
@@ -415,10 +415,21 @@ def test_with_no_recent_event_in_the_files_the_refresh_still_catches_what_was_cr
     assert [sd.event_id(url) for url in chosen] == ["30"]
 
 
-def test_the_ids_of_the_events_the_script_added_come_from_the_slugs_and_never_from_espns():
-    rows = [{"event_slug": "ksw-sherdog-777", "event_date": "2025-03-08"}, {"event_slug": "ksw-600059074", "event_date": "2024-12-20"}]
-    assert sd.known_events(KSW, rows) == {"777": "2025-03-08"}
-    assert sd.known_events(JUNGLE, [{"event_slug": "jungle-fight-5", "event_date": "2024-03-16"}]) == {"5": "2024-03-16"}
+def test_the_ids_of_the_events_the_script_added_come_from_the_sherdog_address_of_its_rows_and_never_from_espns():
+    rows = [
+        {"fight_url": "https://www.sherdog.com/events/KSW-104-X-777#fight-0", "event_slug": "ksw-sherdog-777", "event_date": "2025-03-08"},
+        {"fight_url": "https://www.sherdog.com/events/KSW-100-X-555#fight-3", "event_slug": "ksw-600059074", "event_date": "2024-11-16"},  # a bout added to ESPN's card
+        {"fight_url": "https://www.espn.com/mma/fightcenter/_/id/600059074/league/ksw#fight-1", "event_slug": "ksw-600059074", "event_date": "2024-12-20"},
+    ]
+    assert sd.known_events(KSW, rows) == {"777": "2025-03-08", "555": "2024-11-16"}
+    assert sd.known_events(JUNGLE, [{"fight_url": "https://www.sherdog.com/events/Jungle-Fight-5-X-5#fight-0", "event_slug": "jungle-fight-5", "event_date": "2024-03-16"}]) == {"5": "2024-03-16"}
+
+
+def test_the_refresh_of_an_organization_another_source_also_writes_reads_its_newest_events_too():
+    urls = [f"https://www.sherdog.com/events/LFA-{n}-X-{n}" for n in (100, 150, 160, 170, 180, 190)]
+    known = {"170": "2026-10-20"}  # the only recent event the files know: 160 is older than it, so it would never be read
+    assert [sd.event_id(url) for url in sd.select_recent(urls, known, date(2026, 11, 2), 45)] == ["170", "180", "190"]
+    assert [sd.event_id(url) for url in sd.select_recent(urls, known, date(2026, 11, 2), 45, newest=4)] == ["160", "170", "180", "190"]
 
 
 def test_an_incremental_supplement_replaces_only_the_events_read_and_keeps_every_other_row():
@@ -521,3 +532,111 @@ def test_a_name_the_files_have_from_another_source_is_still_matched_by_name():
     [bout] = [r for r in combined if "sherdog" in r["event_slug"]]
     assert bout["fighter_1_url"] == "https://www.espn.com/mma/fighter/_/id/Cal"  # Sherdog's Cal Three is ESPN's
     assert [p["name"] for p in people].count("Cal Three") == 1  # one profile, not two
+
+
+# --------------------------------------------------------------------------- completing the cards the other source has only in part
+
+SHERDOG_PAGE = "https://www.sherdog.com/events/KSW-104-X-"
+ALL = sd.SherdogOrg("ksw", ("KSW-",), "Konfrontacja Sztuk Walki", since=date(2004, 1, 1))  # KSW as registered: every date is considered
+
+
+def test_a_card_the_files_have_in_part_gets_the_bouts_it_is_missing_under_the_same_event():
+    fights, fighters = base()
+    before = [dict(row) for row in fights]
+    event = sd_event(row(3, CAL, DAN), row(2, ANA, BIA), row(1, EVA, FAY), day="2024-12-20", ident="500")  # Sherdog: three bouts, ESPN has Ana v Bia
+    combined, people, report = sd.supplement(ALL, [event], fights, fighters, TODAY)
+    card = sorted((r for r in combined if r["event_slug"] == "ksw-old"), key=lambda r: int(r["card_order"]))
+    assert [r["fighter_1"] for r in card] == ["Cal Three", "Ana One", "Eva Five"]  # Sherdog's order: its main event first, ESPN's bout where Sherdog has it
+    assert {(r["event_name"], r["event_date"], r["event_url"], r["location"]) for r in card} == {("KSW old", "2024-12-20", "https://www.espn.com/old", "Warsaw, Poland")}  # one card, the files' own
+    assert [r["fight_url"] for r in card if r["fighter_1"] != "Ana One"] == [f"{SHERDOG_PAGE}500#fight-0", f"{SHERDOG_PAGE}500#fight-2"]
+    espn = next(r for r in card if r["fighter_1"] == "Ana One")
+    assert {k: v for k, v in espn.items() if k != "card_order"} == {k: v for k, v in before[0].items() if k != "card_order"}  # the bout ESPN had: only its place changed
+    assert [r for r in combined if r["event_slug"] == "ksw-women"] == [before[1]]  # another card: untouched
+    assert report["new_bouts"] == 2 and report["new_people"] == 4 and len(report["completed"]) == 1 and report["skipped_overlap"] == []
+
+
+def test_a_card_a_day_apart_is_the_same_card_and_one_already_complete_is_left_exactly_as_it_is():
+    fights, fighters = base()
+    complete = sd_event(row(1, ANA, BIA), day="2024-12-21", ident="501")  # the day after, as the time zones give it; nothing to add
+    combined, _, report = sd.supplement(ALL, [complete], fights, fighters, TODAY)
+    assert combined == fights and report["new_bouts"] == 0 and len(report["skipped_overlap"]) == 1 and report["completed"] == []
+    longer = sd_event(row(2, CAL, DAN), row(1, ANA, BIA), day="2024-12-21", ident="502")
+    combined, _, _ = sd.supplement(ALL, [longer], fights, fighters, TODAY)
+    assert {r["event_date"] for r in combined if r["event_slug"] == "ksw-old"} == {"2024-12-20"}  # under the files' day, not Sherdog's
+
+
+def test_a_bout_only_the_other_source_has_is_kept_and_goes_after_sherdogs():
+    fights, fighters = base()
+    fights.append(espn_fight("old", "2024-12-20", "Gil Eight", "Hal Nine", winner="Gil Eight", order=1))  # ESPN has a bout Sherdog does not list
+    event = sd_event(row(2, CAL, DAN), row(1, ANA, BIA), day="2024-12-20", ident="503")
+    combined, _, _ = sd.supplement(ALL, [event], fights, fighters, TODAY)
+    card = sorted((r for r in combined if r["event_slug"] == "ksw-old"), key=lambda r: int(r["card_order"]))
+    assert [r["fighter_1"] for r in card] == ["Cal Three", "Ana One", "Gil Eight"]
+
+
+def test_a_second_run_over_a_completed_card_gives_the_same_files_and_a_correction_replaces_the_bout_it_added():
+    fights, fighters = base()
+    event = sd_event(row(2, CAL, DAN), row(1, ANA, BIA), day="2024-12-20", ident="504")
+    first = sd.supplement(ALL, [event], fights, fighters, TODAY)
+    second = sd.supplement(ALL, [event], first[0], first[1], TODAY)
+    assert second[0] == first[0] and second[1] == first[1]
+    corrected = sd_event(row(2, CAL, DAN, method="KO (Punches)"), row(1, ANA, BIA), day="2024-12-20", ident="504")
+    third, _, _ = sd.supplement(ALL, [corrected], first[0], first[1], TODAY, incremental=True)
+    added = [r for r in third if r["fight_url"].startswith(SHERDOG_PAGE)]
+    assert [(r["fighter_1"], r["method"]) for r in added] == [("Cal Three", "KO/TKO")]  # replaced, not kept beside the earlier one
+    assert [r for r in third if not r["fight_url"].startswith(SHERDOG_PAGE)][0]["fighter_1"] == "Ana One"  # and ESPN's row is still there
+
+
+def test_a_name_a_letter_apart_is_the_same_person_when_the_card_says_so_and_is_never_added_twice():
+    fights, fighters = base()
+    fights.append(espn_fight("k", "2025-01-10", "Kendrick Williams", "Bia Two", winner="Kendrick Williams"))
+    fighters.append(espn_fighter("Kendrick Williams"))
+    same_card = sd_event(row(1, ("Kendrik Williams", 20, "win"), BIA), day="2025-01-10", ident="600")  # same opponent, one letter fewer
+    later = sd_event(row(1, ("Kendrik Williams", 20, "win"), CAL), day="2025-06-07", ident="601")  # Sherdog's spelling in a card ESPN does not have
+    combined, people, report = sd.supplement(ALL, [same_card, later], fights, fighters, TODAY)
+    assert [r["event_slug"] for r in combined].count("ksw-k") == 1  # the bout was not added again
+    [added] = [r for r in combined if r["event_slug"] == "ksw-sherdog-601"]
+    assert (added["fighter_1"], added["fighter_1_url"]) == ("Kendrick Williams", "https://www.espn.com/mma/fighter/_/id/Ken")  # one person, in the spelling the files have
+    assert "Kendrik Williams" not in {p["name"] for p in people}
+    assert report["respelled"] == ["2025-01-10 KSW 104: kendrik williams = kendrick williams"]
+
+
+def test_two_doubtful_bouts_in_one_card_are_left_apart_rather_than_guessed():
+    fights = [espn_fight("two", "2025-02-01", "Ana One", "Bia Two", winner="Ana One"), espn_fight("two", "2025-02-01", "Cal Three", "Dan Four", winner="Cal Three", order=1)]
+    fighters = [espn_fighter(name) for name in ("Ana One", "Bia Two", "Cal Three", "Dan Four")]
+    # Both Sherdog bouts have one fighter in common with both stored bouts' neighbours: nothing says which is which.
+    event = sd_event(row(2, ANA, ("Cal Threee", 33, "loss")), row(1, CAL, ("Bia Twoo", 22, "loss")), day="2025-02-01", ident="610")
+    combined, _, report = sd.supplement(ALL, [event], fights, fighters, TODAY)
+    assert report["respelled"] == [] and report["new_bouts"] == 2
+
+
+def test_the_order_of_the_two_fighters_does_not_matter_when_the_bouts_are_matched():
+    stored = [{"fighter_1": "Ana One", "fighter_2": "Bia Two"}, {"fighter_1": "Cal Three", "fighter_2": "Dan Four"}]
+    event = sd_event(row(2, DAN, CAL), row(1, ANA, BIA), day="2025-02-01", ident="611")
+    matched, spellings = sd.match_bouts(event["bouts"], stored)
+    assert matched == {0: 1, 1: 0} and spellings == {}  # the order of the two fighters does not matter
+
+
+def test_a_bout_with_both_names_spelled_differently_is_not_added_again_once_other_cards_have_taught_each_spelling():
+    fights, fighters = base()
+    fights += [
+        espn_fight("a", "2025-01-10", "Matt Adams", "Ben Wunder", winner="Matt Adams"),
+        espn_fight("b", "2025-02-10", "Matt Adams", "Cal Three", winner="Matt Adams"),
+        espn_fight("c", "2025-03-10", "Ben Wunder", "Dan Four", winner="Ben Wunder"),
+    ]
+    fighters += [espn_fighter("Matt Adams"), espn_fighter("Ben Wunder")]
+    both_differ = sd_event(row(1, ("Matthew Adams", 40, "win"), ("Benjamin Wunder", 41, "loss")), day="2025-01-10", ident="620")  # neither name is ESPN's
+    teaches_matthew = sd_event(row(1, ("Matthew Adams", 40, "win"), CAL), day="2025-02-10", ident="621")  # same opponent, so Matthew is Matt
+    teaches_benjamin = sd_event(row(1, ("Benjamin Wunder", 41, "win"), DAN), day="2025-03-10", ident="622")
+    combined, people, report = sd.supplement(ALL, [both_differ, teaches_matthew, teaches_benjamin], fights, fighters, TODAY)
+    assert [r["event_slug"] for r in combined].count("ksw-a") == 1 and report["new_bouts"] == 0  # the card was complete all along
+    assert {p["name"] for p in people} >= {"Matt Adams", "Ben Wunder"} and not {"Matthew Adams", "Benjamin Wunder"} & {p["name"] for p in people}
+
+
+def test_a_bout_between_two_people_with_one_name_is_left_out_and_listed():
+    fights, fighters = base()
+    twins = sd_event(row(2, ("Lucas Silva", 50, "win"), ("Lucas Silva", 51, "loss")), row(1, CAL, DAN), day="2025-03-08", ident="630")  # two Lucas Silva, two profiles
+    combined, people, report = sd.supplement(ALL, [twins], fights, fighters, TODAY)
+    new = [r for r in combined if r["fight_url"].startswith("https://www.sherdog.com")]
+    assert [(r["fighter_1"], r["fighter_2"]) for r in new] == [("Cal Three", "Dan Four")]  # a fighter booked against themself breaks every record in the files
+    assert report["same_name"] == ["2025-03-08 KSW 104: Lucas Silva"] and "Lucas Silva" not in {p["name"] for p in people}

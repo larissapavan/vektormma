@@ -240,6 +240,26 @@ def test_a_refresh_puts_the_events_read_in_place_of_the_stored_ones_and_leaves_e
     assert (ana["slug"], ana["image_url"], ana["career_record"], ana["last_fight_date"]) == ("ana-one", "/fighter-photos/lfa/ana-one.webp", "11-2-0", recent_day)  # same slug and photo, fresh numbers
 
 
+def test_a_refresh_keeps_the_bouts_sherdog_added_to_a_card_unless_espn_now_has_the_same_bout():
+    day = days_ago(10)
+    sherdog_only = stored_bout("2", day, "Cal Three", "Dan Four", order=0)
+    sherdog_only["fight_url"] = "https://www.sherdog.com/events/LFA-200-X-9#fight-0"  # a bout ESPN does not list
+    sherdog_twin = stored_bout("2", day, "Eva Five", "Fay Six", order=2)
+    sherdog_twin["fight_url"] = "https://www.sherdog.com/events/LFA-200-X-9#fight-2"  # a bout ESPN lists now
+    stored = [sherdog_only, stored_bout("2", day, "Ana One", "Bia Two", order=1), sherdog_twin, stored_bout("1", days_ago(300), "Gil Eight", "Hal Nine")]
+    events = card(
+        "2", day,
+        competition("1", [competitor("a", "Ana One", 1, winner=True), competitor("b", "Bia Two", 2)], period=2, clock="1:00"),
+        competition("2", [competitor("e", "Eva Five", 5, winner=True), competitor("f", "Fay Six", 6)], period=1, clock="2:00"),
+    )
+    fighters = {key: {"id": key, "name": name, "flag": "USA", "record": ""} for key, name in (("a", "Ana One"), ("b", "Bia Two"), ("e", "Eva Five"), ("f", "Fay Six"))}
+    combined, _, _ = esp.refresh_rows(LFA, events, {"1": ("KO/TKO", ""), "2": ("SUB", "")}, {key: BIO for key in fighters}, fighters, stored, [], TODAY)
+    card_rows = [row for row in combined if row["event_slug"] == "lfa-2"]
+    assert sorted(row["fighter_1"] for row in card_rows) == ["Ana One", "Cal Three", "Eva Five"]  # Sherdog's Cal v Dan stays; Eva v Fay is ESPN's now, once
+    assert [row["fight_url"].startswith("https://www.sherdog.com") for row in sorted(card_rows, key=lambda row: row["fighter_1"])] == [False, True, False]
+    assert [row for row in combined if row["event_slug"] == "lfa-1"] == [stored[3]]  # another card: untouched
+
+
 def test_a_card_still_to_come_is_listed_but_is_not_a_fight_the_fighter_has_had():
     soon = (TODAY + timedelta(days=20)).isoformat()
     events = card("9", soon, competition("1", [competitor("a", "Ana One", 1), competitor("b", "Bia Two", 2)], completed=False))
