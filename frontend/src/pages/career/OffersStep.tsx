@@ -119,8 +119,8 @@ export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { car
   }, [seed, attempt])
 
   const plans: { value: Plan; label: string; hint: string; icon: ReactNode }[] = [
-    { value: 'striking', icon: <Swords className="h-5 w-5" aria-hidden="true" />, label: L(lang, 'Trocação', 'Stand and strike', 'Combat debout', 'Intercambio de golpes'), hint: L(lang, 'Favorece nocautes.', 'Favors knockouts.', 'Favorise les KO.', 'Favorece los nocauts.') },
-    { value: 'grappling', icon: <Dumbbell className="h-5 w-5" aria-hidden="true" />, label: L(lang, 'Luta agarrada', 'Grapple', 'Lutte', 'Lucha en el suelo'), hint: L(lang, 'Favorece finalizações.', 'Favors submissions.', 'Favorise les soumissions.', 'Favorece las sumisiones.') },
+    { value: 'striking', icon: <Swords className="h-5 w-5" aria-hidden="true" />, label: L(lang, 'Trocação', 'Striking', 'Striking', 'Striking'), hint: L(lang, 'Favorece nocautes.', 'Favors knockouts.', 'Favorise les KO.', 'Favorece los nocauts.') },
+    { value: 'grappling', icon: <Dumbbell className="h-5 w-5" aria-hidden="true" />, label: L(lang, 'Grappling', 'Grappling', 'Grappling', 'Grappling'), hint: L(lang, 'Favorece finalizações.', 'Favors submissions.', 'Favorise les soumissions.', 'Favorece las sumisiones.') },
     { value: 'balanced', icon: <Scale className="h-5 w-5" aria-hidden="true" />, label: L(lang, 'Equilibrado', 'Balanced', 'Équilibré', 'Equilibrado'), hint: L(lang, 'Sem risco extra.', 'No extra risk.', 'Sans risque supplémentaire.', 'Sin riesgo extra.') },
   ]
 

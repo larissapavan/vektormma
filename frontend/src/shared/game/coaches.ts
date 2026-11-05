@@ -25,12 +25,12 @@ export const COACH_TEXT: Record<CoachId, CoachText> = {
   },
   wrestler: {
     name: 'Coach Petrov',
-    specialty: { pt: 'Luta agarrada', en: 'Wrestling', fr: 'Lutte', es: 'Lucha' },
+    specialty: { pt: 'Wrestling', en: 'Wrestling', fr: 'Lutte', es: 'Wrestling' },
     blurb: {
-      pt: 'Ex-lutador de queda: suas quedas sobem muito, os golpes ficam parados e o treino pesado cobra o corpo.',
+      pt: 'Ex-wrestler: suas quedas sobem muito, os golpes ficam parados e o treino pesado cobra o corpo.',
       en: 'A former wrestler: your takedowns jump, striking stands still and the hard work takes a toll on the body.',
       fr: 'Ancien lutteur : vos amenées progressent nettement, la frappe fait du surplace et le travail intense fatigue le corps.',
-      es: 'Exluchador: tus derribos suben mucho, el golpeo se queda quieto y el trabajo duro pasa factura al cuerpo.',
+      es: 'Exwrestler: tus derribos suben mucho, el golpeo se queda quieto y el trabajo duro pasa factura al cuerpo.',
     },
   },
   allround: {

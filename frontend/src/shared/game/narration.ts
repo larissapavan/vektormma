@@ -139,7 +139,7 @@ const FINISH: Record<`${Exclude<Method, 'dec'>}-${'win' | 'loss'}`, Lines> = {
       'Un triangle bien serré : {opp} tape et c’est terminé au round {round} !',
     ],
     es: [
-      '{you} lo lleva al suelo, toma la espalda y cierra la estrangulación por detrás. {opp} golpea la lona. ¡Sumisión en el round {round}!',
+      '{you} lo lleva al suelo, toma la espalda y cierra el mataleón. {opp} golpea la lona. ¡Sumisión en el round {round}!',
       '{you} encaja una llave de brazo y {opp} tiene que rendirse. ¡Sumisión en el round {round}!',
       'Triángulo bien apretado: {opp} se rinde y todo termina en el round {round}.',
     ],
@@ -161,7 +161,7 @@ const FINISH: Record<`${Exclude<Method, 'dec'>}-${'win' | 'loss'}`, Lines> = {
       '{opp} saisit une guillotine en pleine amenée au sol ; {you} tape au round {round}.',
     ],
     es: [
-      '{opp} toma la espalda y cierra la estrangulación por detrás. {you} se rinde en el round {round}.',
+      '{opp} toma la espalda y cierra el mataleón. {you} se rinde en el round {round}.',
       'Llave de brazo de {opp}: {you} no tiene salida y se rinde. Sumisión en el round {round}.',
       '{opp} pesca una guillotina en plena derribada; {you} se rinde en el round {round}.',
     ],
