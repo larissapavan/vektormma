@@ -1,528 +1,669 @@
 name,slug,profile_url,circuit,nickname,status,career_record,org_record,wins,losses,draws,no_contests,age,height_cm,weight_lbs,reach_cm,leg_reach_cm,hometown,country,country_code,fighting_out_of,camp,weight_class,headshot_url,image_url,first_fight_date,last_fight_date,checked
 Abu Azaitar,abu-azaitar,https://www.espn.com/mma/fighter/_/id/3094635,,Captain Morocco,active,14-4-1,,14,4,1,,40,175.3,186.0,193.0,,,Morocco,ma,Morocco,Combat Club Cologne,Middleweight,https://a.espncdn.com/i/headshots/mma/players/full/3094635.png,,2013-12-07,2014-05-17,2026-11-02
 Abus Magomedov,abus-magomedov,https://www.espn.com/mma/fighter/_/id/3077822,,,active,30-7-1,,30,7,1,,36,188.0,185.5,198.1,,,Germany,de,Germany,UFD Gym,Middleweight,https://a.espncdn.com/i/headshots/mma/players/full/3077822.png,,2020-12-19,2020-12-19,2026-11-02
-Adam Josef Modzelewski,adam-josef-modzelewski,https://www.sherdog.com/fighter/Adam-Josef-Modzelewski-405660,,AJ,active,,,,,,,,,,,,,,,,,Catch Weight,,,2025-12-20,2025-12-20,2026-11-02
-Adam Masaev,adam-masaev,https://www.sherdog.com/fighter/Adam-Masaev-321837,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-11-15,2026-06-20,2026-11-02
-Adam Niedzwiedz,adam-niedzwiedz,https://www.sherdog.com/fighter/Adam-Niedzwiedz-159181,,Niedziu,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-04-26,2026-07-18,2026-11-02
+Adam Brysz,adam-brysz,https://www.sherdog.com/fighter/Adam-Brysz-159177,,Tornado,active,,,,,,,,,,,,,,,,,Lightweight,,,2024-02-24,2024-11-16,2026-11-05
+Adam Josef Modzelewski,adam-josef-modzelewski,https://www.sherdog.com/fighter/Adam-Josef-Modzelewski-405660,,AJ,active,,,,,,,,,,,,,,,,,Catch Weight,,,2025-12-20,2025-12-20,2026-11-05
+Adam Masaev,adam-masaev,https://www.sherdog.com/fighter/Adam-Masaev-321837,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-11-15,2026-06-20,2026-11-05
+Adam Niedzwiedz,adam-niedzwiedz,https://www.sherdog.com/fighter/Adam-Niedzwiedz-159181,,Niedziu,active,,,,,,,,,,,,,,,,,Welterweight,,,2020-08-29,2026-07-18,2026-11-05
 Adam Soldaev,adam-soldaev,https://www.espn.com/mma/fighter/_/id/5143190,,,active,8-2-0,,8,2,0,,29,172.7,145.0,170.2,,,Poland,pl,Poland,,Featherweight,,,2022-02-26,2026-10-10,2026-11-02
 Adam Tomasik,adam-tomasik,https://www.espn.com/mma/fighter/_/id/5075993,,,active,0-2-0,,0,2,0,,,185.4,205.0,,,,Poland,pl,Poland,,Light Heavyweight,,,2021-10-23,2025-09-20,2026-11-02
 Adrian Bartosinski,adrian-bartosinski,https://www.espn.com/mma/fighter/_/id/5078907,,Bartos,active,15-0-0,,15,0,0,,31,180.3,170.0,182.9,,,Poland,pl,"Warsaw, Poland",,Welterweight,,,2021-03-20,2026-03-14,2026-11-02
-Adrian Dudek,adrian-dudek,https://www.sherdog.com/fighter/Adrian-Dudek-281515,,,active,,,,,,,,,,,,,,,,,Middleweight,,,2025-10-18,2026-09-19,2026-11-02
-Adrian Gralak,adrian-gralak,https://www.espn.com/mma/fighter/_/id/5134955,,,active,0-1-0,,0,1,0,,29,185.4,155.0,188.0,,,Poland,pl,Poland,,Lightweight,,,2022-10-14,2022-12-17,2026-11-02
-Adrian Zielinski,adrian-zielinski,https://www.sherdog.com/fighter/Adrian-Zielinski-74074,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-07-19,2025-07-19,2026-11-02
-Adrianna Kreft,adrianna-kreft,https://www.espn.com/mma/fighter/_/id/5212252,,,active,0-1-0,,0,1,0,,33,170.2,125.0,170.2,,,Poland,pl,Poland,,Women's Flyweight,,,2023-08-19,2025-01-25,2026-11-02
-Ahmed Vila,ahmed-vila,https://www.sherdog.com/fighter/Ahmed-Vila-112671,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-01-25,2025-01-25,2026-11-02
+Adrian Dudek,adrian-dudek,https://www.sherdog.com/fighter/Adrian-Dudek-281515,,,active,,,,,,,,,,,,,,,,,Middleweight,,,2021-04-24,2026-09-19,2026-11-05
+Adrian Gralak,adrian-gralak,https://www.espn.com/mma/fighter/_/id/5134955,,,active,0-1-0,,0,1,0,,29,185.4,155.0,188.0,,,Poland,pl,Poland,,Lightweight,,,2022-10-14,2023-09-16,2026-11-02
+Adrian Wieliczko,adrian-wieliczko,https://www.sherdog.com/fighter/Adrian-Wieliczko-305855,,Pitbull,inactive,,,,,,,,,,,,,,,,,Featherweight,,,2024-02-17,2024-02-17,2026-11-05
+Adrian Zielinski,adrian-zielinski,https://www.sherdog.com/fighter/Adrian-Zielinski-74074,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2024-03-16,2025-07-19,2026-11-05
+Adrianna Kreft,adrianna-kreft,https://www.espn.com/mma/fighter/_/id/5212252,,,active,0-1-0,,0,1,0,,33,170.2,125.0,170.2,,,Poland,pl,Poland,,Women's Flyweight,,,2022-10-14,2025-01-25,2026-11-02
+Ahmed Abdulkadirov,ahmed-abdulkadirov,https://www.sherdog.com/fighter/Ahmed-Abdulkadirov-226365,,,inactive,,,,,,,,,,,,,,,,,Catch Weight,,,2023-10-14,2023-10-14,2026-11-05
+Ahmed Vila,ahmed-vila,https://www.sherdog.com/fighter/Ahmed-Vila-112671,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2023-12-16,2025-01-25,2026-11-05
+Aitana Alvarez,aitana-alvarez,https://www.sherdog.com/fighter/Aitana-Alvarez-316063,,Pitbull,inactive,,,,,,,,,,,,,,,,,Flyweight,,,2021-09-04,2021-09-04,2026-11-05
 Akop Szostak,akop-szostak,https://www.espn.com/mma/fighter/_/id/4200843,,,inactive,4-4-0,,4,4,0,,,,,,,,default,,,,,,,2018-10-06,2021-07-17,2026-11-02
-Alain Van De Merckt,alain-van-de-merckt,https://www.sherdog.com/fighter/Alain-Van-De-Merckt-237561,,Neder / Top Boy,active,,,,,,,,,,,,,,,,,Middleweight,,,2025-08-09,2025-11-15,2026-11-02
-Albert Odzimkowski,albert-odzimkowski,https://www.espn.com/mma/fighter/_/id/3821330,,Zloty,active,1-4-0,,1,4,0,,37,182.9,170.0,,,,Poland,pl,"Radom, Poland",,Welterweight,,,2020-12-19,2026-04-18,2026-11-02
-Aleksandar Ilic,aleksandar-ilic,https://www.espn.com/mma/fighter/_/id/4087509,,,inactive,2-2-0,,2,2,0,,37,188.0,185.0,,,,default,,,,,,,2019-03-23,2020-10-10,2026-11-02
-Aleksandar Rakas,aleksandar-rakas,https://www.espn.com/mma/fighter/_/id/3153229,,,inactive,0-2-0,,0,2,0,,36,177.8,170.0,180.3,,,Croatia,hr,"Zagreb, Croatia",,Welterweight,,,2021-09-04,2021-09-04,2026-11-02
-Aleksander Winiarski,aleksander-winiarski,https://www.sherdog.com/fighter/Aleksander-Winiarski-471603,,,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2026-05-16,2026-05-16,2026-11-02
-Aleksandra Rola,aleksandra-rola,https://www.espn.com/mma/fighter/_/id/5058872,,,inactive,0-1-0,,0,1,0,,35,165.1,115.0,,,,Poland,pl,"Warsaw, Poland",,Strawweight,,,2021-04-24,2021-04-24,2026-11-02
+Alain Van De Merckt,alain-van-de-merckt,https://www.sherdog.com/fighter/Alain-Van-De-Merckt-237561,,Neder / Top Boy,active,,,,,,,,,,,,,,,,,Middleweight,,,2024-12-20,2025-11-15,2026-11-05
+Albert Odzimkowski,albert-odzimkowski,https://www.espn.com/mma/fighter/_/id/3821330,,Zloty,active,1-4-0,,1,4,0,,37,182.9,170.0,,,,Poland,pl,"Radom, Poland",,Welterweight,,,2019-12-07,2026-04-18,2026-11-02
+Aleksandar Ilic,aleksandar-ilic,https://www.espn.com/mma/fighter/_/id/4087509,,,inactive,2-2-0,,2,2,0,,37,188.0,185.0,,,,default,,,,,,,2019-03-23,2021-04-24,2026-11-02
+Aleksandar Radosavljevic,aleksandar-radosavljevic,https://www.sherdog.com/fighter/Aleksandar-Radosavljevic-31123,,Rodja,inactive,,,,,,,,,,,,,,,,,,,,2008-12-12,2008-12-12,2026-11-05
+Aleksandar Rakas,aleksandar-rakas,https://www.espn.com/mma/fighter/_/id/3153229,,,inactive,0-2-0,,0,2,0,,36,177.8,170.0,180.3,,,Croatia,hr,"Zagreb, Croatia",,Welterweight,,,2021-01-30,2021-09-04,2026-11-02
+Aleksander Budzilek,aleksander-budzilek,https://www.sherdog.com/fighter/Aleksander-Budzilek-424523,,,inactive,,,,,,,,,,,,,,,,,Lightweight,,,2024-09-14,2024-09-14,2026-11-05
+Aleksander Winiarski,aleksander-winiarski,https://www.sherdog.com/fighter/Aleksander-Winiarski-471603,,,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2026-05-16,2026-05-16,2026-11-05
+Aleksandra Karasaeva,aleksandra-karasaeva,https://www.sherdog.com/fighter/Aleksandra-Karasaeva-381153,,,inactive,,,,,,,,,,,,,,,,,Bantamweight,,,2022-12-17,2022-12-17,2026-11-05
+Aleksandra Rola,aleksandra-rola,https://www.espn.com/mma/fighter/_/id/5058872,,,inactive,0-1-0,,0,1,0,,35,165.1,115.0,,,,Poland,pl,"Warsaw, Poland",,Strawweight,,,2019-09-14,2021-04-24,2026-11-02
+Aleksandra Toncheva,aleksandra-toncheva,https://www.sherdog.com/fighter/Aleksandra-Toncheva-212411,,,inactive,,,,,,,,,,,,,,,,,Strawweight,,,2023-05-13,2024-01-20,2026-11-05
 Aleksei Oleinik,aleksei-oleinik,https://www.espn.com/mma/fighter/_/id/2335844,,The Boa Constrictor,active,61-17-1,,61,17,1,,49,188.0,254.0,203.2,,,Russia,ru,Russia,American Top Team,Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/2335844.png,,2007-11-10,2008-05-09,2026-11-02
 Alex Lohoré,alex-lohore,https://www.espn.com/mma/fighter/_/id/4082740,,Da Killa King,active,26-12-0,,26,12,0,,36,185.4,170.0,193.0,,,France,fr,France,New Wave Academy,Welterweight,https://a.espncdn.com/i/headshots/mma/players/full/4082740.png,,2024-12-20,2024-12-20,2026-11-02
 Alexander Gustafsson,alexander-gustafsson,https://www.espn.com/mma/fighter/_/id/2500771,,The Mauler,inactive,18-8-0,,18,8,0,,39,195.6,205.0,200.7,,,Sweden,se,Sweden,Allstars Training Center,Light Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/2500771.png,,2008-09-13,2008-09-13,2026-11-02
 Alexander Stefanovic,alexander-stefanovic,https://www.espn.com/mma/fighter/_/id/2559245,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,Middleweight,,,2007-06-02,2007-06-02,2026-11-02
-Alfan Rocher-Labes,alfan-rocher-labes,https://www.sherdog.com/fighter/Alfan-RocherLabes-268791,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-02-21,2025-10-18,2026-11-02
+Alfan Rocher-Labes,alfan-rocher-labes,https://www.sherdog.com/fighter/Alfan-RocherLabes-268791,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2024-01-20,2025-10-18,2026-11-05
 Alfie Davis,alfie-davis,https://www.espn.com/mma/fighter/_/id/4820893,,The Axe Man,active,20-7-1,,20,7,1,,34,180.3,154.0,177.8,,,England,gb-eng,England,London Shootfighters,Lightweight,https://a.espncdn.com/i/headshots/mma/players/full/4820893.png,,2018-10-06,2018-10-06,2026-11-02
-Alioune Nahaye,alioune-nahaye,https://www.sherdog.com/fighter/Alioune-Nahaye-117789,,The Jaguar,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-05-10,2026-02-21,2026-11-02
-Amaury Wako-Zabo,amaury-wako-zabo,https://www.sherdog.com/fighter/Amaury-WakoZabo-411676,,Le Wakss,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-05-10,2026-01-17,2026-11-02
-Amin Ayoub,amin-ayoub,https://www.sherdog.com/fighter/Amin-Ayoub-184465,,Fierceness,active,,,,,,,,,,,,,,,,,Catch Weight,,,2025-05-10,2025-05-10,2026-11-02
-Andi Vrtacic,andi-vrtacic,https://www.sherdog.com/fighter/Andi-Vrtacic-367021,,The Highlight Machine,active,,,,,,,,,,,,,,,,,Middleweight,,,2025-01-25,2026-04-18,2026-11-02
+Alioune Nahaye,alioune-nahaye,https://www.sherdog.com/fighter/Alioune-Nahaye-117789,,The Jaguar,active,,,,,,,,,,,,,,,,,Featherweight,,,2024-12-20,2026-02-21,2026-11-05
+Alvin Lowenski,alvin-lowenski,https://www.sherdog.com/fighter/Alvin-Lowenski-249727,,,inactive,,,,,,,,,,,,,,,,,Lightweight,,,2024-08-24,2024-08-24,2026-11-05
+Amaury Wako-Zabo,amaury-wako-zabo,https://www.sherdog.com/fighter/Amaury-WakoZabo-411676,,Le Wakss,active,,,,,,,,,,,,,,,,,Welterweight,,,2024-12-20,2026-01-17,2026-11-05
+Amin Ayoub,amin-ayoub,https://www.sherdog.com/fighter/Amin-Ayoub-184465,,Fierceness,active,,,,,,,,,,,,,,,,,Catch Weight,,,2025-05-10,2025-05-10,2026-11-05
+Andi Vrtacic,andi-vrtacic,https://www.sherdog.com/fighter/Andi-Vrtacic-367021,,The Highlight Machine,active,,,,,,,,,,,,,,,,,Middleweight,,,2023-03-17,2026-04-18,2026-11-05
 Andre Fyeet,andre-fyeet,https://www.espn.com/mma/fighter/_/id/2500738,,,inactive,2-4-0,,2,4,0,,,,,,,,default,,,,,,,2007-11-10,2007-11-10,2026-11-02
+Andre Langen,andre-langen,https://www.sherdog.com/fighter/Andre-Langen-397288,,Angry,inactive,,,,,,,,,,,,,,,,,Middleweight,,,2023-01-21,2023-01-21,2026-11-05
+Andre Reinders,andre-reinders,https://www.sherdog.com/fighter/Andre-Reinders-14253,,,inactive,,,,,,,,,,,,,,,,,,,,2008-09-13,2009-05-15,2026-11-05
 Andre Winner,andre-winner,https://www.espn.com/mma/fighter/_/id/2504227,,,inactive,22-12-2,,22,12,2,,44,180.3,155.0,185.4,,,England,gb-eng,"Leeds, England",Team Rough House,Lightweight,https://a.espncdn.com/i/headshots/mma/players/full/2504227.png,,2013-09-28,2015-10-31,2026-11-02
 Andreas Gustafsson,andreas-gustafsson,https://www.espn.com/mma/fighter/_/id/4738749,,Bane,active,12-3-0,,12,3,0,,35,185.4,171.0,186.7,,,Sweden,se,Sweden,Vasteras Fight Club,Welterweight,https://a.espncdn.com/i/headshots/mma/players/full/4738749.png,,2020-10-10,2023-02-25,2026-11-02
+Andrei Gerasimchuk,andrei-gerasimchuk,https://www.sherdog.com/fighter/Andrei-Gerasimchuk-14569,,,inactive,,,,,,,,,,,,,,,,,,,,2005-01-15,2005-01-15,2026-11-05
 Andrey Lezhnev,andrey-lezhnev,https://www.espn.com/mma/fighter/_/id/4207893,,Iron,inactive,2-4-0,,2,4,0,,,170.2,145.0,170.2,,,Ukraine,ua,Ukraine,Gorets,Featherweight,,,2021-06-05,2021-06-05,2026-11-02
 Andrzej Grzebyk,andrzej-grzebyk,https://www.espn.com/mma/fighter/_/id/3893325,,Double Champ,active,20-6-0,,20,6,0,,35,182.9,170.0,193.0,,,Poland,pl,"Rzeszow, Poland",Legion Fight Team,Welterweight,,,2020-07-11,2026-10-10,2026-11-02
-Andrzej Karkula,andrzej-karkula,https://www.sherdog.com/fighter/Andrzej-Karkula-410145,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2026-03-14,2026-10-10,2026-11-02
-Anita Bekus,anita-bekus,https://www.espn.com/mma/fighter/_/id/5142129,,,active,0-3-0,,0,3,0,,36,162.6,115.0,165.1,,,Poland,pl,Poland,,Women's Strawweight,,,2022-09-10,2022-09-10,2026-11-02
+Andrzej Karkula,andrzej-karkula,https://www.sherdog.com/fighter/Andrzej-Karkula-410145,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2024-12-20,2026-10-10,2026-11-05
+Andrzej Kumor,andrzej-kumor,https://www.sherdog.com/fighter/Andrzej-Kumor-37414,,,inactive,,,,,,,,,,,,,,,,,,,,2008-09-13,2008-09-13,2026-11-05
+Anita Bekus,anita-bekus,https://www.espn.com/mma/fighter/_/id/5142129,,,active,0-3-0,,0,3,0,,36,162.6,115.0,165.1,,,Poland,pl,Poland,,Women's Strawweight,,,2021-12-18,2023-11-11,2026-11-02
 Ante Delija,ante-delija,https://www.espn.com/mma/fighter/_/id/3041315,,Walking Trouble,active,26-8-0,,26,8,0,,36,190.5,239.0,200.7,,,Croatia,hr,Croatia,Cro Cop Squad Gym,Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/3041315.png,,2019-11-09,2019-11-09,2026-11-02
 Antoni Chmielewski,antoni-chmielewski,https://www.espn.com/mma/fighter/_/id/2957594,,,inactive,5-9-0,,5,9,0,,,182.9,185.0,,,,default,,"Warsaw, Poland",,,,,2004-10-06,2019-09-14,2026-11-02
 Antonio Mendes,antonio-mendes,https://www.espn.com/mma/fighter/_/id/2335645,,Samuray,inactive,3-8-0,,3,8,0,,45,190.5,204.0,195.6,,,default,,,,,,,2007-06-02,2007-06-02,2026-11-02
+Antony Rea,antony-rea,https://www.sherdog.com/fighter/Antony-Rea-2484,,Wild Thing,inactive,,,,,,,,,,,,,,,,,,,,2008-12-12,2008-12-12,2026-11-05
 Antun Račić,antun-racic,https://www.espn.com/mma/fighter/_/id/3900371,,Killer,active,25-12-1,,25,12,1,,36,165.1,135.0,170.2,,,Croatia,hr,"Banja Luka, Croatia",UFD Gym,Featherweight,,,2017-10-22,2022-11-12,2026-11-02
-Anzor Azhiev,anzor-azhiev,https://www.espn.com/mma/fighter/_/id/3093695,,,inactive,1-2-0,,1,2,0,,36,170.2,155.0,,,,default,,Gliwice,,Featherweight,,,2013-09-28,2015-11-28,2026-11-02
+Anzor Azhiev,anzor-azhiev,https://www.espn.com/mma/fighter/_/id/3093695,,,inactive,1-2-0,,1,2,0,,36,170.2,155.0,,,,default,,Gliwice,,Featherweight,,,2013-09-28,2017-04-07,2026-11-02
 Ariane Lipski da Silva,ariane-lipski-da-silva,https://www.espn.com/mma/fighter/_/id/4227318,,The Queen,active,18-12-0,,18,12,0,,32,167.6,125.0,170.2,,,Brazil,br,Brazil,Rasthai Temple,Women's Flyweight,https://a.espncdn.com/i/headshots/mma/players/full/4227318.png,,2015-11-28,2018-03-03,2026-11-02
+Arkadiusz Jedraczka,arkadiusz-jedraczka,https://www.sherdog.com/fighter/Arkadiusz-Jedraczka-30829,,,inactive,,,,,,,,,,,,,,,,,,,,2008-03-29,2008-03-29,2026-11-05
+Arkadiusz Kaszuba,arkadiusz-kaszuba,https://www.sherdog.com/fighter/Arkadiusz-Kaszuba-377162,,,inactive,,,,,,,,,,,,,,,,,Welterweight,,,2022-02-26,2022-07-23,2026-11-05
+Arkadiusz Mruk,arkadiusz-mruk,https://www.sherdog.com/fighter/Arkadiusz-Mruk-384997,,,inactive,,,,,,,,,,,,,,,,,Middleweight,,,2022-09-10,2022-09-10,2026-11-05
 Arkadiusz Wrzosek,arkadiusz-wrzosek,https://www.espn.com/mma/fighter/_/id/5080648,,Hightower,active,4-0-0,,4,0,0,,34,200.7,265.0,,,,Poland,pl,Poland,,Heavyweight,,,2022-08-20,2026-06-20,2026-11-02
 Armen Stepanyan,armen-stepanyan,https://www.espn.com/mma/fighter/_/id/4914129,,,inactive,0-1-0,,0,1,0,,30,175.3,145.0,,,,Armenia,am,"Yerevan, Armenia",,Featherweight,,,2020-08-29,2020-08-29,2026-11-02
-Artur Krawczyk,artur-krawczyk,https://www.sherdog.com/fighter/Artur-Krawczyk-328543,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2025-12-20,2025-12-20,2026-11-02
+Artur Kadlubek,artur-kadlubek,https://www.sherdog.com/fighter/Artur-Kadlubek-33338,,Hajer,inactive,,,,,,,,,,,,,,,,,,,,2009-05-15,2009-05-15,2026-11-05
+Artur Krawczyk,artur-krawczyk,https://www.sherdog.com/fighter/Artur-Krawczyk-328543,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2024-01-20,2025-12-20,2026-11-05
+Artur Rezka,artur-rezka,https://www.sherdog.com/fighter/Artur-Rezka-16449,,,inactive,,,,,,,,,,,,,,,,,,,,2006-06-02,2006-06-02,2026-11-05
 Artur Sowinski,artur-sowinski,https://www.espn.com/mma/fighter/_/id/2525963,,Kornik,inactive,21-14-0,,21,14,0,,39,177.8,145.0,,,,default,,,,Lightweight,,,2010-09-18,2022-06-18,2026-11-02
 Artur Szczepaniak,artur-szczepaniak,https://www.espn.com/mma/fighter/_/id/4895371,,,active,11-3-0,,11,3,0,,29,180.3,170.0,186.7,,,Poland,pl,Poland,,Welterweight,,,2022-04-23,2026-02-21,2026-11-02
 Artur Szpilka,artur-szpilka,https://www.espn.com/mma/fighter/_/id/5135444,,Szpila,active,3-0-0,,3,0,0,,37,190.5,240.0,193.0,,,Poland,pl,Poland,,Heavyweight,,,2022-06-18,2026-07-18,2026-11-02
+Artur Zajac,artur-zajac,https://www.sherdog.com/fighter/Artur-Zajac-14581,,,inactive,,,,,,,,,,,,,,,,,,,,2004-10-06,2004-10-06,2026-11-05
 Arunas Vilius,arunas-vilius,https://www.espn.com/mma/fighter/_/id/3085083,,,inactive,0-4-0,,0,4,0,,,193.0,234.0,,,,default,,,,,,,2009-12-11,2009-12-11,2026-11-02
 Aslambek Saidov,aslambek-saidov,https://www.espn.com/mma/fighter/_/id/3005243,,,inactive,22-5-0,,22,5,0,,42,175.3,170.0,,,,Poland,pl,"Warsaw, Poland",Arrachion MMA Olsztyn,Welterweight,,,2009-05-15,2016-03-05,2026-11-02
 Attila Vegh,attila-vegh,https://www.espn.com/mma/fighter/_/id/2506251,,Pumukl,inactive,31-8-2,,31,8,2,,41,188.0,205.0,,,,Russia,ru,"Bratislava, Russia",American Top Team,Light Heavyweight,,,2009-05-15,2015-05-23,2026-11-02
 Augusto Sakai,augusto-sakai,https://www.espn.com/mma/fighter/_/id/3900464,,,active,16-6-1,,16,6,1,,35,190.5,260.0,195.6,,,Brazil,br,Brazil,Gile Ribeiro Team / Noguchi Team,Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/3900464.png,,2024-06-07,2026-07-18,2026-11-02
-Aymard Guih,aymard-guih,https://www.sherdog.com/fighter/Aymard-Guih-125233,,Barakuda,active,,,,,,,,,,,,,,,,,Catch Weight,,,2025-05-10,2026-05-16,2026-11-02
+Aymard Guih,aymard-guih,https://www.sherdog.com/fighter/Aymard-Guih-125233,,Barakuda,active,,,,,,,,,,,,,,,,,Catch Weight,,,2024-04-06,2026-05-16,2026-11-05
 Azi Thomas,azi-thomas,https://www.espn.com/mma/fighter/_/id/4018587,,,inactive,0-2-0,,0,2,0,,,170.2,145.0,,,,England,gb-eng,"Manchester, England",,Featherweight,,,2016-05-27,2016-05-27,2026-11-02
 Aziz Karaoglu,aziz-karaoglu,https://www.espn.com/mma/fighter/_/id/3018249,,,inactive,9-7-0,,9,7,0,,49,182.9,185.0,,,,default,,"Düsseldorf, Germany",,Middleweight,,,2008-05-09,2016-05-27,2026-11-02
 Bartlomiej Gladkowicz,bartlomiej-gladkowicz,https://www.espn.com/mma/fighter/_/id/5082900,,,active,0-2-0,,0,2,0,,30,182.9,205.0,191.8,,,Poland,pl,Poland,,Light Heavyweight,,,2022-07-23,2023-03-17,2026-11-02
-Bartlomiej Kopera,bartlomiej-kopera,https://www.espn.com/mma/fighter/_/id/4277819,,Malpa,active,0-3-0,,0,3,0,,34,175.3,145.0,180.3,,,Poland,pl,"Lodz, Poland",,Lightweight,,,2019-03-23,2025-03-08,2026-11-02
+Bartlomiej Kopera,bartlomiej-kopera,https://www.espn.com/mma/fighter/_/id/4277819,,Malpa,active,0-3-0,,0,3,0,,34,175.3,145.0,180.3,,,Poland,pl,"Lodz, Poland",,Lightweight,,,2018-03-03,2025-03-08,2026-11-02
 Bartlomiej Kurczewski,bartlomiej-kurczewski,https://www.espn.com/mma/fighter/_/id/3954045,,,inactive,0-6-0,,0,6,0,,,,145.0,,,,default,,"Lodz, Poland",,,,,2015-11-28,2016-10-01,2026-11-02
 Bartosz Fabinski,bartosz-fabinski,https://www.espn.com/mma/fighter/_/id/3152443,,The Butcher,active,15-6-0,,15,6,0,,40,182.9,184.0,190.5,,,Poland,pl,Poland,Berkut WCA Fight Team,Welterweight,https://a.espncdn.com/i/headshots/mma/players/full/3152443.png,,2024-01-20,2024-01-20,2026-11-02
-Bartosz Kurek,bartosz-kurek,https://www.sherdog.com/fighter/Bartosz-Kurek-348351,,,active,,,,,,,,,,,,,,,,,Middleweight,,,2025-03-08,2026-03-14,2026-11-02
+Bartosz Kurek,bartosz-kurek,https://www.sherdog.com/fighter/Bartosz-Kurek-348351,,,active,,,,,,,,,,,,,,,,,Middleweight,,,2024-10-19,2026-03-14,2026-11-05
 Bartosz Lesko,bartosz-lesko,https://www.espn.com/mma/fighter/_/id/5105699,,,active,2-1-0,,2,1,0,,30,188.0,205.0,200.7,,,Poland,pl,Poland,,Light Heavyweight,,,2022-05-28,2026-07-18,2026-11-02
-Bartosz Szewczyk,bartosz-szewczyk,https://www.sherdog.com/fighter/Bartosz-Szewczyk-227573,,,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2025-02-21,2026-03-14,2026-11-02
+Bartosz Rewera,bartosz-rewera,https://www.sherdog.com/fighter/Bartosz-Rewera-286525,,,inactive,,,,,,,,,,,,,,,,,Bantamweight,,,2021-12-18,2021-12-18,2026-11-05
+Bartosz Szewczyk,bartosz-szewczyk,https://www.sherdog.com/fighter/Bartosz-Szewczyk-227573,,,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2025-02-21,2026-03-14,2026-11-05
 Ben Lagman,ben-lagman,https://www.espn.com/mma/fighter/_/id/2512971,,,inactive,1-3-0,,1,3,0,,,,185.0,,,,default,,,,Welterweight,,,2013-06-08,2013-09-28,2026-11-02
 Benedykt Stepien,benedykt-stepien,https://www.espn.com/mma/fighter/_/id/4293604,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2004-02-26,2004-02-26,2026-11-02
-Bianca Sattelmayer,bianca-sattelmayer,https://www.sherdog.com/fighter/Bianca-Sattelmayer-147995,,Rainha do Caos,active,,,,,,,,,,,,,,,,,Flyweight,,,2025-07-19,2025-07-19,2026-11-02
+Bianca Sattelmayer,bianca-sattelmayer,https://www.sherdog.com/fighter/Bianca-Sattelmayer-147995,,Rainha do Caos,active,,,,,,,,,,,,,,,,,Flyweight,,,2025-07-19,2025-07-19,2026-11-05
 Bob Sapp,bob-sapp,https://www.espn.com/mma/fighter/_/id/2335715,,The Beast,inactive,11-19-0,,11,19,0,,54,195.6,350.0,,,,default,,"Colorado Springs, USA",,Heavyweight,,,2012-05-12,2012-05-12,2026-11-02
 Bogdan Barbu,bogdan-barbu,https://www.espn.com/mma/fighter/_/id/4612336,,,active,0-5-0,,0,5,0,,,170.2,135.0,,,,Romania,ro,Romania,,,,,2019-04-27,2020-08-29,2026-11-02
 Bogdan Gnidko,bogdan-gnidko,https://www.espn.com/mma/fighter/_/id/5137536,,,active,10-2-0,,10,2,0,,25,185.4,205.0,193.0,,,Ukraine,ua,Ukraine,,Light Heavyweight,,,2022-08-20,2024-02-24,2026-11-02
 Bogdan Stoica,bogdan-stoica,https://www.espn.com/mma/fighter/_/id/5194707,,Bucharest Bad Boy,active,0-1-0,,0,1,0,,36,193.0,231.0,,,,Romania,ro,Romania,,Heavyweight,,,2023-06-03,2023-06-03,2026-11-02
-Borys Borkowski,borys-borkowski,https://www.espn.com/mma/fighter/_/id/5157185,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2021-07-17,2021-07-17,2026-11-02
-Borys Dzikowski,borys-dzikowski,https://www.sherdog.com/fighter/Borys-Dzikowski-356251,,,active,,,,,,,,,,,,,,,,,Middleweight,,,2025-02-21,2026-09-19,2026-11-02
+Bojan Kosednar,bojan-kosednar,https://www.sherdog.com/fighter/Bojan-Kosednar-23612,,Zelva,inactive,,,,,,,,,,,,,,,,,,,,2008-12-12,2008-12-12,2026-11-05
+Borys Borkowski,borys-borkowski,https://www.espn.com/mma/fighter/_/id/5157185,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2021-07-17,2024-09-14,2026-11-02
+Borys Dzikowski,borys-dzikowski,https://www.sherdog.com/fighter/Borys-Dzikowski-356251,,,active,,,,,,,,,,,,,,,,,Middleweight,,,2022-09-10,2026-09-19,2026-11-05
 Borys Mańkowski,borys-mankowski,https://www.espn.com/mma/fighter/_/id/2525962,,,active,22-11-1,,22,11,1,,37,170.2,155.0,177.8,,,Poland,pl,"Poznan, Poland",Ankos MMA,Lightweight,,,2010-09-18,2023-01-21,2026-11-02
+Boubakar Niakate,boubakar-niakate,https://www.sherdog.com/fighter/Boubakar-Niakate-126441,,,inactive,,,,,,,,,,,,,,,,,Middleweight,,,2024-04-06,2024-04-06,2026-11-05
 Brett Cooper,brett-cooper,https://www.espn.com/mma/fighter/_/id/2500663,,Fudoshin,inactive,28-17-0,,28,17,0,,39,180.3,170.0,180.3,,,United States,us,"Lake Forest, USA",Subfighter MMA,Welterweight,https://a.espncdn.com/i/headshots/mma/players/full/2500663.png,,2014-12-06,2015-10-31,2026-11-02
-Brian Hooi,brian-hooi,https://www.espn.com/mma/fighter/_/id/4881913,,,active,19-11-0,,19,11,0,,32,180.3,155.0,193.0,,,Netherlands,nl,Netherlands,,Lightweight,,,2022-07-23,2023-05-13,2026-11-02
-Bruno Azevedo,bruno-azevedo,https://www.sherdog.com/fighter/Bruno-Azevedo-66490,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-01-25,2025-01-25,2026-11-02
+Brian Hooi,brian-hooi,https://www.espn.com/mma/fighter/_/id/4881913,,,active,19-11-0,,19,11,0,,32,180.3,155.0,193.0,,,Netherlands,nl,Netherlands,,Lightweight,,,2022-07-23,2024-06-07,2026-11-02
+Bruno Azevedo,bruno-azevedo,https://www.sherdog.com/fighter/Bruno-Azevedo-66490,,Macaco,active,,,,,,,,,,,,,,,,,Bantamweight,,,2024-08-24,2025-01-25,2026-11-05
 Bruno Santos,bruno-santos,https://www.espn.com/mma/fighter/_/id/4708539,,Gafanhoto,active,10-5-0,,10,5,0,,27,175.3,135.0,185.4,,,Brazil,br,Brazil,Chute Boxe - Diego Lima,Bantamweight,,,2020-12-19,2023-07-15,2026-11-02
+Bruns Marschiano,bruns-marschiano,https://www.sherdog.com/fighter/Bruns-Marschiano-37412,,,inactive,,,,,,,,,,,,,,,,,,,,2008-09-13,2008-09-13,2026-11-05
+Carl McNally,carl-mcnally,https://www.sherdog.com/fighter/Carl-McNally-98249,,King Carlos,inactive,,,,,,,,,,,,,,,,,Bantamweight,,,2022-08-20,2023-10-14,2026-11-05
+Carlos Eduardo Santos,carlos-eduardo-santos,https://www.sherdog.com/fighter/Carlos-Eduardo-Santos-8930,,Cadu,inactive,,,,,,,,,,,,,,,,,,,,2005-09-10,2005-09-10,2026-11-05
 Cassio Barbosa de Oliveira,cassio-barbosa-de-oliveira,https://www.espn.com/mma/fighter/_/id/3960737,,,inactive,0-3-0,,0,3,0,,43,182.9,205.0,,,,default,,"Parana, Brazil",,Light Heavyweight,,,2016-03-05,2016-03-05,2026-11-02
-Cedric Lushima,cedric-lushima,https://www.sherdog.com/fighter/Cedric-Lushima-314499,,Drik,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2025-06-14,2026-05-16,2026-11-02
+Catherine Costigan,catherine-costigan,https://www.sherdog.com/fighter/Catherine-Costigan-57086,,The Alpha Female,inactive,,,,,,,,,,,,,,,,,Strawweight,,,2019-09-14,2019-09-14,2026-11-05
+Cedric Lushima,cedric-lushima,https://www.sherdog.com/fighter/Cedric-Lushima-314499,,Drik,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2025-06-14,2026-05-16,2026-11-05
 Cengiz Dana,cengiz-dana,https://www.espn.com/mma/fighter/_/id/2560692,,,inactive,0-4-0,,0,4,0,,,,,,,,default,,,,,,,2011-05-21,2011-05-21,2026-11-02
-Cezariusz Kesik,cezariusz-kesik,https://www.sherdog.com/fighter/Cezariusz-Kesik-189035,,Polish Tank,active,,,,,,,,,,,,,,,,,Catch Weight,,,2025-01-25,2025-01-25,2026-11-02
-Cezary Kesik,cezary-kesik,https://www.espn.com/mma/fighter/_/id/4878652,,Polish Tank,active,13-4-0,,13,4,0,,36,182.9,185.0,190.5,,,Poland,pl,Poland,Crossfight,Middleweight,,,2019-04-27,2023-07-15,2026-11-02
+Cezary Kesik,cezary-kesik,https://www.espn.com/mma/fighter/_/id/4878652,,Polish Tank,active,13-4-0,,13,4,0,,36,182.9,185.0,190.5,,,Poland,pl,Poland,Crossfight,Middleweight,,,2019-04-27,2025-01-25,2026-11-02
 Charles Andrade,charles-andrade,https://www.espn.com/mma/fighter/_/id/2563808,,Gracie,inactive,4-20-0,,4,20,0,,44,182.9,185.0,,,,Brazil,br,Brazil,,,,,2014-05-17,2014-05-17,2026-11-02
 Chris Fields,chris-fields,https://www.espn.com/mma/fighter/_/id/2968418,,,inactive,12-8-1,,12,8,1,,43,190.5,205.0,,,,default,,"Dublin, Ireland",SBG Ireland,Light Heavyweight,,,2017-10-22,2018-06-09,2026-11-02
 Christian Eckerlin,christian-eckerlin,https://www.espn.com/mma/fighter/_/id/3046957,,,active,14-6-0,,14,6,0,,39,177.8,170.0,180.3,,,Germany,de,"Frankfurt, Germany",,Welterweight,,,2020-12-19,2020-12-19,2026-11-02
 Christian M'Pumbu,christian-m-pumbu,https://www.espn.com/mma/fighter/_/id/2555246,,Tonton,inactive,18-9-1,,18,9,1,,49,188.0,185.0,,,,DR Congo,cd,Congo,Crossfight,,,,2008-09-13,2008-09-13,2026-11-02
+Christopher Henze,christopher-henze,https://www.sherdog.com/fighter/Christopher-Henze-78893,,Joker,inactive,,,,,,,,,,,,,,,,,Welterweight,,,2018-03-03,2018-03-03,2026-11-05
 Christos Piliafas,christos-piliafas,https://www.espn.com/mma/fighter/_/id/2989126,,,inactive,0-1-0,,0,1,0,,,195.6,255.0,,,,default,,,,Heavyweight,,,2012-09-15,2012-09-15,2026-11-02
 Curt Warburton,curt-warburton,https://www.espn.com/mma/fighter/_/id/2509286,,The War,inactive,13-6-0,,13,6,0,,,182.9,155.0,185.4,,,default,,,Nevt,Lightweight,https://a.espncdn.com/i/headshots/mma/players/full/2509286.png,,2012-02-25,2012-02-25,2026-11-02
+Cyprian Wieczorek,cyprian-wieczorek,https://www.sherdog.com/fighter/Cyprian-Wieczorek-382696,,,inactive,,,,,,,,,,,,,,,,,Featherweight,,,2021-03-20,2021-03-20,2026-11-05
 Damian Grabowski,damian-grabowski,https://www.espn.com/mma/fighter/_/id/2506570,,The Polish Pitbull,inactive,21-5-0,,21,5,0,,46,185.4,241.0,190.5,,,Poland,pl,"Opole, Poland",Lutadores Opole,Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/2506570.png,,2019-05-18,2019-05-18,2026-11-02
 Damian Janikowski,damian-janikowski,https://www.espn.com/mma/fighter/_/id/4311163,,,active,10-6-0,,10,6,0,,37,180.3,185.0,,,,default,,"Wroclaw, Poland",,,,,2017-05-27,2026-06-20,2026-11-02
-Damian Mieczkowski,damian-mieczkowski,https://www.sherdog.com/fighter/Damian-Mieczkowski-92179,,,active,,,,,,,,,,,,,,,,,Middleweight,,,2025-03-08,2026-03-14,2026-11-02
+Damian Mieczkowski,damian-mieczkowski,https://www.sherdog.com/fighter/Damian-Mieczkowski-92179,,,active,,,,,,,,,,,,,,,,,Middleweight,,,2023-07-15,2026-03-14,2026-11-05
 Damian Piwowarczyk,damian-piwowarczyk,https://www.espn.com/mma/fighter/_/id/5122908,,Damsyn,active,12-4-0,,12,4,0,,29,198.1,205.0,199.4,,,Poland,pl,Poland,,Light Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/5122908.png,,2021-09-04,2026-03-14,2026-11-02
+Damian Skarzynski,damian-skarzynski,https://www.sherdog.com/fighter/Damian-Skarzynski-163893,,Dylan,inactive,,,,,,,,,,,,,,,,,Catch Weight,,,2022-01-15,2022-01-15,2026-11-05
 Damian Stasiak,damian-stasiak,https://www.espn.com/mma/fighter/_/id/3728368,,Webster,active,13-10-0,,13,10,0,,36,172.7,145.0,177.8,,,Poland,pl,Poland,United Gym,Bantamweight,https://a.espncdn.com/i/headshots/mma/players/full/3728368.png,,2019-11-09,2025-06-14,2026-11-02
+Damien Peltier,damien-peltier,https://www.sherdog.com/fighter/Damien-Peltier-127265,,,active,,,,,,,,,,,,,,,,,Catch Weight,,,2024-12-20,2024-12-20,2026-11-05
+Damir Mirenic,damir-mirenic,https://www.sherdog.com/fighter/Damir-Mirenic-12886,,Wolf,inactive,,,,,,,,,,,,,,,,,,,,2005-09-10,2005-09-10,2026-11-05
 Daniel Acacio,daniel-acacio,https://www.espn.com/mma/fighter/_/id/2500722,,,inactive,8-12-0,,8,12,0,,48,177.8,170.0,,,,default,,,,,,,2009-05-15,2014-10-04,2026-11-02
 Daniel Bazant,daniel-bazant,https://www.espn.com/mma/fighter/_/id/5101450,,,active,7-5-0,,7,5,0,,35,175.3,145.0,,,,Croatia,hr,Croatia,Trojan Free Fighters,Featherweight,,,2021-01-30,2021-01-30,2026-11-02
 Daniel Dowda,daniel-dowda,https://www.espn.com/mma/fighter/_/id/2525959,,,inactive,1-3-0,,1,3,0,,,,,,,,default,,,,Middleweight,,,2007-09-15,2010-09-18,2026-11-02
-Daniel Kolasinski,daniel-kolasinski,https://www.sherdog.com/fighter/Daniel-Kolasinski-152463,,Kolas,active,,,,,,,,,,,,,,,,,Welterweight,,,2026-05-16,2026-05-16,2026-11-02
+Daniel Kolasinski,daniel-kolasinski,https://www.sherdog.com/fighter/Daniel-Kolasinski-152463,,Kolas,active,,,,,,,,,,,,,,,,,Welterweight,,,2026-05-16,2026-05-16,2026-11-05
 Daniel Omielanczuk,daniel-omielanczuk,https://www.espn.com/mma/fighter/_/id/3042167,,,active,26-14-1,,26,14,1,,44,182.9,258.0,188.0,,,Poland,pl,Poland,Berkut WCA Fight Team,Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/3042167.png,,2009-12-11,2023-02-25,2026-11-02
 Daniel Rutkowski,daniel-rutkowski,https://www.espn.com/mma/fighter/_/id/4869329,,,active,16-3-0,,16,3,0,,37,167.6,145.0,170.2,,,Poland,pl,"Radom, Poland",,Featherweight,,,2021-10-23,2026-06-20,2026-11-02
 Daniel Skibinski,daniel-skibinski,https://www.espn.com/mma/fighter/_/id/3893354,,Skiba,active,20-9-0,,20,9,0,,36,177.8,170.0,181.6,,,Poland,pl,"Milicz, Poland",Ankos MMA,Welterweight,,,2024-09-14,2026-02-21,2026-11-02
 Daniel Tabera,daniel-tabera,https://www.espn.com/mma/fighter/_/id/2501939,,,inactive,5-5-2,,5,5,2,,48,180.3,205.0,,,,default,,,,,,,2008-09-13,2010-09-18,2026-11-02
-Daniel Tarchila,daniel-tarchila,https://www.sherdog.com/fighter/Daniel-Tarchila-395687,,Danu,active,,,,,,,,,,,,,,,,,Catch Weight,,,2025-01-25,2026-06-20,2026-11-02
+Daniel Tarchila,daniel-tarchila,https://www.sherdog.com/fighter/Daniel-Tarchila-395687,,Danu,active,,,,,,,,,,,,,,,,,Featherweight,,,2023-03-17,2026-06-20,2026-11-05
 Daniel Torres,daniel-torres,https://www.espn.com/mma/fighter/_/id/4421743,,Tucanão,active,14-7-0,,14,7,0,,32,175.3,145.0,172.7,,,Austria,at,"Joao Pessoa, Austria",,Featherweight,https://a.espncdn.com/i/headshots/mma/players/full/4421743.png,,2018-06-09,2022-06-18,2026-11-02
-Danny van Bergen,danny-van-bergen,https://www.espn.com/mma/fighter/_/id/2501389,,,inactive,2-2-0,,2,2,0,,,,,,,,default,,,,,,,2010-09-18,2010-09-18,2026-11-02
-Darko Stošić,darko-stosic,https://www.espn.com/mma/fighter/_/id/3996934,,,active,19-6-0,,19,6,0,,34,182.9,230.0,193.0,,,Serbia,rs,Serbia,MMA Red Star,Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/3996934.png,,2021-03-20,2023-10-14,2026-11-02
+Danny van Bergen,danny-van-bergen,https://www.espn.com/mma/fighter/_/id/2501389,,,inactive,2-2-0,,2,2,0,,,,,,,,default,,,,,,,2008-03-29,2010-09-18,2026-11-02
+Darko Stošić,darko-stosic,https://www.espn.com/mma/fighter/_/id/3996934,,,active,19-6-0,,19,6,0,,34,182.9,230.0,193.0,,,Serbia,rs,Serbia,MMA Red Star,Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/3996934.png,,2021-03-20,2024-11-16,2026-11-02
 Darwin Rodriguez,darwin-rodriguez,https://www.espn.com/mma/fighter/_/id/4406684,,,inactive,0-2-0,,0,2,0,,33,185.4,205.0,,,,default,,"Canary Islands, Spain",,,,,2019-11-09,2019-11-09,2026-11-02
-Dave Dalgliesh,dave-dalgliesh,https://www.espn.com/mma/fighter/_/id/2335878,,,inactive,6-3-0,,6,3,0,,48,188.0,205.0,,,,default,,,,,,,2007-11-10,2007-11-10,2026-11-02
-David Hosek,david-hosek,https://www.espn.com/mma/fighter/_/id/5215086,,,active,0-2-0,,0,2,0,,33,180.3,185.0,191.8,,,Czech Republic,cz,Czechia,,Middleweight,,,2023-02-25,2023-02-25,2026-11-02
-David Martinik,david-martinik,https://www.espn.com/mma/fighter/_/id/5094470,,,inactive,0-2-0,,0,2,0,,29,177.8,135.0,180.3,,,Czech Republic,cz,Czechia,,Bantamweight,,,2021-01-30,2022-01-15,2026-11-02
+Dave Dalgliesh,dave-dalgliesh,https://www.espn.com/mma/fighter/_/id/2335878,,,inactive,6-3-0,,6,3,0,,48,188.0,205.0,,,,default,,,,,,,2007-11-10,2008-12-12,2026-11-02
+David Hosek,david-hosek,https://www.espn.com/mma/fighter/_/id/5215086,,,active,0-2-0,,0,2,0,,33,180.3,185.0,191.8,,,Czech Republic,cz,Czechia,,Middleweight,,,2023-02-25,2024-08-24,2026-11-02
+David Martinik,david-martinik,https://www.espn.com/mma/fighter/_/id/5094470,,,inactive,0-2-0,,0,2,0,,29,177.8,135.0,180.3,,,Czech Republic,cz,Czechia,,Bantamweight,,,2021-01-30,2022-10-14,2026-11-02
 David Oliva,david-oliva,https://www.espn.com/mma/fighter/_/id/3043339,,,inactive,1-1-0,,1,1,0,,,,,,,,default,,,,Heavyweight,,,2009-12-11,2012-02-25,2026-11-02
-David Olivia,david-olivia,https://www.espn.com/mma/fighter/_/id/2506254,,,inactive,1-0-0,,1,0,0,,,,,,,,default,,,,Heavyweight,,,2010-05-07,2010-05-07,2026-11-02
+David Olivia,david-olivia,https://www.espn.com/mma/fighter/_/id/2506254,,,inactive,1-0-0,,1,0,0,,,,,,,,default,,,,Heavyweight,,,2009-12-11,2010-05-07,2026-11-02
 David Zawada,david-zawada,https://www.espn.com/mma/fighter/_/id/3161786,,Sagat,active,19-10-0,,19,10,0,,36,182.9,170.0,190.5,,,Germany,de,Germany,American Top Team,Welterweight,https://a.espncdn.com/i/headshots/mma/players/full/3161786.png,,2014-12-06,2018-04-14,2026-11-02
-David Zoula,david-zoula,https://www.sherdog.com/fighter/David-Zoula-329217,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-10-18,2025-10-18,2026-11-02
+David Zoula,david-zoula,https://www.sherdog.com/fighter/David-Zoula-329217,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-10-18,2025-10-18,2026-11-05
+Davy Gallon,davy-gallon,https://www.sherdog.com/fighter/Davy-Gallon-78731,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2024-12-20,2024-12-20,2026-11-05
 Dawid Baziak,dawid-baziak,https://www.espn.com/mma/fighter/_/id/3018256,,,inactive,1-4-0,,1,4,0,,41,188.0,209.0,,,,default,,,,,,,2009-12-11,2009-12-11,2026-11-02
 Dawid Gralka,dawid-gralka,https://www.espn.com/mma/fighter/_/id/4375235,,,inactive,1-2-0,,1,2,0,,,167.6,135.0,,,,default,,"Lodz, Poland",,,,,2018-06-09,2019-03-23,2026-11-02
-Dawid Kareta,dawid-kareta,https://www.sherdog.com/fighter/Dawid-Kareta-197887,,Kanar,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-07-19,2025-07-19,2026-11-02
-Dawid Kasperski,dawid-kasperski,https://www.sherdog.com/fighter/Dawid-Kasperski-442495,,,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2025-08-09,2026-05-16,2026-11-02
-Dawid Kuczmarski,dawid-kuczmarski,https://www.sherdog.com/fighter/Dawid-Kuczmarski-326783,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-07-19,2026-02-21,2026-11-02
+Dawid Kareta,dawid-kareta,https://www.sherdog.com/fighter/Dawid-Kareta-197887,,Kanar,active,,,,,,,,,,,,,,,,,Featherweight,,,2023-10-14,2025-07-19,2026-11-05
+Dawid Kasperski,dawid-kasperski,https://www.sherdog.com/fighter/Dawid-Kasperski-442495,,,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2024-02-17,2026-05-16,2026-11-05
+Dawid Kuczmarski,dawid-kuczmarski,https://www.sherdog.com/fighter/Dawid-Kuczmarski-326783,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2024-06-07,2026-02-21,2026-11-05
 Dawid Śmiełowski,dawid-smielowski,https://www.espn.com/mma/fighter/_/id/5128900,,Krolik,active,11-1-0,,11,1,0,,30,185.4,145.0,,,,Poland,pl,"Warsaw, Poland",Ankos MMA,Featherweight,,,2022-02-26,2025-02-21,2026-11-02
-Dean Amasinger,dean-amasinger,https://www.espn.com/mma/fighter/_/id/2617563,,,inactive,0-5-0,,0,5,0,,42,175.3,155.0,,,,default,,,,Lightweight,,,2012-02-25,2012-02-25,2026-11-02
+Dean Amasinger,dean-amasinger,https://www.espn.com/mma/fighter/_/id/2617563,,,inactive,0-5-0,,0,5,0,,42,175.3,155.0,,,,default,,,,Lightweight,,,2009-12-11,2012-02-25,2026-11-02
 Denilson Neves,denilson-neves,https://www.espn.com/mma/fighter/_/id/4421742,,,active,1-3-0,,1,3,0,,31,172.7,170.0,,,,Brazil,br,Brazil,RD Champions,Welterweight,,,2017-04-07,2017-04-07,2026-11-02
-Denis Gorniak,denis-gorniak,https://www.sherdog.com/fighter/Denis-Gorniak-210055,,Flinston,active,,,,,,,,,,,,,,,,,Heavyweight,,,2025-04-26,2025-10-18,2026-11-02
+Denilson Neves de Oliveira,denilson-neves-de-oliveira,https://www.sherdog.com/fighter/Denilson-Neves-de-Oliveira-127353,,Trator,inactive,,,,,,,,,,,,,,,,,Featherweight,,,2016-12-03,2017-04-07,2026-11-05
+Denis Gorniak,denis-gorniak,https://www.sherdog.com/fighter/Denis-Gorniak-210055,,Flinston,active,,,,,,,,,,,,,,,,,Heavyweight,,,2024-07-20,2025-10-18,2026-11-05
 Diana Belbita,diana-belbita,https://www.espn.com/mma/fighter/_/id/3977987,,The Warrior Princess,active,15-10-0,,15,10,0,,30,170.2,125.5,172.7,,,Romania,ro,"Oradea, Romania",House Of Champions,Women's Flyweight,https://a.espncdn.com/i/headshots/mma/players/full/3977987.png,,2016-10-01,2017-05-27,2026-11-02
 Dion Staring,dion-staring,https://www.espn.com/mma/fighter/_/id/2495231,,,inactive,30-13-0,,30,13,0,,48,185.4,240.0,,,,default,,"Amsterdam, Netherlands",,,,,2008-12-12,2008-12-12,2026-11-02
+Dmitry Zabolotny,dmitry-zabolotny,https://www.sherdog.com/fighter/Dmitry-Zabolotny-12171,,,inactive,,,,,,,,,,,,,,,,,,,,2010-10-09,2010-10-09,2026-11-05
 Domingos Mestre,domingos-mestre,https://www.espn.com/mma/fighter/_/id/3077823,,,inactive,1-3-0,,1,3,0,,,,,,,,default,,,,,,,2011-01-29,2011-01-29,2026-11-02
-Dominik Gabner,dominik-gabner,https://www.sherdog.com/fighter/Dominik-Gabner-478541,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2025-07-19,2025-07-19,2026-11-02
-Dominik Humburger,dominik-humburger,https://www.espn.com/mma/fighter/_/id/5149187,,,active,1-1-0,,1,1,0,,30,188.0,185.0,190.5,,,Czech Republic,cz,Czechia,Ankos MMA,Middleweight,,,2024-09-14,2025-02-21,2026-11-02
-Dominik Mazur,dominik-mazur,https://www.sherdog.com/fighter/Dominik-Mazur-392476,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2026-03-14,2026-03-14,2026-11-02
-Dominik Zadora,dominik-zadora,https://www.sherdog.com/fighter/Dominik-Zadora-436596,,Japonski Drwal,active,,,,,,,,,,,,,,,,,Welterweight,,,2026-09-19,2026-09-19,2026-11-02
+Dominik Gabner,dominik-gabner,https://www.sherdog.com/fighter/Dominik-Gabner-478541,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2025-07-19,2025-07-19,2026-11-05
+Dominik Humburger,dominik-humburger,https://www.espn.com/mma/fighter/_/id/5149187,,,active,1-1-0,,1,1,0,,30,188.0,185.0,190.5,,,Czech Republic,cz,Czechia,Ankos MMA,Middleweight,,,2022-08-20,2025-02-21,2026-11-02
+Dominik Mazur,dominik-mazur,https://www.sherdog.com/fighter/Dominik-Mazur-392476,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2026-03-14,2026-03-14,2026-11-05
+Dominik Zadora,dominik-zadora,https://www.sherdog.com/fighter/Dominik-Zadora-436596,,Japonski Drwal,active,,,,,,,,,,,,,,,,,Welterweight,,,2026-09-19,2026-09-19,2026-11-05
+Dominika Steczkowska,dominika-steczkowska,https://www.sherdog.com/fighter/Dominika-Steczkowska-388245,,,inactive,,,,,,,,,,,,,,,,,Bantamweight,,,2024-10-19,2024-10-19,2026-11-05
 Donovan Desmae,donovan-desmae,https://www.espn.com/mma/fighter/_/id/4218396,,Vegas,active,16-10-0,,16,10,0,,34,180.3,155.0,180.3,,,Belgium,be,Belgium,,Lightweight,,,2021-06-05,2023-05-13,2026-11-02
 Dricus Du Plessis,dricus-du-plessis,https://www.espn.com/mma/fighter/_/id/3166126,,Stilknocks,active,24-3-0,,24,3,0,,32,185.4,185.5,193.0,,,South Africa,za,South Africa,Team CIT,Middleweight,https://a.espncdn.com/i/headshots/mma/players/full/3166126.png,,2018-04-14,2019-09-14,2026-11-02
-Eddie Hall,eddie-hall,https://www.sherdog.com/fighter/Eddie-Hall-473295,,The Beast,active,,,,,,,,,,,,,,,,,Super Heavyweight,,,2025-04-26,2025-04-26,2026-11-02
-Edgars Skrivers,edgars-skrivers,https://www.sherdog.com/fighter/Edgars-Skrivers-64861,,The Bearslayer,active,,,,,,,,,,,,,,,,,Bantamweight,,,2026-07-18,2026-07-18,2026-11-02
-Eduard Kexel,eduard-kexel,https://www.sherdog.com/fighter/Eduard-Kexel-290465,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-08-09,2025-08-09,2026-11-02
-El Hadji Ndiaye,el-hadji-ndiaye,https://www.sherdog.com/fighter/El-Hadji-Ndiaye-268789,,Gaindeh,active,,,,,,,,,,,,,,,,,Lightweight,,,2025-06-14,2025-06-14,2026-11-02
+Eddie Hall,eddie-hall,https://www.sherdog.com/fighter/Eddie-Hall-473295,,The Beast,active,,,,,,,,,,,,,,,,,Super Heavyweight,,,2025-04-26,2025-04-26,2026-11-05
+Edgars Skrivers,edgars-skrivers,https://www.sherdog.com/fighter/Edgars-Skrivers-64861,,The Bearslayer,active,,,,,,,,,,,,,,,,,Bantamweight,,,2026-07-18,2026-07-18,2026-11-05
+Eduard Demenko,eduard-demenko,https://www.sherdog.com/fighter/Eduard-Demenko-374623,,,inactive,,,,,,,,,,,,,,,,,Featherweight,,,2022-09-10,2022-09-10,2026-11-05
+Eduard Kexel,eduard-kexel,https://www.sherdog.com/fighter/Eduard-Kexel-290465,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2024-12-20,2025-08-09,2026-11-05
+Edvardas Norkeliunas,edvardas-norkeliunas,https://www.sherdog.com/fighter/Edvardas-Norkeliunas-12317,,,inactive,,,,,,,,,,,,,,,,,,,,2008-05-09,2008-05-09,2026-11-05
+El Hadji Ndiaye,el-hadji-ndiaye,https://www.sherdog.com/fighter/El-Hadji-Ndiaye-268789,,Gaindeh,active,,,,,,,,,,,,,,,,,Lightweight,,,2024-04-06,2025-06-14,2026-11-05
 Emil Meek,emil-meek,https://www.espn.com/mma/fighter/_/id/4001846,,Valhalla,inactive,10-6-0,,10,6,0,,38,180.3,170.0,189.2,,,Norway,no,Norway,Frontline Academy,Welterweight,https://a.espncdn.com/i/headshots/mma/players/full/4001846.png,,2022-09-10,2022-09-10,2026-11-02
-Emilia Czerwinska,emilia-czerwinska,https://www.espn.com/mma/fighter/_/id/5135543,,,active,2-1-0,,2,1,0,,36,172.7,125.0,177.8,,,Poland,pl,Poland,,Women's Flyweight,,,2021-09-04,2023-03-17,2026-11-02
+Emilia Czerwinska,emilia-czerwinska,https://www.espn.com/mma/fighter/_/id/5135543,,,active,2-1-0,,2,1,0,,36,172.7,125.0,177.8,,,Poland,pl,Poland,,Women's Flyweight,,,2021-09-04,2023-12-16,2026-11-02
+Emiliusz Regiel,emiliusz-regiel,https://www.sherdog.com/fighter/Emiliusz-Regiel-14621,,,inactive,,,,,,,,,,,,,,,,,,,,2004-02-26,2004-02-26,2026-11-05
+Erianny Castaneda,erianny-castaneda,https://www.sherdog.com/fighter/Erianny-Castaneda-387506,,Ery,inactive,,,,,,,,,,,,,,,,,Flyweight,,,2024-08-24,2024-08-24,2026-11-05
 Eric Esch,eric-esch,https://www.espn.com/mma/fighter/_/id/2510993,,Butterbean,inactive,3-5-0,,3,5,0,,60,180.3,350.0,,,,default,,,,,,,2010-09-18,2010-09-18,2026-11-02
+Erikas Golubovskis,erikas-golubovskis,https://www.sherdog.com/fighter/Erikas-Golubovskis-272343,,,inactive,,,,,,,,,,,,,,,,,Welterweight,,,2023-03-17,2023-03-17,2026-11-05
 Erko Jun,erko-jun,https://www.espn.com/mma/fighter/_/id/4382284,,The Bounty Hunter,inactive,3-1-0,,3,1,0,,36,177.8,220.0,185.4,,,Bosnia and Herzegovina,ba,"Zenica, Bosnia & Herzegovina",UFD Gym,Heavyweight,,,2018-06-09,2019-11-09,2026-11-02
-Errol Zimmerman,errol-zimmerman,https://www.sherdog.com/fighter/Errol-Zimmerman-41746,,Bonecrusher,active,,,,,,,,,,,,,,,,,Heavyweight,,,2025-04-26,2025-04-26,2026-11-02
-Eva Dourthe,eva-dourthe,https://www.sherdog.com/fighter/Eva-Dourthe-248447,,,active,,,,,,,,,,,,,,,,,Strawweight,,,2026-03-14,2026-03-14,2026-11-02
-Evert Fyeet,evert-fyeet,https://www.espn.com/mma/fighter/_/id/2354123,,,inactive,0-5-0,,0,5,0,,,,,,,,default,,,,,,,2006-10-14,2006-10-14,2026-11-02
-Ewelina Wozniak,ewelina-wozniak,https://www.sherdog.com/fighter/Ewelina-Wozniak-211023,,The Mad Queen,active,,,,,,,,,,,,,,,,,Strawweight,,,2025-03-08,2026-03-14,2026-11-02
+Errol Zimmerman,errol-zimmerman,https://www.sherdog.com/fighter/Errol-Zimmerman-41746,,Bonecrusher,active,,,,,,,,,,,,,,,,,Heavyweight,,,2023-04-22,2025-04-26,2026-11-05
+Eva Dourthe,eva-dourthe,https://www.sherdog.com/fighter/Eva-Dourthe-248447,,,active,,,,,,,,,,,,,,,,,Strawweight,,,2026-03-14,2026-03-14,2026-11-05
+Evert Fyeet,evert-fyeet,https://www.espn.com/mma/fighter/_/id/2354123,,,inactive,0-5-0,,0,5,0,,,,,,,,default,,,,,,,2006-10-14,2007-09-15,2026-11-02
+Ewelina Wozniak,ewelina-wozniak,https://www.sherdog.com/fighter/Ewelina-Wozniak-211023,,The Mad Queen,active,,,,,,,,,,,,,,,,,Strawweight,,,2024-01-20,2026-03-14,2026-11-05
+Fabian Luczak,fabian-luczak,https://www.sherdog.com/fighter/Fabian-Luczak-327415,,,inactive,,,,,,,,,,,,,,,,,Catch Weight,,,2023-11-11,2023-11-11,2026-11-05
 Fabiano da Conceicao,fabiano-da-conceicao,https://www.espn.com/mma/fighter/_/id/2960774,,,inactive,26-8-1,,26,8,1,,38,165.1,145.0,,,,Brazil,br,Brazil,X-Gym,,,,2016-03-05,2016-03-05,2026-11-02
 Fernando Rodrigues Jr.,fernando-rodrigues-jr,https://www.espn.com/mma/fighter/_/id/4025057,,Santo Forte,active,12-8-0,,12,8,0,,39,190.5,240.0,,,,Brazil,br,"Sao Paulo, Brazil",Corinthians MMA,Heavyweight,,,2016-12-03,2019-03-23,2026-11-02
 Filip Bradaric,filip-bradaric,https://www.espn.com/mma/fighter/_/id/5080650,,,active,0-2-0,,0,2,0,,43,193.0,240.0,203.2,,,Croatia,hr,Croatia,Munich MMA,Heavyweight,,,2021-07-17,2021-07-17,2026-11-02
+Filip Macek,filip-macek,https://www.sherdog.com/fighter/Filip-Macek-59116,,,inactive,,,,,,,,,,,,,,,,,Bantamweight,,,2023-05-13,2023-10-14,2026-11-05
 Filip Pejic,filip-pejic,https://www.espn.com/mma/fighter/_/id/3972436,,Nitro,inactive,15-7-2,,15,7,2,,34,180.3,145.0,177.8,,,Croatia,hr,Croatia,,Bantamweight,https://a.espncdn.com/i/headshots/mma/players/full/3972436.png,,2019-04-27,2022-02-26,2026-11-02
 Filip Stawowy,filip-stawowy,https://www.espn.com/mma/fighter/_/id/5076057,,Czolg,active,0-3-0,,0,3,0,,30,188.0,265.0,198.1,,,Poland,pl,Poland,,Heavyweight,,,2022-06-18,2025-03-08,2026-11-02
 Filip Wolanski,filip-wolanski,https://www.espn.com/mma/fighter/_/id/4006197,,,inactive,9-4-0,,9,4,0,,35,177.8,155.0,,,,default,,"Krakow, Poland",Grappling Krakow,Featherweight,,,2016-05-27,2019-04-27,2026-11-02
+Flore Hani,flore-hani,https://www.sherdog.com/fighter/Flore-Hani-289255,,Aito Hine,inactive,,,,,,,,,,,,,,,,,Flyweight,,,2024-04-06,2024-04-06,2026-11-05
+Francesco Moricca,francesco-moricca,https://www.sherdog.com/fighter/Francesco-Moricca-135119,,Blessed Warrior,inactive,,,,,,,,,,,,,,,,,Catch Weight,,,2022-01-15,2022-01-15,2026-11-05
 Francis Carmont,francis-carmont,https://www.espn.com/mma/fighter/_/id/2560725,,Limitless,inactive,25-12-0,,25,12,0,,44,190.5,205.0,198.1,,,France,fr,"Paris, France",TriStar Gym,Middleweight,https://a.espncdn.com/i/headshots/mma/players/full/2560725.png,,2006-06-02,2008-09-13,2026-11-02
-Francisco Albano Barrio,francisco-albano-barrio,https://www.espn.com/mma/fighter/_/id/3988882,,Croata,inactive,1-2-0,,1,2,0,,37,170.2,145.0,,,,Argentina,ar,"Buenos Aires, Argentina",SBG Ireland,Featherweight,,,2020-11-14,2020-11-14,2026-11-02
-Gabriela Hristea,gabriela-hristea,https://www.sherdog.com/fighter/Gabriela-Hristea-457701,,,active,,,,,,,,,,,,,,,,,Flyweight,,,2025-04-26,2025-04-26,2026-11-02
+Francisco Albano Barrio,francisco-albano-barrio,https://www.espn.com/mma/fighter/_/id/3988882,,Croata,inactive,1-2-0,,1,2,0,,37,170.2,145.0,,,,Argentina,ar,"Buenos Aires, Argentina",SBG Ireland,Featherweight,,,2020-11-14,2024-04-06,2026-11-02
+Frederico Komuenha,frederico-komuenha,https://www.sherdog.com/fighter/Frederico-Komuenha-411502,,Black Panther,inactive,,,,,,,,,,,,,,,,,Middleweight,,,2023-02-25,2023-02-25,2026-11-05
+Gabriela Hristea,gabriela-hristea,https://www.sherdog.com/fighter/Gabriela-Hristea-457701,,,active,,,,,,,,,,,,,,,,,Flyweight,,,2025-04-26,2025-04-26,2026-11-05
 Gerardo Julio Gallegos,gerardo-julio-gallegos,https://www.espn.com/mma/fighter/_/id/3900204,,,inactive,1-1-0,,1,1,0,,,,,,,,default,,,,,,,2017-05-27,2017-05-27,2026-11-02
 Gilber Ordonez,gilber-ordonez,https://www.espn.com/mma/fighter/_/id/4715405,,,active,0-3-0,,0,3,0,,35,172.7,155.0,,,,Colombia,co,Colombia,,Featherweight,,,2021-07-17,2021-07-17,2026-11-02
 Gino van Steenis,gino-van-steenis,https://www.espn.com/mma/fighter/_/id/5278193,,The Ghost Assassin,active,9-2-0,,9,2,0,,28,185.4,155.0,188.0,,,Spain,es,Spain,,Lightweight,https://a.espncdn.com/i/headshots/mma/players/full/5278193.png,,2024-01-20,2024-01-20,2026-11-02
 Goce Candovski,goce-candovski,https://www.espn.com/mma/fighter/_/id/2558864,,,inactive,0-2-0,,0,2,0,,,,,,,,default,,,,Light Heavyweight,,,2006-06-02,2006-06-02,2026-11-02
 Goran Reljic,goran-reljic,https://www.espn.com/mma/fighter/_/id/2335777,,,inactive,15-6-0,,15,6,0,,42,190.5,215.0,205.7,,,Croatia,hr,"Zadar, Croatia",Xtreme Couture,Heavyweight,,,2013-03-16,2015-10-31,2026-11-02
-Gracjan Szadzinski,gracjan-szadzinski,https://www.espn.com/mma/fighter/_/id/4567735,,,active,2-3-0,,2,3,0,,36,175.3,155.0,,,,default,,"Szczecin, Poland",,Featherweight,,,2017-12-23,2022-11-12,2026-11-02
+Gracjan Szadzinski,gracjan-szadzinski,https://www.espn.com/mma/fighter/_/id/4567735,,,active,2-3-0,,2,3,0,,36,175.3,155.0,,,,default,,"Szczecin, Poland",,Featherweight,,,2017-04-07,2023-05-13,2026-11-02
 Gregory Babene,gregory-babene,https://www.espn.com/mma/fighter/_/id/2559789,,Blade,active,23-13-0,,23,13,0,,42,182.9,185.0,185.4,,,France,fr,France,Atch Academy,Middleweight,https://a.espncdn.com/i/headshots/mma/players/full/2559789.png,,2010-10-09,2011-03-19,2026-11-02
 Grigor Aschugbabjan,grigor-aschugbabjan,https://www.espn.com/mma/fighter/_/id/2506259,,,inactive,0-2-0,,0,2,0,,41,180.3,170.0,,,,default,,,,Light Heavyweight,,,2010-05-07,2011-05-21,2026-11-02
 Grigor Ashughbabyan,grigor-ashughbabyan,https://www.espn.com/mma/fighter/_/id/3088218,,,inactive,0-3-0,,0,3,0,,,,,,,,default,,,,,,,2012-05-12,2012-05-12,2026-11-02
-Grzegorz Stabach,grzegorz-stabach,https://www.sherdog.com/fighter/Grzegorz-Stabach-327061,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-07-19,2026-07-18,2026-11-02
+Grzegorz Jakubowski,grzegorz-jakubowski,https://www.sherdog.com/fighter/Grzegorz-Jakubowski-8560,,Jakubek,inactive,,,,,,,,,,,,,,,,,,,,2008-05-09,2008-05-09,2026-11-05
+Grzegorz Stabach,grzegorz-stabach,https://www.sherdog.com/fighter/Grzegorz-Stabach-327061,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-07-19,2026-07-18,2026-11-05
 Grzegorz Szulakowski,grzegorz-szulakowski,https://www.espn.com/mma/fighter/_/id/3909822,,,inactive,9-4-0,,9,4,0,,39,180.3,155.0,,,,default,,"Minsk Mazowiecki, Poland",,,,,2015-05-23,2019-12-07,2026-11-02
 Gustavo Oliveira,gustavo-oliveira,https://www.espn.com/mma/fighter/_/id/5104264,,Heart,active,13-2-0,,13,2,0,,30,170.2,135.0,180.3,,,Portugal,pt,Portugal,,Bantamweight,https://a.espncdn.com/i/headshots/mma/players/full/5104264.png,,2022-07-23,2023-07-15,2026-11-02
 Guto Inocente,guto-inocente,https://www.espn.com/mma/fighter/_/id/2953475,,,inactive,6-6-0,,6,6,0,,40,190.5,250.0,196.8,,,Brazil,br,Brazil,Blackzilians,Light Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/2953475.png,,2021-01-30,2021-01-30,2026-11-02
-Hanka Gelnarova,hanka-gelnarova,https://www.sherdog.com/fighter/Hanka-Gelnarova-459294,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2026-09-19,2026-09-19,2026-11-02
+Hanka Gelnarova,hanka-gelnarova,https://www.sherdog.com/fighter/Hanka-Gelnarova-459294,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2024-10-19,2026-09-19,2026-11-05
 Hatef Moeil,hatef-moeil,https://www.espn.com/mma/fighter/_/id/4309467,,The Boss,inactive,12-4-0,,12,4,0,,40,190.5,265.0,190.5,,,Germany,de,"Düsseldorf, Germany",UFD Gym,Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/4309467.png,,2018-03-03,2018-03-03,2026-11-02
-Henrique da Silva,henrique-da-silva,https://www.espn.com/mma/fighter/_/id/3991049,,Frankenstein,active,19-9-0,,19,9,0,,37,193.0,205.0,194.3,,,Brazil,br,Brazil,Minhoca Top Team,Light Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/3991049.png,,2022-10-14,2023-03-17,2026-11-02
-Henry Fadipe,henry-fadipe,https://www.espn.com/mma/fighter/_/id/5157186,,,active,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2023-04-22,2026-01-17,2026-11-02
+Henrique da Silva,henrique-da-silva,https://www.espn.com/mma/fighter/_/id/3991049,,Frankenstein,active,19-9-0,,19,9,0,,37,193.0,205.0,194.3,,,Brazil,br,Brazil,Minhoca Top Team,Light Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/3991049.png,,2022-10-14,2023-11-11,2026-11-02
+Henry Fadipe,henry-fadipe,https://www.espn.com/mma/fighter/_/id/5157186,,,active,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2022-11-12,2026-01-17,2026-11-02
 Houston Alexander,houston-alexander,https://www.espn.com/mma/fighter/_/id/2335529,,The Assassin,inactive,16-15-1,,16,15,1,,54,182.9,205.0,182.9,,,United States,us,"Lincoln, USA",Grudge Training Center,,,,2012-09-15,2012-09-15,2026-11-02
 Hubert Szymajda,hubert-szymajda,https://www.espn.com/mma/fighter/_/id/4689455,,Mmaupa,inactive,0-3-0,,0,3,0,,37,177.8,170.0,179.1,,,Poland,pl,"Biala Podlaska, Poland",,Welterweight,,,2019-04-27,2022-07-23,2026-11-02
 Hugo Deux,hugo-deux,https://www.espn.com/mma/fighter/_/id/5278563,,Némésis,active,1-0-0,,1,0,0,,30,175.3,155.0,175.3,,,France,fr,France,,Lightweight,,,2024-01-20,2026-04-18,2026-11-02
 Ibragim Chuzhigaev,ibragim-chuzhigaev,https://www.espn.com/mma/fighter/_/id/3156663,,The Million First,active,18-5-0,,18,5,0,,35,182.9,205.0,189.2,,,Russia,ru,"Moscow, Russia",Fight Club Berkut,Light Heavyweight,,,2022-01-15,2026-07-18,2026-11-02
+Idris Amizhaev,idris-amizhaev,https://www.sherdog.com/fighter/Idris-Amizhaev-177303,,,inactive,,,,,,,,,,,,,,,,,Catch Weight,,,2022-02-26,2022-02-26,2026-11-05
 Igor Araujo,igor-araujo,https://www.espn.com/mma/fighter/_/id/3007946,,,inactive,25-9-0,,25,9,0,,45,185.4,185.0,195.6,,,Brazil,br,"Brasilia, Brazil",Jackson-Wink MMA,Welterweight,https://a.espncdn.com/i/headshots/mma/players/full/3007946.png,,2006-10-14,2006-10-14,2026-11-02
-Igor Kolacin,igor-kolacin,https://www.espn.com/mma/fighter/_/id/3107573,,,inactive,0-2-0,,0,2,0,,,,,,,,default,,,,,,,2007-06-02,2007-06-02,2026-11-02
-Igor Michaliszyn,igor-michaliszyn,https://www.sherdog.com/fighter/Igor-Michaliszyn-171787,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-04-26,2025-04-26,2026-11-02
+Igor Kolacin,igor-kolacin,https://www.espn.com/mma/fighter/_/id/3107573,,,inactive,0-2-0,,0,2,0,,,,,,,,default,,,,,,,2004-10-06,2007-06-02,2026-11-02
+Igor Michaliszyn,igor-michaliszyn,https://www.sherdog.com/fighter/Igor-Michaliszyn-171787,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2022-02-26,2025-04-26,2026-11-05
 Igor Pokrajac,igor-pokrajac,https://www.espn.com/mma/fighter/_/id/2502590,,The Duke,inactive,25-14-0,,25,14,0,,47,182.9,205.0,193.0,,,Croatia,hr,Croatia,American Top Team,Light Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/2502590.png,,2005-09-10,2005-09-10,2026-11-02
-Igor Wlodarczyk,igor-wlodarczyk,https://www.sherdog.com/fighter/Igor-Wlodarczyk-364407,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2025-07-19,2026-10-10,2026-11-02
+Igor Wlodarczyk,igor-wlodarczyk,https://www.sherdog.com/fighter/Igor-Wlodarczyk-364407,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2025-07-19,2026-10-10,2026-11-05
 Ilja Skondric,ilja-skondric,https://www.espn.com/mma/fighter/_/id/4229730,,,inactive,0-2-0,,0,2,0,,,185.4,205.0,,,,default,,,,,,,2006-06-02,2006-06-02,2026-11-02
-Ion Surdu,ion-surdu,https://www.espn.com/mma/fighter/_/id/5078529,,Dracula,active,3-2-0,,3,2,0,,31,185.4,170.0,194.3,,,Moldova,md,Moldova,Ankos MMA,Welterweight,,,2020-10-10,2020-10-10,2026-11-02
-Iras Khizriev,iras-khizriev,https://www.sherdog.com/fighter/Iras-Khizriev-236159,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2026-01-17,2026-01-17,2026-11-02
-Ishkhan Zakharian,ishkhan-zakharian,https://www.espn.com/mma/fighter/_/id/3087488,,,inactive,0-6-0,,0,6,0,,,,,,,,default,,,,,,,2007-06-02,2007-06-02,2026-11-02
-Islam Djabrailov,islam-djabrailov,https://www.sherdog.com/fighter/Islam-Djabrailov-278455,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-06-14,2025-06-14,2026-11-02
+Ion Surdu,ion-surdu,https://www.espn.com/mma/fighter/_/id/5078529,,Dracula,active,3-2-0,,3,2,0,,31,185.4,170.0,194.3,,,Moldova,md,Moldova,Ankos MMA,Welterweight,,,2020-10-10,2022-08-20,2026-11-02
+Iras Khizriev,iras-khizriev,https://www.sherdog.com/fighter/Iras-Khizriev-236159,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2026-01-17,2026-01-17,2026-11-05
+Isai Ramos,isai-ramos,https://www.sherdog.com/fighter/Isai-Ramos-391883,,Guerreiro de Deus,inactive,,,,,,,,,,,,,,,,,Featherweight,,,2024-01-20,2024-07-20,2026-11-05
+Ishkhan Zakharian,ishkhan-zakharian,https://www.espn.com/mma/fighter/_/id/3087488,,,inactive,0-6-0,,0,6,0,,,,,,,,default,,,,,,,2007-06-02,2007-11-10,2026-11-02
+Islam Djabrailov,islam-djabrailov,https://www.sherdog.com/fighter/Islam-Djabrailov-278455,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2023-07-15,2025-06-14,2026-11-05
 Ivan Buchinger,ivan-buchinger,https://www.espn.com/mma/fighter/_/id/2970370,,Buki,active,40-10-0,,40,10,0,,40,175.3,145.0,177.8,,,Slovakia,sk,"Handlova, Slovakia",Team MMA Spirit,Featherweight,,,2019-12-07,2019-12-07,2026-11-02
 Ivan Erslan,ivan-erslan,https://www.espn.com/mma/fighter/_/id/4698417,,,active,15-6-0,,15,6,0,,34,188.0,205.5,184.2,,,Croatia,hr,Croatia,American Top Team,Light Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/4698417.png,,2019-11-09,2024-02-24,2026-11-02
-Ivan Vitasovic,ivan-vitasovic,https://www.espn.com/mma/fighter/_/id/4334401,,,active,0-3-0,,0,3,0,,34,188.0,231.0,190.5,,,Croatia,hr,Croatia,Trojan Free Fighters,Heavyweight,,,2024-01-20,2024-01-20,2026-11-02
-Jacek Buczko,jacek-buczko,https://www.espn.com/mma/fighter/_/id/2500766,,,inactive,1-4-0,,1,4,0,,,,,,,,default,,,,,,,2005-01-15,2005-01-15,2026-11-02
-Jacek Gac,jacek-gac,https://www.sherdog.com/fighter/Jacek-Gac-422623,,Siexa,active,,,,,,,,,,,,,,,,,Middleweight,,,2025-02-21,2026-04-18,2026-11-02
-Jakub Kamieniarz,jakub-kamieniarz,https://www.espn.com/mma/fighter/_/id/5016772,,,inactive,1-1-0,,1,1,0,,31,182.9,170.0,,,,Poland,pl,Poland,,,,,2019-04-27,2019-04-27,2026-11-02
+Ivan Vitasovic,ivan-vitasovic,https://www.espn.com/mma/fighter/_/id/4334401,,,active,0-3-0,,0,3,0,,34,188.0,231.0,190.5,,,Croatia,hr,Croatia,Trojan Free Fighters,Heavyweight,,,2024-01-20,2024-05-11,2026-11-02
+Ivica Truscek,ivica-truscek,https://www.sherdog.com/fighter/Ivica-Truscek-22880,,Terror,inactive,,,,,,,,,,,,,,,,,Welterweight,,,2019-11-09,2019-11-09,2026-11-05
+Izuagbe Ugonoh,izuagbe-ugonoh,https://www.sherdog.com/fighter/Izuagbe-Ugonoh-373254,,Izu,inactive,,,,,,,,,,,,,,,,,Heavyweight,,,2020-08-29,2022-05-28,2026-11-05
+Jacek Buczko,jacek-buczko,https://www.espn.com/mma/fighter/_/id/2500766,,,inactive,1-4-0,,1,4,0,,,,,,,,default,,,,,,,2005-01-15,2005-09-10,2026-11-02
+Jacek Gac,jacek-gac,https://www.sherdog.com/fighter/Jacek-Gac-422623,,Siexa,active,,,,,,,,,,,,,,,,,Catch Weight,,,2023-11-11,2026-04-18,2026-11-05
+Jakub Kamieniarz,jakub-kamieniarz,https://www.espn.com/mma/fighter/_/id/5016772,,,inactive,1-1-0,,1,1,0,,31,182.9,170.0,,,,Poland,pl,Poland,,,,,2019-04-27,2021-06-05,2026-11-02
 Jakub Wikłacz,jakub-wiklacz,https://www.espn.com/mma/fighter/_/id/4371005,,Masa,active,18-3-2,,18,3,2,,30,177.8,135.5,182.9,,,Poland,pl,Poland,Czerwony Smok,Bantamweight,https://a.espncdn.com/i/headshots/mma/players/full/4371005.png,,2020-07-11,2024-06-07,2026-11-02
 James Irvin,james-irvin,https://www.espn.com/mma/fighter/_/id/2335458,,The Sandman,inactive,17-10-0,,17,10,0,,48,188.0,185.0,190.5,,,default,,,,Light Heavyweight,,,2011-03-19,2011-03-19,2026-11-02
 James McSweeney,james-mcsweeney,https://www.espn.com/mma/fighter/_/id/2354228,,,inactive,15-18-0,,15,18,0,,46,193.0,250.0,195.6,,,England,gb-eng,"London, England",Tiger Muay Thai,,,,2015-10-31,2018-10-06,2026-11-02
 James Thompson,james-thompson,https://www.espn.com/mma/fighter/_/id/2354555,,The Colossus,inactive,20-17-0,,20,17,0,,47,195.6,265.0,,,,default,,"London, England",London Shootfighters,Heavyweight,,,2011-05-21,2011-11-26,2026-11-02
-James Zikic,james-zikic,https://www.espn.com/mma/fighter/_/id/2431321,,The Messenger,inactive,3-6-1,,3,6,1,,49,188.0,205.0,,,,England,gb-eng,"Watford, England",,,,,2011-05-21,2011-05-21,2026-11-02
+James Zikic,james-zikic,https://www.espn.com/mma/fighter/_/id/2431321,,The Messenger,inactive,3-6-1,,3,6,1,,49,188.0,205.0,,,,England,gb-eng,"Watford, England",,,,,2009-12-11,2011-05-21,2026-11-02
 Jamie Sloane,jamie-sloane,https://www.espn.com/mma/fighter/_/id/3988908,,,inactive,5-3-0,,5,3,0,,,,205.0,,,,England,gb-eng,"Bournemouth, England",,,,,2018-10-06,2018-10-06,2026-11-02
 Jan Antoska,jan-antoska,https://www.espn.com/mma/fighter/_/id/2555360,,,inactive,0-2-0,,0,2,0,,,,,,,,default,,,,Light Heavyweight,,,2007-06-02,2007-06-02,2026-11-02
 Jan Blachowicz,jan-blachowicz,https://www.espn.com/mma/fighter/_/id/2506250,,,active,29-12-2,,29,12,2,,43,188.0,205.0,198.1,,,Poland,pl,Poland,Berkut WCA Fight Team,Light Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/2506250.png,,2007-09-15,2013-03-16,2026-11-02
-Jan Masek,jan-masek,https://www.sherdog.com/fighter/Jan-Masek-287083,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-10-18,2026-04-18,2026-11-02
+Jan Masek,jan-masek,https://www.sherdog.com/fighter/Jan-Masek-287083,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-10-18,2026-04-18,2026-11-05
 Jasminka Cive,jasminka-cive,https://www.espn.com/mma/fighter/_/id/3025709,,,inactive,5-2-0,,5,2,0,,45,167.6,115.0,,,,default,,,,Women's Strawweight,,,2014-05-17,2014-05-17,2026-11-02
+Jason Guida,jason-guida,https://www.sherdog.com/fighter/Jason-Guida-8185,,,inactive,,,,,,,,,,,,,,,,,,,,2005-09-10,2005-09-10,2026-11-05
 Jason Radcliffe,jason-radcliffe,https://www.espn.com/mma/fighter/_/id/4013798,,The Assassin,inactive,17-10-0,,17,10,0,,41,185.4,185.0,193.0,,,England,gb-eng,"London, England",Phuket Top Team,Light Heavyweight,,,2019-09-14,2022-08-20,2026-11-02
 Jason Wilnis,jason-wilnis,https://www.espn.com/mma/fighter/_/id/5081129,,,inactive,0-2-0,,0,2,0,,35,182.9,185.0,186.7,,,Netherlands,nl,Netherlands,,Middleweight,,,2022-05-28,2022-05-28,2026-11-02
 Jay Silva,jay-silva,https://www.espn.com/mma/fighter/_/id/2487259,,,inactive,12-13-1,,12,13,1,,45,188.0,225.0,190.5,,,United States,us,"Huntington Beach, USA",,,,,2012-05-12,2017-10-22,2026-11-02
+Jedrzej Kubski,jedrzej-kubski,https://www.sherdog.com/fighter/Jedrzej-Kubski-10908,,Wegorz,inactive,,,,,,,,,,,,,,,,,,,,2008-09-13,2008-09-13,2026-11-05
 Jedrzej Mackowiak,jedrzej-mackowiak,https://www.espn.com/mma/fighter/_/id/4079297,,,inactive,0-2-0,,0,2,0,,,193.0,260.0,,,,default,,"Radomsko, Poland",,,,,2016-03-05,2016-03-05,2026-11-02
 Jefferson George,jefferson-george,https://www.espn.com/mma/fighter/_/id/3162128,,Shadow Demon Blaximus,inactive,1-6-0,,1,6,0,,,,155.0,,,,England,gb-eng,"Luton, England",,Lightweight,,,2014-05-17,2014-05-17,2026-11-02
 Jesse Taylor,jesse-taylor,https://www.espn.com/mma/fighter/_/id/2354293,,JT Money,active,34-17-0,,34,17,0,,43,185.4,185.0,185.4,,,United States,us,USA,The Arena,Middleweight,https://a.espncdn.com/i/headshots/mma/players/full/2354293.png,,2011-11-26,2015-10-31,2026-11-02
 Jimmy Wallhead,jimmy-wallhead,https://www.espn.com/mma/fighter/_/id/2528568,,Judo,active,33-12-0,,33,12,0,,46,177.8,170.0,185.4,,,England,gb-eng,England,Team Rough House,Welterweight,https://a.espncdn.com/i/headshots/mma/players/full/2528568.png,,2015-10-31,2015-10-31,2026-11-02
 Jivko Stoimenov,jivko-stoimenov,https://www.espn.com/mma/fighter/_/id/4348819,,Bulgarian Ripper,active,1-4-0,,1,4,0,,30,177.8,170.0,177.8,,,Bulgaria,bg,Bulgaria,,Welterweight,,,2022-04-23,2023-02-25,2026-11-02
-Joel Kouadja,joel-kouadja,https://www.sherdog.com/fighter/Joel-Kouadja-127291,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-05-10,2025-05-10,2026-11-02
+Joel Kouadja,joel-kouadja,https://www.sherdog.com/fighter/Joel-Kouadja-127291,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-05-10,2025-05-10,2026-11-05
 John Maguire,john-maguire,https://www.espn.com/mma/fighter/_/id/2559233,,The One,inactive,26-12-0,,26,12,0,,43,175.3,175.0,175.3,,,England,gb-eng,England,Tsunami Gym,Lightweight,https://a.espncdn.com/i/headshots/mma/players/full/2559233.png,,2016-12-03,2016-12-03,2026-11-02
 Joilton Lutterbach,joilton-lutterbach,https://www.espn.com/mma/fighter/_/id/3895855,,Peregrino,active,38-10-0,,38,10,0,,33,182.9,170.0,188.0,,,Germany,de,Germany,UFD Gym,Middleweight,https://a.espncdn.com/i/headshots/mma/players/full/3895855.png,,2019-09-14,2019-09-14,2026-11-02
-Jordan Nandor,jordan-nandor,https://www.sherdog.com/fighter/Jordan-Nandor-440550,,Sandman,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2025-03-08,2026-02-21,2026-11-02
+Jonatan Kujawa,jonatan-kujawa,https://www.sherdog.com/fighter/Jonatan-Kujawa-216125,,,inactive,,,,,,,,,,,,,,,,,Featherweight,,,2023-04-22,2023-04-22,2026-11-05
+Jordan Nandor,jordan-nandor,https://www.sherdog.com/fighter/Jordan-Nandor-440550,,Sandman,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2025-03-08,2026-02-21,2026-11-05
+Jordan Radev,jordan-radev,https://www.sherdog.com/fighter/Jordan-Radev-5925,,,inactive,,,,,,,,,,,,,,,,,,,,2006-06-02,2008-05-09,2026-11-05
+Jorge Bueno,jorge-bueno,https://www.sherdog.com/fighter/Jorge-Bueno-260409,,Jorginho,inactive,,,,,,,,,,,,,,,,,Middleweight,,,2023-02-25,2023-11-11,2026-11-05
 Jorge Luis Bezerra,jorge-luis-bezerra,https://www.espn.com/mma/fighter/_/id/2565279,,Michelan,inactive,19-12-0,,19,12,0,,40,,185.0,,,,default,,"San Paulo, Brazil",Checkmat,,,,2014-10-04,2014-10-04,2026-11-02
-Josef Stummer,josef-stummer,https://www.sherdog.com/fighter/Josef-Stummer-375326,,Air,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-02-21,2026-09-19,2026-11-02
+Jose Marcos Lima Santiago Jr.,jose-marcos-lima-santiago-jr,https://www.sherdog.com/fighter/Jose-Marcos-Lima-Santiago-Jr-38528,,Maju,inactive,,,,,,,,,,,,,,,,,Featherweight,,,2022-03-19,2022-03-19,2026-11-05
+Josef Stummer,josef-stummer,https://www.sherdog.com/fighter/Josef-Stummer-375326,,Air,active,,,,,,,,,,,,,,,,,Featherweight,,,2023-04-22,2026-09-19,2026-11-05
 Julio Brutus,julio-brutus,https://www.espn.com/mma/fighter/_/id/2506256,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,Light Heavyweight,,,2010-05-07,2010-05-07,2026-11-02
-Julio Cesar Neves Jr.,julio-cesar-neves-jr,https://www.sherdog.com/fighter/Julio-Cesar-Neves-Jr-85818,,Morceguinho,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-01-25,2025-01-25,2026-11-02
-Kacper Cholewa,kacper-cholewa,https://www.sherdog.com/fighter/Kacper-Cholewa-404118,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2026-10-10,2026-10-10,2026-11-02
-Kacper Formela,kacper-formela,https://www.espn.com/mma/fighter/_/id/4373261,,Polish Machida,active,1-3-0,,1,3,0,,30,172.7,145.0,,,,Poland,pl,Poland,,Featherweight,,,2024-11-16,2026-09-19,2026-11-02
-Kacper Fornalski,kacper-fornalski,https://www.sherdog.com/fighter/Kacper-Fornalski-409551,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2025-05-10,2026-02-21,2026-11-02
-Kacper Koziorzebski,kacper-koziorzebski,https://www.espn.com/mma/fighter/_/id/5007664,,,active,0-3-0,,0,3,0,,31,182.9,170.0,186.7,,,Poland,pl,"Wroclaw, Poland",,Welterweight,,,2020-12-19,2026-09-19,2026-11-02
-Kacper Paczoski,kacper-paczoski,https://www.sherdog.com/fighter/Kacper-Paczoski-435354,,Papa,active,,,,,,,,,,,,,,,,,Heavyweight,,,2025-10-18,2026-10-10,2026-11-02
-Kacper Pakeltys,kacper-pakeltys,https://www.sherdog.com/fighter/Kacper-Pakeltys-428985,,Sandro,active,,,,,,,,,,,,,,,,,Middleweight,,,2026-02-21,2026-02-21,2026-11-02
-Kacper Sochacki,kacper-sochacki,https://www.sherdog.com/fighter/Kacper-Sochacki-336517,,,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2026-02-21,2026-02-21,2026-11-02
-Kacper Wrobel,kacper-wrobel,https://www.sherdog.com/fighter/Kacper-Wrobel-288429,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2026-06-20,2026-06-20,2026-11-02
+Julio Cesar Neves Jr.,julio-cesar-neves-jr,https://www.sherdog.com/fighter/Julio-Cesar-Neves-Jr-85818,,Morceguinho,active,,,,,,,,,,,,,,,,,Featherweight,,,2024-03-16,2025-01-25,2026-11-05
+Julio Cezar de Lima,julio-cezar-de-lima,https://www.sherdog.com/fighter/Julio-Cezar-de-Lima-56026,,Brutus,inactive,,,,,,,,,,,,,,,,,,,,2010-05-07,2010-05-07,2026-11-05
+Justyna Haba,justyna-haba,https://www.sherdog.com/fighter/Justyna-Haba-172509,,Lara Croft,inactive,,,,,,,,,,,,,,,,,Flyweight,,,2020-11-14,2020-11-14,2026-11-05
+Kacper Cholewa,kacper-cholewa,https://www.sherdog.com/fighter/Kacper-Cholewa-404118,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2026-10-10,2026-10-10,2026-11-05
+Kacper Formela,kacper-formela,https://www.espn.com/mma/fighter/_/id/4373261,,Polish Machida,active,1-3-0,,1,3,0,,30,172.7,145.0,,,,Poland,pl,Poland,,Featherweight,,,2024-05-11,2026-09-19,2026-11-02
+Kacper Fornalski,kacper-fornalski,https://www.sherdog.com/fighter/Kacper-Fornalski-409551,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2024-09-14,2026-02-21,2026-11-05
+Kacper Karski,kacper-karski,https://www.sherdog.com/fighter/Kacper-Karski-75465,,,inactive,,,,,,,,,,,,,,,,,Middleweight,,,2024-07-20,2024-07-20,2026-11-05
+Kacper Koziorzebski,kacper-koziorzebski,https://www.espn.com/mma/fighter/_/id/5007664,,,active,0-3-0,,0,3,0,,31,182.9,170.0,186.7,,,Poland,pl,"Wroclaw, Poland",,Welterweight,,,2020-08-29,2026-09-19,2026-11-02
+Kacper Paczoski,kacper-paczoski,https://www.sherdog.com/fighter/Kacper-Paczoski-435354,,Papa,active,,,,,,,,,,,,,,,,,Heavyweight,,,2025-10-18,2026-10-10,2026-11-05
+Kacper Pakeltys,kacper-pakeltys,https://www.sherdog.com/fighter/Kacper-Pakeltys-428985,,Sandro,active,,,,,,,,,,,,,,,,,Middleweight,,,2026-02-21,2026-02-21,2026-11-05
+Kacper Sochacki,kacper-sochacki,https://www.sherdog.com/fighter/Kacper-Sochacki-336517,,,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2026-02-21,2026-02-21,2026-11-05
+Kacper Wrobel,kacper-wrobel,https://www.sherdog.com/fighter/Kacper-Wrobel-288429,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2026-06-20,2026-06-20,2026-11-05
 Kalindra Faria,kalindra-faria,https://www.espn.com/mma/fighter/_/id/3024386,,,active,19-10-1,,19,10,1,,40,170.2,115.0,157.5,,,Brazil,br,Brazil,Macaco Gold Team,Women's Flyweight,https://a.espncdn.com/i/headshots/mma/players/full/3024386.png,,2015-02-21,2015-02-21,2026-11-02
-Kamil Gawryjolek,kamil-gawryjolek,https://www.sherdog.com/fighter/Kamil-Gawryjolek-379845,,The Little,active,,,,,,,,,,,,,,,,,Heavyweight,,,2025-01-25,2025-01-25,2026-11-02
-Kamil Korzeniowski,kamil-korzeniowski,https://www.sherdog.com/fighter/Kamil-Korzeniowski-301803,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2026-10-10,2026-10-10,2026-11-02
-Kamil Selwa,kamil-selwa,https://www.espn.com/mma/fighter/_/id/3734392,,,inactive,0-4-0,,0,4,0,,,172.7,145.0,,,,Poland,pl,"Kolbuszowa, Poland",,Featherweight,,,2018-04-14,2018-04-14,2026-11-02
-Kamil Szkaradek,kamil-szkaradek,https://www.sherdog.com/fighter/Kamil-Szkaradek-360795,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-06-14,2025-11-15,2026-11-02
+Kamil Gawryjolek,kamil-gawryjolek,https://www.sherdog.com/fighter/Kamil-Gawryjolek-379845,,The Little,active,,,,,,,,,,,,,,,,,Heavyweight,,,2022-11-12,2025-01-25,2026-11-05
+Kamil Korzeniowski,kamil-korzeniowski,https://www.sherdog.com/fighter/Kamil-Korzeniowski-301803,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2026-10-10,2026-10-10,2026-11-05
+Kamil Selwa,kamil-selwa,https://www.espn.com/mma/fighter/_/id/3734392,,,inactive,0-4-0,,0,4,0,,,172.7,145.0,,,,Poland,pl,"Kolbuszowa, Poland",,Featherweight,,,2017-04-07,2018-04-14,2026-11-02
+Kamil Szkaradek,kamil-szkaradek,https://www.sherdog.com/fighter/Kamil-Szkaradek-360795,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2022-10-14,2025-11-15,2026-11-05
 Kamil Szymuszowski,kamil-szymuszowski,https://www.espn.com/mma/fighter/_/id/3892397,,,inactive,15-7-0,,15,7,0,,37,185.4,155.0,,,,Poland,pl,"Warsaw, Poland",,,,,2015-05-23,2020-07-11,2026-11-02
 Kamil Walus,kamil-walus,https://www.espn.com/mma/fighter/_/id/3042000,,,inactive,0-2-0,,0,2,0,,,,265.0,,,,default,,,,,,,2013-12-07,2014-10-04,2026-11-02
 Karl Knothe,karl-knothe,https://www.espn.com/mma/fighter/_/id/2555005,,,inactive,1-4-0,,1,4,0,,,,,,,,default,,,,Heavyweight,,,2012-09-15,2012-09-15,2026-11-02
 Karlo Caput,karlo-caput,https://www.espn.com/mma/fighter/_/id/4794111,,Croation Cowboy,active,0-4-0,,0,4,0,,34,180.3,155.0,180.3,,,Croatia,hr,Croatia,,Lightweight,,,2020-08-29,2020-08-29,2026-11-02
 Karol Bedorf,karol-bedorf,https://www.espn.com/mma/fighter/_/id/2967033,,,inactive,15-5-0,,15,5,0,,43,188.0,228.0,,,,default,,"Warsaw, Poland",,Heavyweight,,,2007-11-10,2019-05-18,2026-11-02
 Karol Celinski,karol-celinski,https://www.espn.com/mma/fighter/_/id/3039198,,Cebula,inactive,16-8-1,,16,8,1,,46,188.0,205.0,,,,Poland,pl,"Warsaw, Poland",Arrachion MMA Olsztyn,Light Heavyweight,,,2014-03-22,2015-05-23,2026-11-02
-Karol Durszlewicz,karol-durszlewicz,https://www.sherdog.com/fighter/Karol-Durszlewicz-312981,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-07-19,2026-02-21,2026-11-02
+Karol Durszlewicz,karol-durszlewicz,https://www.sherdog.com/fighter/Karol-Durszlewicz-312981,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-07-19,2026-02-21,2026-11-05
+Karol Kutyla,karol-kutyla,https://www.sherdog.com/fighter/Karol-Kutyla-328051,,The Thai Butcher,inactive,,,,,,,,,,,,,,,,,Catch Weight,,,2024-10-19,2024-10-19,2026-11-05
 Karolina Kowalkiewicz,karolina-kowalkiewicz,https://www.espn.com/mma/fighter/_/id/3102702,,,active,16-10-0,,16,10,0,,41,160.0,116.0,162.6,,,Poland,pl,Poland,American Top Team,Women's Strawweight,https://a.espncdn.com/i/headshots/mma/players/full/3102702.png,,2012-12-01,2015-02-21,2026-11-02
-Karolina Vankova,karolina-vankova,https://www.sherdog.com/fighter/Karolina-Vankova-485216,,,active,,,,,,,,,,,,,,,,,Catch Weight,,,2025-10-18,2025-10-18,2026-11-02
+Karolina Owczarz,karolina-owczarz,https://www.sherdog.com/fighter/Karolina-Owczarz-272933,,Owca,inactive,,,,,,,,,,,,,,,,,Flyweight,,,2018-03-03,2023-04-22,2026-11-05
+Karolina Vankova,karolina-vankova,https://www.sherdog.com/fighter/Karolina-Vankova-485216,,,active,,,,,,,,,,,,,,,,,Catch Weight,,,2025-10-18,2025-10-18,2026-11-05
 Karolina Wojcik,karolina-wojcik,https://www.espn.com/mma/fighter/_/id/4683551,,Polish Assassin,active,12-6-0,,12,6,0,,32,157.5,115.0,157.5,,,Poland,pl,Poland,Grappling Krakow,Women's Strawweight,,,2020-10-10,2021-04-24,2026-11-02
 Katarzyna Lubonska,katarzyna-lubonska,https://www.espn.com/mma/fighter/_/id/4293380,,,inactive,0-2-0,,0,2,0,,,,,,,,default,,,,,,,2015-11-28,2016-10-01,2026-11-02
 Kazuki Tokudome,kazuki-tokudome,https://www.espn.com/mma/fighter/_/id/2525965,,,active,20-12-1,,20,12,1,,39,180.3,145.0,185.4,,,Japan,jp,"Tokyo, Japan",Paraestra Hachioji,Lightweight,https://a.espncdn.com/i/headshots/mma/players/full/2525965.png,,2010-09-18,2010-09-18,2026-11-02
 Kendall Grove,kendall-grove,https://www.espn.com/mma/fighter/_/id/2335737,,Da Spyder,active,24-19-0,,24,19,0,,43,198.1,185.0,200.7,,,United States,us,USA,,Middleweight,https://a.espncdn.com/i/headshots/mma/players/full/2335737.png,,2012-12-01,2023-01-21,2026-11-02
-Kenji Bortoluzzi,kenji-bortoluzzi,https://www.sherdog.com/fighter/Kenji-Bortoluzzi-133565,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-06-14,2025-06-14,2026-11-02
+Kenji Bortoluzzi,kenji-bortoluzzi,https://www.sherdog.com/fighter/Kenji-Bortoluzzi-133565,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2024-04-06,2025-06-14,2026-11-05
 Kerim Abzailov,kerim-abzailov,https://www.espn.com/mma/fighter/_/id/3046958,,,inactive,0-2-0,,0,2,0,,,,,,,,default,,,,,,,2008-09-13,2008-09-13,2026-11-02
 Kevin Asplund,kevin-asplund,https://www.espn.com/mma/fighter/_/id/2959234,,,inactive,0-9-0,,0,9,0,,,,,,,,default,,,,,,,2013-03-16,2013-03-16,2026-11-02
 Kleber Koike Erbst,kleber-koike-erbst,https://www.espn.com/mma/fighter/_/id/3091344,,,active,33-8-1,,33,8,1,,37,175.3,145.0,179.1,,,Japan,jp,Japan,Bonsai Jiu-Jitsu,Featherweight,,,2015-02-21,2018-12-01,2026-11-02
 Kleber Silva,kleber-silva,https://www.espn.com/mma/fighter/_/id/2990567,,Orgulho,active,5-7-0,,5,7,0,,38,185.4,205.0,195.6,,,Brazil,br,Brazil,Nordeste Jiu-Jitsu,Light Heavyweight,,,2023-01-21,2025-01-25,2026-11-02
-Konrad Rusinski,konrad-rusinski,https://www.sherdog.com/fighter/Konrad-Rusinski-235385,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2026-01-17,2026-06-20,2026-11-02
+Konrad Dyrschka,konrad-dyrschka,https://www.sherdog.com/fighter/Konrad-Dyrschka-146027,,,inactive,,,,,,,,,,,,,,,,,Lightweight,,,2021-03-20,2021-03-20,2026-11-05
+Konrad Iwanowski,konrad-iwanowski,https://www.sherdog.com/fighter/Konrad-Iwanowski-77340,,Moto Moto,inactive,,,,,,,,,,,,,,,,,Welterweight,,,2017-10-22,2017-10-22,2026-11-05
+Konrad Rusinski,konrad-rusinski,https://www.sherdog.com/fighter/Konrad-Rusinski-235385,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2023-11-11,2026-06-20,2026-11-05
 Konstantin Gluhov,konstantin-gluhov,https://www.espn.com/mma/fighter/_/id/2506255,,,inactive,29-16-0,,29,16,0,,46,188.0,257.0,,,,default,,"Riga, Latvia",,,,,2009-12-11,2010-05-07,2026-11-02
-Kristians Boguzs,kristians-boguzs,https://www.sherdog.com/fighter/Kristians-Boguzs-395537,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2026-02-21,2026-10-10,2026-11-02
-Krystian Blezien,krystian-blezien,https://www.sherdog.com/fighter/Krystian-Blezien-263075,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2025-05-10,2025-09-20,2026-11-02
-Krystian Kaszubowski,krystian-kaszubowski,https://www.espn.com/mma/fighter/_/id/4419624,,Kris,active,0-4-0,,0,4,0,,32,180.3,170.0,180.3,,,Poland,pl,"Warsaw, Poland",,Welterweight,,,2019-05-18,2025-11-15,2026-11-02
-Krzysztof Geburek,krzysztof-geburek,https://www.sherdog.com/fighter/Krzysztof-Geburek-411685,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-12-20,2025-12-20,2026-11-02
-Krzysztof Glowacki,krzysztof-glowacki,https://www.sherdog.com/fighter/Krzysztof-Glowacki-425126,,Glowka,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2025-03-08,2025-03-08,2026-11-02
-Krzysztof Klaczek,krzysztof-klaczek,https://www.espn.com/mma/fighter/_/id/3655073,,The Cage Master,inactive,1-5-0,,1,5,0,,37,170.2,145.0,177.8,,,Poland,pl,"Konin, Poland",,Featherweight,,,2021-04-24,2021-04-24,2026-11-02
+Kristians Boguzs,kristians-boguzs,https://www.sherdog.com/fighter/Kristians-Boguzs-395537,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2026-02-21,2026-10-10,2026-11-05
+Krystian Bielski,krystian-bielski,https://www.sherdog.com/fighter/Krystian-Bielski-224897,,,inactive,,,,,,,,,,,,,,,,,Middleweight,,,2022-08-20,2024-06-07,2026-11-05
+Krystian Blezien,krystian-blezien,https://www.sherdog.com/fighter/Krystian-Blezien-263075,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2024-08-24,2025-09-20,2026-11-05
+Krystian Kaszubowski,krystian-kaszubowski,https://www.espn.com/mma/fighter/_/id/4419624,,Kris,active,0-4-0,,0,4,0,,32,180.3,170.0,180.3,,,Poland,pl,"Warsaw, Poland",,Welterweight,,,2018-03-03,2025-11-15,2026-11-02
+Krzysztof Geburek,krzysztof-geburek,https://www.sherdog.com/fighter/Krzysztof-Geburek-411685,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-12-20,2025-12-20,2026-11-05
+Krzysztof Glowacki,krzysztof-glowacki,https://www.sherdog.com/fighter/Krzysztof-Glowacki-425126,,Glowka,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2023-06-03,2025-03-08,2026-11-05
+Krzysztof Klaczek,krzysztof-klaczek,https://www.espn.com/mma/fighter/_/id/3655073,,The Cage Master,inactive,1-5-0,,1,5,0,,37,170.2,145.0,177.8,,,Poland,pl,"Konin, Poland",,Featherweight,,,2019-03-23,2021-04-24,2026-11-02
 Krzysztof Kulak,krzysztof-kulak,https://www.espn.com/mma/fighter/_/id/2506252,,Model,inactive,4-12-0,,4,12,0,,45,188.0,185.0,,,,Poland,pl,Poland,,Middleweight,,,2006-10-14,2016-03-05,2026-11-02
-Krzysztof Mendlewski,krzysztof-mendlewski,https://www.sherdog.com/fighter/Krzysztof-Mendlewski-191881,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2026-03-14,2026-03-14,2026-11-02
+Krzysztof Mendlewski,krzysztof-mendlewski,https://www.sherdog.com/fighter/Krzysztof-Mendlewski-191881,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2026-03-14,2026-03-14,2026-11-05
+Krzysztof Mila,krzysztof-mila,https://www.sherdog.com/fighter/Krzysztof-Mila-14579,,,inactive,,,,,,,,,,,,,,,,,,,,2004-10-06,2004-10-06,2026-11-05
+Krzysztof Sadecki,krzysztof-sadecki,https://www.sherdog.com/fighter/Krzysztof-Sadecki-46540,,,inactive,,,,,,,,,,,,,,,,,,,,2009-05-15,2009-05-15,2026-11-05
 Laid Zerhouni,laid-zerhouni,https://www.espn.com/mma/fighter/_/id/4580867,,,active,1-6-0,,1,6,0,,31,172.7,185.0,188.0,,,France,fr,"Montpellier, France",,Middleweight,,,2024-01-20,2026-10-10,2026-11-02
-Laura Grzyb,laura-grzyb,https://www.sherdog.com/fighter/Laura-Grzyb-472215,,,active,,,,,,,,,,,,,,,,,Flyweight,,,2025-04-26,2026-07-18,2026-11-02
-Lemmy Krusic,lemmy-krusic,https://www.espn.com/mma/fighter/_/id/3153224,,The War Dog,inactive,2-3-0,,2,3,0,,37,170.2,135.0,174.0,,,Slovenia,si,"Ljubljana, Slovenia",American Top Team Zagreb,Bantamweight,,,2019-11-09,2019-11-09,2026-11-02
-Leo Brichta,leo-brichta,https://www.sherdog.com/fighter/Leo-Brichta-212373,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-02-21,2026-09-19,2026-11-02
+Laura Grzyb,laura-grzyb,https://www.sherdog.com/fighter/Laura-Grzyb-472215,,,active,,,,,,,,,,,,,,,,,Flyweight,,,2025-04-26,2026-07-18,2026-11-05
+Lech Zamorski,lech-zamorski,https://www.sherdog.com/fighter/Lech-Zamorski-30825,,,inactive,,,,,,,,,,,,,,,,,,,,2008-03-29,2008-03-29,2026-11-05
+Lemmy Krusic,lemmy-krusic,https://www.espn.com/mma/fighter/_/id/3153224,,The War Dog,inactive,2-3-0,,2,3,0,,37,170.2,135.0,174.0,,,Slovenia,si,"Ljubljana, Slovenia",American Top Team Zagreb,Bantamweight,,,2019-11-09,2021-07-17,2026-11-02
+Leo Brichta,leo-brichta,https://www.sherdog.com/fighter/Leo-Brichta-212373,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2023-06-03,2026-09-19,2026-11-05
+Leo Zulic,leo-zulic,https://www.sherdog.com/fighter/Leo-Zulic-126135,,,inactive,,,,,,,,,,,,,,,,,Lightweight,,,2018-06-09,2018-06-09,2026-11-05
 Leonardo Damiani,leonardo-damiani,https://www.espn.com/mma/fighter/_/id/4410116,,Ram,active,11-7-1,,11,7,1,,36,177.8,170.0,176.5,,,Italy,it,Italy,Aurora MMA,Welterweight,https://a.espncdn.com/i/headshots/mma/players/full/4410116.png,,2024-09-14,2024-09-14,2026-11-02
 Leszek Krakowski,leszek-krakowski,https://www.espn.com/mma/fighter/_/id/3948784,,Polish Terminator,inactive,3-1-0,,3,1,0,,40,172.7,155.0,179.1,,,Poland,pl,"Warsaw, Poland",,Featherweight,,,2015-10-31,2019-05-18,2026-11-02
 Lionel Padilla,lionel-padilla,https://www.espn.com/mma/fighter/_/id/5138903,,,active,0-2-0,,0,2,0,,41,175.3,170.0,,,,Spain,es,Spain,,,,,2021-03-20,2021-03-20,2026-11-02
 Lom-Ali Eskiev,lom-ali-eskiev,https://www.espn.com/mma/fighter/_/id/4321977,,Leon,active,21-7-0,,21,7,0,,34,170.2,155.0,170.2,,,Germany,de,Germany,UFD Gym,Lightweight,,,2021-07-17,2023-09-16,2026-11-02
+Lubos Lesak,lubos-lesak,https://www.sherdog.com/fighter/Lubos-Lesak-370928,,,inactive,,,,,,,,,,,,,,,,,Featherweight,,,2022-04-23,2022-04-23,2026-11-05
 Lucasz Sudolski,lucasz-sudolski,https://www.espn.com/mma/fighter/_/id/4873641,,,active,10-3-0,,10,3,0,,33,193.0,205.0,191.8,,,Poland,pl,Poland,,Light Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/4873641.png,,2023-01-21,2023-09-16,2026-11-02
 Luis Henrique,luis-henrique,https://www.espn.com/mma/fighter/_/id/3164008,,KLB,inactive,12-7-0,,12,7,0,,33,188.0,255.0,188.0,,,Brazil,br,Brazil,Tata Fight Team,Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/3164008.png,,2019-05-18,2019-09-14,2026-11-02
 Luiz Cado,luiz-cado,https://www.espn.com/mma/fighter/_/id/3147309,,Golden Boy,inactive,2-4-1,,2,4,1,,33,182.9,170.0,,,,Brazil,br,Brazil,CM System,Welterweight,,,2013-12-07,2013-12-07,2026-11-02
-Luka Vrtacic,luka-vrtacic,https://www.sherdog.com/fighter/Luka-Vrtacic-425324,,,active,,,,,,,,,,,,,,,,,Middleweight,,,2026-04-18,2026-04-18,2026-11-02
-Lukasz Bienkowski,lukasz-bienkowski,https://www.espn.com/mma/fighter/_/id/4708542,,,inactive,1-1-0,,1,1,0,,40,182.9,185.0,180.3,,,Poland,pl,Poland,,Middleweight,,,2020-07-11,2020-07-11,2026-11-02
-Lukasz Charzewski,lukasz-charzewski,https://www.sherdog.com/fighter/Lukasz-Charzewski-255553,,Harry,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-02-21,2026-09-19,2026-11-02
+Luka Vrtacic,luka-vrtacic,https://www.sherdog.com/fighter/Luka-Vrtacic-425324,,,active,,,,,,,,,,,,,,,,,Middleweight,,,2026-04-18,2026-04-18,2026-11-05
+Lukas Dvorak,lukas-dvorak,https://www.sherdog.com/fighter/Lukas-Dvorak-53756,,Fuki,inactive,,,,,,,,,,,,,,,,,Catch Weight,,,2023-10-14,2023-10-14,2026-11-05
+Lukasz Bienkowski,lukasz-bienkowski,https://www.espn.com/mma/fighter/_/id/4708542,,,inactive,1-1-0,,1,1,0,,40,182.9,185.0,180.3,,,Poland,pl,Poland,,Middleweight,,,2017-04-07,2020-07-11,2026-11-02
+Lukasz Charzewski,lukasz-charzewski,https://www.sherdog.com/fighter/Lukasz-Charzewski-255553,,Harry,active,,,,,,,,,,,,,,,,,Featherweight,,,2023-12-16,2026-09-19,2026-11-05
 Lukasz Chlewicki,lukasz-chlewicki,https://www.espn.com/mma/fighter/_/id/2447644,,,inactive,14-8-1,,14,8,1,,47,165.1,155.0,,,,default,,"Krakow, Poland",Grappling Krakow,Lightweight,,,2005-01-15,2018-04-14,2026-11-02
 Lukasz Christ,lukasz-christ,https://www.espn.com/mma/fighter/_/id/3088222,,,inactive,0-3-0,,0,3,0,,,,,,,,default,,,,,,,2009-05-15,2009-05-15,2026-11-02
+Lukasz Dzialowy,lukasz-dzialowy,https://www.sherdog.com/fighter/Lukasz-Dzialowy-24103,,,inactive,,,,,,,,,,,,,,,,,,,,2010-10-09,2010-10-09,2026-11-05
 Lukasz Jurkowski,lukasz-jurkowski,https://www.espn.com/mma/fighter/_/id/2504945,,,inactive,17-12-0,,17,12,0,,45,185.4,205.0,,,,default,,"Warsaw, Poland",,,,,2004-02-26,2021-06-05,2026-11-02
 Lukasz Parobiec,lukasz-parobiec,https://www.espn.com/mma/fighter/_/id/4277836,,,inactive,12-9-2,,12,9,2,,,,205.0,,,,Poland,pl,"Gdansk, Poland",,,,,2018-10-06,2018-10-06,2026-11-02
-Lukasz Rajewski,lukasz-rajewski,https://www.espn.com/mma/fighter/_/id/3161790,,Raju,active,0-6-0,,0,6,0,,37,175.3,155.0,,,,Poland,pl,"Plock, Poland",,Lightweight,,,2014-05-17,2022-01-15,2026-11-02
-Lukasz Skibski,lukasz-skibski,https://www.espn.com/mma/fighter/_/id/2506258,,,inactive,0-1-0,,0,1,0,,,,205.0,,,,default,,,,Light Heavyweight,,,2010-05-07,2010-05-07,2026-11-02
-Lukasz Wos,lukasz-wos,https://www.espn.com/mma/fighter/_/id/3087491,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2007-11-10,2007-11-10,2026-11-02
-Maciej Gorski,maciej-gorski,https://www.espn.com/mma/fighter/_/id/2525964,,,inactive,2-0-0,,2,0,0,,,,,,,,default,,,,Lightweight,,,2010-09-18,2010-09-18,2026-11-02
-Maciej Jewtuszko,maciej-jewtuszko,https://www.espn.com/mma/fighter/_/id/2504176,,Irokez,inactive,12-4-0,,12,4,0,,45,182.9,170.0,,,,Poland,pl,"Warsaw, Poland",,Welterweight,,,2011-11-26,2017-10-22,2026-11-02
+Lukasz Rajewski,lukasz-rajewski,https://www.espn.com/mma/fighter/_/id/3161790,,Raju,active,0-6-0,,0,6,0,,37,175.3,155.0,,,,Poland,pl,"Plock, Poland",,Lightweight,,,2014-05-17,2023-08-19,2026-11-02
+Lukasz Skibski,lukasz-skibski,https://www.espn.com/mma/fighter/_/id/2506258,,,inactive,0-1-0,,0,1,0,,,,205.0,,,,default,,,,Light Heavyweight,,,2010-04-01,2010-05-07,2026-11-02
+Lukasz Wos,lukasz-wos,https://www.espn.com/mma/fighter/_/id/3087491,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2007-11-10,2008-12-12,2026-11-02
+Maciej Gorski,maciej-gorski,https://www.espn.com/mma/fighter/_/id/2525964,,,inactive,2-0-0,,2,0,0,,,,,,,,default,,,,Lightweight,,,2006-06-02,2011-03-19,2026-11-02
+Maciej Jewtuszko,maciej-jewtuszko,https://www.espn.com/mma/fighter/_/id/2504176,,Irokez,inactive,12-4-0,,12,4,0,,45,182.9,170.0,,,,Poland,pl,"Warsaw, Poland",,Welterweight,,,2011-11-26,2024-03-16,2026-11-02
 Maciej Kalicinski,maciej-kalicinski,https://www.espn.com/mma/fighter/_/id/4794113,,Loken,inactive,0-1-0,,0,1,0,,31,185.4,155.0,189.2,,,Poland,pl,Poland,,Lightweight,,,2018-04-14,2018-04-14,2026-11-02
 Maciej Kazieczko,maciej-kazieczko,https://www.espn.com/mma/fighter/_/id/4784592,,,active,7-2-0,,7,2,0,,33,182.9,155.0,182.9,,,Poland,pl,"Poznan, Poland",,Lightweight,,,2016-10-01,2025-11-15,2026-11-02
-Maciej Rozanski,maciej-rozanski,https://www.sherdog.com/fighter/Maciej-Rozanski-42574,,,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2025-03-08,2026-07-18,2026-11-02
+Maciej Rebacz,maciej-rebacz,https://www.sherdog.com/fighter/Maciej-Rebacz-267745,,,active,,,,,,,,,,,,,,,,,Catch Weight,,,2024-12-20,2024-12-20,2026-11-05
+Maciej Rozanski,maciej-rozanski,https://www.sherdog.com/fighter/Maciej-Rozanski-42574,,,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2024-10-19,2026-07-18,2026-11-05
 Madalin Pirvulescu,madalin-pirvulescu,https://www.espn.com/mma/fighter/_/id/5137434,,,active,5-3-0,,5,3,0,,31,180.3,205.0,180.3,,,Romania,ro,Romania,,Light Heavyweight,,,2022-10-14,2022-12-17,2026-11-02
-Madars Bertholds-Fleminas,madars-bertholds-fleminas,https://www.sherdog.com/fighter/Madars-BertholdsFleminas-224999,,Latvian Express,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-04-26,2026-03-14,2026-11-02
-Madars Fleminas,madars-fleminas,https://www.espn.com/mma/fighter/_/id/4695351,,Latvian Express,active,13-5-0,,13,5,0,,38,188.0,170.0,191.8,,,Latvia,lv,"Talsi, Latvia",,Welterweight,,,2023-12-16,2024-04-06,2026-11-02
+Madars Fleminas,madars-fleminas,https://www.espn.com/mma/fighter/_/id/4695351,,Latvian Express,active,13-5-0,,13,5,0,,38,188.0,170.0,191.8,,,Latvia,lv,"Talsi, Latvia",,Welterweight,,,2023-12-16,2026-03-14,2026-11-02
+Mafalda Carmona,mafalda-carmona,https://www.sherdog.com/fighter/Mafalda-Carmona-385957,,Monstrinho,inactive,,,,,,,,,,,,,,,,,Flyweight,,,2024-05-11,2024-05-11,2026-11-05
+Magdalena Sormova,magdalena-sormova,https://www.sherdog.com/fighter/Magdalena-Sormova-160581,,,inactive,,,,,,,,,,,,,,,,,Strawweight,,,2021-12-18,2021-12-18,2026-11-05
+Maik Stumbries,maik-stumbries,https://www.sherdog.com/fighter/Maik-Stumbries-25823,,,inactive,,,,,,,,,,,,,,,,,,,,2007-11-10,2007-11-10,2026-11-05
 Maiquel Falcao,maiquel-falcao,https://www.espn.com/mma/fighter/_/id/2526298,,Big Rig,inactive,37-11-0,,37,11,0,,45,180.3,185.0,,,,Brazil,br,Brazil,Independent MMA,Middleweight,https://a.espncdn.com/i/headshots/mma/players/full/2526298.png,,2014-05-17,2015-11-28,2026-11-02
-Maksymilian Kowalski,maksymilian-kowalski,https://www.sherdog.com/fighter/Maksymilian-Kowalski-312009,,,active,,,,,,,,,,,,,,,,,Middleweight,,,2026-03-14,2026-03-14,2026-11-02
-Malgorzata Popowicz,malgorzata-popowicz,https://www.sherdog.com/fighter/Malgorzata-Popowicz-439727,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2026-09-19,2026-09-19,2026-11-02
+Maksymilian Kowalski,maksymilian-kowalski,https://www.sherdog.com/fighter/Maksymilian-Kowalski-312009,,,active,,,,,,,,,,,,,,,,,Middleweight,,,2026-03-14,2026-03-14,2026-11-05
+Malgorzata Popowicz,malgorzata-popowicz,https://www.sherdog.com/fighter/Malgorzata-Popowicz-439727,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2026-09-19,2026-09-19,2026-11-05
 Mamed Khalidov,mamed-khalidov,https://www.espn.com/mma/fighter/_/id/2499803,,,active,37-8-2,,37,8,2,,46,182.9,185.0,194.3,,,Poland,pl,"Gdansk, Poland",,Middleweight,,,2007-06-02,2026-04-18,2026-11-02
 Mansour Barnaoui,mansour-barnaoui,https://www.espn.com/mma/fighter/_/id/3067201,,Afro-Samurai,active,22-7-0,,22,7,0,,34,182.9,154.0,195.6,,,Tunisia,tn,Tunisia,,Lightweight,https://a.espncdn.com/i/headshots/mma/players/full/3067201.png,,2016-05-27,2016-12-03,2026-11-02
 Marc Doussis,marc-doussis,https://www.espn.com/mma/fighter/_/id/4893133,,,active,8-3-0,,8,3,0,,,182.9,205.0,191.8,,,Germany,de,Germany,UFD Gym,Light Heavyweight,,,2021-12-18,2023-01-21,2026-11-02
-Marcello Morelli,marcello-morelli,https://www.sherdog.com/fighter/Marcello-Morelli-383101,,El Diablo,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-06-14,2026-10-10,2026-11-02
-Marcin Bartkiewicz,marcin-bartkiewicz,https://www.espn.com/mma/fighter/_/id/3094382,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2011-03-19,2011-03-19,2026-11-02
+Marcello Morelli,marcello-morelli,https://www.sherdog.com/fighter/Marcello-Morelli-383101,,El Diablo,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-06-14,2026-10-10,2026-11-05
+Marcin Bartkiewicz,marcin-bartkiewicz,https://www.espn.com/mma/fighter/_/id/3094382,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2010-10-09,2011-03-19,2026-11-02
 Marcin Held,marcin-held,https://www.espn.com/mma/fighter/_/id/2554001,,,active,29-11-0,,29,11,0,,34,175.3,155.0,180.3,,,Poland,pl,Poland,Bastion Tychy,Lightweight,https://a.espncdn.com/i/headshots/mma/players/full/2554001.png,,2023-12-16,2026-01-17,2026-11-02
 Marcin Krakowiak,marcin-krakowiak,https://www.espn.com/mma/fighter/_/id/5016769,,Krakus,active,13-4-0,,13,4,0,,33,180.3,185.0,,,,Poland,pl,Poland,,,,,2020-12-19,2025-04-26,2026-11-02
+Marcin Makowski,marcin-makowski,https://www.sherdog.com/fighter/Marcin-Makowski-47204,,,inactive,,,,,,,,,,,,,,,,,,,,2007-09-15,2007-09-15,2026-11-05
 Marcin Najman,marcin-najman,https://www.espn.com/mma/fighter/_/id/2502144,,,inactive,0-2-0,,0,2,0,,,,,,,,default,,,,Heavyweight,,,2009-12-11,2010-09-18,2026-11-02
 Marcin Naruszczka,marcin-naruszczka,https://www.espn.com/mma/fighter/_/id/3094749,,,inactive,1-6-0,,1,6,0,,,182.9,183.0,,,,default,,,,,,,2012-05-12,2013-03-16,2026-11-02
 Marcin Rozalski,marcin-rozalski,https://www.espn.com/mma/fighter/_/id/2617562,,Rozal,inactive,7-4-0,,7,4,0,,48,188.0,225.0,,,,default,,"Warsaw, Poland",,Heavyweight,,,2011-03-19,2017-05-27,2026-11-02
-Marcin Trzcinski,marcin-trzcinski,https://www.espn.com/mma/fighter/_/id/5403868,,,inactive,0-1-0,,0,1,0,,32,182.9,205.0,196.8,,,Poland,pl,Poland,,Light Heavyweight,,,2021-09-04,2021-09-04,2026-11-02
+Marcin Trzcinski,marcin-trzcinski,https://www.espn.com/mma/fighter/_/id/5403868,,,inactive,0-1-0,,0,1,0,,32,182.9,205.0,196.8,,,Poland,pl,Poland,,Light Heavyweight,,,2021-09-04,2022-03-19,2026-11-02
 Marcin Wojcik,marcin-wojcik,https://www.espn.com/mma/fighter/_/id/3948580,,The Giant,active,17-9-0,,17,9,0,,37,185.4,205.0,182.9,,,Poland,pl,"Pila, Poland",Ankos MMA,Light Heavyweight,,,2008-03-29,2026-09-19,2026-11-02
 Marcin Wrzosek,marcin-wrzosek,https://www.espn.com/mma/fighter/_/id/3155862,,,inactive,13-7-0,,13,7,0,,39,175.3,145.0,,,,Poland,pl,Poland,,Lightweight,,,2016-05-27,2020-07-11,2026-11-02
-Marcin Zontek,marcin-zontek,https://www.espn.com/mma/fighter/_/id/4293608,,,inactive,0-6-0,,0,6,0,,47,185.4,205.0,,,,Poland,pl,"Gliwice, Poland",,,,,2005-01-15,2005-01-15,2026-11-02
+Marcin Zontek,marcin-zontek,https://www.espn.com/mma/fighter/_/id/4293608,,,inactive,0-6-0,,0,6,0,,47,185.4,205.0,,,,Poland,pl,"Gliwice, Poland",,,,,2005-01-15,2005-09-10,2026-11-02
 Marcin Łazarz,marcin-lazarz,https://www.espn.com/mma/fighter/_/id/3041133,,Bane,active,9-7-0,,9,7,0,,43,193.0,205.0,193.0,,,Poland,pl,"Krakow, Poland",,Light Heavyweight,,,2016-12-03,2016-12-03,2026-11-02
 Marco Santi,marco-santi,https://www.espn.com/mma/fighter/_/id/2978438,,,inactive,0-3-0,,0,3,0,,,,170.0,,,,default,,,,,,,2011-01-29,2011-01-29,2026-11-02
-Marek Samociuk,marek-samociuk,https://www.espn.com/mma/fighter/_/id/4969844,,,active,1-1-0,,1,1,0,,30,182.9,230.0,193.0,,,Poland,pl,Poland,,Heavyweight,,,2021-12-18,2026-06-20,2026-11-02
-Maria Silva,maria-silva,https://www.espn.com/mma/fighter/_/id/4869428,,Viuva Negra,active,9-1-0,,9,1,0,,30,160.0,115.0,165.1,,,Brazil,br,Brazil,Dragon Kombat,Women's Strawweight,https://a.espncdn.com/i/headshots/mma/players/full/4869428.png,,2023-04-22,2023-04-22,2026-11-02
+Marek Kowalczyk,marek-kowalczyk,https://www.sherdog.com/fighter/Marek-Kowalczyk-30827,,Maroko,inactive,,,,,,,,,,,,,,,,,,,,2008-03-29,2008-03-29,2026-11-05
+Marek Samociuk,marek-samociuk,https://www.espn.com/mma/fighter/_/id/4969844,,,active,1-1-0,,1,1,0,,30,182.9,230.0,193.0,,,Poland,pl,Poland,,Heavyweight,,,2021-04-24,2026-06-20,2026-11-02
+Maria Silva,maria-silva,https://www.espn.com/mma/fighter/_/id/4869428,,Viuva Negra,active,9-1-0,,9,1,0,,30,160.0,115.0,165.1,,,Brazil,br,Brazil,Dragon Kombat,Women's Strawweight,https://a.espncdn.com/i/headshots/mma/players/full/4869428.png,,2023-04-22,2024-07-20,2026-11-02
 Marian Ziółkowski,marian-ziolkowski,https://www.espn.com/mma/fighter/_/id/4334744,,Golden Boy,active,25-9-1,,25,9,1,,36,185.4,155.0,190.5,,,Poland,pl,Poland,,Lightweight,,,2018-06-09,2026-10-10,2026-11-02
 Mariana Morais,mariana-morais,https://www.espn.com/mma/fighter/_/id/3161692,,The Razor,active,18-12-0,,18,12,0,,31,162.6,155.0,167.6,,,Brazil,br,Brazil,Parana Vale Tudo,Women's Lightweight,https://a.espncdn.com/i/headshots/mma/players/full/3161692.png,,2017-10-22,2017-10-22,2026-11-02
 Marif Piraev,marif-piraev,https://www.espn.com/mma/fighter/_/id/3945580,,Piranha,inactive,14-3-1,,14,3,1,,33,177.8,155.0,,,,Russia,ru,"Moscow, Russia",Krepost,Lightweight,,,2015-10-31,2015-10-31,2026-11-02
 Mario Miranda,mario-miranda,https://www.espn.com/mma/fighter/_/id/2502604,,,inactive,14-7-0,,14,7,0,,48,190.5,185.0,188.0,,,Brazil,br,"Rio De Janeiro, Brazil",Black House MMA,Middleweight,https://a.espncdn.com/i/headshots/mma/players/full/2502604.png,,2012-02-25,2012-02-25,2026-11-02
-Marius Zaromskis,marius-zaromskis,https://www.espn.com/mma/fighter/_/id/2499264,,The Whitemare,inactive,22-10-0,,22,10,0,,46,175.3,170.0,,,,Lithuania,lt,"Siauliai, Lithuania",AKA (American Kickboxing Academy),,,,2020-11-14,2021-07-17,2026-11-02
-Mariusz Joniak,mariusz-joniak,https://www.sherdog.com/fighter/Mariusz-Joniak-238815,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2026-02-21,2026-02-21,2026-11-02
-Mariusz Ksiazkiewicz,mariusz-ksiazkiewicz,https://www.sherdog.com/fighter/Mariusz-Ksiazkiewicz-66522,,The Iron Pol,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2025-09-20,2025-09-20,2026-11-02
+Marius Skyrius,marius-skyrius,https://www.sherdog.com/fighter/Marius-Skyrius-12204,,,inactive,,,,,,,,,,,,,,,,,,,,2005-01-15,2005-01-15,2026-11-05
+Marius Zaromskis,marius-zaromskis,https://www.espn.com/mma/fighter/_/id/2499264,,The Whitemare,inactive,22-10-0,,22,10,0,,46,175.3,170.0,,,,Lithuania,lt,"Siauliai, Lithuania",AKA (American Kickboxing Academy),,,,2020-11-14,2024-03-16,2026-11-02
+Mariusz Joniak,mariusz-joniak,https://www.sherdog.com/fighter/Mariusz-Joniak-238815,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2023-06-03,2026-02-21,2026-11-05
+Mariusz Ksiazkiewicz,mariusz-ksiazkiewicz,https://www.sherdog.com/fighter/Mariusz-Ksiazkiewicz-66522,,The Iron Pol,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2025-09-20,2025-09-20,2026-11-05
 Mariusz Mazur,mariusz-mazur,https://www.espn.com/mma/fighter/_/id/4794133,,,inactive,1-2-0,,1,2,0,,,,155.0,,,,Poland,pl,"Leszno, Poland",,Lightweight,,,2016-10-01,2016-10-01,2026-11-02
+Mariusz Pioskowik,mariusz-pioskowik,https://www.sherdog.com/fighter/Mariusz-Pioskowik-37416,,Dyzio,inactive,,,,,,,,,,,,,,,,,,,,2008-09-13,2008-09-13,2026-11-05
 Mariusz Pudzianowski,mariusz-pudzianowski,https://www.espn.com/mma/fighter/_/id/2502142,,Pudzian,active,17-9-0,,17,9,0,,49,185.4,260.0,196.8,,,Poland,pl,"Bydgoszcz, Poland",,Heavyweight,,,2009-12-11,2025-04-26,2026-11-02
+Mariusz Slotta,mariusz-slotta,https://www.sherdog.com/fighter/Mariusz-Slotta-37415,,,inactive,,,,,,,,,,,,,,,,,,,,2007-09-15,2008-09-13,2026-11-05
+Marko Drmonjic,marko-drmonjic,https://www.sherdog.com/fighter/Marko-Drmonjic-25469,,Lionheart,inactive,,,,,,,,,,,,,,,,,,,,2008-09-13,2008-09-13,2026-11-05
 Maro Perak,maro-perak,https://www.espn.com/mma/fighter/_/id/2560708,,,inactive,23-8-1,,23,8,1,,44,182.9,205.0,,,,default,,Tijarica,,Light Heavyweight,,,2008-12-12,2008-12-12,2026-11-02
-Marta Chojnoska,marta-chojnoska,https://www.espn.com/mma/fighter/_/id/3102990,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2013-06-08,2013-06-08,2026-11-02
+Marta Chojnoska,marta-chojnoska,https://www.espn.com/mma/fighter/_/id/3102990,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2013-06-08,2019-03-23,2026-11-02
+Martin Malkhasyan,martin-malkhasyan,https://www.sherdog.com/fighter/Martin-Malkhasyan-1998,,,inactive,,,,,,,,,,,,,,,,,,,,2006-06-02,2007-06-02,2026-11-05
 Martin Zawada,martin-zawada,https://www.espn.com/mma/fighter/_/id/2511244,,King Kong,active,29-17-1,,29,17,1,,43,180.3,205.0,180.3,,,Germany,de,Germany,,Light Heavyweight,,,2006-10-14,2021-01-30,2026-11-02
-Mateusz Balko,mateusz-balko,https://www.sherdog.com/fighter/Mateusz-Balko-421485,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2026-07-18,2026-07-18,2026-11-02
+Matej Val,matej-val,https://www.sherdog.com/fighter/Matej-Val-321277,,,inactive,,,,,,,,,,,,,,,,,Bantamweight,,,2024-10-19,2024-10-19,2026-11-05
+Mateusz Balko,mateusz-balko,https://www.sherdog.com/fighter/Mateusz-Balko-421485,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2026-07-18,2026-07-18,2026-11-05
 Mateusz Gamrot,mateusz-gamrot,https://www.espn.com/mma/fighter/_/id/3068125,,Gamer,active,26-5-0,,26,5,0,,35,177.8,155.5,179.1,,,Poland,pl,Poland,American Top Team,Lightweight,https://a.espncdn.com/i/headshots/mma/players/full/3068125.png,,2013-06-08,2020-08-29,2026-11-02
-Mateusz Gola,mateusz-gola,https://www.sherdog.com/fighter/Mateusz-Gola-154523,,,active,,,,,,,,,,,,,,,,,Middleweight,,,2026-01-17,2026-01-17,2026-11-02
+Mateusz Gola,mateusz-gola,https://www.sherdog.com/fighter/Mateusz-Gola-154523,,,active,,,,,,,,,,,,,,,,,Middleweight,,,2026-01-17,2026-01-17,2026-11-05
+Mateusz Janur,mateusz-janur,https://www.sherdog.com/fighter/Mateusz-Janur-255557,,,inactive,,,,,,,,,,,,,,,,,Middleweight,,,2023-03-17,2023-03-17,2026-11-05
 Mateusz Legierski,mateusz-legierski,https://www.espn.com/mma/fighter/_/id/4907504,,,active,7-2-0,,7,2,0,,30,177.8,170.0,180.3,,,Poland,pl,Poland,,Welterweight,,,2020-11-14,2021-12-18,2026-11-02
-Mateusz Makarowski,mateusz-makarowski,https://www.sherdog.com/fighter/Mateusz-Makarowski-278205,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2025-05-10,2026-10-10,2026-11-02
-Mateusz Pawlik,mateusz-pawlik,https://www.sherdog.com/fighter/Mateusz-Pawlik-276849,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-06-14,2026-07-18,2026-11-02
+Mateusz Makarowski,mateusz-makarowski,https://www.sherdog.com/fighter/Mateusz-Makarowski-278205,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2025-05-10,2026-10-10,2026-11-05
+Mateusz Pawlik,mateusz-pawlik,https://www.sherdog.com/fighter/Mateusz-Pawlik-276849,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-06-14,2026-07-18,2026-11-05
 Mateusz Piskorz,mateusz-piskorz,https://www.espn.com/mma/fighter/_/id/3161788,,,inactive,0-3-0,,0,3,0,,34,182.9,170.0,,,,Poland,pl,"Warsaw, Poland",,,,,2014-12-06,2014-12-06,2026-11-02
 Mateusz Strzelczyk,mateusz-strzelczyk,https://www.espn.com/mma/fighter/_/id/3103412,,Spider,active,1-9-0,,1,9,0,,35,190.5,205.0,190.5,,,Poland,pl,Poland,,Light Heavyweight,,,2011-01-29,2011-01-29,2026-11-02
-Mateusz Wieczorek,mateusz-wieczorek,https://www.sherdog.com/fighter/Mateusz-Wieczorek-424692,,,active,,,,,,,,,,,,,,,,,Catch Weight,,,2026-05-16,2026-05-16,2026-11-02
+Mateusz Wieczorek,mateusz-wieczorek,https://www.sherdog.com/fighter/Mateusz-Wieczorek-424692,,,active,,,,,,,,,,,,,,,,,Catch Weight,,,2026-05-16,2026-05-16,2026-11-05
 Mateusz Zawadzki,mateusz-zawadzki,https://www.espn.com/mma/fighter/_/id/3162129,,Barni,inactive,0-2-0,,0,2,0,,36,172.7,155.0,,,,Poland,pl,"Elk, Poland",,Lightweight,,,2013-06-08,2013-06-08,2026-11-02
-Matheus Scheffel,matheus-scheffel,https://www.espn.com/mma/fighter/_/id/3110833,,Buffa,active,18-10-0,,18,10,0,,33,188.0,259.0,193.0,,,Brazil,br,Brazil,CM System,Light Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/3110833.png,,2024-08-24,2025-07-19,2026-11-02
+Matheus Scheffel,matheus-scheffel,https://www.espn.com/mma/fighter/_/id/3110833,,Buffa,active,18-10-0,,18,10,0,,33,188.0,259.0,193.0,,,Brazil,br,Brazil,CM System,Light Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/3110833.png,,2024-02-24,2025-07-19,2026-11-02
+Matias Baric,matias-baric,https://www.sherdog.com/fighter/Matias-Baric-30476,,,inactive,,,,,,,,,,,,,,,,,,,,2008-12-12,2008-12-12,2026-11-05
 Matt Horwich,matt-horwich,https://www.espn.com/mma/fighter/_/id/2335761,,Suave,inactive,9-15-0,,9,15,0,,48,180.3,185.0,,,,United States,us,"Pasadena, USA",,,,,2011-11-26,2013-12-07,2026-11-02
 Matt Lindland,matt-lindland,https://www.espn.com/mma/fighter/_/id/2354346,,The Law,inactive,22-9-0,,22,9,0,,56,182.9,185.0,188.0,,,default,,,Team Quest -Portland,Middleweight,,,2011-05-21,2011-05-21,2026-11-02
-Matus Juracek,matus-juracek,https://www.sherdog.com/fighter/Matus-Juracek-97527,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-02-21,2025-10-18,2026-11-02
+Matteo Minonzio,matteo-minonzio,https://www.sherdog.com/fighter/Matteo-Minonzio-17382,,The White Guy,inactive,,,,,,,,,,,,,,,,,,,,2008-12-12,2010-10-09,2026-11-05
+Matus Juracek,matus-juracek,https://www.sherdog.com/fighter/Matus-Juracek-97527,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2024-02-17,2025-10-18,2026-11-05
+Matyas Viszlay,matyas-viszlay,https://www.sherdog.com/fighter/Matyas-Viszlay-401672,,,inactive,,,,,,,,,,,,,,,,,Middleweight,,,2023-02-25,2023-02-25,2026-11-05
 Max Coga,max-coga,https://www.espn.com/mma/fighter/_/id/3105014,,Mad Max,active,24-8-1,,24,8,1,,37,172.7,145.0,,,,Germany,de,Germany,Team MMA Spirit,Featherweight,,,2020-11-14,2020-11-14,2026-11-02
 Maxim Grishin,maxim-grishin,https://www.espn.com/mma/fighter/_/id/2558492,,Maximus,active,32-10-2,,32,10,2,,42,190.5,205.0,198.1,,,Russia,ru,Russia,Akhmat Fight Team,Light Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/2558492.png,,2009-12-11,2009-12-11,2026-11-02
 Melvin Manhoef,melvin-manhoef,https://www.espn.com/mma/fighter/_/id/2354281,,No Mercy,inactive,32-16-1,,32,16,1,,50,172.7,206.0,182.9,,,Netherlands,nl,"Amsterdam, Netherlands",Mike's Gym,Light Heavyweight,,,2013-06-08,2013-06-08,2026-11-02
 Michael Dubois,michael-dubois,https://www.espn.com/mma/fighter/_/id/4794112,,,inactive,10-8-0,,10,8,0,,33,175.3,170.0,,,,Switzerland,ch,Switzerland,Tiger Muay Thai,Welterweight,,,2019-05-18,2019-12-07,2026-11-02
+Michael Knaap,michael-knaap,https://www.sherdog.com/fighter/Michael-Knaap-3278,,Hammer,inactive,,,,,,,,,,,,,,,,,,,,2008-12-12,2009-05-15,2026-11-05
+Michal Chmielewski,michal-chmielewski,https://www.sherdog.com/fighter/Michal-Chmielewski-14568,,,inactive,,,,,,,,,,,,,,,,,,,,2004-10-06,2005-01-15,2026-11-05
 Michal Domin,michal-domin,https://www.espn.com/mma/fighter/_/id/5101409,,,active,0-1-0,,0,1,0,,31,172.7,145.0,177.8,,,Poland,pl,"Warsaw, Poland",,Featherweight,,,2020-11-14,2026-02-21,2026-11-02
-Michal Dreczkowski,michal-dreczkowski,https://www.sherdog.com/fighter/Michal-Dreczkowski-408108,,,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2025-03-08,2026-05-16,2026-11-02
-Michal Fijalka,michal-fijalka,https://www.espn.com/mma/fighter/_/id/3022222,,,inactive,3-7-1,,3,7,1,,42,180.3,205.0,,,,Poland,pl,"Szczecin, Poland",,Light Heavyweight,,,2016-05-27,2017-10-22,2026-11-02
-Michal Gniady,michal-gniady,https://www.sherdog.com/fighter/Michal-Gniady-434535,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-08-09,2025-08-09,2026-11-02
-Michal Guzik,michal-guzik,https://www.sherdog.com/fighter/Michal-Guzik-215905,,Invasion,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-05-10,2025-07-19,2026-11-02
-Michal Hir,michal-hir,https://www.sherdog.com/fighter/Michal-Hir-418799,,,active,,,,,,,,,,,,,,,,,Catch Weight,,,2026-05-16,2026-05-16,2026-11-02
+Michal Dreczkowski,michal-dreczkowski,https://www.sherdog.com/fighter/Michal-Dreczkowski-408108,,,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2023-10-14,2026-05-16,2026-11-05
+Michal Fijalka,michal-fijalka,https://www.espn.com/mma/fighter/_/id/3022222,,,inactive,3-7-1,,3,7,1,,42,180.3,205.0,,,,Poland,pl,"Szczecin, Poland",,Light Heavyweight,,,2008-03-29,2017-10-22,2026-11-02
+Michal Gniady,michal-gniady,https://www.sherdog.com/fighter/Michal-Gniady-434535,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2023-11-11,2025-08-09,2026-11-05
+Michal Guzik,michal-guzik,https://www.sherdog.com/fighter/Michal-Guzik-215905,,Invasion,active,,,,,,,,,,,,,,,,,Welterweight,,,2024-08-24,2025-07-19,2026-11-05
+Michal Hir,michal-hir,https://www.sherdog.com/fighter/Michal-Hir-418799,,,active,,,,,,,,,,,,,,,,,Catch Weight,,,2026-05-16,2026-05-16,2026-11-05
 Michal Kita,michal-kita,https://www.espn.com/mma/fighter/_/id/2431328,,Masakra,active,22-15-1,,22,15,1,,46,185.4,235.0,190.5,,,Poland,pl,"Warsaw, Poland",,Heavyweight,,,2015-11-28,2023-02-25,2026-11-02
 Michal Mankiewicz,michal-mankiewicz,https://www.espn.com/mma/fighter/_/id/2525966,,,inactive,1-1-0,,1,1,0,,,,,,,,default,,,,Featherweight,,,2010-09-18,2010-09-18,2026-11-02
 Michal Martinek,michal-martinek,https://www.espn.com/mma/fighter/_/id/4426144,,Blackbeard,active,11-5-0,,11,5,0,,36,188.0,220.0,199.4,,,Czech Republic,cz,Czechia,Reinders MMA,Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/4426144.png,,2022-06-18,2026-06-20,2026-11-02
 Michal Materla,michal-materla,https://www.espn.com/mma/fighter/_/id/2560723,,Cipao,active,33-11-0,,33,11,0,,42,182.9,185.0,,,,Poland,pl,"Warsaw, Poland",,,,,2006-10-14,2024-03-16,2026-11-02
 Michal Pietrzak,michal-pietrzak,https://www.espn.com/mma/fighter/_/id/4585546,,The Crusher,active,10-7-1,,10,7,1,,38,185.4,170.0,191.8,,,Poland,pl,"Poznan, Poland",,Welterweight,,,2019-09-14,2023-08-19,2026-11-02
-Michal Turynski,michal-turynski,https://www.sherdog.com/fighter/Michal-Turynski-446694,,,active,,,,,,,,,,,,,,,,,Heavyweight,,,2025-04-26,2025-04-26,2026-11-02
+Michal Sobiech,michal-sobiech,https://www.sherdog.com/fighter/Michal-Sobiech-241267,,Dr. Beast,inactive,,,,,,,,,,,,,,,,,Catch Weight,,,2021-04-24,2024-10-19,2026-11-05
+Michal Turynski,michal-turynski,https://www.sherdog.com/fighter/Michal-Turynski-446694,,,active,,,,,,,,,,,,,,,,,Heavyweight,,,2024-05-11,2025-04-26,2026-11-05
 Michal Wlodarek,michal-wlodarek,https://www.espn.com/mma/fighter/_/id/3043334,,Komar,inactive,8-3-0,,8,3,0,,42,185.4,238.0,,,,default,,"Poznan, Poland",Wrestler24,,,,2014-10-04,2021-03-20,2026-11-02
 Michał Andryszak,michal-andryszak,https://www.espn.com/mma/fighter/_/id/3164764,,Longer,inactive,25-10-0,,25,10,0,,34,195.6,247.0,203.2,,,Poland,pl,"Bydgoszcz, Poland",Ankos MMA,Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/3164764.png,,2014-03-22,2021-09-04,2026-11-02
 Michał Michalski,michal-michalski,https://www.espn.com/mma/fighter/_/id/4360357,,Suga,active,1-4-0,,1,4,0,,37,177.8,170.0,180.3,,,Poland,pl,Poland,Ankos MMA,Welterweight,,,2018-04-14,2026-09-19,2026-11-02
 Michele Baiano,michele-baiano,https://www.espn.com/mma/fighter/_/id/5101452,,,inactive,0-1-0,,0,1,0,,28,177.8,155.0,177.8,,,Italy,it,"Firenze, Italy",,Lightweight,,,2022-04-23,2022-04-23,2026-11-02
 Michele Verginelli,michele-verginelli,https://www.espn.com/mma/fighter/_/id/3007850,,,inactive,0-3-1,,0,3,1,,,175.3,185.0,,,,default,,,,,,,2009-05-15,2009-05-15,2026-11-02
-Mickael Lebout,mickael-lebout,https://www.sherdog.com/fighter/Mickael-Lebout-81143,,Ragnar,active,,,,,,,,,,,,,,,,,Catch Weight,,,2025-05-10,2025-05-10,2026-11-02
-Miha Frlic,miha-frlic,https://www.sherdog.com/fighter/Miha-Frlic-399876,,,active,,,,,,,,,,,,,,,,,Heavyweight,,,2025-01-25,2025-01-25,2026-11-02
+Mickael Lebout,mickael-lebout,https://www.sherdog.com/fighter/Mickael-Lebout-81143,,Ragnar,active,,,,,,,,,,,,,,,,,Catch Weight,,,2024-12-20,2025-05-10,2026-11-05
+Miha Frlic,miha-frlic,https://www.sherdog.com/fighter/Miha-Frlic-399876,,,active,,,,,,,,,,,,,,,,,Heavyweight,,,2025-01-25,2025-01-25,2026-11-05
 Mike Hayes,mike-hayes,https://www.espn.com/mma/fighter/_/id/2502716,,,inactive,5-10-0,,5,10,0,,46,193.0,215.0,,,,default,,Redmond,,,,,2013-12-07,2013-12-07,2026-11-02
+Miljan Zdravkovic,miljan-zdravkovic,https://www.sherdog.com/fighter/Miljan-Zdravkovic-329313,,,inactive,,,,,,,,,,,,,,,,,Bantamweight,,,2023-09-16,2024-03-16,2026-11-05
 Milos Janicic,milos-janicic,https://www.espn.com/mma/fighter/_/id/4708540,,The Cobra,active,19-4-0,,19,4,0,,29,180.3,156.0,180.3,,,Montenegro,me,Montenegro,Borilački Klub CDS Novi Sad,Lightweight,https://a.espncdn.com/i/headshots/mma/players/full/4708540.png,,2019-11-09,2019-11-09,2026-11-02
+Milosz Melchert,milosz-melchert,https://www.sherdog.com/fighter/Milosz-Melchert-331265,,,inactive,,,,,,,,,,,,,,,,,Bantamweight,,,2022-08-20,2023-07-15,2026-11-05
 Mindaugas Verzbickas,mindaugas-verzbickas,https://www.espn.com/mma/fighter/_/id/4006198,,Silent Assasin,inactive,11-6-1,,11,6,1,,36,182.9,170.0,,,,Lithuania,lt,"Ukmerge, Lithuania",MMA Bushido Team,Welterweight,,,2016-05-27,2016-05-27,2026-11-02
+Miroslav Broz,miroslav-broz,https://www.sherdog.com/fighter/Miroslav-Broz-244235,,Inkvizitor,inactive,,,,,,,,,,,,,,,,,Catch Weight,,,2021-12-18,2021-12-18,2026-11-05
 Mohsen Bahari,mohsen-bahari,https://www.espn.com/mma/fighter/_/id/3100786,,,inactive,9-4-0,,9,4,0,,,177.8,170.0,,,,default,,"Oslo, Norway",Frontline Academy,Welterweight,,,2015-02-21,2015-02-21,2026-11-02
 Moise Rimbon,moise-rimbon,https://www.espn.com/mma/fighter/_/id/2495232,,Swamp,inactive,8-6-0,,8,6,0,,49,177.8,205.0,,,,France,fr,France,Phuket Top Team,Light Heavyweight,,,2007-11-10,2007-11-10,2026-11-02
-Monika Kucinic,monika-kucinic,https://www.sherdog.com/fighter/Monika-Kucinic-361671,,Pitbull,active,,,,,,,,,,,,,,,,,Strawweight,,,2025-08-09,2025-08-09,2026-11-02
-Muslim Tulshaev,muslim-tulshaev,https://www.sherdog.com/fighter/Muslim-Tulshaev-97073,,Urus,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-01-25,2026-09-19,2026-11-02
-Nacim Belhouachi,nacim-belhouachi,https://www.sherdog.com/fighter/Nacim-Belhouachi-275869,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-02-21,2026-04-18,2026-11-02
+Monika Kucinic,monika-kucinic,https://www.sherdog.com/fighter/Monika-Kucinic-361671,,Pitbull,active,,,,,,,,,,,,,,,,,Strawweight,,,2021-06-05,2025-08-09,2026-11-05
+Morgann Gbolou,morgann-gbolou,https://www.sherdog.com/fighter/Morgann-Gbolou-300553,,,inactive,,,,,,,,,,,,,,,,,Welterweight,,,2024-06-07,2024-06-07,2026-11-05
+Murilo Delfino,murilo-delfino,https://www.sherdog.com/fighter/Murilo-Delfino-225863,,,inactive,,,,,,,,,,,,,,,,,Catch Weight,,,2023-02-25,2023-02-25,2026-11-05
+Muslim Tulshaev,muslim-tulshaev,https://www.sherdog.com/fighter/Muslim-Tulshaev-97073,,Urus,active,,,,,,,,,,,,,,,,,Welterweight,,,2024-02-24,2026-09-19,2026-11-05
+Nacim Belhouachi,nacim-belhouachi,https://www.sherdog.com/fighter/Nacim-Belhouachi-275869,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2024-12-20,2026-04-18,2026-11-05
+Natalia Baczynska-Krawiec,natalia-baczynska-krawiec,https://www.sherdog.com/fighter/Natalia-BaczynskaKrawiec-241551,,,inactive,,,,,,,,,,,,,,,,,Flyweight,,,2022-04-23,2023-12-16,2026-11-05
+Nemanja Nikolic,nemanja-nikolic,https://www.sherdog.com/fighter/Nemanja-Nikolic-241659,,Koba,inactive,,,,,,,,,,,,,,,,,Middleweight,,,2023-07-15,2023-07-15,2026-11-05
+Neno Alilovic,neno-alilovic,https://www.sherdog.com/fighter/Neno-Alilovic-12218,,,inactive,,,,,,,,,,,,,,,,,,,,2006-06-02,2006-06-02,2026-11-05
 Nick Rossborough,nick-rossborough,https://www.espn.com/mma/fighter/_/id/2553720,,Leatherface,inactive,26-21-1,,26,21,1,,44,195.6,265.0,,,,default,,Roosevelt,,,,,2014-03-22,2014-03-22,2026-11-02
+Nicolae Bivol,nicolae-bivol,https://www.sherdog.com/fighter/Nicolae-Bivol-397607,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2024-04-06,2024-11-16,2026-11-05
+Nikica Gulin,nikica-gulin,https://www.sherdog.com/fighter/Nikica-Gulin-14818,,,inactive,,,,,,,,,,,,,,,,,,,,2006-10-14,2006-10-14,2026-11-05
 Niklas Backstrom,niklas-backstrom,https://www.espn.com/mma/fighter/_/id/3105013,,,inactive,11-4-0,,11,4,0,,37,182.9,145.0,188.0,,,Sweden,se,Sweden,,Featherweight,https://a.espncdn.com/i/headshots/mma/players/full/3105013.png,,2022-01-15,2022-01-15,2026-11-02
-Niko Puhakka,niko-puhakka,https://www.espn.com/mma/fighter/_/id/2501261,,,inactive,5-7-0,,5,7,0,,46,177.8,170.0,,,,default,,,,,,,2010-09-18,2010-09-18,2026-11-02
+Niko Puhakka,niko-puhakka,https://www.espn.com/mma/fighter/_/id/2501261,,,inactive,5-7-0,,5,7,0,,46,177.8,170.0,,,,default,,,,,,,2010-09-18,2011-03-19,2026-11-02
 Nikola Milanovic,nikola-milanovic,https://www.espn.com/mma/fighter/_/id/4777711,,,inactive,0-1-0,,0,1,0,,,,265.0,,,,Serbia,rs,"Belgrade, Serbia",MMA Red Star,,,,2021-03-20,2021-03-20,2026-11-02
+Nikolai Onikienko,nikolai-onikienko,https://www.sherdog.com/fighter/Nikolai-Onikienko-2944,,,inactive,,,,,,,,,,,,,,,,,,,,2008-03-29,2008-03-29,2026-11-05
+Norbert Swierblewski,norbert-swierblewski,https://www.sherdog.com/fighter/Norbert-Swierblewski-14580,,,inactive,,,,,,,,,,,,,,,,,,,,2004-02-26,2004-10-06,2026-11-05
 Norman Parke,norman-parke,https://www.espn.com/mma/fighter/_/id/3009719,,Stormin,inactive,28-7-1,,28,7,1,,39,177.8,155.0,177.8,,,Northern Ireland,gb-nir,Northern Ireland,Next Generation Northern Ireland,Lightweight,https://a.espncdn.com/i/headshots/mma/players/full/3009719.png,,2017-05-27,2020-07-11,2026-11-02
-Oleksandr Moisa,oleksandr-moisa,https://www.sherdog.com/fighter/Oleksandr-Moisa-431173,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2025-09-20,2026-03-14,2026-11-02
+Olegs Jemeljanovs,olegs-jemeljanovs,https://www.sherdog.com/fighter/Olegs-Jemeljanovs-120725,,,inactive,,,,,,,,,,,,,,,,,Heavyweight,,,2023-04-22,2024-01-20,2026-11-05
+Oleksandr Moisa,oleksandr-moisa,https://www.sherdog.com/fighter/Oleksandr-Moisa-431173,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2025-09-20,2026-03-14,2026-11-05
 Oleksii Polischuck,oleksii-polischuck,https://www.espn.com/mma/fighter/_/id/5143886,,,active,1-1-0,,1,1,0,,30,175.3,145.0,188.0,,,Ukraine,ua,Ukraine,,Featherweight,,,2022-10-14,2026-04-18,2026-11-02
 Oli Thompson,oli-thompson,https://www.espn.com/mma/fighter/_/id/2557453,,The Spartan,inactive,21-13-0,,21,13,0,,46,185.4,245.0,190.5,,,England,gb-eng,England,ZT Fight Skool,Heavyweight,,,2013-03-16,2019-11-09,2026-11-02
-Oskar Stachura,oskar-stachura,https://www.sherdog.com/fighter/Oskar-Stachura-294383,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-05-10,2026-07-18,2026-11-02
+Oskar Stachura,oskar-stachura,https://www.sherdog.com/fighter/Oskar-Stachura-294383,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-05-10,2026-07-18,2026-11-05
 Oskar Szczepaniak,oskar-szczepaniak,https://www.espn.com/mma/fighter/_/id/5134956,,,active,0-1-0,,0,1,0,,27,182.9,155.0,181.6,,,Poland,pl,Poland,Berserker's Team,Lightweight,,,2022-02-26,2025-08-09,2026-11-02
+Oton Jasse,oton-jasse,https://www.sherdog.com/fighter/Oton-Jasse-76848,,O Rei do Triangulo de Mao,inactive,,,,,,,,,,,,,,,,,Middleweight,,,2022-12-17,2024-08-24,2026-11-05
 Oumar Sy,oumar-sy,https://www.espn.com/mma/fighter/_/id/5074120,,,active,12-3-0,,12,3,0,,30,193.0,206.0,210.8,,,France,fr,France,American Top Team,Light Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/5074120.png,,2021-10-23,2023-03-17,2026-11-02
-Pascal Hintzen,pascal-hintzen,https://www.espn.com/mma/fighter/_/id/5143885,,Daywalker,inactive,0-1-0,,0,1,0,,30,172.7,135.0,,,,Germany,de,Germany,UFD Gym,Featherweight,,,2022-02-26,2022-02-26,2026-11-02
+Pascal Hintzen,pascal-hintzen,https://www.espn.com/mma/fighter/_/id/5143885,,Daywalker,inactive,0-1-0,,0,1,0,,30,172.7,135.0,,,,Germany,de,Germany,UFD Gym,Featherweight,,,2022-02-26,2023-07-15,2026-11-02
 Patrick Surdyn,patrick-surdyn,https://www.espn.com/mma/fighter/_/id/5101137,,,active,7-3-0,,7,3,0,,31,170.2,135.0,172.7,,,Poland,pl,Poland,,Bantamweight,,,2020-10-10,2025-12-20,2026-11-02
 Patrick Vallee,patrick-vallee,https://www.espn.com/mma/fighter/_/id/3019167,,Dexter,inactive,12-13-1,,12,13,1,,46,185.4,185.0,193.0,,,France,fr,France,,Middleweight,,,2014-05-17,2014-05-17,2026-11-02
 Patrik Kincl,patrik-kincl,https://www.espn.com/mma/fighter/_/id/2511445,,,inactive,25-10-0,,25,10,0,,37,180.3,170.0,182.9,,,Czech Republic,cz,Czechia,All Sports Academy,Welterweight,,,2020-12-19,2021-09-04,2026-11-02
-Patryk Chrobak,patryk-chrobak,https://www.espn.com/mma/fighter/_/id/4878610,,,inactive,0-2-0,,0,2,0,,,,134.0,,,,Poland,pl,"Bielsko-Biala, Poland",,,,,2022-04-23,2022-04-23,2026-11-02
+Patryk Chrobak,patryk-chrobak,https://www.espn.com/mma/fighter/_/id/4878610,,,inactive,0-2-0,,0,2,0,,,,134.0,,,,Poland,pl,"Bielsko-Biala, Poland",,,,,2022-04-23,2023-07-15,2026-11-02
 Patryk Grudniewski,patryk-grudniewski,https://www.espn.com/mma/fighter/_/id/4294840,,,inactive,0-2-0,,0,2,0,,43,175.3,155.0,,,,default,,"Opole, Poland",,,,,2015-05-23,2015-05-23,2026-11-02
-Patryk Kaczmarczyk,patryk-kaczmarczyk,https://www.espn.com/mma/fighter/_/id/5101451,,Prince of Radom,active,0-3-0,,0,3,0,,28,172.7,145.0,,,,Poland,pl,Poland,,Featherweight,,,2021-10-23,2026-06-20,2026-11-02
+Patryk Kaczmarczyk,patryk-kaczmarczyk,https://www.espn.com/mma/fighter/_/id/5101451,,Prince of Radom,active,0-3-0,,0,3,0,,28,172.7,145.0,,,,Poland,pl,Poland,,Featherweight,,,2021-04-24,2026-06-20,2026-11-02
+Patryk Likus,patryk-likus,https://www.sherdog.com/fighter/Patryk-Likus-304353,,Proca,inactive,,,,,,,,,,,,,,,,,Featherweight,,,2021-03-20,2022-12-17,2026-11-05
+Patryk Tolkaczewski,patryk-tolkaczewski,https://www.sherdog.com/fighter/Patryk-Tolkaczewski-425130,,Gleba,inactive,,,,,,,,,,,,,,,,,Heavyweight,,,2023-06-03,2024-05-11,2026-11-05
+Paul Lawrence,paul-lawrence,https://www.sherdog.com/fighter/Paul-Lawrence-123373,,,inactive,,,,,,,,,,,,,,,,,Welterweight,,,2017-10-22,2017-10-22,2026-11-05
 Paul Redmond,paul-redmond,https://www.espn.com/mma/fighter/_/id/3104555,,Redser,inactive,15-9-0,,15,9,0,,40,177.8,155.0,177.8,,,Ireland,ie,Ireland,,Featherweight,https://a.espncdn.com/i/headshots/mma/players/full/3104555.png,,2017-10-22,2018-06-09,2026-11-02
 Paul Reed,paul-reed,https://www.espn.com/mma/fighter/_/id/2525967,,,inactive,2-8-0,,2,8,0,,,172.7,145.0,,,,default,,,,,,,2010-09-18,2011-01-29,2026-11-02
 Paul Slowinski,paul-slowinski,https://www.espn.com/mma/fighter/_/id/3067215,,,inactive,0-2-0,,0,2,0,,46,190.5,240.0,,,,default,,,,,,,2013-09-28,2014-03-22,2026-11-02
 Paulina Bonkowska,paulina-bonkowska,https://www.espn.com/mma/fighter/_/id/3102991,,,inactive,0-2-0,,0,2,0,,,,,,,,default,,,,,,,2012-12-01,2012-12-01,2026-11-02
+Paulina Raszewska,paulina-raszewska,https://www.sherdog.com/fighter/Paulina-Raszewska-272935,,,inactive,,,,,,,,,,,,,,,,,Flyweight,,,2018-03-03,2018-03-03,2026-11-05
 Paulo Thiago,paulo-thiago,https://www.espn.com/mma/fighter/_/id/2335735,,,inactive,18-10-0,,18,10,0,,45,180.3,185.0,189.2,,,Brazil,br,"Brasilia, Brazil",X-Gym,Middleweight,https://a.espncdn.com/i/headshots/mma/players/full/2335735.png,,2017-10-22,2017-10-22,2026-11-02
 Pawel Gasinski,pawel-gasinski,https://www.espn.com/mma/fighter/_/id/3023789,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2007-09-15,2007-09-15,2026-11-02
+Pawel Glebocki,pawel-glebocki,https://www.sherdog.com/fighter/Pawel-Glebocki-75124,,,inactive,,,,,,,,,,,,,,,,,,,,2011-01-29,2011-01-29,2026-11-05
+Pawel Jozwiak,pawel-jozwiak,https://www.sherdog.com/fighter/Pawel-Jozwiak-12681,,,inactive,,,,,,,,,,,,,,,,,,,,2007-06-02,2007-06-02,2026-11-05
 Pawel Mikolajuw,pawel-mikolajuw,https://www.espn.com/mma/fighter/_/id/4076921,,Popek Monster,inactive,3-4-0,,3,4,0,,,,240.0,,,,default,,"Warsaw, Poland",,Heavyweight,,,2016-12-03,2018-10-06,2026-11-02
+Pawel Morawski,pawel-morawski,https://www.sherdog.com/fighter/Pawel-Morawski-29356,,,inactive,,,,,,,,,,,,,,,,,,,,2007-09-15,2007-09-15,2026-11-05
 Pawel Nastula,pawel-nastula,https://www.espn.com/mma/fighter/_/id/2354535,,,inactive,5-6-0,,5,6,0,,56,,233.0,,,,default,,,,Heavyweight,,,2013-03-16,2014-12-06,2026-11-02
 Pawel Pawlak,pawel-pawlak,https://www.espn.com/mma/fighter/_/id/3096278,,Plastinho,active,24-4-1,,24,4,1,,37,182.9,185.0,185.4,,,Poland,pl,Poland,,Welterweight,https://a.espncdn.com/i/headshots/mma/players/full/3096278.png,,2021-09-04,2026-04-18,2026-11-02
 Pawel Polityło,pawel-politylo,https://www.espn.com/mma/fighter/_/id/4423700,,The Polish Eagle,inactive,7-4-0,,7,4,0,,34,170.2,135.0,168.9,,,Poland,pl,"Wroclaw, Poland",SBG Ireland,Bantamweight,,,2017-10-22,2022-09-10,2026-11-02
+Pawel Trzesniewski,pawel-trzesniewski,https://www.sherdog.com/fighter/Pawel-Trzesniewski-14622,,,inactive,,,,,,,,,,,,,,,,,,,,2004-02-26,2004-02-26,2026-11-05
 Pawel Zalewski,pawel-zalewski,https://www.espn.com/mma/fighter/_/id/3103024,,,inactive,0-2-0,,0,2,0,,42,180.3,185.0,,,,default,,,,,,,2004-10-06,2004-10-06,2026-11-02
 Pawel Zydak,pawel-zydak,https://www.espn.com/mma/fighter/_/id/3088221,,,inactive,0-2-0,,0,2,0,,,,,,,,default,,,,,,,2010-10-09,2010-10-09,2026-11-02
 Peter Graham,peter-graham,https://www.espn.com/mma/fighter/_/id/2504928,,The Chief,inactive,11-10-0,,11,10,0,,51,188.0,247.0,,,,Australia,au,"Adelaide, Australia",Boxing Works,Heavyweight,,,2014-10-04,2015-10-31,2026-11-02
 Peter Sobotta,peter-sobotta,https://www.espn.com/mma/fighter/_/id/2502609,,,inactive,17-7-1,,17,7,1,,39,182.9,170.0,190.5,,,Jamaica,jm,"Berlin, Jamaica",Planet Eater,Welterweight,https://a.espncdn.com/i/headshots/mma/players/full/2502609.png,,2008-09-13,2008-09-13,2026-11-02
-Petr Ondrus,petr-ondrus,https://www.espn.com/mma/fighter/_/id/2559246,,Pino,inactive,1-4-0,,1,4,0,,,185.4,205.0,,,,default,,,,,,,2008-03-29,2008-03-29,2026-11-02
+Petr Ondrus,petr-ondrus,https://www.espn.com/mma/fighter/_/id/2559246,,Pino,inactive,1-4-0,,1,4,0,,,185.4,205.0,,,,default,,,,,,,2008-03-29,2008-12-12,2026-11-02
+Petra Castkova,petra-castkova,https://www.sherdog.com/fighter/Petra-Castkova-211435,,,inactive,,,,,,,,,,,,,,,,,Flyweight,,,2022-10-14,2024-02-17,2026-11-05
 Phil de Fries,phil-de-fries,https://www.espn.com/mma/fighter/_/id/2589311,,,active,25-6-0,,25,6,0,,40,193.0,265.0,208.3,,,England,gb-eng,England,Team Fish Tank,Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/2589311.png,,2018-04-14,2026-04-18,2026-11-02
-Piotr Baginski,piotr-baginski,https://www.espn.com/mma/fighter/_/id/2500770,,,inactive,0-1-1,,0,1,1,,,,,,,,default,,,,,,,2006-06-02,2006-06-02,2026-11-02
-Piotr Chudzik,piotr-chudzik,https://www.sherdog.com/fighter/Piotr-Chudzik-443762,,,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2026-06-20,2026-06-20,2026-11-02
-Piotr Kacprzak,piotr-kacprzak,https://www.sherdog.com/fighter/Piotr-Kacprzak-269023,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-01-25,2026-06-20,2026-11-02
-Piotr Kuberski,piotr-kuberski,https://www.espn.com/mma/fighter/_/id/5149924,,QBear,active,13-1-0,,13,1,0,,,190.5,185.0,190.5,,,Poland,pl,"Poznan, Poland",Ankos MMA,Middleweight,,,2024-03-16,2026-05-16,2026-11-02
-Piotr Lisek,piotr-lisek,https://www.sherdog.com/fighter/Piotr-Lisek-436598,,,active,,,,,,,,,,,,,,,,,Catch Weight,,,2025-12-20,2025-12-20,2026-11-02
+Piotr Baginski,piotr-baginski,https://www.espn.com/mma/fighter/_/id/2500770,,,inactive,0-1-1,,0,1,1,,,,,,,,default,,,,,,,2006-06-02,2007-11-10,2026-11-02
+Piotr Chudzik,piotr-chudzik,https://www.sherdog.com/fighter/Piotr-Chudzik-443762,,,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2026-06-20,2026-06-20,2026-11-05
+Piotr Kacprzak,piotr-kacprzak,https://www.sherdog.com/fighter/Piotr-Kacprzak-269023,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2022-03-19,2026-06-20,2026-11-05
+Piotr Kuberski,piotr-kuberski,https://www.espn.com/mma/fighter/_/id/5149924,,QBear,active,13-1-0,,13,1,0,,,190.5,185.0,190.5,,,Poland,pl,"Poznan, Poland",Ankos MMA,Middleweight,,,2023-11-11,2026-05-16,2026-11-02
+Piotr Lisek,piotr-lisek,https://www.sherdog.com/fighter/Piotr-Lisek-436598,,,active,,,,,,,,,,,,,,,,,Catch Weight,,,2025-12-20,2025-12-20,2026-11-05
+Piotr Olszynka,piotr-olszynka,https://www.sherdog.com/fighter/Piotr-Olszynka-41536,,Olszyn,inactive,,,,,,,,,,,,,,,,,Catch Weight,,,2021-12-18,2021-12-18,2026-11-05
 Piotr Strus,piotr-strus,https://www.espn.com/mma/fighter/_/id/3081415,,,active,14-6-2,,14,6,2,,38,185.4,185.0,,,,Poland,pl,Poland,,Middleweight,,,2012-12-01,2014-12-06,2026-11-02
-Predrag Bozovic,predrag-bozovic,https://www.sherdog.com/fighter/Predrag-Bozovic-420983,,Peda,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2026-06-20,2026-06-20,2026-11-02
+Predrag Bozovic,predrag-bozovic,https://www.sherdog.com/fighter/Predrag-Bozovic-420983,,Peda,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2026-06-20,2026-06-20,2026-11-05
 Prince Aounallah,prince-aounallah,https://www.espn.com/mma/fighter/_/id/3132497,,His Majesty,active,2-5-0,,2,5,0,,35,188.0,240.0,196.8,,,France,fr,France,Free Fight Academy,Heavyweight,,,2024-04-06,2024-04-06,2026-11-02
+Przemyslaw Biskup,przemyslaw-biskup,https://www.sherdog.com/fighter/Przemyslaw-Biskup-13216,,Balon,inactive,,,,,,,,,,,,,,,,,,,,2005-01-15,2005-01-15,2026-11-05
 Przemyslaw Dzwoniarek,przemyslaw-dzwoniarek,https://www.espn.com/mma/fighter/_/id/5122907,,,inactive,0-1-0,,0,1,0,,,188.0,240.0,,,,Poland,pl,Poland,,Heavyweight,,,2022-06-18,2022-06-18,2026-11-02
-Przemyslaw Gorny,przemyslaw-gorny,https://www.sherdog.com/fighter/Przemyslaw-Gorny-190085,,The Polish Wolf,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-09-20,2026-07-18,2026-11-02
+Przemyslaw Gorny,przemyslaw-gorny,https://www.sherdog.com/fighter/Przemyslaw-Gorny-190085,,The Polish Wolf,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-09-20,2026-07-18,2026-11-05
 Przemyslaw Mysiala,przemyslaw-mysiala,https://www.espn.com/mma/fighter/_/id/2554926,,Polish Bear,inactive,24-12-1,,24,12,1,,44,182.9,205.0,185.4,,,Poland,pl,"Warsaw, Poland",Great Britain Top Team,Light Heavyweight,,,2019-09-14,2021-06-05,2026-11-02
-Przemyslaw Saleta,przemyslaw-saleta,https://www.espn.com/mma/fighter/_/id/2525960,,,inactive,1-0-0,,1,0,0,,,,,,,,default,,,,Heavyweight,,,2010-09-18,2010-09-18,2026-11-02
+Przemyslaw Saleta,przemyslaw-saleta,https://www.espn.com/mma/fighter/_/id/2525960,,,inactive,1-0-0,,1,0,0,,,,,,,,default,,,,Heavyweight,,,2007-06-02,2010-09-18,2026-11-02
+Quentin Domingos,quentin-domingos,https://www.sherdog.com/fighter/Quentin-Domingos-276653,,Ruskov,inactive,,,,,,,,,,,,,,,,,Heavyweight,,,2020-08-29,2020-08-29,2026-11-05
 Radoslaw Paczuski,radoslaw-paczuski,https://www.espn.com/mma/fighter/_/id/5080651,,,active,6-2-0,,6,2,0,,33,190.5,185.0,,,,Poland,pl,"Warsaw, Poland",,Middleweight,,,2022-05-28,2026-09-19,2026-11-02
 Rafal Blachuta,rafal-blachuta,https://www.espn.com/mma/fighter/_/id/3156284,,,inactive,2-3-0,,2,3,0,,,182.9,170.0,,,,Poland,pl,"Gdansk, Poland",,,,,2011-01-29,2014-05-17,2026-11-02
 Rafal Haratyk,rafal-haratyk,https://www.espn.com/mma/fighter/_/id/3072476,,Polish Tank,active,6-3-1,,6,3,1,,39,185.4,185.0,194.3,,,Poland,pl,Poland,Berserker's Team,Light Heavyweight,,,2023-10-14,2026-07-18,2026-11-02
 Rafal Kijanczuk,rafal-kijanczuk,https://www.espn.com/mma/fighter/_/id/4576262,,Kijana,active,12-7-0,,12,7,0,,34,188.0,205.0,,,,Poland,pl,"Chelm, Poland",,Light Heavyweight,,,2022-03-19,2023-08-19,2026-11-02
 Rafal Moks,rafal-moks,https://www.espn.com/mma/fighter/_/id/3024970,,,inactive,11-8-0,,11,8,0,,40,172.7,170.0,,,,default,,Szamotuly,,Welterweight,,,2011-11-26,2016-05-27,2026-11-02
+Rafal Schabek,rafal-schabek,https://www.sherdog.com/fighter/Rafal-Schabek-75610,,,inactive,,,,,,,,,,,,,,,,,,,,2011-01-29,2011-01-29,2026-11-05
 Rafal Tomasiuk,rafal-tomasiuk,https://www.espn.com/mma/fighter/_/id/4293603,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2004-02-26,2004-02-26,2026-11-02
+Raimondas Krilavicius,raimondas-krilavicius,https://www.sherdog.com/fighter/Raimondas-Krilavicius-251857,,,inactive,,,,,,,,,,,,,,,,,Lightweight,,,2023-01-21,2023-01-21,2026-11-05
 Rameau Thierry Sokoudjou,rameau-thierry-sokoudjou,https://www.espn.com/mma/fighter/_/id/2335610,,The African Assassin,inactive,19-18-0,,19,18,0,,42,177.8,205.0,198.1,,,Cameroon,cm,"Garoua, Cameroon",Team Quest -Portland,,,,2011-03-19,2017-05-27,2026-11-02
+Ramzan Jembiev,ramzan-jembiev,https://www.sherdog.com/fighter/Ramzan-Jembiev-309307,,Loup Noir,active,,,,,,,,,,,,,,,,,Catch Weight,,,2023-02-25,2024-12-20,2026-11-05
 Raul Tutarauli,raul-tutarauli,https://www.espn.com/mma/fighter/_/id/4074008,,,active,34-7-0,,34,7,0,,34,170.2,155.0,175.3,,,Georgia,ge,"Tbilisi, Georgia",,Lightweight,,,2023-01-21,2023-12-16,2026-11-02
-Rayla Nascimento,rayla-nascimento,https://www.sherdog.com/fighter/Rayla-Nascimento-233807,,India,active,,,,,,,,,,,,,,,,,Flyweight,,,2026-07-18,2026-07-18,2026-11-02
+Rayla Nascimento,rayla-nascimento,https://www.sherdog.com/fighter/Rayla-Nascimento-233807,,India,active,,,,,,,,,,,,,,,,,Flyweight,,,2026-07-18,2026-07-18,2026-11-05
 Reginaldo Vieira,reginaldo-vieira,https://www.espn.com/mma/fighter/_/id/2965200,,,active,16-7-0,,16,7,0,,43,170.2,135.0,165.1,,,Brazil,br,Brazil,,Bantamweight,,,2022-08-20,2022-08-20,2026-11-02
+Remigijus Ziausys,remigijus-ziausys,https://www.sherdog.com/fighter/Remigijus-Ziausys-6633,,,inactive,,,,,,,,,,,,,,,,,,,,2005-01-15,2005-01-15,2026-11-05
 Renato Gomes Gabriel,renato-gomes-gabriel,https://www.espn.com/mma/fighter/_/id/4237536,,,inactive,1-4-0,,1,4,0,,39,177.8,170.0,,,,Brazil,br,"Santa Catarina, Brazil",,,,,2016-10-01,2017-04-07,2026-11-02
 Ricardo Prasel,ricardo-prasel,https://www.espn.com/mma/fighter/_/id/4312854,,Alemao,active,13-4-0,,13,4,0,,36,200.7,242.0,198.1,,,Brazil,br,Brazil,Alemao Brothers Team,Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/4312854.png,,2022-03-19,2025-09-20,2026-11-02
+Rimgaudas Kutkaitis,rimgaudas-kutkaitis,https://www.sherdog.com/fighter/Rimgaudas-Kutkaitis-10912,,,inactive,,,,,,,,,,,,,,,,,,,,2007-06-02,2007-06-02,2026-11-05
 Robert Burneika,robert-burneika,https://www.espn.com/mma/fighter/_/id/4382295,,,inactive,0-1-0,,0,1,0,,48,175.3,253.0,,,,default,,"Las Vegas, USA",,,,,2017-05-27,2017-05-27,2026-11-02
-Robert Jocz,robert-jocz,https://www.espn.com/mma/fighter/_/id/2967036,,,inactive,3-5-0,,3,5,0,,49,185.4,185.0,,,,default,,,,,,,2006-06-02,2006-06-02,2026-11-02
+Robert Jocz,robert-jocz,https://www.espn.com/mma/fighter/_/id/2967036,,,inactive,3-5-0,,3,5,0,,49,185.4,185.0,,,,default,,,,,,,2006-06-02,2007-06-02,2026-11-02
+Robert Maciejowski,robert-maciejowski,https://www.sherdog.com/fighter/Robert-Maciejowski-193257,,Carpathian Heart,inactive,,,,,,,,,,,,,,,,,Catch Weight,,,2022-01-15,2023-05-13,2026-11-05
 Robert Radomski,robert-radomski,https://www.espn.com/mma/fighter/_/id/3132518,,,inactive,12-5-0,,12,5,0,,43,180.3,170.0,,,,default,,Kamien Pomorski,Spartan Chorzow / Paco Katowice,Welterweight,,,2011-01-29,2016-12-03,2026-11-02
 Robert Ruchała,robert-ruchala,https://www.espn.com/mma/fighter/_/id/5100571,,,active,11-3-0,,11,3,0,,28,177.8,146.0,182.9,,,Poland,pl,Poland,Grappling Krakow,Featherweight,https://a.espncdn.com/i/headshots/mma/players/full/5100571.png,,2020-11-14,2024-11-16,2026-11-02
+Robert Swierblewski,robert-swierblewski,https://www.sherdog.com/fighter/Robert-Swierblewski-28115,,,inactive,,,,,,,,,,,,,,,,,,,,2007-09-15,2007-09-15,2026-11-05
+Roberta Zocco,roberta-zocco,https://www.sherdog.com/fighter/Roberta-Zocco-224855,,The Diamond,inactive,,,,,,,,,,,,,,,,,Strawweight,,,2022-05-28,2022-05-28,2026-11-05
 Roberto Soldić,roberto-soldic,https://www.espn.com/mma/fighter/_/id/4274796,,Robocop,active,22-4-0,,22,4,0,,31,180.3,170.0,185.4,,,Croatia,hr,Croatia,UFD Gym,Welterweight,https://a.espncdn.com/i/headshots/mma/players/full/4274796.png,,2017-12-23,2021-12-18,2026-11-02
 Rodney Glunder,rodney-glunder,https://www.espn.com/mma/fighter/_/id/2431319,,,inactive,4-9-2,,4,9,2,,51,182.9,205.0,,,,default,,,,Heavyweight,,,2012-09-15,2012-09-15,2026-11-02
 Rodney Wallace,rodney-wallace,https://www.espn.com/mma/fighter/_/id/2500659,,Sho Nuff the Master,inactive,25-14-1,,25,14,1,,44,175.3,205.0,182.9,,,United States,us,"Bamberg, USA",Chute Boxe,,,,2012-05-12,2012-12-01,2026-11-02
 Rodrigo Cavalheiro Correia,rodrigo-cavalheiro-correia,https://www.espn.com/mma/fighter/_/id/3061094,,,inactive,19-7-0,,19,7,0,,43,182.9,170.0,,,,Brazil,br,"Curitiba, Brazil",American Top Team,,,,2015-02-21,2015-02-21,2026-11-02
 Rogent Lloret,rogent-lloret,https://www.espn.com/mma/fighter/_/id/2500777,,,inactive,2-4-1,,2,4,1,,47,190.5,236.0,,,,Spain,es,"Barcelona, Spain",,,,,2011-03-19,2011-03-19,2026-11-02
-Rogerio Bontorin,rogerio-bontorin,https://www.sherdog.com/fighter/Rogerio-Bontorin-132211,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-09-20,2025-09-20,2026-11-02
+Rogerio Bontorin,rogerio-bontorin,https://www.sherdog.com/fighter/Rogerio-Bontorin-132211,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-09-20,2025-09-20,2026-11-05
 Rolles Gracie,rolles-gracie,https://www.espn.com/mma/fighter/_/id/2504633,,,inactive,8-4-0,,8,4,0,,48,193.0,245.0,,,,Brazil,br,"Rio De Janeiro, Brazil",Renzo Gracie Jiu-Jitsu,Heavyweight,,,2014-10-04,2015-05-23,2026-11-02
-Romain Debienne,romain-debienne,https://www.sherdog.com/fighter/Romain-Debienne-247303,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-12-20,2025-12-20,2026-11-02
+Romain Debienne,romain-debienne,https://www.sherdog.com/fighter/Romain-Debienne-247303,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2024-12-20,2025-12-20,2026-11-05
 Roman Szaszkow,roman-szaszkow,https://www.espn.com/mma/fighter/_/id/4293605,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2004-02-26,2004-02-26,2026-11-02
 Roman Szymański,roman-szymanski,https://www.espn.com/mma/fighter/_/id/4290963,,,active,17-8-0,,17,8,0,,33,172.7,155.0,180.3,,,Poland,pl,"Poznan, Poland",,Lightweight,,,2016-12-03,2026-05-16,2026-11-02
 Rousimar Palhares,rousimar-palhares,https://www.espn.com/mma/fighter/_/id/2335764,,Toquinho,inactive,20-10-1,,20,10,1,,46,172.7,170.0,180.3,,,Brazil,br,"Minas Gerais, Brazil",Brazilian Top Team,Welterweight,https://a.espncdn.com/i/headshots/mma/players/full/2335764.png,,2016-10-01,2016-10-01,2026-11-02
 Ruben Crawford,ruben-crawford,https://www.espn.com/mma/fighter/_/id/3088219,,,inactive,16-4-0,,16,4,0,,37,182.9,165.0,,,,Germany,de,"Cologne, Germany",Combat Club Cologne,Welterweight,,,2011-01-29,2011-03-19,2026-11-02
 Ryuta Sakurai,ryuta-sakurai,https://www.espn.com/mma/fighter/_/id/2501512,,Mr. Deep,active,0-13-1,,0,13,1,,55,177.8,185.0,,,,Japan,jp,Japan,,Middleweight,,,2010-05-07,2013-12-07,2026-11-02
+Sahil Siraj,sahil-siraj,https://www.sherdog.com/fighter/Sahil-Siraj-209747,,,inactive,,,,,,,,,,,,,,,,,Catch Weight,,,2023-01-21,2023-10-14,2026-11-05
 Salahdine Parnasse,salahdine-parnasse,https://www.espn.com/mma/fighter/_/id/4312859,,Lion Of Atlas,active,24-2-0,,24,2,0,,28,177.8,155.0,181.6,,,France,fr,France,Atch Academy,Lightweight,https://a.espncdn.com/i/headshots/mma/players/full/4312859.png,,2017-12-23,2026-01-17,2026-11-02
-Salim El Ouassaidi,salim-el-ouassaidi,https://www.sherdog.com/fighter/Salim-El-Ouassaidi-385708,,Bizon,active,,,,,,,,,,,,,,,,,Catch Weight,,,2026-10-10,2026-10-10,2026-11-02
-Samuel Bily,samuel-bily,https://www.sherdog.com/fighter/Samuel-Bily-446410,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-02-21,2026-09-19,2026-11-02
-Sara Luzar-Smajic,sara-luzar-smajic,https://www.espn.com/mma/fighter/_/id/5134402,,Guerreira,active,1-1-0,,1,1,0,,31,170.2,135.0,,,,Croatia,hr,Croatia,UFD Gym,Women's Bantamweight,,,2022-07-23,2026-05-16,2026-11-02
+Salim El Ouassaidi,salim-el-ouassaidi,https://www.sherdog.com/fighter/Salim-El-Ouassaidi-385708,,Bizon,active,,,,,,,,,,,,,,,,,Catch Weight,,,2026-10-10,2026-10-10,2026-11-05
+Samuel Bily,samuel-bily,https://www.sherdog.com/fighter/Samuel-Bily-446410,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-02-21,2026-09-19,2026-11-05
+Sandra Succar,sandra-succar,https://www.sherdog.com/fighter/Sandra-Succar-390467,,The Cedars Gal,inactive,,,,,,,,,,,,,,,,,Flyweight,,,2023-08-19,2024-04-06,2026-11-05
+Sara Luzar-Smajic,sara-luzar-smajic,https://www.espn.com/mma/fighter/_/id/5134402,,Guerreira,active,1-1-0,,1,1,0,,31,170.2,135.0,,,,Croatia,hr,Croatia,UFD Gym,Women's Bantamweight,,,2021-09-04,2026-05-16,2026-11-02
+Satisch Jhamai,satisch-jhamai,https://www.sherdog.com/fighter/Satisch-Jhamai-8337,,Satish Jha / The Crazy Indian,inactive,,,,,,,,,,,,,,,,,,,,2008-09-13,2008-09-13,2026-11-05
 Satoshi Ishii,satoshi-ishii,https://www.espn.com/mma/fighter/_/id/2526301,,,active,26-14-1,,26,14,1,,39,177.8,240.0,188.0,,,Croatia,hr,"Zagreb, Croatia",Cro Cop Squad Gym,Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/2526301.png,,2019-03-23,2019-03-23,2026-11-02
-Savo Lazić,savo-lazic,https://www.espn.com/mma/fighter/_/id/4275024,,Hitman,active,0-4-0,,0,4,0,,37,177.8,155.0,,,,Montenegro,me,Montenegro,,Lightweight,,,2021-03-20,2021-03-20,2026-11-02
+Savo Lazić,savo-lazic,https://www.espn.com/mma/fighter/_/id/4275024,,Hitman,active,0-4-0,,0,4,0,,37,177.8,155.0,,,,Montenegro,me,Montenegro,,Lightweight,,,2019-04-27,2021-03-20,2026-11-02
 Scott Askham,scott-askham,https://www.espn.com/mma/fighter/_/id/3075571,,,active,20-7-0,,20,7,0,,36,190.5,185.0,190.5,,,England,gb-eng,England,Ludus Magnus,Middleweight,https://a.espncdn.com/i/headshots/mma/players/full/3075571.png,,2018-03-03,2023-06-03,2026-11-02
 Sean McCorkle,sean-mccorkle,https://www.espn.com/mma/fighter/_/id/2504669,,Big Sexy,inactive,17-6-0,,17,6,0,,50,200.7,310.0,205.7,,,default,,,,Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/2504669.png,,2013-06-08,2013-09-28,2026-11-02
-Sebastian Decowski,sebastian-decowski,https://www.sherdog.com/fighter/Sebastian-Decowski-278265,,Joker,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-09-20,2026-04-18,2026-11-02
-Sebastian Olchawa,sebastian-olchawa,https://www.espn.com/mma/fighter/_/id/3023790,,,inactive,0-2-0,,0,2,0,,,,,,,,default,,,,,,,2007-09-15,2007-09-15,2026-11-02
+Sebastian Decowski,sebastian-decowski,https://www.sherdog.com/fighter/Sebastian-Decowski-278265,,Joker,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-09-20,2026-04-18,2026-11-05
+Sebastian Olchawa,sebastian-olchawa,https://www.espn.com/mma/fighter/_/id/3023790,,,inactive,0-2-0,,0,2,0,,,,,,,,default,,,,,,,2007-09-15,2008-03-29,2026-11-02
 Sebastian Przybysz,sebastian-przybysz,https://www.espn.com/mma/fighter/_/id/4375234,,Sebic,active,10-4-1,,10,4,1,,33,175.3,135.0,175.3,,,Poland,pl,"Gdansk, Poland",,Bantamweight,,,2018-06-09,2026-07-18,2026-11-02
-Sebastian Rajewski,sebastian-rajewski,https://www.espn.com/mma/fighter/_/id/4421740,,,active,12-8-0,,12,8,0,,34,175.3,145.0,,,,Poland,pl,Poland,,Lightweight,,,2020-08-29,2022-11-12,2026-11-02
-Sebastian Romanowski,sebastian-romanowski,https://www.espn.com/mma/fighter/_/id/3155089,,,inactive,0-3-0,,0,3,0,,36,170.2,145.0,,,,default,,"Szczecin, Poland",,,,,2016-12-03,2016-12-03,2026-11-02
+Sebastian Rajewski,sebastian-rajewski,https://www.espn.com/mma/fighter/_/id/4421740,,,active,12-8-0,,12,8,0,,34,175.3,145.0,,,,Poland,pl,Poland,,Lightweight,,,2020-08-29,2023-12-16,2026-11-02
+Sebastian Romanowski,sebastian-romanowski,https://www.espn.com/mma/fighter/_/id/3155089,,,inactive,0-3-0,,0,3,0,,36,170.2,145.0,,,,default,,"Szczecin, Poland",,,,,2016-12-03,2023-06-03,2026-11-02
+Sergei Nikitin,sergei-nikitin,https://www.sherdog.com/fighter/Sergei-Nikitin-4482,,,inactive,,,,,,,,,,,,,,,,,,,,2009-05-15,2009-05-15,2026-11-05
 Sergej Razvadovskij,sergej-razvadovskij,https://www.espn.com/mma/fighter/_/id/4293607,,,inactive,0-1-0,,0,1,0,,,177.8,175.0,,,,default,,,,,,,2005-01-15,2005-01-15,2026-11-02
 Sergey Shemetov,sergey-shemetov,https://www.espn.com/mma/fighter/_/id/2431329,,,inactive,0-3-0,,0,3,0,,42,,235.0,,,,default,,,,,,,2011-05-21,2011-05-21,2026-11-02
-Sergiusz Zajac,sergiusz-zajac,https://www.sherdog.com/fighter/Sergiusz-Zajac-304817,,,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2025-03-08,2026-10-10,2026-11-02
+Sergiusz Zajac,sergiusz-zajac,https://www.sherdog.com/fighter/Sergiusz-Zajac-304817,,,active,,,,,,,,,,,,,,,,,Light Heavyweight,,,2024-08-24,2026-10-10,2026-11-05
 Serhiy Radchenko,serhiy-radchenko,https://www.espn.com/mma/fighter/_/id/5135982,,,inactive,0-1-0,,0,1,0,,39,185.4,210.0,191.8,,,Ukraine,ua,Ukraine,,Heavyweight,,,2022-06-18,2022-06-18,2026-11-02
 Serigne Ousmane Dia,serigne-ousmane-dia,https://www.espn.com/mma/fighter/_/id/4717742,,,inactive,2-1-0,,2,1,0,,50,190.5,265.0,,,,Senegal,sn,Senegal,,,,,2021-10-23,2021-10-23,2026-11-02
+Shamad Erzanukaev,shamad-erzanukaev,https://www.sherdog.com/fighter/Shamad-Erzanukaev-222555,,,inactive,,,,,,,,,,,,,,,,,Bantamweight,,,2021-12-18,2024-06-07,2026-11-05
 Shamil Banukayev,shamil-banukayev,https://www.espn.com/mma/fighter/_/id/5016768,,,inactive,1-2-0,,1,2,0,,30,170.2,135.0,177.8,,,Germany,de,"Düsseldorf, Germany",UFD Gym,Bantamweight,,,2022-02-26,2022-02-26,2026-11-02
 Shamil Musaev,shamil-musaev,https://www.espn.com/mma/fighter/_/id/4688510,,Silent Assassin,active,20-1-1,,20,1,1,,32,177.8,170.0,180.3,,,Russia,ru,Russia,Golden Team,Welterweight,https://a.espncdn.com/i/headshots/mma/players/full/4688510.png,,2019-04-27,2021-10-23,2026-11-02
 Sheila Gaff,sheila-gaff,https://www.espn.com/mma/fighter/_/id/3023855,,The German Tank,inactive,9-7-0,,9,7,0,,36,165.1,135.0,157.5,,,Germany,de,"Erlangen, Germany",,Women's Strawweight,https://a.espncdn.com/i/headshots/mma/players/full/3023855.png,,2016-10-01,2016-10-01,2026-11-02
+Shonie Carter,shonie-carter,https://www.sherdog.com/fighter/Shonie-Carter-239,,Mr. International,inactive,,,,,,,,,,,,,,,,,,,,2005-09-10,2005-09-10,2026-11-05
 Silvana Gomez Juarez,silvana-gomez-juarez,https://www.espn.com/mma/fighter/_/id/4064999,,La Malvada,active,11-5-0,,11,5,0,,41,160.0,115.0,165.1,,,Argentina,ar,Argentina,Entram Gym,Women's Flyweight,https://a.espncdn.com/i/headshots/mma/players/full/4064999.png,,2018-03-03,2018-03-03,2026-11-02
 Simona Soukupova,simona-soukupova,https://www.espn.com/mma/fighter/_/id/3016402,,,inactive,5-6-1,,5,6,1,,49,154.9,105.0,,,,default,,"London, England",Ronin MMA,,,,2013-09-28,2013-09-28,2026-11-02
-Slimen Hassaini,slimen-hassaini,https://www.sherdog.com/fighter/Slimen-Hassaini-437372,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2026-06-20,2026-06-20,2026-11-02
+Slawomir Zieba,slawomir-zieba,https://www.sherdog.com/fighter/Slawomir-Zieba-10050,,,inactive,,,,,,,,,,,,,,,,,,,,2005-01-15,2005-01-15,2026-11-05
+Slimen Hassaini,slimen-hassaini,https://www.sherdog.com/fighter/Slimen-Hassaini-437372,,,active,,,,,,,,,,,,,,,,,Lightweight,,,2026-06-20,2026-06-20,2026-11-05
 Sofiia Bagishvili,sofiia-bagishvili,https://www.espn.com/mma/fighter/_/id/5141983,,,active,7-6-0,,7,6,0,,27,160.0,115.0,153.7,,,Georgia,ge,Georgia,,Women's Strawweight,,,2022-09-10,2025-03-08,2026-11-02
-Souheil Kaouchen,souheil-kaouchen,https://www.sherdog.com/fighter/Souheil-Kaouchen-442299,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-05-10,2026-06-20,2026-11-02
+Souheil Kaouchen,souheil-kaouchen,https://www.sherdog.com/fighter/Souheil-Kaouchen-442299,,,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-05-10,2026-06-20,2026-11-05
 Srdjan Marovic,srdjan-marovic,https://www.espn.com/mma/fighter/_/id/4725222,,,inactive,0-1-0,,0,1,0,,36,193.0,247.0,,,,Croatia,hr,"Dubrovnik, Croatia",,,,,2019-12-07,2019-12-07,2026-11-02
 Stefan Vojcak,stefan-vojcak,https://www.espn.com/mma/fighter/_/id/5149814,,Mutant,active,6-1-0,,6,1,0,,36,195.6,265.0,200.7,,,Slovakia,sk,Slovakia,,Heavyweight,,,2023-07-15,2026-09-19,2026-11-02
-Steven Krt,steven-krt,https://www.sherdog.com/fighter/Steven-Krt-259167,,,active,,,,,,,,,,,,,,,,,Catch Weight,,,2025-02-21,2026-05-16,2026-11-02
+Stevan Jaric,stevan-jaric,https://www.sherdog.com/fighter/Stevan-Jaric-389367,,,inactive,,,,,,,,,,,,,,,,,Light Heavyweight,,,2024-06-07,2024-06-07,2026-11-05
+Steven Krt,steven-krt,https://www.sherdog.com/fighter/Steven-Krt-259167,,,active,,,,,,,,,,,,,,,,,Catch Weight,,,2024-09-14,2026-05-16,2026-11-05
 Stjepan Bekavac,stjepan-bekavac,https://www.espn.com/mma/fighter/_/id/3076912,,,inactive,19-11-0,,19,11,0,,43,188.0,200.0,,,,default,,,,,,,2019-04-27,2020-10-10,2026-11-02
-Sylwia Juskiewicz,sylwia-juskiewicz,https://www.espn.com/mma/fighter/_/id/3107733,,Mala,inactive,1-3-0,,1,3,0,,32,160.0,115.0,,,,Poland,pl,"Lodz, Poland",,Women's Strawweight,,,2020-10-10,2020-10-10,2026-11-02
+Sylwia Juskiewicz,sylwia-juskiewicz,https://www.espn.com/mma/fighter/_/id/3107733,,Mala,inactive,1-3-0,,1,3,0,,32,160.0,115.0,,,,Poland,pl,"Lodz, Poland",,Women's Strawweight,,,2020-10-10,2021-10-23,2026-11-02
 Szymon Bajor,szymon-bajor,https://www.espn.com/mma/fighter/_/id/3093739,,,active,25-11-0,,25,11,0,,38,188.0,236.0,,,,Poland,pl,"Rzeszow, Poland",Spartakus Rzeszow,Heavyweight,,,2014-10-04,2026-10-10,2026-11-02
-Szymon Karolczyk,szymon-karolczyk,https://www.sherdog.com/fighter/Szymon-Karolczyk-288321,,,active,,,,,,,,,,,,,,,,,Catch Weight,,,2025-03-08,2025-10-18,2026-11-02
+Szymon Karolczyk,szymon-karolczyk,https://www.sherdog.com/fighter/Szymon-Karolczyk-288321,,,active,,,,,,,,,,,,,,,,,Catch Weight,,,2021-09-04,2025-10-18,2026-11-05
 Szymon Kolecki,szymon-kolecki,https://www.espn.com/mma/fighter/_/id/4408031,,,inactive,10-1-0,,10,1,0,,44,185.4,205.0,189.2,,,Poland,pl,"Plock, Poland",Akademia Sportow Walki Wilanow,Light Heavyweight,,,2019-03-23,2021-07-17,2026-11-02
-Tagir Machmudov,tagir-machmudov,https://www.sherdog.com/fighter/Tagir-Machmudov-399834,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2026-05-16,2026-05-16,2026-11-02
-Tamires Vidal,tamires-vidal,https://www.sherdog.com/fighter/Tamires-Vidal-293451,,Tratora,active,,,,,,,,,,,,,,,,,Bantamweight,,,2026-01-17,2026-01-17,2026-11-02
+Tagir Machmudov,tagir-machmudov,https://www.sherdog.com/fighter/Tagir-Machmudov-399834,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2026-05-16,2026-05-16,2026-11-05
+Tamires Vidal,tamires-vidal,https://www.sherdog.com/fighter/Tamires-Vidal-293451,,Tratora,active,,,,,,,,,,,,,,,,,Bantamweight,,,2026-01-17,2026-01-17,2026-11-05
 Terry Martin,terry-martin,https://www.espn.com/mma/fighter/_/id/2431250,,,inactive,6-10-0,,6,10,0,,46,172.7,185.0,180.3,,,default,,,,Middleweight,,,2012-12-01,2012-12-01,2026-11-02
 Thiago Silva,thiago-silva,https://www.espn.com/mma/fighter/_/id/2335526,,,inactive,21-9-0,,21,9,0,,43,185.4,205.0,188.0,,,Brazil,br,Brazil,Kill Cliff FC,Light Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/2335526.png,,2018-10-06,2019-05-18,2026-11-02
-Tobiasz Le,tobiasz-le,https://www.sherdog.com/fighter/Tobiasz-Le-329143,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-10-18,2026-04-18,2026-11-02
+Tobiasz Le,tobiasz-le,https://www.sherdog.com/fighter/Tobiasz-Le-329143,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2023-10-14,2026-04-18,2026-11-05
 Todd Duffee,todd-duffee,https://www.espn.com/mma/fighter/_/id/2502273,,,active,9-4-0,,9,4,0,,40,190.5,244.0,198.1,,,United States,us,USA,AKA (American Kickboxing Academy),Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/2502273.png,,2023-02-25,2023-02-25,2026-11-02
 Tom Breese,tom-breese,https://www.espn.com/mma/fighter/_/id/3140871,,,active,18-7-0,,18,7,0,,35,190.5,205.0,186.7,,,England,gb-eng,England,Renegade MMA,Middleweight,https://a.espncdn.com/i/headshots/mma/players/full/3140871.png,,2022-09-10,2023-03-17,2026-11-02
 Tomasz Drwal,tomasz-drwal,https://www.espn.com/mma/fighter/_/id/2335636,,Gorilla,inactive,22-6-1,,22,6,1,,44,185.4,185.0,193.0,,,Poland,pl,"Krakow, Poland",Alliance MMA,Middleweight,,,2015-05-23,2020-12-19,2026-11-02
-Tomasz Jakubiec,tomasz-jakubiec,https://www.espn.com/mma/fighter/_/id/4424012,,,inactive,10-4-0,,10,4,0,,36,185.4,185.0,184.2,,,Poland,pl,Poland,Bastion Tychy,Middleweight,,,2020-07-11,2022-03-19,2026-11-02
+Tomasz Jakubiec,tomasz-jakubiec,https://www.espn.com/mma/fighter/_/id/4424012,,,inactive,10-4-0,,10,4,0,,36,185.4,185.0,184.2,,,Poland,pl,Poland,Bastion Tychy,Middleweight,,,2020-07-11,2024-03-16,2026-11-02
 Tomasz Kondraciuk,tomasz-kondraciuk,https://www.espn.com/mma/fighter/_/id/3077806,,,inactive,1-4-0,,1,4,0,,38,182.9,205.0,,,,default,,,,,,,2014-12-06,2016-03-05,2026-11-02
+Tomasz Macior,tomasz-macior,https://www.sherdog.com/fighter/Tomasz-Macior-30828,,,inactive,,,,,,,,,,,,,,,,,,,,2008-03-29,2008-03-29,2026-11-05
 Tomasz Matusewicz,tomasz-matusewicz,https://www.espn.com/mma/fighter/_/id/4794132,,,inactive,0-1-0,,0,1,0,,30,180.3,155.0,,,,Poland,pl,Poland,,,,,2017-04-07,2017-04-07,2026-11-02
-Tomasz Molski,tomasz-molski,https://www.espn.com/mma/fighter/_/id/2506257,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,Light Heavyweight,,,2010-05-07,2010-05-07,2026-11-02
+Tomasz Molski,tomasz-molski,https://www.espn.com/mma/fighter/_/id/2506257,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,Light Heavyweight,,,2010-04-01,2010-05-07,2026-11-02
 Tomasz Narkun,tomasz-narkun,https://www.espn.com/mma/fighter/_/id/3161787,,Giraffe,active,18-7-0,,18,7,0,,36,190.5,205.0,194.3,,,Poland,pl,Poland,Berserker's Team,Light Heavyweight,,,2014-05-17,2022-10-14,2026-11-02
 Tomasz Niedzwiecki,tomasz-niedzwiecki,https://www.espn.com/mma/fighter/_/id/4013004,,,inactive,1-0-0,,1,0,0,,,,,,,,default,,,,,,,2008-03-29,2008-03-29,2026-11-02
 Tomasz Oswiecinski,tomasz-oswiecinski,https://www.espn.com/mma/fighter/_/id/4382285,,,inactive,1-1-0,,1,1,0,,53,182.9,232.0,,,,default,,"Warsaw, Poland",,,,,2017-12-23,2018-06-09,2026-11-02
 Tomasz Romanowski,tomasz-romanowski,https://www.espn.com/mma/fighter/_/id/3893366,,Tommy,active,18-10-0,,18,10,0,,37,177.8,170.0,175.3,,,Poland,pl,"Szczecin, Poland",,Middleweight,,,2020-10-10,2026-03-14,2026-11-02
-Tomasz Sarara,tomasz-sarara,https://www.espn.com/mma/fighter/_/id/5080649,,,inactive,1-1-0,,1,1,0,,41,185.4,235.0,191.8,,,Poland,pl,Poland,,Heavyweight,,,2021-07-17,2022-08-20,2026-11-02
+Tomasz Sarara,tomasz-sarara,https://www.espn.com/mma/fighter/_/id/5080649,,,inactive,1-1-0,,1,1,0,,41,185.4,235.0,191.8,,,Poland,pl,Poland,,Heavyweight,,,2021-07-17,2023-04-22,2026-11-02
 Tomasz Stanclik,tomasz-stanclik,https://www.espn.com/mma/fighter/_/id/4293606,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2004-10-06,2004-10-06,2026-11-02
+Tommy Quinn,tommy-quinn,https://www.sherdog.com/fighter/Tommy-Quinn-29689,,The Roly Poly Kid,inactive,,,,,,,,,,,,,,,,,Catch Weight,,,2022-03-19,2022-05-28,2026-11-05
 Tomáš Možný,tomas-mozny,https://www.espn.com/mma/fighter/_/id/5124981,,The Giant Slovak,active,1-2-0,,1,2,0,,35,200.7,265.0,,,,Slovakia,sk,Slovakia,,Heavyweight,,,2023-02-25,2023-02-25,2026-11-02
 Toni Valtonen,toni-valtonen,https://www.espn.com/mma/fighter/_/id/2500736,,,inactive,3-6-0,,3,6,0,,,,220.0,,,,default,,,,,,,2011-03-19,2011-05-21,2026-11-02
 Tony Galic,tony-galic,https://www.espn.com/mma/fighter/_/id/4293609,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2007-09-15,2007-09-15,2026-11-02
 Tony Giles,tony-giles,https://www.espn.com/mma/fighter/_/id/4590327,,,inactive,0-1-0,,0,1,0,,,,,,,,default,,,,,,,2019-09-14,2019-09-14,2026-11-02
 Tyberiusz Kowalczyk,tyberiusz-kowalczyk,https://www.espn.com/mma/fighter/_/id/4187290,,,inactive,3-1-0,,3,1,0,,,188.0,256.0,,,,default,,"Lodz, Poland",,Heavyweight,,,2017-05-27,2017-05-27,2026-11-02
-Tymoteusz Lopaczyk,tymoteusz-lopaczyk,https://www.sherdog.com/fighter/Tymoteusz-Lopaczyk-238825,,Honey Badger,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-03-08,2026-06-20,2026-11-02
+Tymoteusz Lopaczyk,tymoteusz-lopaczyk,https://www.sherdog.com/fighter/Tymoteusz-Lopaczyk-238825,,Honey Badger,active,,,,,,,,,,,,,,,,,Welterweight,,,2024-06-07,2026-06-20,2026-11-05
 Uros Jurisic,uros-jurisic,https://www.espn.com/mma/fighter/_/id/3890655,,,inactive,11-1-0,,11,1,0,,33,177.8,170.0,180.3,,,Slovenia,si,"Ljubljana, Slovenia",American Top Team,Welterweight,https://a.espncdn.com/i/headshots/mma/players/full/3890655.png,,2021-01-30,2021-01-30,2026-11-02
 Valdas Pocevicius,valdas-pocevicius,https://www.espn.com/mma/fighter/_/id/2500739,,,inactive,3-15-1,,3,15,1,,,180.3,205.0,,,,Lithuania,lt,"Mazeikai, Lithuania",,Light Heavyweight,,,2006-10-14,2008-05-09,2026-11-02
 Valentijn Overeem,valentijn-overeem,https://www.espn.com/mma/fighter/_/id/2473326,,The Python,inactive,30-32-0,,30,32,0,,50,190.5,235.0,,,,default,,,Golden Glory,,,,2012-02-25,2012-02-25,2026-11-02
 Valeriu Mircea,valeriu-mircea,https://www.espn.com/mma/fighter/_/id/4013570,,The Solitary Wolf,active,29-9-1,,29,9,1,,33,175.3,145.0,182.9,,,Moldova,md,"Chisinau, Moldova",,Featherweight,,,2022-06-18,2026-05-16,2026-11-02
+Vasil Ducar,vasil-ducar,https://www.sherdog.com/fighter/Vasil-Ducar-130131,,,inactive,,,,,,,,,,,,,,,,,Light Heavyweight,,,2024-02-17,2024-10-19,2026-11-05
 Vaso Bakocevic,vaso-bakocevic,https://www.espn.com/mma/fighter/_/id/3046950,,Psychopath,inactive,33-19-1,,33,19,1,,37,172.7,170.0,,,,default,,Podgorica,,,,,2014-10-04,2019-11-09,2026-11-02
-Viktor Cervinsky,viktor-cervinsky,https://www.sherdog.com/fighter/Viktor-Cervinsky-422464,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-08-09,2026-01-17,2026-11-02
+Viktor Cervinsky,viktor-cervinsky,https://www.sherdog.com/fighter/Viktor-Cervinsky-422464,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2024-02-17,2026-01-17,2026-11-05
 Viktor Pesta,viktor-pesta,https://www.espn.com/mma/fighter/_/id/3097808,,,active,19-9-0,,19,9,0,,36,193.0,206.0,195.6,,,Czech Republic,cz,Czechia,Kill Cliff FC,Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/3097808.png,,2023-09-16,2023-12-16,2026-11-02
 Vinicius Bohrer,vinicius-bohrer,https://www.espn.com/mma/fighter/_/id/4700265,,,inactive,1-2-0,,1,2,0,,38,180.3,170.0,,,,Brazil,br,Brazil,,,,,2018-12-01,2019-12-07,2026-11-02
 Virgil Zwicker,virgil-zwicker,https://www.espn.com/mma/fighter/_/id/2557279,,Rezdog,inactive,15-6-1,,15,6,1,,44,188.0,235.0,188.0,,,United States,us,"Temecula, USA",Team Quest -Portland,,,,2013-12-07,2013-12-07,2026-11-02
-Vitalii Yakymenko,vitalii-yakymenko,https://www.sherdog.com/fighter/Vitalii-Yakymenko-308845,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-09-20,2026-10-10,2026-11-02
-Vitor Nobrega,vitor-nobrega,https://www.espn.com/mma/fighter/_/id/2506253,,,inactive,2-6-1,,2,6,1,,45,180.3,170.0,,,,Brazil,br,"Rio De Janeiro, Brazil",,,,,2008-05-09,2010-05-07,2026-11-02
+Vitalii Yakymenko,vitalii-yakymenko,https://www.sherdog.com/fighter/Vitalii-Yakymenko-308845,,,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-09-20,2026-10-10,2026-11-05
+Vitor Nobrega,vitor-nobrega,https://www.espn.com/mma/fighter/_/id/2506253,,,inactive,2-6-1,,2,6,1,,45,180.3,170.0,,,,Brazil,br,"Rio De Janeiro, Brazil",,,,,2008-05-09,2011-01-29,2026-11-02
+Vladimir Yushko,vladimir-yushko,https://www.sherdog.com/fighter/Vladimir-Yushko-7661,,,inactive,,,,,,,,,,,,,,,,,,,,2005-09-10,2006-06-02,2026-11-05
+Vladyslav Falbiychuk,vladyslav-falbiychuk,https://www.sherdog.com/fighter/Vladyslav-Falbiychuk-437890,,,inactive,,,,,,,,,,,,,,,,,Featherweight,,,2023-11-11,2023-11-11,2026-11-05
+Vojtech Garba,vojtech-garba,https://www.sherdog.com/fighter/Vojtech-Garba-239219,,Silesian Knight,inactive,,,,,,,,,,,,,,,,,Light Heavyweight,,,2023-10-14,2024-10-19,2026-11-05
 Vojto Barborik,vojto-barborik,https://www.espn.com/mma/fighter/_/id/4294887,,NRP,inactive,13-3-0,,13,3,0,,33,182.9,155.0,188.0,,,Slovakia,sk,"Nitra, Slovakia",Octagon MMA,Lightweight,,,2021-04-24,2021-04-24,2026-11-02
 Wagner Prado,wagner-prado,https://www.espn.com/mma/fighter/_/id/2961618,,CALDEIRAO,inactive,15-4-0,,15,4,0,,39,193.0,205.0,188.0,,,Brazil,br,"Sao Paulo, Brazil",Team Nogueira,Light Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/2961618.png,,2018-06-09,2018-10-06,2026-11-02
 Wanderson Silva,wanderson-silva,https://www.espn.com/mma/fighter/_/id/3968279,,,inactive,0-3-0,,0,3,0,,47,175.3,145.0,,,,default,,,,,,,2011-01-29,2011-01-29,2026-11-02
-Welisson Paiva,welisson-paiva,https://www.sherdog.com/fighter/Welisson-Paiva-300591,,Mao de Pedra,active,,,,,,,,,,,,,,,,,Lightweight,,,2025-02-21,2026-10-10,2026-11-02
+Welisson Paiva,welisson-paiva,https://www.sherdog.com/fighter/Welisson-Paiva-300591,,Mao de Pedra,active,,,,,,,,,,,,,,,,,Lightweight,,,2024-07-20,2026-10-10,2026-11-05
 Werlleson Martins,werlleson-martins,https://www.espn.com/mma/fighter/_/id/5031199,,Galinho,active,18-7-0,,18,7,0,,31,177.8,135.0,177.8,,,Brazil,br,Brazil,,Bantamweight,,,2022-04-23,2026-04-18,2026-11-02
 Weronika Eszer,weronika-eszer,https://www.espn.com/mma/fighter/_/id/5136099,,Merida,active,0-2-0,,0,2,0,,28,170.2,125.0,172.7,,,Poland,pl,Poland,,Women's Flyweight,,,2021-09-04,2021-09-04,2026-11-02
-Wiktor Zalewski,wiktor-zalewski,https://www.sherdog.com/fighter/Wiktor-Zalewski-402831,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2025-06-14,2026-06-20,2026-11-02
-Wiktoria Czyzewska,wiktoria-czyzewska,https://www.sherdog.com/fighter/Wiktoria-Czyzewska-371465,,Chicatoro,active,,,,,,,,,,,,,,,,,Bantamweight,,,2025-01-25,2026-05-16,2026-11-02
-Wilson Varela,wilson-varela,https://www.espn.com/mma/fighter/_/id/5138110,,The Prototype,active,1-3-0,,1,3,0,,31,182.9,155.0,191.8,,,France,fr,France,,Lightweight,,,2024-12-20,2026-10-10,2026-11-02
-Wojciech Janusz,wojciech-janusz,https://www.sherdog.com/fighter/Wojciech-Janusz-146421,,Kulkinio,active,,,,,,,,,,,,,,,,,Catch Weight,,,2025-11-15,2025-11-15,2026-11-02
-Wojciech Kawa,wojciech-kawa,https://www.sherdog.com/fighter/Wojciech-Kawa-348571,,Coffee,active,,,,,,,,,,,,,,,,,Lightweight,,,2025-06-14,2026-03-14,2026-11-02
-Wojciech Kazieczko,wojciech-kazieczko,https://www.sherdog.com/fighter/Wojciech-Kazieczko-393097,,The Predator,active,,,,,,,,,,,,,,,,,Featherweight,,,2025-07-19,2026-01-17,2026-11-02
-Wojciech Orlowski,wojciech-orlowski,https://www.espn.com/mma/fighter/_/id/2506249,,The Gentleman,inactive,1-2-0,,1,2,0,,,,,,,,default,,,,,,,2010-05-07,2010-05-07,2026-11-02
+Wiktor Zalewski,wiktor-zalewski,https://www.sherdog.com/fighter/Wiktor-Zalewski-402831,,,active,,,,,,,,,,,,,,,,,Welterweight,,,2023-05-13,2026-06-20,2026-11-05
+Wiktoria Czyzewska,wiktoria-czyzewska,https://www.sherdog.com/fighter/Wiktoria-Czyzewska-371465,,Chicatoro,active,,,,,,,,,,,,,,,,,Flyweight,,,2022-12-17,2026-05-16,2026-11-05
+Wilson Varela,wilson-varela,https://www.espn.com/mma/fighter/_/id/5138110,,The Prototype,active,1-3-0,,1,3,0,,31,182.9,155.0,191.8,,,France,fr,France,,Lightweight,,,2022-04-23,2026-10-10,2026-11-02
+Wojciech Janusz,wojciech-janusz,https://www.sherdog.com/fighter/Wojciech-Janusz-146421,,Kulkinio,active,,,,,,,,,,,,,,,,,Catch Weight,,,2022-01-15,2025-11-15,2026-11-05
+Wojciech Kawa,wojciech-kawa,https://www.sherdog.com/fighter/Wojciech-Kawa-348571,,Coffee,active,,,,,,,,,,,,,,,,,Lightweight,,,2025-06-14,2026-03-14,2026-11-05
+Wojciech Kazieczko,wojciech-kazieczko,https://www.sherdog.com/fighter/Wojciech-Kazieczko-393097,,The Predator,active,,,,,,,,,,,,,,,,,Featherweight,,,2022-04-23,2026-01-17,2026-11-05
+Wojciech Orlowski,wojciech-orlowski,https://www.espn.com/mma/fighter/_/id/2506249,,The Gentleman,inactive,1-2-0,,1,2,0,,,,,,,,default,,,,,,,2009-12-11,2010-10-09,2026-11-02
 Yann Kouadja,yann-kouadja,https://www.espn.com/mma/fighter/_/id/5041968,,,inactive,0-1-0,,0,1,0,,,182.9,205.0,,,,France,fr,France,,,,,2022-03-19,2022-03-19,2026-11-02
 Yann Liasse,yann-liasse,https://www.espn.com/mma/fighter/_/id/5125407,,,active,9-3-0,,9,3,0,,35,180.3,155.0,193.0,,,Luxembourg,,Luxembourg,,Lightweight,,,2022-02-26,2022-12-17,2026-11-02
 Yannick Bahati,yannick-bahati,https://www.espn.com/mma/fighter/_/id/4215817,,Black Mamba,inactive,9-6-0,,9,6,0,,36,188.0,205.0,200.7,,,England,gb-eng,"Essex, England",Ultimate Training Centre,Light Heavyweight,https://a.espncdn.com/i/headshots/mma/players/full/4215817.png,,2018-04-14,2018-04-14,2026-11-02
 Yasmin Guimarães,yasmin-guimaraes,https://www.espn.com/mma/fighter/_/id/5135542,,,active,8-2-0,,8,2,0,,30,165.1,115.0,170.2,,,Brazil,br,Brazil,MSP,Women's Strawweight,,,2023-03-17,2023-08-19,2026-11-02
 Yasubey Enomoto,yasubey-enomoto,https://www.espn.com/mma/fighter/_/id/2509765,,,inactive,17-12-0,,17,12,0,,42,180.3,170.0,,,,default,,,,,,,2016-03-05,2016-03-05,2026-11-02
+Yuri Pilipchuk,yuri-pilipchuk,https://www.sherdog.com/fighter/Yuri-Pilipchuk-14582,,,inactive,,,,,,,,,,,,,,,,,,,,2004-10-06,2004-10-06,2026-11-05
 Yusuke Kawaguchi,yusuke-kawaguchi,https://www.espn.com/mma/fighter/_/id/2502143,,,inactive,2-10-0,,2,10,0,,46,182.9,253.0,,,,default,,"Haga, Japan",,Heavyweight,,,2010-05-07,2010-05-07,2026-11-02
+Yusuke Masuda,yusuke-masuda,https://www.sherdog.com/fighter/Yusuke-Masuda-12925,,,inactive,,,,,,,,,,,,,,,,,,,,2008-05-09,2008-05-09,2026-11-05
+Zakaria Hamou,zakaria-hamou,https://www.sherdog.com/fighter/Zakaria-Hamou-406859,,Tarzan,active,,,,,,,,,,,,,,,,,Catch Weight,,,2024-12-20,2024-12-20,2026-11-05
+Zaurbek Muchaev,zaurbek-muchaev,https://www.sherdog.com/fighter/Zaurbek-Muchaev-37417,,,inactive,,,,,,,,,,,,,,,,,,,,2008-09-13,2008-09-13,2026-11-05
 Zuriko Jojua,zuriko-jojua,https://www.espn.com/mma/fighter/_/id/5007637,,Zura,active,10-2-0,,10,2,0,,31,170.2,135.0,174.0,,,Georgia,ge,"Tbilisi, Georgia",,Bantamweight,,,2022-02-26,2024-09-14,2026-11-02
