@@ -43,7 +43,7 @@ const ORG_CARDS: OrgCardInfo[] = [
 /**
  * Three levels, by what each organization has: the UFC is where the prediction model is, so it gets a big card; PFL, ONE
  * and Bellator are the ones with champions pages, so they get a card each; the other seven have fighters, events and
- * gyms only (see ORGS), so they are one line each.
+ * gyms only (see ORGS), so they are one chip each.
  */
 const MAIN: OrgId[] = ['pfl', 'one', 'bellator']
 const COMPACT: OrgId[] = ['rizin', 'ksw', 'lfa', 'cage-warriors', 'oktagon', 'jungle-fight', 'invicta']
@@ -149,7 +149,7 @@ function FeaturedCard({ card }: { card: OrgCardInfo }) {
   )
 }
 
-/** PFL, ONE and Bellator: a glove, the name, the badge and the three counts, in half the height of the old card. */
+/** PFL, ONE and Bellator: the glove and the name up front, the colour of the league behind, and a single number (bouts). */
 function MainCard({ card }: { card: OrgCardInfo }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
@@ -158,48 +158,51 @@ function MainCard({ card }: { card: OrgCardInfo }) {
       to={orgPath(ORGS[card.id])}
       aria-label={`${L(lang, 'Abrir', 'Open', 'Ouvrir', 'Abrir')} ${card.fullName}`}
       style={accentStyle(card)}
-      className={`${CARD_SURFACE} flex min-w-0 flex-col rounded-2xl p-4 pt-5 hover:-translate-y-0.5`}
+      className={`${CARD_SURFACE} flex h-full min-w-0 flex-col gap-5 rounded-3xl p-5 pt-6 hover:-translate-y-0.5 sm:p-6 sm:pt-7`}
     >
       <span aria-hidden="true" className="absolute inset-x-0 top-0 h-[3px]" style={{ backgroundColor: card.accentColor }} />
-      <div className="flex items-center gap-3">
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_85%_10%,color-mix(in_srgb,var(--accent-color)_20%,transparent),transparent_62%)]"
+      />
+      <div className="relative flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <StatusBadge card={card} lang={lang} />
+          <h3 className="mt-3 font-display text-2xl font-extrabold uppercase leading-none tracking-tight text-[var(--text-primary)] dark:text-white min-[360px]:text-3xl lg:text-2xl xl:text-3xl">{card.shortName}</h3>
+          <p className="mt-1.5 text-xs font-medium leading-snug text-[var(--text-secondary)] dark:text-neutral-400 sm:text-sm">{card.fullName}</p>
+        </div>
         <div aria-hidden="true" className="glove-lift shrink-0">
           <div className="glove-float">
-            <MMAGlove src={card.glove.src} glow={card.accentColor} className="h-16 w-auto" />
+            <MMAGlove src={card.glove.src} glow={card.accentColor} className="h-20 w-auto min-[360px]:h-24 sm:h-28 lg:h-20 xl:h-28" />
           </div>
         </div>
-        <div className="min-w-0 flex-1">
-          <h3 className="font-display text-xl font-extrabold uppercase leading-none tracking-tight text-[var(--text-primary)] dark:text-white">{card.shortName}</h3>
-          <p className="mt-1 truncate text-xs font-medium text-[var(--text-secondary)] dark:text-neutral-400">{card.fullName}</p>
-          <div className="mt-2 flex">
-            <StatusBadge card={card} lang={lang} />
-          </div>
-        </div>
-        <ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0 self-start text-[var(--text-muted)] transition-transform duration-200 group-hover:translate-x-1 dark:text-neutral-400" />
       </div>
-      <Stats card={card} className="mt-3" />
+      <div className="relative mt-auto flex items-end justify-between gap-3">
+        <p className="min-w-0">
+          <span className="font-display text-2xl font-bold tabular-nums text-[var(--text-primary)] dark:text-white">{approximately(card.counts.fights, lang)}</span>
+          <span className="ml-2 font-mono text-[11px] uppercase tracking-wide text-[var(--text-secondary)] dark:text-neutral-400">{L(lang, 'Lutas', 'Bouts', 'Combats', 'Peleas')}</span>
+        </p>
+        <ArrowRight aria-hidden="true" className="h-5 w-5 shrink-0 text-[var(--text-muted)] transition-transform duration-200 group-hover:translate-x-1 group-hover:text-[var(--accent-color)] dark:text-neutral-400" />
+      </div>
     </Link>
   )
 }
 
-/** One line per organization: a dot in its colour, its name and its counts. */
-function CompactRow({ card }: { card: OrgCardInfo }) {
+/** The other leagues: a chip with the colour dot and the name, nothing else. */
+function LeagueChip({ card }: { card: OrgCardInfo }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
-  const metrics = useMetrics(card)
   return (
-    <li className="border-b border-[var(--border-subtle)] last:border-b-0 dark:border-white/10 md:[&:nth-child(4)]:border-b">
+    <li className="min-w-0">
       <Link
         to={orgPath(ORGS[card.id])}
         aria-label={`${L(lang, 'Abrir', 'Open', 'Ouvrir', 'Abrir')} ${card.fullName}`}
         style={accentStyle(card)}
-        className="group relative flex min-h-12 flex-wrap items-center gap-x-3 gap-y-0.5 rounded-lg py-2.5 pl-2 pr-9 transition-colors duration-200 hover:bg-[var(--bg-surface-hover)] dark:hover:bg-white/5"
+        className="group flex min-h-14 items-center gap-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-3 shadow-[var(--card-shadow)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--accent-color)] dark:border-white/10 dark:bg-[#0c0f17]/90 dark:hover:border-[var(--accent-color)]"
       >
-        <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: card.accentColor }} />
-        <span className="font-display text-sm font-bold uppercase tracking-tight text-[var(--text-primary)] dark:text-white">{card.shortName}</span>
-        <span className="basis-full pl-5 text-xs text-balance tabular-nums text-[var(--text-secondary)] dark:text-neutral-400 md:ml-auto md:basis-auto md:pl-0">
-          {metrics.map((metric) => `${metric.value} ${metric.label.toLowerCase()}`).join(' · ')}
-        </span>
-        <ArrowRight aria-hidden="true" className="absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)] transition-transform duration-200 group-hover:translate-x-1 dark:text-neutral-400" />
+        <span aria-hidden="true" className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: card.accentColor, boxShadow: `0 0 10px ${card.accentColor}` }} />
+        <span className="min-w-0 flex-1 font-display text-sm font-bold uppercase leading-tight tracking-tight text-[var(--text-primary)] dark:text-white">{card.shortName}</span>
+        <ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0 text-[var(--text-muted)] transition-transform duration-200 group-hover:translate-x-1 group-hover:text-[var(--accent-color)] dark:text-neutral-400" />
       </Link>
     </li>
   )
@@ -222,7 +225,7 @@ export function OrganizationsSection() {
       <div className="space-y-4 sm:space-y-5">
         <FeaturedCard card={cardOf('ufc')} />
 
-        <ul aria-label={L(lang, 'Organizações principais', 'Main organizations', 'Organisations principales', 'Organizaciones principales')} className="grid gap-3 sm:gap-4 md:grid-cols-3">
+        <ul aria-label={L(lang, 'Organizações principais', 'Main organizations', 'Organisations principales', 'Organizaciones principales')} className="grid gap-3 sm:gap-4 lg:grid-cols-3">
           {MAIN.map((id) => (
             <li key={id} className="min-w-0">
               <MainCard card={cardOf(id)} />
@@ -237,9 +240,9 @@ export function OrganizationsSection() {
           <p className="mt-0.5 text-xs text-[var(--text-secondary)] dark:text-neutral-400">
             {L(lang, 'Eventos, resultados e lutadores de cada liga.', 'Events, results and fighters of each league.', 'Événements, résultats et combattants de chaque ligue.', 'Eventos, resultados y peleadores de cada liga.')}
           </p>
-          <ul className="mt-3 grid rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2 shadow-[var(--card-shadow)] dark:border-white/10 dark:bg-[#0c0f17]/90 sm:px-3 md:grid-flow-col md:grid-cols-2 md:grid-rows-4 md:gap-x-6">
+          <ul className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4">
             {COMPACT.map((id) => (
-              <CompactRow key={id} card={cardOf(id)} />
+              <LeagueChip key={id} card={cardOf(id)} />
             ))}
           </ul>
         </div>
