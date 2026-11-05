@@ -55,17 +55,21 @@ function isItemActive(item: NavItem, pathname: string) {
 }
 
 /**
- * The phone sub-bar scrolls sideways. It opens with the current page's tab in view, and while more tabs are hidden to the
- * right the bar fades out at that edge, so a cut-off tab reads as "more this way" and not as a truncated label.
+ * The phone menus scroll sideways. They open with the current page's tab in view, and while more tabs are hidden at an edge
+ * the bar fades out there, so a cut-off tab reads as "more this way" and not as a truncated label.
  */
 function useScrollingTabs(pathname: string) {
   const ref = useRef<HTMLDivElement>(null)
   const [moreOnRight, setMoreOnRight] = useState(false)
+  const [moreOnLeft, setMoreOnLeft] = useState(false)
 
   useEffect(() => {
     const bar = ref.current
     if (!bar) return
-    const update = () => setMoreOnRight(bar.scrollLeft + bar.clientWidth < bar.scrollWidth - 2)
+    const update = () => {
+      setMoreOnRight(bar.scrollLeft + bar.clientWidth < bar.scrollWidth - 2)
+      setMoreOnLeft(bar.scrollLeft > 2)
+    }
     bar.querySelector('[aria-current="page"]')?.scrollIntoView?.({ inline: 'center', block: 'nearest' })
     update()
     bar.addEventListener('scroll', update, { passive: true })
@@ -76,7 +80,7 @@ function useScrollingTabs(pathname: string) {
     }
   }, [pathname])
 
-  return [ref, moreOnRight] as const
+  return [ref, moreOnRight, moreOnLeft] as const
 }
 
 /**
@@ -94,7 +98,12 @@ export function Header() {
   const navItems = landing || bare ? [] : navItemsFor(org)
   const { isLight, toggleTheme } = useTheme()
   const githubLabel = L(i18n.language, 'Perfil no GitHub (abre em nova aba)', 'GitHub profile (opens in a new tab)', 'Profil GitHub (s’ouvre dans un nouvel onglet)', 'Perfil de GitHub (se abre en una pestaña nueva)')
-  const [tabsRef, moreTabsOnRight] = useScrollingTabs(pathname)
+  const [tabsRef, moreTabsOnRight, moreTabsOnLeft] = useScrollingTabs(pathname)
+  // Fade the edge where more tabs are hidden.
+  const fade = (left: boolean, right: boolean) =>
+    left || right ? `linear-gradient(to right, ${left ? 'transparent, #000 28px' : '#000'}, ${right ? '#000 calc(100% - 28px), transparent' : '#000'})` : undefined
+  const fadeImage = fade(moreTabsOnLeft, moreTabsOnRight)
+  const fadeStyle = fadeImage ? { maskImage: fadeImage, WebkitMaskImage: fadeImage } : undefined
 
   const apiLabel = loading
     ? t('header.apiWaking', 'Starting')
@@ -142,8 +151,9 @@ export function Header() {
             {landing || bare ? (
               <nav
                 aria-label={L(i18n.language, 'Navegação principal', 'Main navigation', 'Navigation principale', 'Navegación principal')}
-                className="min-w-0 flex-1 overflow-x-auto no-scrollbar overscroll-x-contain"
+                className="min-w-0 flex-1"
               >
+                <div ref={tabsRef} style={fadeStyle} className="overflow-x-auto no-scrollbar overscroll-x-contain">
                 <div className="flex h-14 min-w-max shrink-0 items-center gap-1 whitespace-nowrap sm:h-16 sm:gap-2">
                 <a
                   href={`${langPath(uiLang(i18n.language), '/')}#organizations-grid`}
@@ -217,6 +227,7 @@ export function Header() {
                     </>
                   )}
                 </NavLink>
+                </div>
                 </div>
               </nav>
             ) : (
@@ -324,7 +335,7 @@ export function Header() {
         {!landing && !bare && (
           <div
             ref={tabsRef}
-            style={moreTabsOnRight ? { maskImage: 'linear-gradient(to right, #000 calc(100% - 28px), transparent)', WebkitMaskImage: 'linear-gradient(to right, #000 calc(100% - 28px), transparent)' } : undefined}
+            style={fadeStyle}
             className="min-[1200px]:hidden min-w-0 border-t border-[var(--border-subtle)] px-2 py-1 overflow-x-auto no-scrollbar overscroll-x-contain"
           >
             <nav
