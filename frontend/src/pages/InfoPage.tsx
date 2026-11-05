@@ -42,7 +42,7 @@ export function InfoPage({ id }: { id: InfoPageId }) {
     <div className="space-y-3 sm:space-y-4">
       <section className="page-hero rounded-[20px] px-3 py-3 sm:px-4 sm:py-4" aria-labelledby={`${id}-title`}>
         <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{page.eyebrow}</p>
-        <h1 id={`${id}-title`} className="mt-1.5 text-3xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)] md:text-4xl">
+        <h1 id={`${id}-title`} className="mt-1.5 text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)] min-[390px]:text-3xl md:text-4xl">
           {page.title}
         </h1>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--text-secondary)]">{page.intro}</p>

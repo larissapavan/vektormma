@@ -255,7 +255,7 @@ function MainEventName({ org, name, align, onOpen }: { org: OrgConfig; name: str
     <>
       <FighterAvatar name={name} imageUrl={profile?.image_url ?? null} highlight className="h-20 w-[4.25rem] shrink-0 sm:h-24 sm:w-20" />
       <div className={`flex min-w-0 flex-1 flex-col gap-1 ${right ? 'items-end text-right' : 'items-start text-left'} max-sm:w-full max-sm:items-center max-sm:text-center`}>
-        <p className="type-display w-full text-base font-bold uppercase leading-tight text-[var(--text-main)] sm:text-2xl">{name}</p>
+        <p className="type-display w-full break-words text-[13px] font-bold uppercase leading-tight text-[var(--text-main)] min-[380px]:text-base sm:text-2xl">{name}</p>
         {profile?.country_code ? (
           <span className={`flex flex-wrap items-center gap-1 ${right ? 'sm:justify-end' : 'sm:justify-start'} max-sm:justify-center`}>
             <FlagIcon code={profile.country_code} country={profile.country} />

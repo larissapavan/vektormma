@@ -185,7 +185,7 @@ export function About() {
     <div className="space-y-3 sm:space-y-4">
       <section className="page-hero rounded-[20px] px-3 py-3 sm:px-4 sm:py-4" aria-labelledby="about-title">
         <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{t('about.eyebrow')}</p>
-        <h1 id="about-title" className="mt-1.5 text-3xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)] md:text-4xl">
+        <h1 id="about-title" className="mt-1.5 text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)] min-[390px]:text-3xl md:text-4xl">
           {t('about.title')}
         </h1>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--text-secondary)]">
