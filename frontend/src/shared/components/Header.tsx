@@ -171,44 +171,6 @@ export function Header() {
                   )}
                 </a>
                 <NavLink
-                  to="/model"
-                  className={({ isActive }) =>
-                    `relative flex h-full shrink-0 items-center px-2.5 text-xs font-bold whitespace-nowrap transition duration-200 sm:px-3 xl:text-[13px] ${
-                      isActive
-                        ? 'text-[var(--text-primary)] dark:text-white'
-                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] dark:hover:text-white'
-                    }`
-                  }
-                >
-                  {({ isActive }) => (
-                    <>
-                      <span>{L(i18n.language, 'Sistema de IA', 'ML System', 'Système d’IA', 'Sistema de IA')}</span>
-                      {isActive && (
-                        <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#FF2E54] rounded-full shadow-[0_0_12px_#FF2E54,0_0_4px_#FF2E54]" />
-                      )}
-                    </>
-                  )}
-                </NavLink>
-                <NavLink
-                  to="/track-record"
-                  className={({ isActive }) =>
-                    `relative hidden h-full shrink-0 items-center px-2.5 text-xs font-bold whitespace-nowrap transition duration-200 sm:inline-flex sm:px-3 xl:text-[13px] ${
-                      isActive
-                        ? 'text-[var(--text-primary)] dark:text-white'
-                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] dark:hover:text-white'
-                    }`
-                  }
-                >
-                  {({ isActive }) => (
-                    <>
-                      <span>{L(i18n.language, 'Acurácia', 'Track Record', 'Historique', 'Historial')}</span>
-                      {isActive && (
-                        <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#FF2E54] rounded-full shadow-[0_0_12px_#FF2E54,0_0_4px_#FF2E54]" />
-                      )}
-                    </>
-                  )}
-                </NavLink>
-                <NavLink
                   to="/about"
                   className={({ isActive }) =>
                     `relative flex h-full shrink-0 items-center px-2.5 text-xs font-bold whitespace-nowrap transition duration-200 sm:px-3 xl:text-[13px] ${
