@@ -12,7 +12,9 @@
     "system": "Sistema",
     "trackRecord": "Historial",
     "headToHead": "Cara a cara",
-    "matchup": "Análisis"
+    "matchup": "Análisis",
+    "cancelled": "Nunca ocurrieron",
+    "career": "Juego"
   },
   "header": {
     "matchupAnalytics": "Análisis de peleas",

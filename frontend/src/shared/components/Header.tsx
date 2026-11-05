@@ -24,16 +24,18 @@ const NAV_I18N_KEYS: Record<string, string> = {
   Rankings: 'nav.rankings',
   Gyms: 'nav.gyms',
   Champions: 'nav.champions',
+  Game: 'nav.career',
   About: 'nav.about',
 }
 
 const ufcNavItems: NavItem[] = [
-  { to: '/predictor', label: 'Predict', group: ['/predictor', '/head-to-head', '/matchup-intelligence'] },
+  { to: '/predictor', label: 'Predict', group: ['/predictor', '/head-to-head', '/matchup-intelligence', '/cancelled-fights'] },
   { to: '/fighters', label: 'Fighters' },
   { to: '/events', label: 'Events' },
   { to: '/rankings', label: 'Rankings' },
   { to: '/gyms', label: 'Gyms', section: true },
   { to: '/champions', label: 'Champions', group: ['/champions', '/record-book'] },
+  { to: '/career', label: 'Game' },
 ]
 
 function navItemsFor(org: OrgConfig): NavItem[] {
@@ -195,7 +197,7 @@ export function Header() {
             ) : (
               <nav
                 aria-label={L(i18n.language, 'Navegação principal', 'Main navigation', 'Navigation principale', 'Navegación principal')}
-                className="hidden min-[1200px]:flex items-center h-14 sm:h-16 gap-1 sm:gap-2"
+                className="hidden min-w-0 items-center overflow-x-auto overscroll-x-contain no-scrollbar min-[1200px]:flex h-14 sm:h-16 gap-1 sm:gap-2"
               >
                 {navItems.map((item) => {
                   const active = isItemActive(item, pathname)

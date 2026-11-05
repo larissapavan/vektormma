@@ -15,6 +15,8 @@ There is nothing to install. Open the link and try any of these:
 - **Home page.** The next UFC main event, with the model's pick and a link to the factors behind it.
 - **[Fight predictor](https://www.vektormma.com/predictor).** Choose any two fighters and see the probability for each side, plus the factors that pushed it that way.
 - **[Fighters](https://www.vektormma.com/fighters).** Search for an athlete and open a profile with the full career record, fight history and physical stats.
+- **[Fights that never happened](https://www.vektormma.com/cancelled-fights).** UFC bouts that were booked and then called off (Khabib vs. Ferguson, McGregor vs. Chandler and others). Pick who would have won and how, then see what the model would say. Picks stay in your browser.
+- **[Career game](https://www.vektormma.com/career).** Build a fighter, train, pick opponents among real UFC fighters (the model gives the chances) and finish with a retrospect image to save or a link to share. Nothing is stored: the career lives in the page, and the shared link carries the card.
 - **[Track record](https://www.vektormma.com/track-record).** Every prediction the model made, saved before the fight and checked after it. The wrong ones are there too.
 - **[Rankings](https://www.vektormma.com/rankings), [champions](https://www.vektormma.com/champions) and [events](https://www.vektormma.com/events).** Divisional and pound-for-pound rankings, title history, upcoming cards and past results.
 - **Ten other organizations.** PFL, ONE Championship, Bellator, RIZIN, KSW, LFA, Cage Warriors, OKTAGON, Jungle Fight and Invicta FC, each with its own fighters and events. ONE and PFL also have a predictor, with a note that the model learned from UFC fights.

@@ -90,6 +90,8 @@ describe('one h1 per page', () => {
     ['Rankings', '/rankings', /divisional & pound-for-pound/i],
     ['Champions', '/champions', 'Current champions'],
     ['Record book', '/record-book', 'Total Fights'],
+    ['Never happened', '/cancelled-fights', /the fights that never happened/i],
+    ['Career game', '/career', /simulate your ufc career/i],
     ['Track record', '/track-record', /waiting for the first results/i],
     ['Head-to-head', '/head-to-head', /head-to-head history/i],
     ['Predict', '/predictor', /fighter/i],

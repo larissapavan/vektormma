@@ -72,6 +72,14 @@
         "title": "Livro de Recordes",
         "description": "Líderes históricos de todas as 32 estatísticas oficiais do UFC: lutas, tempo, trocação e luta no chão."
       },
+      "/cancelled-fights": {
+        "title": "Lutas que nunca aconteceram",
+        "description": "Combates anunciados pelo UFC que foram cancelados e nunca aconteceram: faça seu palpite sobre quem venceria cada um."
+      },
+      "/career": {
+        "title": "Simule sua carreira no UFC",
+        "description": "Jogo: crie um lutador, treine, enfrente lutadores reais e termine com uma imagem do seu retrospecto para salvar ou compartilhar."
+      },
       "/about": {
         "title": "Sobre o Projeto",
         "description": "Projeto pessoal independente de Larissa Pavan, fontes de dados e metodologia."
@@ -337,6 +345,14 @@
       "/record-book": {
         "title": "Record book",
         "description": "The UFC's all-time career leaders in 32 stats: fights, time, striking and grappling."
+      },
+      "/cancelled-fights": {
+        "title": "Fights that never happened",
+        "description": "Bouts the UFC announced and then cancelled for good: pick who would have won each one."
+      },
+      "/career": {
+        "title": "Career game",
+        "description": "A game: build a fighter, train, face real fighters and finish with a picture of your career to save or share."
       },
       "/about": {
         "title": "About",
@@ -604,6 +620,14 @@
         "title": "Livre des records",
         "description": "Les leaders historiques de l’UFC sur 32 statistiques : combats, temps, frappe et lutte au sol."
       },
+      "/cancelled-fights": {
+        "title": "Combats qui n’ont jamais eu lieu",
+        "description": "Des combats annoncés par l’UFC puis annulés pour de bon : choisissez qui l’aurait emporté dans chacun."
+      },
+      "/career": {
+        "title": "Jeu de carrière",
+        "description": "Un jeu : créez un combattant, entraînez-vous, affrontez de vrais combattants et terminez avec une image de votre bilan à enregistrer ou partager."
+      },
       "/about": {
         "title": "À propos",
         "description": "Qui fait ce site, d’où viennent les données et quelles sont leurs limites."
@@ -869,6 +893,14 @@
       "/record-book": {
         "title": "Libro de récords",
         "description": "Los líderes históricos de carrera de la UFC en 32 estadísticas: peleas, tiempo, golpeo y lucha en el suelo."
+      },
+      "/cancelled-fights": {
+        "title": "Peleas que nunca ocurrieron",
+        "description": "Peleas que la UFC anunció y luego canceló para siempre: elige quién habría ganado cada una."
+      },
+      "/career": {
+        "title": "Juego de carrera",
+        "description": "Un juego: crea un peleador, entrena, enfrenta a peleadores reales y termina con una imagen de tu balance para guardar o compartir."
       },
       "/about": {
         "title": "Acerca de",

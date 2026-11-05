@@ -12,7 +12,9 @@
     "system": "System",
     "trackRecord": "Track Record",
     "headToHead": "Head-to-Head",
-    "matchup": "Matchup"
+    "matchup": "Matchup",
+    "cancelled": "Never happened",
+    "career": "Game"
   },
   "header": {
     "matchupAnalytics": "Matchup Analytics",

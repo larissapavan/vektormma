@@ -214,11 +214,16 @@ class PredictionService:
         probabilities = self.model.predict_proba(pd.concat([x_ab, x_ba], ignore_index=True))[:, 1]
         return (float(probabilities[0]) + 1.0 - float(probabilities[1])) / 2.0
 
+    def predict_profiles(self, fighter_a: dict, fighter_b: dict, context: dict | None = None) -> float:
+        """Chance that the first fighter wins, for two profiles given directly: a fighter the catalog does not have (the
+        career game's character) is scored the same way as one it does."""
+        return _eased(self._symmetric_probability(*self._both_orders(fighter_a, fighter_b, context)), fighter_a, fighter_b)
+
     def predict_pick(self, fighter_a_name: str, fighter_b_name: str, context: dict | None = None) -> dict:
         """Just the pick and its probability (no SHAP), for lists that show many fights at once."""
         fighter_a = get_fighter_profile(fighter_a_name)
         fighter_b = get_fighter_profile(fighter_b_name)
-        fighter_a_probability = _eased(self._symmetric_probability(*self._both_orders(fighter_a, fighter_b, context)), fighter_a, fighter_b)
+        fighter_a_probability = self.predict_profiles(fighter_a, fighter_b, context)
         winner_is_a = _first_wins(fighter_a_probability, fighter_a["name"], fighter_b["name"])
         return {
             "predicted_winner": fighter_a["name"] if winner_is_a else fighter_b["name"],

@@ -12,7 +12,9 @@
     "system": "Sistema",
     "trackRecord": "Desempenho",
     "headToHead": "Confronto Direto",
-    "matchup": "Análise"
+    "matchup": "Análise",
+    "cancelled": "Lutas canceladas",
+    "career": "Jogo"
   },
   "header": {
     "matchupAnalytics": "Análise de Combates",

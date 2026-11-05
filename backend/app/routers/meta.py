@@ -33,6 +33,7 @@ def build_meta_router(
             "rankings": "/rankings",
             "champions": "/champions",
             "record_book": "/record-book",
+            "cancelled_fights": "/cancelled-fights",
             "news": "/news",
             "organizations": "/orgs",
             "track_record": "/track-record",

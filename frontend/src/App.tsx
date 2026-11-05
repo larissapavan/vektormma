@@ -17,6 +17,10 @@ const Events = lazy(() => import('./pages/Events').then((module) => ({ default: 
 const Rankings = lazy(() => import('./pages/Rankings').then((module) => ({ default: module.Rankings })))
 const TrackRecord = lazy(() => import('./pages/TrackRecord').then((module) => ({ default: module.TrackRecord })))
 const RecordBook = lazy(() => import('./pages/RecordBook').then((module) => ({ default: module.RecordBook })))
+const CancelledFights = lazy(() =>
+  import('./pages/CancelledFights').then((module) => ({ default: module.CancelledFights })),
+)
+const Career = lazy(() => import('./pages/Career').then((module) => ({ default: module.Career })))
 const Champions = lazy(() => import('./pages/Champions').then((module) => ({ default: module.Champions })))
 const HeadToHead = lazy(() => import('./pages/HeadToHead').then((module) => ({ default: module.HeadToHead })))
 const Model = lazy(() => import('./pages/Model').then((module) => ({ default: module.Model })))
@@ -50,6 +54,7 @@ const matchupTabs: SectionTab[] = [
   { to: '/predictor', label: 'Predict', labelKey: 'nav.predict' },
   { to: '/head-to-head', label: 'Head-to-Head', labelKey: 'nav.headToHead' },
   { to: '/matchup-intelligence', label: 'Matchup', labelKey: 'nav.matchup' },
+  { to: '/cancelled-fights', label: 'Never happened', labelKey: 'nav.cancelled' },
 ]
 
 const championsTabs: SectionTab[] = [
@@ -77,7 +82,9 @@ function App() {
                 <Route path="/predictor" element={<Predictor />} />
                 <Route path="/head-to-head" element={<HeadToHead />} />
                 <Route path="/matchup-intelligence" element={<MatchupIntelligence />} />
+                <Route path="/cancelled-fights" element={<CancelledFights />} />
               </Route>
+              <Route path="/career" element={<Career />} />
               <Route path="/fighters" element={<Fighters />} />
               <Route path="/athlete" element={<AthleteDossier />} />
               <Route path="/athlete/:name" element={<AthleteDossier />} />

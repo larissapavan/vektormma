@@ -869,3 +869,55 @@ select.soft-input option {
     outline-offset: 2px;
   }
 }
+
+/* ---------------------------------------------------------------------------------------------------------------------
+   The career game (src/pages/Career.tsx): a hero with a glow, cards that lift, a pulse for the fight.
+   --------------------------------------------------------------------------------------------------------------------- */
+.game-hero {
+  background:
+    radial-gradient(120% 150% at 0% 0%, color-mix(in srgb, var(--accent-red) 30%, transparent), transparent 58%),
+    radial-gradient(90% 130% at 100% 100%, color-mix(in srgb, var(--accent-gold) 22%, transparent), transparent 62%),
+    var(--bg-surface);
+}
+
+.game-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: 1.25rem;
+  background: linear-gradient(180deg, var(--bg-surface-elevated), var(--bg-surface));
+  box-shadow: var(--card-shadow);
+}
+
+.game-pick {
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+.game-pick:hover {
+  transform: translateY(-3px);
+}
+.game-pick[aria-pressed='true'] {
+  border-color: var(--accent-red);
+  background: color-mix(in srgb, var(--accent-red) 9%, var(--bg-surface));
+  box-shadow: 0 0 0 1px var(--accent-red);
+}
+
+.game-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+@keyframes game-pop {
+  0% { transform: scale(0.85); opacity: 0; }
+  60% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.game-pop {
+  animation: game-pop 520ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-pick:hover { transform: none; }
+  .game-pop { animation: none; }
+}

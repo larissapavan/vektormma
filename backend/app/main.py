@@ -13,10 +13,12 @@ from slowapi.middleware import SlowAPIMiddleware
 
 from backend.app.dependencies import get_prediction_service, set_prediction_service
 from backend.app.rate_limit import limiter
+from backend.app.routers.cancelled_fights import build_cancelled_fights_router
 from backend.app.routers.champions import router as champions_router
 from backend.app.routers.events import router as events_router
 from backend.app.routers.fight_history import router as fight_history_router
 from backend.app.routers.fighters import router as fighters_router
+from backend.app.routers.game import build_game_router
 from backend.app.routers.gyms import router as gyms_router
 from backend.app.routers.meta import build_meta_router
 from backend.app.routers.news import router as news_router
@@ -126,6 +128,8 @@ app.include_router(rankings_router)
 app.include_router(fight_history_router)
 app.include_router(champions_router)
 app.include_router(record_book_router)
+app.include_router(build_cancelled_fights_router(get_prediction_service))
+app.include_router(build_game_router(get_prediction_service))
 app.include_router(news_router)
 app.include_router(orgs_router)
 app.include_router(gyms_router)

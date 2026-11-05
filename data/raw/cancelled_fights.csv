@@ -1,0 +1,8 @@
+fight_id,fighter_1,fighter_2,weight_class,title_fight,rounds,event_name,event_date,reason,withdrew,attempts,source_url
+makhachev-vs-tsarukyan-2,Islam Makhachev,Arman Tsarukyan,Lightweight,true,5,UFC 311,2025-01-18,injury,Arman Tsarukyan,1,https://www.si.com/fannation/mma/news/i-cant-continue-arman-tsarukyan-details-reasoning-ufc-311-pullout
+mcgregor-vs-chandler,Conor McGregor,Michael Chandler,Welterweight,false,5,UFC 303,2024-06-29,injury,Conor McGregor,1,https://www.lowkickmma.com/michael-chandler-reveals-why-the-conor-mcgregor-fight-stalled-it-never-has-anything-to-do-with-me/
+chimaev-vs-diaz,Khamzat Chimaev,Nate Diaz,Welterweight,false,5,UFC 279,2022-09-10,missed_weight,Khamzat Chimaev,1,https://www.thescore.com/mma/news/2411747/diaz-ferguson-to-headline-ufc-279-chimaev-faces-holland-after-missing-weight
+khabib-vs-ferguson,Khabib Nurmagomedov,Tony Ferguson,Lightweight,true,5,UFC 249,2020-04-18,travel_restrictions,Khabib Nurmagomedov,5,https://en.wikipedia.org/wiki/Tony_Ferguson
+mcgregor-vs-dos-anjos,Conor McGregor,Rafael Dos Anjos,Lightweight,true,5,UFC 196,2016-03-05,injury,Rafael Dos Anjos,1,https://bleacherreport.com/articles/2618942-rafael-dos-anjos-vs-conor-mcgregor-reportedly-cancelled-due-to-dos-anjos-injury
+aldo-vs-pettis,Jose Aldo,Anthony Pettis,Featherweight,true,5,UFC 163,2013-08-03,injury,Anthony Pettis,1,https://lowkickmma.com/10-canceled-fights-that-altered-the-course-of-mma-history
+jones-vs-henderson,Jon Jones,Dan Henderson,Light Heavyweight,true,5,UFC 151,2012-09-01,event_cancelled,Dan Henderson,1,https://en.wikipedia.org/wiki/UFC_151

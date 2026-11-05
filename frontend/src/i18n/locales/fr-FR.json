@@ -12,7 +12,9 @@
     "system": "Système",
     "trackRecord": "Bilan",
     "headToHead": "Face-à-face",
-    "matchup": "Duel"
+    "matchup": "Duel",
+    "cancelled": "Jamais disputés",
+    "career": "Jeu"
   },
   "header": {
     "matchupAnalytics": "Analyse des combats",

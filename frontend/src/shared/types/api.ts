@@ -407,6 +407,70 @@ export interface RecordBookCategory {
   stats: RecordBookStat[]
 }
 
+export interface CancelledFighter {
+  name: string
+  profile_name: string | null
+  image_url: string | null
+  country_code: string | null
+  /** The career record on file today, not the one at the time of the booking. */
+  record: string | null
+  ufc_status: 'active' | 'former' | 'never' | null
+}
+
+export type CancelledReason = 'injury' | 'missed_weight' | 'travel_restrictions' | 'event_cancelled' | 'other'
+
+export interface CancelledFight {
+  id: string
+  fighter_1: CancelledFighter
+  fighter_2: CancelledFighter
+  weight_class: string
+  title_fight: boolean
+  rounds: number | null
+  event_name: string
+  event_date: string
+  reason: CancelledReason
+  withdrew: string | null
+  /** How many times the same fight was booked and called off. */
+  attempts: number
+  source_url: string | null
+  /** The model's pick, only when both fighters are still active. */
+  model: { predicted_winner: string; probability: number; fighter_1_probability: number } | null
+}
+
+export interface CancelledFightsResponse {
+  fights: CancelledFight[]
+}
+
+export interface GameOpponent {
+  label: 'safe' | 'even' | 'risk' | 'champion' | 'rematch'
+  name: string
+  image_url: string | null
+  country_code: string | null
+  record: string
+  age: number | null
+  reach_cm: number | null
+  stance: string | null
+  ranking: string | null
+  champion: boolean
+  sig_str_acc: number | null
+  takedown_acc: number | null
+  win_probability: number
+}
+
+export interface MatchmakingResponse {
+  player: { height_cm: number; reach_cm: number; sig_str_acc: number; takedown_acc: number }
+  opponents: GameOpponent[]
+}
+
+export interface MatchmakingRequest {
+  fighter: { striking: number; takedowns: number; reach: number; age: number; wins: number; losses: number; draws: number; stance: string }
+  division: string
+  title?: boolean
+  exclude?: string[]
+  names?: string[]
+  seed?: number
+}
+
 export interface RecordBookResponse {
   updated: string | null
   source_name: string

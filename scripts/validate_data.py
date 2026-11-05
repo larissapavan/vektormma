@@ -86,6 +86,7 @@ def warnings() -> list[str]:
         [f"champion mismatch: {note}" for note in champion_mismatches()]
         + [f"no fighter profile: {name}" for name in unmatched_names()]
         + [f"stale card: {note}" for note in stale_upcoming()]
+        + [f"cancelled fight took place after all, remove it from cancelled_fights.csv: {fight_id}" for fight_id in retired_cancelled_fights()]
         + org_warnings()
     )
 
@@ -208,8 +209,55 @@ def gym_problems() -> list[str]:
     return problems
 
 
+CANCELLED_REASONS = {"injury", "missed_weight", "travel_restrictions", "event_cancelled", "other"}
+
+
+def cancelled_fight_problems(today: date | None = None) -> list[str]:
+    """cancelled_fights.csv is written by hand: a repeated id, an unknown reason, a self-fight or a date in the future would
+    show up as a wrong card on the cancelled-fights page."""
+    today = today or date.today()
+    problems: list[str] = []
+    seen: set[str] = set()
+    for row in read_dicts(RAW_DIR / "cancelled_fights.csv"):
+        fight_id = row.get("fight_id", "").strip()
+        if not fight_id or fight_id in seen:
+            problems.append(f"cancelled_fights.csv: missing or repeated id ({fight_id!r})")
+        seen.add(fight_id)
+        if not row["fighter_1"].strip() or not row["fighter_2"].strip() or name_key(row["fighter_1"]) == name_key(row["fighter_2"]):
+            problems.append(f"cancelled_fights.csv: {fight_id} needs two different fighters")
+        if row["reason"] not in CANCELLED_REASONS:
+            problems.append(f"cancelled_fights.csv: {fight_id} has an unknown reason ({row['reason']!r})")
+        if row["title_fight"] not in {"true", "false"}:
+            problems.append(f"cancelled_fights.csv: {fight_id} title_fight must be true or false")
+        try:
+            booked = date.fromisoformat(row["event_date"])
+        except ValueError:
+            problems.append(f"cancelled_fights.csv: {fight_id} has no valid event_date")
+            continue
+        if booked >= today:
+            problems.append(f"cancelled_fights.csv: {fight_id} is booked for {booked}, a fight that has not happened yet is not a cancelled one")
+    return problems
+
+
+def retired_cancelled_fights() -> list[str]:
+    """A 'cancelled' fight that took place after all (it was rebooked): the page already hides it, the row should go."""
+    try:
+        from backend.app.services.cancelled_fights_service import has_taken_place, load_cancelled_rows
+    except Exception:  # the data check must not depend on the API's imports working
+        return []
+    return [row["fight_id"] for row in load_cancelled_rows() if has_taken_place(row["fighter_1"], row["fighter_2"], row["event_date"])]
+
+
 def structure_problems() -> list[str]:
-    return rankings_structure_problems() + upcoming_structure_problems() + fighter_record_problems() + photo_manifest_problems() + fight_stats_problems() + gym_problems()
+    return (
+        rankings_structure_problems()
+        + upcoming_structure_problems()
+        + fighter_record_problems()
+        + photo_manifest_problems()
+        + fight_stats_problems()
+        + gym_problems()
+        + cancelled_fight_problems()
+    )
 
 
 def org_problems() -> list[str]:

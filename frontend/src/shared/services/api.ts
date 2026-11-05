@@ -18,6 +18,9 @@ import type {
   NewsResponse,
   OpponentsResponse,
   RecordBookResponse,
+  CancelledFightsResponse,
+  MatchmakingRequest,
+  MatchmakingResponse,
   ModelInfo,
   OrgEvent,
   OrgFighter,
@@ -89,6 +92,16 @@ export const getNews = async (limit = 6) => {
 
 export const getRecordBook = async () => {
   const response = await api.get<RecordBookResponse>('/record-book')
+  return response.data
+}
+
+export const getCancelledFights = async () => {
+  const response = await api.get<CancelledFightsResponse>('/cancelled-fights')
+  return response.data
+}
+
+export const getMatchmaking = async (request: MatchmakingRequest) => {
+  const response = await api.post<MatchmakingResponse>('/game/matchmaking', request)
   return response.data
 }
 
