@@ -288,6 +288,8 @@ export interface RoundStory {
   /** Which line of the narration table to use (stored, so the text does not change when the language does). */
   variant: number
   finish: boolean
+  /** What the player chose for this round. */
+  tactic?: Tactic
 }
 
 export interface FightResult {
@@ -316,10 +318,8 @@ function pickWeighted<T>(entries: [T, number][], rng: Rng): T {
   return entries[entries.length - 1][0]
 }
 
-const FINISH_ROUND_WEIGHTS = [0.34, 0.28, 0.2, 0.1, 0.08]
-
-/** How the fight ends. The winner's style and the player's plan shape it: a striking plan makes knockouts likelier, a grappling one submissions. */
-export function chooseMethod(won: boolean, plan: Plan, player: PlayerStats, opponent: Pick<Offer, 'sig_str_acc' | 'takedown_acc'>, rng: Rng): Method {
+/** How a finish happens. The winner's style and the player's plan shape it: a striking plan makes knockouts likelier, a grappling one submissions. */
+export function chooseFinish(won: boolean, plan: Plan, player: PlayerStats, opponent: Pick<Offer, 'sig_str_acc' | 'takedown_acc'>, rng: Rng): 'ko' | 'sub' {
   const winnerStrike = won ? player.sig_str_acc : (opponent.sig_str_acc ?? 0.45)
   const winnerGrapple = won ? player.takedown_acc : (opponent.takedown_acc ?? 0.38)
   let ko = 0.36 * (winnerStrike / 0.45)
@@ -334,46 +334,194 @@ export function chooseMethod(won: boolean, plan: Plan, player: PlayerStats, oppo
     if (plan === 'grappling') ko *= 0.8
     if (plan === 'striking') sub *= 0.8
   }
-  return pickWeighted<Method>([['ko', ko], ['sub', sub], ['dec', 0.47]], rng)
+  return pickWeighted<'ko' | 'sub'>([['ko', ko], ['sub', sub]], rng)
 }
 
-function roundStories(won: boolean, method: Method, rounds: number, finishRound: number, rng: Rng): RoundStory[] {
-  const winner: Edge = won ? 'you' : 'opp'
-  const loser: Edge = won ? 'opp' : 'you'
-  const stories: RoundStory[] = []
-  // Each round takes the next line of the table, from a random start, so two rounds in a row never read the same.
-  const start = Math.floor(rng() * 3)
-  const variantOf = (round: number) => (start + round) % 3
-  if (method === 'dec') {
-    const needed = Math.floor(rounds / 2) + 1
-    const edges: Edge[] = Array.from({ length: rounds }, (_, index) => (index < needed ? winner : loser))
-    // The rounds the winner won are not always the first ones.
-    for (let index = edges.length - 1; index > 0; index -= 1) {
-      const swap = Math.floor(rng() * (index + 1))
-      ;[edges[index], edges[swap]] = [edges[swap], edges[index]]
-    }
-    edges.forEach((edge, index) => stories.push({ round: index + 1, edge: rng() < 0.2 && edge === loser ? 'even' : edge, variant: variantOf(index), finish: false }))
-    return stories
-  }
-  for (let round = 1; round <= finishRound; round += 1) {
-    const last = round === finishRound
-    const edge: Edge = last ? winner : rng() < 0.55 ? winner : rng() < 0.5 ? loser : 'even'
-    stories.push({ round, edge, variant: variantOf(round), finish: last })
-  }
-  return stories
+// ------------------------------------------------------------------------------------------- the fight, a round at a time
+
+/**
+ * What the player tells the corner to do in a round. The model's chance of winning the fight does not change with it: the
+ * tactic is how the player spends risk. An attack makes a finish likelier for both fighters, a cover makes it unlikelier for
+ * both (and costs a little in the judges' eyes), a steady round changes nothing. Which one is right depends on the score.
+ */
+export type Tactic = 'attack' | 'steady' | 'cover'
+export const TACTICS: Tactic[] = ['attack', 'steady', 'cover']
+
+interface TacticEffect {
+  /** Added to the chance of winning the round on the cards. */
+  round: number
+  /** Multiplies the chance that the player finishes, and the chance that the player is finished. */
+  finishFor: number
+  finishAgainst: number
 }
 
-/** Fights one fight: who wins, how, the round-by-round story, and what it does to the career. */
-export function fight(career: Career, offer: Offer, plan: Plan, player: PlayerStats, rng: Rng, title = offer.champion): FightResult {
+export const TACTIC_EFFECTS: Record<Tactic, TacticEffect> = {
+  attack: { round: 0, finishFor: 2, finishAgainst: 2 },
+  steady: { round: 0, finishFor: 1, finishAgainst: 1 },
+  cover: { round: -0.08, finishFor: 0.3, finishAgainst: 0.2 },
+}
+
+/** The chance that a round ends the fight (whoever finishes), by round, for a 3-round and a 5-round fight. */
+const FINISH_HAZARD: Record<number, number[]> = { 3: [0.22, 0.2, 0.2], 5: [0.16, 0.15, 0.14, 0.1, 0.1] }
+/** Every round a fighter has won makes their next finish likelier by this much: the other one is hurt and tired. */
+const WEAR = 0.3
+
+interface Solver {
+  /** The chance of winning from this point (rounds played, rounds won by each side), the player's `first` tactic now and steady after. */
+  value: (played: number, you: number, opp: number, first?: Tactic) => number
+}
+
+/** Exact odds of the rest of a fight, for a given chance of winning a round (`base`). Small enough to solve on every screen. */
+function solver(base: number, scheduled: number): Solver {
+  const hazard = FINISH_HAZARD[scheduled] ?? FINISH_HAZARD[3]
+  const memo = new Map<number, number>()
+  const roundOdds = (played: number, you: number, opp: number, tactic: Tactic) => {
+    const effect = TACTIC_EFFECTS[tactic]
+    const rate = hazard[Math.min(played, hazard.length - 1)]
+    const finishYou = rate * base * effect.finishFor * (1 + WEAR * you)
+    const finishOpp = rate * (1 - base) * effect.finishAgainst * (1 + WEAR * opp)
+    return { finishYou, finishOpp, wins: clamp(base + effect.round, 0.03, 0.97) }
+  }
+  const value = (played: number, you: number, opp: number, first: Tactic = 'steady'): number => {
+    if (played >= scheduled) return you > opp ? 1 : 0
+    const key = (played * 10 + you) * 10 + opp + (first === 'steady' ? 0 : first === 'attack' ? 1000 : 2000)
+    const cached = memo.get(key)
+    if (cached !== undefined) return cached
+    const { finishYou, finishOpp, wins } = roundOdds(played, you, opp, first)
+    const rest = 1 - finishYou - finishOpp
+    const next = (youTake: boolean) => value(played + 1, you + (youTake ? 1 : 0), opp + (youTake ? 0 : 1))
+    const result = finishYou + rest * (wins * next(true) + (1 - wins) * next(false))
+    memo.set(key, result)
+    return result
+  }
+  return { value }
+}
+
+/** The chance of winning a single round that makes the whole fight come out at `chance`, with every round fought steady. */
+function solveBase(chance: number, scheduled: number): number {
+  let low = 0.001
+  let high = 0.999
+  for (let step = 0; step < 40; step += 1) {
+    const mid = (low + high) / 2
+    if (solver(mid, scheduled).value(0, 0, 0) < chance) low = mid
+    else high = mid
+  }
+  return (low + high) / 2
+}
+
+export interface FightOver {
+  won: boolean
+  method: Method
+  round: number
+  split: boolean
+}
+
+/** A fight in progress: the score on the cards, what has been told so far, and (once it is over) how it ended. */
+export interface FightState {
+  scheduled: number
+  /** Rounds fought so far. */
+  played: number
+  youRounds: number
+  oppRounds: number
+  /** The fight's chance for the player at the first bell (the model's, plus the plan and the film study). */
+  chance: number
+  /** The chance of winning one round that matches it. */
+  base: number
+  plan: Plan
+  player: PlayerStats
+  foe: Pick<Offer, 'sig_str_acc' | 'takedown_acc'>
+  /** Where in the narration table the first round starts. */
+  variantStart: number
+  stories: RoundStory[]
+  over: FightOver | null
+}
+
+export function startFight(career: Career, offer: Offer, plan: Plan, player: PlayerStats, rng: Rng, title = offer.champion): FightState {
   const headStart = career.scouted ? COACHES.scout.scout : 0
   const chance = clamp(offer.win_probability + planNudge(plan, player, offer) + headStart, 0.03, 0.97)
-  const won = rng() < chance
-  const method = chooseMethod(won, plan, player, offer, rng)
   const scheduled = title || career.champion ? 5 : 3
+  return {
+    scheduled,
+    played: 0,
+    youRounds: 0,
+    oppRounds: 0,
+    chance,
+    base: solveBase(chance, scheduled),
+    plan,
+    player,
+    foe: { sig_str_acc: offer.sig_str_acc, takedown_acc: offer.takedown_acc },
+    variantStart: Math.floor(rng() * 3),
+    stories: [],
+    over: null,
+  }
+}
+
+/** The player's chance of winning from here, taking every round that is left steady: the number behind the "favorite / underdog" read. */
+export function liveChance(state: FightState): number {
+  if (state.over) return state.over.won ? 1 : 0
+  return solver(state.base, state.scheduled).value(state.played, state.youRounds, state.oppRounds)
+}
+
+/** The tactic with the best chance of winning for this round, when it is clearly better than the others (a point or more), else null. */
+export function bestTactic(state: FightState): Tactic | null {
+  if (state.over) return null
+  const odds = solver(state.base, state.scheduled)
+  const ranked = TACTICS.map((tactic) => ({ tactic, value: odds.value(state.played, state.youRounds, state.oppRounds, tactic) })).sort((x, y) => y.value - x.value)
+  return ranked[0].value - ranked[1].value >= 0.01 ? ranked[0].tactic : null
+}
+
+/** What the corner can say about this round, from the score: a lead that cannot be lost on the cards, a deficit only a finish can fix, or nothing special. */
+export type Advice = 'protect' | 'finish' | 'attack' | 'cover' | 'steady'
+
+export function cornerAdvice(state: FightState): Advice {
+  const left = state.scheduled - state.played
+  const lead = state.youRounds - state.oppRounds
+  if (lead > left) return 'protect'
+  if (-lead >= left) return 'finish'
+  const best = bestTactic(state)
+  return best ?? 'steady'
+}
+
+/** Plays one round with the player's tactic. A finish ends the fight; the last round ends it on the cards. */
+export function playRound(state: FightState, tactic: Tactic, rng: Rng): FightState {
+  if (state.over) return state
+  const effect = TACTIC_EFFECTS[tactic]
+  const rate = (FINISH_HAZARD[state.scheduled] ?? FINISH_HAZARD[3])[Math.min(state.played, 4)]
+  const finishYou = rate * state.base * effect.finishFor * (1 + WEAR * state.youRounds)
+  const finishOpp = rate * (1 - state.base) * effect.finishAgainst * (1 + WEAR * state.oppRounds)
+  const wins = clamp(state.base + effect.round, 0.03, 0.97)
+  const round = state.played + 1
+  const variant = (state.variantStart + round) % 3
+
+  const roll = rng()
+  const finishedBy: 'you' | 'opp' | null = roll < finishYou ? 'you' : roll < finishYou + finishOpp ? 'opp' : null
+  const youTookIt = finishedBy ? finishedBy === 'you' : (roll - finishYou - finishOpp) / (1 - finishYou - finishOpp) < wins
+  const story: RoundStory = { round, edge: youTookIt ? 'you' : 'opp', variant, finish: finishedBy !== null, tactic }
+  const next: FightState = {
+    ...state,
+    played: round,
+    youRounds: state.youRounds + (youTookIt ? 1 : 0),
+    oppRounds: state.oppRounds + (youTookIt ? 0 : 1),
+    stories: [...state.stories, story],
+  }
+
+  if (finishedBy) {
+    const won = finishedBy === 'you'
+    next.over = { won, method: chooseFinish(won, state.plan, state.player, state.foe, rng), round, split: false }
+  } else if (round >= state.scheduled) {
+    const won = next.youRounds > next.oppRounds
+    const closest = Math.abs(next.youRounds - next.oppRounds) === 1
+    next.over = { won, method: 'dec', round, split: rng() < (closest ? 0.4 : 0.05) }
+  }
+  return next
+}
+
+/** What a finished fight does to the career: the record, the streaks, the points, the belt and the rival. */
+export function settleFight(career: Career, offer: Offer, state: FightState, title = offer.champion): FightResult {
+  if (!state.over) throw new Error('The fight is not over.')
+  const { won, method, round: finishRound, split } = state.over
+  const chance = state.chance
   const titleFight = title || career.champion
-  const finishRound = method === 'dec' ? scheduled : Math.min(scheduled, 1 + pickWeighted(FINISH_ROUND_WEIGHTS.slice(0, scheduled).map((weight, index): [number, number] => [index, weight]), rng))
-  const split = method === 'dec' && rng() < 0.25
-  const rounds = roundStories(won, method, scheduled, finishRound, rng)
 
   const before = standing(career)
   const next: Career = { ...career, scouted: false, history: [...career.history], fought: career.fought.includes(offer.name) ? career.fought : [...career.fought, offer.name] }
@@ -416,7 +564,14 @@ export function fight(career: Career, offer: Offer, plan: Plan, player: PlayerSt
   next.history.push({ opponent: offer.name, won, method, round: finishRound, title: titleFight, chance })
   if (next.lossStreak >= RELEASE_AFTER_LOSSES) next.ended = 'released'
 
-  return { career: next, won, method, round: finishRound, split, chance, pointsGained, rounds, lostBelt, wonBelt, standingBefore: before, standingAfter: standing(next) }
+  return { career: next, won, method, round: finishRound, split, chance, pointsGained, rounds: state.stories, lostBelt, wonBelt, standingBefore: before, standingAfter: standing(next) }
+}
+
+/** Fights a whole fight with the steady tactic in every round (the corner's default, and what "skip to the result" plays). */
+export function fight(career: Career, offer: Offer, plan: Plan, player: PlayerStats, rng: Rng, title = offer.champion): FightResult {
+  let state = startFight(career, offer, plan, player, rng, title)
+  while (!state.over) state = playRound(state, 'steady', rng)
+  return settleFight(career, offer, state, title)
 }
 
 export function retire(career: Career): Career {

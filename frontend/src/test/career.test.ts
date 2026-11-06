@@ -1,26 +1,34 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  bestTactic,
   budgetLeft,
   canRetire,
   COACHES,
+  cornerAdvice,
   createCareer,
   decodeRetrospect,
   encodeRetrospect,
   fight,
+  liveChance,
   offerCoaches,
   planNudge,
+  playRound,
   previewCamp,
   retire,
   retrospect,
   seededRng,
+  settleFight,
   similarFighter,
+  startFight,
   standing,
+  TACTICS,
   titleShotAvailable,
   trainCamp,
   validBuild,
   type Build,
   type Career,
+  type FightState,
   type Offer,
 } from '../shared/game/career'
 
@@ -101,11 +109,12 @@ describe('the training camp', () => {
   it('gives the scout coach’s head start to the next fight only', () => {
     const scouted = trainCamp(rookie, 'scout', safe).career
     expect(scouted.scouted).toBe(true)
-    const plain = fight(rookie, offer(0.5), 'balanced', player, () => 0.51)
-    const edge = fight(scouted, offer(0.5), 'balanced', player, () => 0.51)
-    expect(plain.won).toBe(false) // 0.51 is above a 50% chance
-    expect(edge.won).toBe(true) // and below 52%
-    expect(edge.career.scouted).toBe(false)
+    const plain = startFight(rookie, offer(0.5), 'balanced', player, () => 0.5)
+    const edge = startFight(scouted, offer(0.5), 'balanced', player, () => 0.5)
+    expect(plain.chance).toBeCloseTo(0.5, 5)
+    expect(edge.chance).toBeCloseTo(0.52, 5) // two points of chance, as the coach says
+    const edgeResult = fight(scouted, offer(0.5), 'balanced', player, () => 0.5)
+    expect(edgeResult.career.scouted).toBe(false)
   })
 
   it('offers three different coaches, always with one safe choice', () => {
@@ -297,5 +306,125 @@ describe('the shared link', () => {
     expect(decoded?.n.length).toBeLessThanOrEqual(24)
     expect(decoded?.n).not.toMatch(/[<>]/)
     expect(decoded?.b.length).toBeLessThanOrEqual(40)
+  })
+})
+
+describe('a fight, round by round', () => {
+  const rookie = createCareer(build)
+  const begin = (chance: number, extra: Partial<Offer> = {}) => startFight(rookie, offer(chance, extra), 'balanced', player, seededRng(1), extra.champion)
+  const at = (state: FightState, played: number, you: number, opp: number): FightState => ({ ...state, played, youRounds: you, oppRounds: opp })
+
+  it('starts level on the cards, with the chance the model gave (plus the plan and the film study)', () => {
+    const state = begin(0.62)
+    expect(state).toMatchObject({ played: 0, youRounds: 0, oppRounds: 0, scheduled: 3, over: null })
+    expect(state.chance).toBeCloseTo(0.62, 5)
+    expect(liveChance(state)).toBeCloseTo(0.62, 3) // the solved odds of the whole fight are the model's chance
+    expect(begin(0.4, { champion: true }).scheduled).toBe(5)
+  })
+
+  it('keeps the model’s chance for any fight length and any chance: the odds at the bell are the chance', () => {
+    for (const chance of [0.05, 0.2, 0.5, 0.8, 0.95]) {
+      expect(liveChance(begin(chance))).toBeCloseTo(Math.min(Math.max(chance, 0.03), 0.97), 3)
+      expect(liveChance(begin(chance, { champion: true }))).toBeCloseTo(Math.min(Math.max(chance, 0.03), 0.97), 3)
+    }
+  })
+
+  it('plays a fight with the middle tactic as often as the chance says, wins and finishes alike', () => {
+    const rng = seededRng(99)
+    let wins = 0
+    for (let index = 0; index < 3000; index += 1) {
+      let state = begin(0.35)
+      while (!state.over) state = playRound(state, 'steady', rng)
+      wins += state.over.won ? 1 : 0
+    }
+    expect(wins / 3000).toBeGreaterThan(0.32)
+    expect(wins / 3000).toBeLessThan(0.38)
+  })
+
+  it('moves the score one round at a time and ends on the cards after the last round', () => {
+    for (let seed = 1; seed < 80; seed += 1) {
+      const rng = seededRng(seed)
+      let state = begin(0.5)
+      let rounds = 0
+      while (!state.over) {
+        const before = state
+        state = playRound(state, 'steady', rng)
+        rounds += 1
+        expect(state.played).toBe(before.played + 1)
+        expect(state.youRounds + state.oppRounds).toBe(state.played)
+        expect(state.stories).toHaveLength(state.played)
+      }
+      expect(rounds).toBeLessThanOrEqual(3)
+      if (state.over.method === 'dec') {
+        expect(state.played).toBe(3)
+        expect(state.over.won).toBe(state.youRounds > state.oppRounds)
+      } else {
+        expect(state.stories[state.stories.length - 1].finish).toBe(true)
+      }
+      expect(playRound(state, 'attack', rng)).toBe(state) // nothing happens after the fight is over
+    }
+  })
+
+  it('remembers what was chosen for each round', () => {
+    const rng = seededRng(3)
+    let state = begin(0.5)
+    state = playRound(state, 'attack', rng)
+    if (!state.over) state = playRound(state, 'cover', rng)
+    expect(state.stories.map((story) => story.tactic)).toEqual(['attack', 'cover'].slice(0, state.stories.length))
+  })
+
+  it('makes a lead that cannot be lost on the cards a reason to cover, and a deficit a reason to attack', () => {
+    const state = begin(0.5)
+    expect(cornerAdvice(at(state, 2, 2, 0))).toBe('protect')
+    expect(bestTactic(at(state, 2, 2, 0))).toBe('cover')
+    expect(cornerAdvice(at(state, 2, 0, 2))).toBe('finish')
+    expect(bestTactic(at(state, 2, 0, 2))).toBe('attack')
+    expect(cornerAdvice(state)).toBe('steady') // level at the bell: nothing to add
+    expect(liveChance(at(state, 2, 2, 0))).toBeGreaterThan(0.85)
+    expect(liveChance(at(state, 2, 0, 2))).toBeLessThan(0.15)
+    expect(liveChance(at(state, 1, 1, 0))).toBeGreaterThan(liveChance(state))
+    expect(liveChance(at(state, 1, 0, 1))).toBeLessThan(liveChance(state))
+  })
+
+  it('makes each tactic change the odds of a finish: an attack more of them (on both sides), a cover fewer', () => {
+    const finishes = (tactic: 'attack' | 'steady' | 'cover') => {
+      const rng = seededRng(21)
+      let ended = 0
+      for (let index = 0; index < 4000; index += 1) ended += playRound(begin(0.5), tactic, rng).over ? 1 : 0
+      return ended / 4000
+    }
+    expect(finishes('attack')).toBeGreaterThan(finishes('steady'))
+    expect(finishes('steady')).toBeGreaterThan(finishes('cover'))
+  })
+
+  it('makes a tactic worth something only at the right moment: covering a lead pays, covering when level costs', () => {
+    const state = begin(0.5)
+    const after = (from: FightState, tactic: 'attack' | 'steady' | 'cover') => {
+      const rng = seededRng(5)
+      let wins = 0
+      for (let index = 0; index < 4000; index += 1) {
+        let next = playRound(from, tactic, rng)
+        while (!next.over) next = playRound(next, 'steady', rng)
+        wins += next.over.won ? 1 : 0
+      }
+      return wins / 4000
+    }
+    expect(after(at(state, 2, 2, 0), 'cover')).toBeGreaterThan(after(at(state, 2, 2, 0), 'attack') + 0.1)
+    expect(after(at(state, 2, 0, 2), 'attack')).toBeGreaterThan(after(at(state, 2, 0, 2), 'cover') + 0.05)
+    expect(after(at(state, 2, 1, 1), 'cover')).toBeLessThan(after(at(state, 2, 1, 1), 'steady'))
+    expect(TACTICS).toEqual(['attack', 'steady', 'cover'])
+  })
+
+  it('settles a finished fight on the career, and refuses one that is still going', () => {
+    const rng = seededRng(8)
+    const o = offer(0.5)
+    let state = begin(0.5)
+    expect(() => settleFight(rookie, o, state)).toThrow(/not over/i)
+    while (!state.over) state = playRound(state, 'steady', rng)
+    const result = settleFight(rookie, o, state)
+    expect(result.won).toBe(state.over.won)
+    expect(result.rounds).toBe(state.stories)
+    expect(result.career.ufcFights).toBe(1)
+    expect(result.career.wins + result.career.losses).toBe(7)
   })
 })

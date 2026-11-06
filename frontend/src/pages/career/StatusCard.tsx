@@ -7,6 +7,8 @@ import { recordText, standing, TITLE_SHOT_POINTS, type Career } from '../../shar
 import { STANDING_LABELS } from '../../shared/game/labels'
 import { Chip, Emblem, SkillMeter } from './ui'
 
+const SHORT_METHOD = { ko: 'KO', sub: 'SUB', dec: 'DEC' } as const
+
 /** The player's heads-up display: who they are, where they stand, and the three skills. It stays on screen through the whole career. */
 export function StatusCard({ career }: { career: Career }) {
   const { i18n } = useTranslation()
@@ -37,6 +39,18 @@ export function StatusCard({ career }: { career: Career }) {
             ) : null}
             {career.defenses > 0 ? <Chip tone="gold">{L(lang, `${career.defenses} defesas`, `${career.defenses} defenses`, `${career.defenses} défenses`, `${career.defenses} defensas`)}</Chip> : null}
           </div>
+          {career.history.length ? (
+            <ol className="mt-2 flex flex-wrap items-center gap-1.5" aria-label={L(lang, 'Últimas lutas', 'Recent fights', 'Derniers combats', 'Últimas peleas')}>
+              {career.history.slice(-5).map((entry, index) => (
+                <li key={`${entry.opponent}-${index}`} title={`${entry.opponent} · ${SHORT_METHOD[entry.method]}${entry.method === 'dec' ? '' : ` R${entry.round}`}`}>
+                  <span className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] ring-1 ${entry.won ? 'bg-[var(--accent-green)]/12 text-[var(--text-green)] ring-[var(--accent-green)]/40' : 'bg-[var(--accent-red)]/12 text-[var(--text-red)] ring-[var(--accent-red)]/40'}`}>
+                    {entry.won ? L(lang, 'V', 'W', 'V', 'V') : L(lang, 'D', 'L', 'D', 'D')}
+                    <span className="font-semibold opacity-80">{SHORT_METHOD[entry.method]}</span>
+                  </span>
+                </li>
+              ))}
+            </ol>
+          ) : null}
         </div>
         <div className="ml-auto text-right">
           <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--text-muted)]">{L(lang, 'Cartel', 'Record', 'Bilan', 'Récord')}</p>
