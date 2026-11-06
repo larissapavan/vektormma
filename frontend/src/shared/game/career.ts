@@ -35,13 +35,19 @@ export const MIN_FIGHTS_TO_RETIRE = 3
 export const RELEASE_AFTER_LOSSES = 3
 export const MAX_AGE = 41
 export const TITLE_SHOT_POINTS = 20
-const STANDING_STEPS: [number, Standing][] = [
+export const STANDING_STEPS: [number, Standing][] = [
   [20, 'contender'],
   [15, 'top5'],
   [9, 'top15'],
   [4, 'rising'],
   [0, 'prospect'],
 ]
+
+/** One of the career's goals: which one, and whether it has been met (and its bonus paid). */
+export interface GoalState {
+  id: string
+  done: boolean
+}
 
 export interface FightLog {
   opponent: string
@@ -66,6 +72,8 @@ export interface Career {
   ufcFights: number
   points: number
   winStreak: number
+  /** The longest run of wins this career has had. */
+  bestStreak: number
   lossStreak: number
   koWins: number
   subWins: number
@@ -82,6 +90,10 @@ export interface Career {
   /** Who beat the player and has not been beaten since: the rematch on offer. */
   rival: string | null
   history: FightLog[]
+  /** The goals this career was given at the start (see goals.ts), and which are met. */
+  goals: GoalState[]
+  /** The achievements earned in this career (see achievements.ts). */
+  earned: string[]
   ended: EndReason | null
 }
 
@@ -108,7 +120,7 @@ export function validBuild(build: Build) {
   return build.name.trim().length > 0 && skills.every((value) => value >= SKILL_MIN && value <= SKILL_MAX) && budgetLeft(build) >= 0
 }
 
-export function createCareer(build: Build): Career {
+export function createCareer(build: Build, goals: string[] = []): Career {
   if (!validBuild(build)) throw new Error('The build is over budget or out of range.')
   return {
     name: cleanName(build.name),
@@ -124,6 +136,7 @@ export function createCareer(build: Build): Career {
     ufcFights: 0,
     points: 0,
     winStreak: 0,
+    bestStreak: 0,
     lossStreak: 0,
     koWins: 0,
     subWins: 0,
@@ -137,6 +150,8 @@ export function createCareer(build: Build): Career {
     scouted: false,
     rival: null,
     history: [],
+    goals: goals.map((id) => ({ id, done: false })),
+    earned: [],
     ended: null,
   }
 }
@@ -532,6 +547,7 @@ export function settleFight(career: Career, offer: Offer, state: FightState, tit
   if (won) {
     next.wins += 1
     next.winStreak += 1
+    next.bestStreak = Math.max(next.bestStreak, next.winStreak)
     next.lossStreak = 0
     if (method === 'ko') next.koWins += 1
     else if (method === 'sub') next.subWins += 1

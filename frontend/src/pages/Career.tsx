@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { L } from '../i18n/lang'
 import { RetrospectCard } from '../shared/components/RetrospectCard'
+import { drawGoals } from '../shared/game/goals'
 import {
   canRetire,
   createCareer,
@@ -24,10 +25,12 @@ import {
 } from '../shared/game/career'
 import { clearSave, loadSave, storeSave, type SavedGame } from '../shared/game/save'
 import type { GameOpponent } from '../shared/types/api'
+import { AchievementsPanel } from './career/AchievementsPanel'
 import { CampStep, type CampNote } from './career/CampStep'
 import { CreateStep } from './career/CreateStep'
 import { EndStep } from './career/EndStep'
 import { FightStep } from './career/FightStep'
+import { GoalsCard } from './career/GoalsCard'
 import { OffersStep } from './career/OffersStep'
 import { ResumeCard } from './career/ResumeCard'
 import { StatusCard } from './career/StatusCard'
@@ -72,7 +75,7 @@ export function Career() {
 
   const start = (build: Build) => {
     setSaved(null)
-    setGame({ career: createCareer(build), stage: 'camp', note: null, seed: 0, fight: null, coaches: offerCoaches(random) })
+    setGame({ career: createCareer(build, drawGoals(random)), stage: 'camp', note: null, seed: 0, fight: null, coaches: offerCoaches(random) })
   }
 
   const resume = (save: SavedGame) => {
@@ -132,6 +135,7 @@ export function Career() {
           <ul className="mt-2 list-disc space-y-1 pl-5">
             <li>{L(lang, 'A chance de vencer cada luta vem do mesmo modelo do site, que lê precisão de golpes e de quedas, alcance, idade e cartel.', 'The chance of winning each fight comes from the site’s own model, which reads striking and takedown accuracy, reach, age and record.', 'La probabilité de gagner chaque combat vient du modèle du site, qui lit la précision de frappe et d’amenée au sol, l’allonge, l’âge et le bilan.', 'La probabilidad de ganar cada pelea sale del mismo modelo del sitio, que lee la precisión de golpeo y de derribos, el alcance, la edad y el récord.')}</li>
             <li>{L(lang, 'Em cada round você manda o córner atacar, manter o plano ou proteger. Isso não muda a chance que o modelo deu para a luta: muda como você gasta o risco. Na frente nos cartões, proteger vale a pena; atrás, só atacando.', 'Every round you tell the corner to attack, stick to the plan or cover up. That does not change the chance the model gave the fight: it changes how you spend the risk. Ahead on the cards, covering pays; behind, only attacking does.', 'À chaque round, vous dites au coin d’attaquer, de tenir le plan ou de se protéger. Cela ne change pas la probabilité donnée par le modèle : cela change la façon dont vous dépensez le risque. En tête aux cartons, se protéger paie ; derrière, seule l’attaque aide.', 'En cada round le dices al córner que ataque, mantenga el plan o se proteja. Eso no cambia la probabilidad que dio el modelo: cambia cómo gastas el riesgo. Arriba en las tarjetas conviene protegerse; abajo, solo atacar.')}</li>
+            <li>{L(lang, 'Cada carreira começa com 3 metas sorteadas: cumprir uma vale +2 pontos de ranking. As conquistas (como um nocaute no round 1, uma virada atacando ou uma carreira sem derrotas) ficam guardadas neste navegador e formam uma coleção.', 'Every career starts with 3 goals drawn at random: meeting one pays +2 ranking points. Achievements (such as a round-1 finish, a comeback by attacking or a career without a loss) are kept in this browser and make a collection.', 'Chaque carrière commence avec 3 objectifs tirés au sort : en atteindre un rapporte +2 points de classement. Les succès (comme une finition au round 1, une remontada en attaquant ou une carrière sans défaite) sont conservés dans ce navigateur et forment une collection.', 'Cada carrera empieza con 3 metas sorteadas: cumplir una vale +2 puntos de ranking. Los logros (como un cierre en el round 1, una remontada atacando o una carrera sin derrotas) se guardan en este navegador y forman una colección.')}</li>
             <li>{L(lang, 'Regras do jogo, e não do modelo: o desconto de 4 pontos contra ranqueados e 6 contra o campeão, o plano de luta (até 4 pontos), as lesões e o acaso.', 'Game rules, not the model’s: a 4-point discount against ranked fighters and 6 against the champion, the game plan (up to 4 points), injuries and luck.', 'Règles du jeu, pas du modèle : une décote de 4 points contre les classés et de 6 contre le champion, le plan de combat (jusqu’à 4 points), les blessures et le hasard.', 'Reglas del juego, no del modelo: un descuento de 4 puntos ante rivales del ranking y de 6 ante el campeón, el plan de pelea (hasta 4 puntos), las lesiones y el azar.')}</li>
             <li>{L(lang, 'A carreira fica salva neste navegador entre uma luta e outra, e só nele: nada vai para o servidor. Dá para fechar a página e retomar depois. No fim, ficam a imagem e o link.', 'The career is saved in this browser between fights, and only there: nothing goes to the server. You can close the page and pick it up later. At the end you get the picture and the link.', 'La carrière est enregistrée dans ce navigateur entre deux combats, et seulement là : rien n’est envoyé au serveur. Vous pouvez fermer la page et reprendre plus tard. À la fin, vous obtenez l’image et le lien.', 'La carrera se guarda en este navegador entre una pelea y otra, y solo ahí: nada va al servidor. Puedes cerrar la página y retomarla después. Al final quedan la imagen y el enlace.')}</li>
             <li>{L(lang, 'É uma simulação para brincar. Nada aqui é resultado real.', 'It is a simulation for fun. Nothing here is a real result.', 'C’est une simulation pour s’amuser. Rien ici n’est un résultat réel.', 'Es una simulación para divertirse. Nada de esto es un resultado real.')}</li>
@@ -155,10 +159,12 @@ export function Career() {
         <>
           {saved ? <ResumeCard saved={saved} onResume={() => resume(saved)} onDiscard={discard} /> : null}
           <CreateStep onStart={start} />
+          <AchievementsPanel />
         </>
       ) : (
         <>
           {game.stage !== 'end' ? <StatusCard career={game.career} /> : null}
+          {game.stage === 'camp' || game.stage === 'offers' ? <GoalsCard career={game.career} /> : null}
           {game.stage === 'camp' ? <CampStep key={game.career.ufcFights} career={game.career} coaches={game.coaches} note={game.note} onTrain={train} onRetire={() => stop()} /> : null}
           {game.stage === 'offers' ? <OffersStep key={game.seed} career={game.career} seed={game.seed} onFight={takeFight} onRetire={() => stop()} canRetire={canRetire(game.career)} /> : null}
           {game.stage === 'fight' && game.fight ? <FightStep key={game.career.ufcFights} career={game.career} offer={game.fight.offer} start={game.fight.state} random={random} onContinue={continueCareer} onRetire={stop} /> : null}

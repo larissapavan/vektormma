@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { ArrowRight, ChevronsRight, Lightbulb, Scale, Shield, Swords, Trophy } from 'lucide-react'
@@ -7,11 +7,15 @@ import type { ReactNode } from 'react'
 import { L, pick } from '../../i18n/lang'
 import { FighterAvatar } from '../../shared/components/FighterAvatar'
 import { METHOD_LABELS } from '../../shared/data/cancelledFights'
-import { canRetire, cornerAdvice, liveChance, playRound, recordText, settleFight, TACTICS, type Career, type Edge, type FightResult, type FightState, type Rng, type Tactic } from '../../shared/game/career'
+import { canRetire, cornerAdvice, liveChance, playRound, recordText, TACTICS, type Career, type Edge, type FightResult, type FightState, type Rng, type Tactic } from '../../shared/game/career'
 import { ADVICE_TEXT, TACTIC_TEXT } from '../../shared/game/corner'
+import { GOAL_TEXT } from '../../shared/game/rewardsText'
+import { finishFight } from '../../shared/game/progress'
+import { recordTrophies } from '../../shared/game/trophies'
 import { BAND_LABELS, chanceBand, STANDING_LABELS } from '../../shared/game/labels'
 import { decisionText, roundText } from '../../shared/game/narration'
 import type { GameOpponent } from '../../shared/types/api'
+import { AchievementTile } from './AchievementsPanel'
 import { Chip, Emblem, GhostButton, PrimaryButton } from './ui'
 
 const EDGE_STYLE: Record<Edge, string> = {
@@ -69,7 +73,11 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire }
   const lang = i18n.language
   const [state, setState] = useState(start)
   const [asked, setAsked] = useState(false)
-  const result = useMemo(() => (state.over ? settleFight(career, offer, state) : null), [career, offer, state])
+  const result = useMemo(() => (state.over ? finishFight(career, offer, state) : null), [career, offer, state])
+  // The collection grows the moment the fight is over, not when the player moves on.
+  useEffect(() => {
+    if (result) recordTrophies(result.unlocked)
+  }, [result])
   const title = offer.champion || career.champion
   const finished = state.over !== null
 
@@ -194,7 +202,22 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire }
               ) : null}
               {result.wonBelt ? <li><Chip tone="gold">{L(lang, 'Você é o novo campeão!', 'You are the new champion!', 'Vous êtes le nouveau champion !', '¡Eres el nuevo campeón!')}</Chip></li> : null}
               {result.lostBelt ? <li><Chip tone="red">{L(lang, 'Você perdeu o cinturão.', 'You lost the belt.', 'Vous avez perdu la ceinture.', 'Perdiste el cinturón.')}</Chip></li> : null}
+              {result.goalsDone.map((id) => (
+                <li key={id}>
+                  <Chip tone="green">{L(lang, `Meta cumprida: ${pick(lang, GOAL_TEXT[id])}`, `Goal met: ${pick(lang, GOAL_TEXT[id])}`, `Objectif atteint : ${pick(lang, GOAL_TEXT[id])}`, `Meta cumplida: ${pick(lang, GOAL_TEXT[id])}`)} (+{result.goalPoints / result.goalsDone.length})</Chip>
+                </li>
+              ))}
             </ul>
+            {result.unlocked.length ? (
+              <div className="space-y-2" data-testid="unlocked">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-gold)]">{L(lang, 'Conquista desbloqueada', 'Achievement unlocked', 'Succès débloqué', 'Logro desbloqueado')}</p>
+                <ul className="grid gap-2 sm:grid-cols-2">
+                  {result.unlocked.map((id) => (
+                    <AchievementTile key={id} id={id} earned fresh />
+                  ))}
+                </ul>
+              </div>
+            ) : null}
             {!result.won && result.career.ended !== 'released' ? <p className="text-sm text-[var(--text-secondary)]">{L(lang, `${offer.name} agora é seu rival: dá para pedir a revanche.`, `${offer.name} is now your rival: you can ask for the rematch.`, `${offer.name} est maintenant votre rival : vous pouvez réclamer la revanche.`, `${offer.name} es ahora tu rival: puedes pedir la revancha.`)}</p> : null}
             {result.career.ended === 'released' ? <p className="text-sm font-semibold text-[var(--text-red)]">{L(lang, 'Três derrotas seguidas: o UFC dispensou você.', 'Three straight losses: the UFC has released you.', 'Trois défaites de suite : l’UFC vous a libéré.', 'Tres derrotas seguidas: la UFC te liberó.')}</p> : null}
 

@@ -82,6 +82,38 @@ describe('reading a saved career', () => {
   })
 })
 
+describe('goals and achievements in a save', () => {
+  const plain = () => JSON.parse(JSON.stringify(createCareer(build, ['wins4', 'kos2', 'upset'])))
+
+  it('are read back with the career', () => {
+    const career: Career = { ...veteran(), goals: [{ id: 'wins4', done: true }, { id: 'kos2', done: false }], earned: ['debut', 'lightning'], bestStreak: 3 }
+    expect(readCareer(JSON.parse(JSON.stringify(career)))).toEqual(career)
+  })
+
+  it('read as none for a save from before they existed, with the best streak taken from the current one', () => {
+    const old = plain()
+    delete old.goals
+    delete old.earned
+    delete old.bestStreak
+    old.winStreak = 2
+    expect(readCareer(old)).toMatchObject({ goals: [], earned: [], bestStreak: 2 })
+  })
+
+  it.each([
+    ['a goal that does not exist', { goals: [{ id: 'win-everything', done: false }] }],
+    ['a goal listed twice', { goals: [{ id: 'wins4', done: false }, { id: 'wins4', done: true }] }],
+    ['a goal whose state is not a flag', { goals: [{ id: 'wins4', done: 'yes' }] }],
+    ['goals that are not a list', { goals: 'wins4' }],
+    ['more goals than the game has', { goals: Array.from({ length: 9 }, () => ({ id: 'wins4', done: false })) }],
+    ['an achievement that does not exist', { earned: ['god_mode'] }],
+    ['an achievement earned twice', { earned: ['debut', 'debut'] }],
+    ['earned achievements that are not a list', { earned: 'debut' }],
+    ['a best streak that is not a count', { bestStreak: -3 }],
+  ])('refuses %s', (_label, change) => {
+    expect(readCareer({ ...plain(), ...change })).toBeNull()
+  })
+})
+
 describe('the save in the browser', () => {
   it('is stored, read back and cleared', () => {
     expect(loadSave()).toBeNull()

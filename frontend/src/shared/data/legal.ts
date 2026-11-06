@@ -107,7 +107,7 @@ const PRIVACY: ByLang<InfoPage> = {
       {
         heading: 'O que fica no seu navegador',
         paragraphs: [
-          'O site guarda no armazenamento local do seu navegador apenas o que facilita o seu uso: o tema (claro ou escuro), o idioma escolhido, os últimos lutadores que você buscou, os palpites que você faz no site (como em “Lutas que nunca aconteceram”) e a carreira do jogo em andamento, para você continuar de onde parou. Nada disso é enviado a nenhum servidor e você pode apagar tudo limpando os dados do site no navegador.',
+          'O site guarda no armazenamento local do seu navegador apenas o que facilita o seu uso: o tema (claro ou escuro), o idioma escolhido, os últimos lutadores que você buscou, os palpites que você faz no site (como em “Lutas que nunca aconteceram”) a carreira do jogo em andamento, para você continuar de onde parou, e as conquistas que você ganha no jogo. Nada disso é enviado a nenhum servidor e você pode apagar tudo limpando os dados do site no navegador.',
         ],
       },
       {
@@ -170,7 +170,7 @@ const PRIVACY: ByLang<InfoPage> = {
       {
         heading: 'What stays in your browser',
         paragraphs: [
-          'The site keeps in your browser’s local storage only what makes it easier to use: the theme (light or dark), the language you chose, the last fighters you searched for, the picks you make on the site (such as in “Fights that never happened”) and the career game in progress, so you can pick up where you left off. None of it is sent to any server, and you can erase all of it by clearing the site’s data in your browser.',
+          'The site keeps in your browser’s local storage only what makes it easier to use: the theme (light or dark), the language you chose, the last fighters you searched for, the picks you make on the site (such as in “Fights that never happened”) the career game in progress, so you can pick up where you left off, and the achievements you earn in the game. None of it is sent to any server, and you can erase all of it by clearing the site’s data in your browser.',
         ],
       },
       {
@@ -233,7 +233,7 @@ const PRIVACY: ByLang<InfoPage> = {
       {
         heading: 'Ce qui reste dans votre navigateur',
         paragraphs: [
-          'Le site ne conserve dans le stockage local de votre navigateur que ce qui facilite son usage : le thème (clair ou sombre), la langue choisie, les derniers combattants recherchés, les pronostics que vous faites sur le site (comme dans « Combats qui n’ont jamais eu lieu ») et la carrière du jeu en cours, pour reprendre là où vous vous étiez arrêté. Rien de tout cela n’est envoyé à un serveur et vous pouvez tout effacer en supprimant les données du site dans votre navigateur.',
+          'Le site ne conserve dans le stockage local de votre navigateur que ce qui facilite son usage : le thème (clair ou sombre), la langue choisie, les derniers combattants recherchés, les pronostics que vous faites sur le site (comme dans « Combats qui n’ont jamais eu lieu ») la carrière du jeu en cours, pour reprendre là où vous vous étiez arrêté, et les succès que vous obtenez dans le jeu. Rien de tout cela n’est envoyé à un serveur et vous pouvez tout effacer en supprimant les données du site dans votre navigateur.',
         ],
       },
       {
@@ -296,7 +296,7 @@ const PRIVACY: ByLang<InfoPage> = {
       {
         heading: 'Qué queda en tu navegador',
         paragraphs: [
-          'El sitio guarda en el almacenamiento local de tu navegador solo lo que facilita su uso: el tema (claro u oscuro), el idioma elegido, los últimos peleadores que buscaste, los pronósticos que haces en el sitio (como en «Peleas que nunca ocurrieron») y la carrera del juego en curso, para que continúes donde lo dejaste. Nada de eso se envía a ningún servidor y puedes borrarlo todo eliminando los datos del sitio en tu navegador.',
+          'El sitio guarda en el almacenamiento local de tu navegador solo lo que facilita su uso: el tema (claro u oscuro), el idioma elegido, los últimos peleadores que buscaste, los pronósticos que haces en el sitio (como en «Peleas que nunca ocurrieron») la carrera del juego en curso, para que continúes donde lo dejaste, y los logros que consigues en el juego. Nada de eso se envía a ningún servidor y puedes borrarlo todo eliminando los datos del sitio en tu navegador.',
         ],
       },
       {
