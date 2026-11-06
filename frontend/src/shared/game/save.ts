@@ -1,4 +1,6 @@
-import { cleanName, type Career, type CoachId, type FightLog, type Method, type Stance } from './career'
+import { isAchievementId } from './achievements'
+import { cleanName, type Career, type CoachId, type FightLog, type GoalState, type Method, type Stance } from './career'
+import { isGoalId } from './goals'
 
 /**
  * The career in progress, kept in this browser's local storage so a closed tab or a reload does not lose it. It is written
@@ -35,6 +37,26 @@ function fightLog(raw: unknown): FightLog | null {
   const chance = number(item.chance, 0, 1)
   if (!opponent || round === null || chance === null || typeof item.won !== 'boolean' || typeof item.title !== 'boolean' || !METHODS.includes(item.method as Method)) return null
   return { opponent, won: item.won, method: item.method as Method, round, title: item.title, chance }
+}
+
+function readGoals(raw: unknown): GoalState[] | null {
+  if (raw === undefined) return []
+  if (!Array.isArray(raw) || raw.length > 8) return null
+  const goals: GoalState[] = []
+  for (const item of raw) {
+    if (typeof item !== 'object' || item === null) return null
+    const { id, done } = item as Record<string, unknown>
+    if (!isGoalId(id) || typeof done !== 'boolean' || goals.some((goal) => goal.id === id)) return null
+    goals.push({ id, done })
+  }
+  return goals
+}
+
+function readEarned(raw: unknown): string[] | null {
+  if (raw === undefined) return []
+  if (!Array.isArray(raw) || raw.length > 20) return null
+  if (!raw.every((id) => isAchievementId(id)) || new Set(raw).size !== raw.length) return null
+  return raw as string[]
 }
 
 /** A career read back from storage, or null when anything about it is not what the game itself would have written. */
@@ -81,6 +103,12 @@ export function readCareer(raw: unknown): Career | null {
     if (typeof c.rival !== 'string') return null
     rival = cleanName(c.rival, 60) || null
   }
+  // Saves from before goals and achievements existed have neither: they read as a career with no goals and nothing earned.
+  const bestStreak = c.bestStreak === undefined ? numbers.winStreak : count(c.bestStreak)
+  if (bestStreak === null) return null
+  const goals = readGoals(c.goals)
+  const earned = readEarned(c.earned)
+  if (!goals || !earned) return null
   const n = numbers as Record<keyof typeof numbers, number>
   return {
     name,
@@ -96,6 +124,7 @@ export function readCareer(raw: unknown): Career | null {
     ufcFights: n.ufcFights,
     points: n.points,
     winStreak: n.winStreak,
+    bestStreak,
     lossStreak: n.lossStreak,
     koWins: n.koWins,
     subWins: n.subWins,
@@ -109,6 +138,8 @@ export function readCareer(raw: unknown): Career | null {
     scouted: c.scouted,
     rival,
     history: history as FightLog[],
+    goals,
+    earned,
     ended: null,
   }
 }

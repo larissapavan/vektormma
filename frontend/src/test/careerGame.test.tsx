@@ -7,6 +7,7 @@ import App from '../App'
 import i18n from '../i18n'
 import { createCareer, encodeRetrospect, type Retrospect } from '../shared/game/career'
 import { SAVE_KEY } from '../shared/game/save'
+import { loadTrophies, TROPHY_KEY } from '../shared/game/trophies'
 import { respond } from './fixtures'
 
 const calls = vi.hoisted(() => ({ matchmaking: [] as unknown[] }))
@@ -236,6 +237,91 @@ describe('a fight, round by round', () => {
     const strip = screen.getByRole('list', { name: /recent fights/i })
     expect(within(strip).getAllByRole('listitem')).toHaveLength(1)
     expect(strip).toHaveTextContent(/^[WL]/)
+  })
+})
+
+describe('goals and achievements', () => {
+  it('gives the new career three goals to go after, each with its progress', async () => {
+    await startCareer()
+    const goals = screen.getByRole('region', { name: /career goals/i })
+    expect(within(goals).getAllByRole('listitem')).toHaveLength(3)
+    expect(screen.getByTestId('goals-met')).toHaveTextContent('0/3')
+    expect(goals).toHaveTextContent(/each goal pays \+2 ranking points/i)
+    for (const item of within(goals).getAllByRole('listitem')) expect(item).toHaveTextContent(/\d+\/\d+/)
+  })
+
+  it('lists the achievements on the first screen, lit for the ones this browser has earned', async () => {
+    window.localStorage.setItem(TROPHY_KEY, JSON.stringify({ debut: 1700000000000, champion: 1700000000001 }))
+    renderAt('/career')
+    expect(await screen.findByTestId('trophy-count', undefined, { timeout: 10000 })).toHaveTextContent('2/15')
+    const panel = screen.getByTestId('trophy-count').closest('details') as HTMLElement
+    expect(panel.querySelectorAll('[data-earned="true"]')).toHaveLength(2)
+    expect(panel.querySelectorAll('[data-earned="false"]')).toHaveLength(13)
+    expect(panel).toHaveTextContent('Winning debut')
+    expect(panel).toHaveTextContent('Win your first UFC fight.')
+  })
+
+  it('starts the collection empty, and ignores a collection that has been tampered with', async () => {
+    window.localStorage.setItem(TROPHY_KEY, JSON.stringify({ god_mode: 1, debut: 'never' }))
+    renderAt('/career')
+    expect(await screen.findByTestId('trophy-count', undefined, { timeout: 10000 })).toHaveTextContent('0/15')
+  })
+
+  it('shows what a fight earns and keeps it in the collection', async () => {
+    // With this seed the first fight is won (the screen tests are deterministic; the engine tests cover a lost debut).
+    vi.spyOn(Math, 'random').mockReturnValue(0.5)
+    await startCareer()
+    await playOneFight()
+    expect(screen.getByTestId('fight-result')).toHaveTextContent(/victory/i)
+    const unlocked = screen.getByTestId('unlocked')
+    expect(unlocked).toHaveTextContent(/achievement unlocked/i)
+    expect(unlocked).toHaveTextContent('Winning debut')
+    expect(loadTrophies().debut).toBeDefined()
+  })
+
+  it('shows the goals and the achievements of the career at the end', async () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5)
+    await startCareer('José Aldo')
+    for (let fights = 0; fights < 3; fights += 1) {
+      await playOneFight()
+      if (fights < 2) await click(/continue the career/i)
+    }
+    await click(/^retire$/i)
+    expect(await screen.findByTestId('goals-summary')).toHaveTextContent(/goals met: \d of 3/i)
+    expect(screen.getByText(/the achievements stay in this browser/i)).toBeInTheDocument()
+    const earned = loadTrophies()
+    if (Object.keys(earned).length) expect(screen.getByTestId('career-achievements')).toBeInTheDocument()
+    else expect(screen.queryByTestId('career-achievements')).toBeNull()
+  })
+
+  it('pays a goal in points when a fight meets it, and says so', async () => {
+    // A career that is one win from its first goal, resumed from a save. With this seed the first fight is won.
+    const career = { ...createCareer({ name: 'Almost There', division: 'Lightweight', stance: 'Orthodox', striking: 50, takedowns: 50, reach: 50 }, ['wins4', 'kos2', 'upset']), wins: 9, ufcFights: 3 }
+    window.localStorage.setItem(SAVE_KEY, JSON.stringify({ career, stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 1, note: null, savedAt: 1 }))
+    vi.spyOn(Math, 'random').mockReturnValue(0.11)
+    renderAt('/career')
+    await userEvent.click(await screen.findByRole('button', { name: /resume the career/i }, { timeout: 10000 }))
+    expect(screen.getByTestId('goals-met')).toHaveTextContent('0/3')
+    await train()
+    await userEvent.click(await findButton(/Easy Eddie/))
+    await click(/fight easy eddie/i)
+    await click(/skip to the result/i)
+    expect(screen.getByTestId('fight-result')).toHaveTextContent(/victory/i)
+    expect(screen.getByText(/goal met: win 4 ufc fights/i)).toHaveTextContent('(+2)')
+    await click(/continue the career/i)
+    expect(screen.getByTestId('goals-met')).toHaveTextContent('1/3')
+  })
+
+  it('reads a career saved before goals existed as a career without goals', async () => {
+    const old = JSON.parse(JSON.stringify(createCareer({ name: 'Old Save', division: 'Lightweight', stance: 'Orthodox', striking: 50, takedowns: 50, reach: 50 })))
+    delete old.goals
+    delete old.earned
+    delete old.bestStreak
+    window.localStorage.setItem(SAVE_KEY, JSON.stringify({ career: old, stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 1, note: null, savedAt: 1 }))
+    renderAt('/career')
+    await userEvent.click(await screen.findByRole('button', { name: /resume the career/i }, { timeout: 10000 }))
+    expect(screen.getByText(/camp for your ufc debut/i)).toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: /career goals/i })).toBeNull()
   })
 })
 
