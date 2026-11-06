@@ -3,8 +3,9 @@ import { L, uiLang, type UiLang } from '../../i18n/lang'
 /**
  * How the model's probabilities are put on screen.
  *
- * The model is overconfident: on recent fights the picks it rated 90% or more were right about 71% of the time. So a
- * probability past 90% is shown as "90%+" (and its mirror as "<10%") instead of a number that looks exact.
+ * The model that served the site earlier was overconfident: on recent fights its picks rated 90% or more were right about
+ * 71% of the time. The current one is calibrated, but it has almost no fights above 80% to be checked on, so a probability
+ * past 90% is still shown as "90%+" (and its mirror as "<10%") instead of a number that looks exact.
  */
 const CAP = 0.9
 const EPSILON = 1e-9 // 1 - 0.9 is 0.09999999999999998 in floating point

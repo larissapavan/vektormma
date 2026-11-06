@@ -82,6 +82,7 @@ def _player_profile(fighter: dict, division: str, stats: dict) -> dict:
         "stance": fighter["stance"],
         "division": division,
         "data_origin": None,
+        "synthetic": True,  # no fights to replay: the pre-fight model builds this character's history from the profile
     }
 
 

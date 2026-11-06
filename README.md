@@ -33,21 +33,22 @@ There is nothing to install. Open the link and try any of these:
 
 Not as good as the first number I saw, and the site says so.
 
-I measured the model on 1,753 UFC fights from June 2023 to October 2026, using each fighter's age and record as they stood on the day of the fight:
+I measured the model on 1,755 UFC fights from June 2023 to October 2026, all later than any fight it trained on, with every fighter described as he or she stood on the morning of the fight:
 
 | Way of picking the winner | Fights picked right |
 |---|---|
 | Flip a coin | 50% |
-| Always pick the fighter with more UFC wins | 48.7% |
+| Always pick the fighter with more UFC wins | 48.6% |
 | Always pick the fighter with the better Elo rating | 55.5% |
-| **Vektor MMA model** | **62.2%** |
+| **Vektor MMA model** | **62.7%** |
 
 What that means in practice:
 
 - 62% is clearly better than guessing, and it is far from certain. MMA is hard to predict, and a single punch can change a fight. Treat the number as an informed estimate.
-- The probabilities are too confident. When the model was 90% sure or more, it was right about 71% of the time. The site tells visitors to read its percentages as rough.
-- The model file I started with claimed 74.7% accuracy. That figure came from training data that is not in this repository, and I could not reproduce it. I replaced it with the measured result above, on the site and here.
-- I also trained a second model that only uses what was known before each fight and is tested on later fights than it trained on. It scores about the same (62.4%) with better calibrated probabilities. It is documented in [`docs/`](docs/) and is not live yet.
+- The probabilities are reasonably honest in the middle of the scale and untested at the top. On the test fights, picks rated 60-65% were right 63.7% of the time and picks rated 70-80% were right 77.4%. Only 6 fights were rated 80% or more, so nothing can be said about very confident picks. The site still tells visitors to read its percentages as rough.
+- This model replaced an earlier one that scored about the same (62.7% on the same fights) but was overconfident: when it was 90% sure or more it was right about 71% of the time, and its calibration error was 8.4% against 3.2% now. That earlier model's file had claimed 74.7% accuracy, from training data that is not in this repository and that I could not reproduce. A model given each fighter's career totals as of today (which include the fight itself) reaches about 73% on the same fights, which is what leaking the answer looks like. The comparison is in [`docs/model-comparison.md`](docs/model-comparison.md) and the training report in [`docs/prefight-model-report.md`](docs/prefight-model-report.md).
+- The earlier model is still in the repository. Setting the environment variable `PREDICTION_MODEL=current` on the API serves it again.
+- A simple logistic regression scores about the same as the gradient boosting (63.1% against 62.7% in the training report). That suggests the limit is in the information available, not in the algorithm.
 - Outside the UFC it is less reliable, and I have not measured it there. The predictor also works for ONE Championship and the PFL, but those organizations' data has a record, age, height and reach and no striking or takedown numbers, so the model fills those in with averages. For fighters of those two who have no UFC profile I pull the probability halfway toward 50%, a fixed cautious factor and not a fitted one. Each of those pages says this before the first number.
 - The live track record starts on 15 October 2026. It is a small sample so far, so I would not draw conclusions from it yet. The current numbers are on the [track record page](https://www.vektormma.com/track-record).
 
@@ -58,7 +59,7 @@ This is a learning project, not betting advice.
 | Part | What it does | Main tools |
 |---|---|---|
 | Data collection | Reads public sources, cleans and checks the data, and refreshes it every day at 07:00 UTC | Python, pandas, GitHub Actions |
-| Prediction model | Estimates the winner of a fight and explains why | scikit-learn (gradient boosting, 46 inputs), SHAP |
+| Prediction model | Estimates the winner of a fight and explains why | scikit-learn (gradient boosting, 29 inputs), SHAP |
 | API | Serves the data and the predictions to the website | FastAPI, Docker, Railway |
 | Website | What visitors see and click | React 19, TypeScript, Vite, Tailwind CSS, Recharts, Framer Motion, Vercel |
 
@@ -74,7 +75,7 @@ For readers who want to see how it was built.
 - The historical UFC data is also published as a [public dataset on Kaggle](https://www.kaggle.com/datasets/larissapavan/ufc-historical-fight-dataset-19942026).
 
 **Model**
-- Most of the 46 inputs are differences between the two fighters (age, reach, win rate, striking accuracy) rather than raw values.
+- Most of the 29 inputs are differences between the two fighters (age, reach, win rate, striking accuracy) rather than raw values.
 - Predictions are saved before each event and settled automatically afterwards. When I fixed a bug in the model, the earlier picks were kept exactly as they were shown, and the site marks them as coming from the earlier version.
 - A confidence table on the site compares how sure the model said it was with how often it was right.
 
@@ -85,7 +86,7 @@ For readers who want to see how it was built.
 - Pages load on demand, and the API answers are cached by the browser, to keep the first visit fast.
 
 **Quality and operation**
-- About 1,100 automated tests: Python tests for the API, the data pipeline and the model, TypeScript tests for every page, and browser tests for language switching and the HTML that search engines receive. They run on every change in GitHub Actions, together with the linter and the type checker.
+- More than 1,200 automated tests: Python tests for the API, the data pipeline and the model, TypeScript tests for every page, and browser tests for language switching and the HTML that search engines receive. They run on every change in GitHub Actions, together with the linter and the type checker.
 - A separate job checks every 30 minutes that the site and the API are up and that the data is recent.
 - The API limits how often one visitor can call it, the site sends security headers, and the API has a health check that Railway uses when it deploys, and restarts itself if it crashes.
 - A cookie consent notice is set up for visitors in Europe. There is a privacy policy, and the site's own analytics do not use cookies.

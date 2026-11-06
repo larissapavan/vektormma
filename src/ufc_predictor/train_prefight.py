@@ -8,9 +8,8 @@ fight as it looked before the bell, and writes:
     models/candidate/ufc_prefight_model.joblib    the candidate model; the deployed model is not touched
     docs/prefight-model-report.md                 data, split, results and calibration
 
-With --promote it also writes models/ufc_prefight_model.joblib, the file the API serves when the environment variable
-PREDICTION_MODEL is "prefight" (backend/app/services/prefight_service.py). Without that variable the API keeps serving
-models/ufc_winner_model.joblib.
+With --promote it also writes models/ufc_prefight_model.joblib, the file the API serves by default
+(backend/app/services/prefight_service.py). With PREDICTION_MODEL=current it serves models/ufc_winner_model.joblib instead.
 
 How the data is cut. Fights are split by date, never by row position or at random:
     train        the oldest 65% of the fights (cut on a day, so one event is never split)
@@ -278,7 +277,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--no-write", action="store_true", help="train and print the report, write no files")
     parser.add_argument(
         "--promote", action="store_true",
-        help=f"also write the model to {PREFIGHT_MODEL_PATH.name}, the file the API serves when PREDICTION_MODEL=prefight",
+        help=f"also write the model to {PREFIGHT_MODEL_PATH.name}, the file the API serves by default",
     )
     args = parser.parse_args(argv)
 

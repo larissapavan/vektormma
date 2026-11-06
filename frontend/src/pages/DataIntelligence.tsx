@@ -285,13 +285,13 @@ function ModernDataPipeline() {
 
       <PipelineFlowDown />
 
-      {/* 4. Engenharia de Atributos (46 Features ML) */}
+      {/* 4. Engenharia de Atributos (29 Features ML) */}
       <div className="w-full max-w-2xl rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] p-4 sm:p-5">
         <div className="text-center mb-3">
           <div className="flex items-center justify-center gap-2">
             <Cpu className="h-4 w-4 text-[#F59E0B]" />
             <h4 className="font-display font-bold text-sm sm:text-base uppercase tracking-wider text-[var(--text-primary)] dark:text-white">
-              {L(i18n.language, 'Engenharia de Variáveis (46 Variáveis Preditivas)', 'Feature Engineering (46 Predictive Features)', 'Ingénierie des variables (46 variables prédictives)', 'Ingeniería de variables (46 variables predictivas)')}
+              {L(i18n.language, 'Engenharia de Variáveis (29 Variáveis Preditivas)', 'Feature Engineering (29 Predictive Features)', 'Ingénierie des variables (29 variables prédictives)', 'Ingeniería de variables (29 variables predictivas)')}
             </h4>
           </div>
           <p className="mt-1 text-[11px] text-[var(--text-secondary)] dark:text-neutral-400">
@@ -311,7 +311,7 @@ function ModernDataPipeline() {
               {L(i18n.language, '📏 Biometria & Base', '📏 Biometrics & Stance', '📏 Biométrie & Garde', '📏 Biometría y guardia')}
             </span>
             <span className="text-[11px] text-[var(--text-secondary)] dark:text-neutral-300 leading-tight block mt-0.5">
-              {L(i18n.language, 'Diferencial de envergadura, alcance de pernas, idade, altura e base (Destro vs Canhoto).', 'Reach, leg reach, age, height advantage, and stance matchups (Orthodox vs Southpaw).', 'Écarts d’allonge, allonge de jambes, âge, taille et garde (Droitier vs Gaucher).', 'Diferencia de alcance, alcance de piernas, edad, estatura y guardia (ortodoxo vs. zurdo).')}
+              {L(i18n.language, 'Diferencial de envergadura, idade, altura e base (Destro vs Canhoto).', 'Reach, age, height advantage, and stance matchups (Orthodox vs Southpaw).', 'Écarts d’allonge, âge, taille et garde (Droitier vs Gaucher).', 'Diferencia de alcance, edad, estatura y guardia (ortodoxo vs. zurdo).')}
             </span>
           </div>
 
