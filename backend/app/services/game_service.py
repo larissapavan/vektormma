@@ -14,7 +14,6 @@ from __future__ import annotations
 import random
 
 import numpy as np
-import pandas as pd
 
 from .catalog_service import get_fighter_catalog, get_fighter_profile
 
@@ -158,7 +157,7 @@ def matchmake(service, request: dict) -> dict:
 
     rng.shuffle(names)
     scored = [(profile, score(profile, False)) for profile in (_profile(name) for name in names[:POOL_SAMPLE]) if profile]
-    offers: list[tuple[float, dict]] = []
+    picked: list[tuple[float, dict]] = []
     taken: set[str] = set()
     for target in TARGETS.values():
         ranked = sorted((item for item in scored if item[0]["name"] not in taken), key=lambda item: abs(item[1] - target))
@@ -166,7 +165,7 @@ def matchmake(service, request: dict) -> dict:
             break
         profile, chance = ranked[0]
         taken.add(profile["name"])
-        offers.append((chance, profile))
+        picked.append((chance, profile))
     # Easiest first; the label is the slot (safe, even, risk), the page words each fight by its own chance.
-    offers.sort(key=lambda item: -item[0])
-    return {"player": stats, "opponents": [_opponent(label, profile, chance) for label, (chance, profile) in zip(TARGETS, offers)]}
+    picked.sort(key=lambda item: -item[0])
+    return {"player": stats, "opponents": [_opponent(label, profile, chance) for label, (chance, profile) in zip(TARGETS, picked)]}

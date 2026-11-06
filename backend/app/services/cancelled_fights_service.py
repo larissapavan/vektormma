@@ -88,12 +88,13 @@ def _fighter(name: str) -> tuple[dict, dict | None]:
 def _model_pick(prediction_service, row: dict, profiles: tuple[dict | None, dict | None]) -> dict | None:
     """The model's pick, only when it can be trusted: it reads each fighter's numbers as they are today, so a fighter who
     stopped competing (or one the catalog does not know) is left out and the page says why."""
-    if prediction_service is None or any(profile is None or profile.get("ufc_status") != "active" for profile in profiles):
+    first, second = profiles
+    if prediction_service is None or first is None or second is None or any(profile.get("ufc_status") != "active" for profile in (first, second)):
         return None
     try:
         result = prediction_service.predict_pick(
-            profiles[0]["name"],
-            profiles[1]["name"],
+            first["name"],
+            second["name"],
             {
                 "weight_class": row["weight_class"],
                 "title_fight": row["title_fight"] == "true",

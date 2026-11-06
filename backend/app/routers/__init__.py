@@ -1,1 +1,1 @@
-"""API routers for the Fight Intelligence backend."""
+"""API routers for the Vektor MMA backend."""

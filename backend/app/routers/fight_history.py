@@ -54,7 +54,7 @@ def fighter_opponents(request: Request, response: Response, name: str) -> Oppone
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
     response.headers["Cache-Control"] = "public, max-age=300"
-    return OpponentsResponse(fighter=name, opponents=get_opponents(name))
+    return OpponentsResponse(fighter=name, opponents=get_opponents(name))  # type: ignore[arg-type]  # pydantic validates the dicts
 
 
 @router.get("/fighters/{name}/other-organizations", response_model=list[OtherOrganization])

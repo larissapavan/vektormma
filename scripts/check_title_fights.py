@@ -179,7 +179,7 @@ def check_and_update_title_fights(
         location = fight.get("location", "").strip()
 
         # Find any current champion involved in this fight
-        for idx, reign in enumerate(reigns):
+        for reign in reigns:
             if reign.get("is_current", "").strip().lower() != "true":
                 continue
 

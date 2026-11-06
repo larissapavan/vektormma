@@ -76,14 +76,14 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(
-    title="Fight Intelligence API",
+    title="Vektor MMA API",
     version="2.0.0",
     description="Backend service for predicting UFC fight outcomes with ML-powered analysis.",
     lifespan=lifespan,
 )
 
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore[arg-type]  # slowapi types its handler for RateLimitExceeded only
 app.add_middleware(SlowAPIMiddleware)
 # The fighter catalog is a few MB of repetitive JSON; it shrinks ~10x on the wire.
 app.add_middleware(GZipMiddleware, minimum_size=1024)

@@ -28,6 +28,7 @@ import unicodedata
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -203,7 +204,7 @@ def consistent(numbers: dict[str, float]) -> bool:
     return numbers["sig_landed"] <= numbers["sig_attempted"] and numbers["td_landed"] <= numbers["td_attempted"] and numbers["total_landed"] <= numbers["total_attempted"]
 
 
-def fight_seconds(round_value: object, time_value: object) -> float | None:
+def fight_seconds(round_value: Any, time_value: object) -> float | None:
     """How long the fight lasted, from the round it ended in and the clock."""
     try:
         rounds = int(float(round_value))
@@ -407,7 +408,7 @@ def build_dataset(fights: list[Fight], statics: dict[str, Static], keep_sides: b
                 continue
             a_first = a_is_first(fight.fight_url)
             a, b = (fight.first, fight.second) if a_first else (fight.second, fight.first)
-            row = matchup_row(
+            row: dict[str, Any] = matchup_row(
                 before[a], statics[a], before[b], statics[b], day,
                 scheduled_rounds=fight.scheduled_rounds, title_fight=fight.title_fight, weight_class=fight.weight_class,
             )

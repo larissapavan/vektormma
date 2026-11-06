@@ -1,1 +1,1 @@
-"""FastAPI application package for Fight Intelligence."""
+"""FastAPI application package for Vektor MMA."""

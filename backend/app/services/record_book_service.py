@@ -29,7 +29,7 @@ def get_record_book() -> dict:
 
 
 def _build() -> dict:
-    empty = {"updated": None, "source_name": SOURCE_NAME, "source_url": SOURCE_URL, "categories": []}
+    empty: dict = {"updated": None, "source_name": SOURCE_NAME, "source_url": SOURCE_URL, "categories": []}
     if not STAT_LEADERS_SOURCE_PATH.exists():
         return empty
     leaders = pd.read_csv(STAT_LEADERS_SOURCE_PATH, dtype=str, keep_default_na=False)

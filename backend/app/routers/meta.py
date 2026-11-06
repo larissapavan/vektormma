@@ -25,7 +25,7 @@ def build_meta_router(
     @router.get("/")
     def root() -> dict[str, str]:
         return {
-            "name": "Fight Intelligence API",
+            "name": "Vektor MMA API",
             "tagline": SYSTEM_TAGLINE,
             "health": "/health",
             "fighters": "/fighters",

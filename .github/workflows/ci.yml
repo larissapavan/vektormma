@@ -8,7 +8,7 @@ on:
 
 jobs:
   backend:
-    name: Backend (pytest)
+    name: Backend (lint, types, pytest)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,6 +20,14 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      - name: Lint (ruff)
+        run: |
+          pip install -r requirements-lint.txt
+          ruff check .
+
+      - name: Type-check the API (mypy)
+        run: mypy
 
       - name: Run tests
         run: pytest -v
