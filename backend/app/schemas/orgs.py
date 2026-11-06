@@ -81,7 +81,7 @@ class OrgFight(FightResult):
 class OrgEvent(EventSummary):
     slug: str | None = None
     circuit: str | None = None
-    fights: list[OrgFight]
+    fights: list[OrgFight]  # type: ignore[assignment]  # narrows the parent's field to a subclass of its items
 
 
 class OrgRankingEntry(RankingEntry):
@@ -89,7 +89,7 @@ class OrgRankingEntry(RankingEntry):
 
 
 class OrgRankingCategory(RankingCategory):
-    entries: list[OrgRankingEntry]
+    entries: list[OrgRankingEntry]  # type: ignore[assignment]  # narrows the parent's field to a subclass of its items
 
 
 __all__ = [

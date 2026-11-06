@@ -1,4 +1,4 @@
-"""The pre-fight model is served only when PREDICTION_MODEL=prefight, and it answers like the current one: the same
+"""The pre-fight model is served unless PREDICTION_MODEL=current, and it answers like the current one: the same
 probability whichever fighter is typed first, a pick that matches the full prediction, and factors that add up."""
 
 import math
@@ -54,14 +54,21 @@ def stand_ins(monkeypatch):
     monkeypatch.setattr(prefight_service, "PrefightPredictionService", _Prefight)
 
 
-def test_the_current_model_is_the_default(monkeypatch, stand_ins):
+def test_the_prefight_model_is_the_default(monkeypatch, stand_ins):
     monkeypatch.delenv("PREDICTION_MODEL", raising=False)
-    assert selected_model() == "current"
-    assert isinstance(build_prediction_service(), _Current)
+    assert selected_model() == "prefight"
+    assert isinstance(build_prediction_service(), _Prefight)
 
 
-@pytest.mark.parametrize("value", ["current", "", "  ", "something-else"])
-def test_anything_but_prefight_serves_the_current_model(monkeypatch, stand_ins, value):
+@pytest.mark.parametrize("value", ["", "  ", "something-else"])
+def test_an_empty_or_unknown_value_means_the_default(monkeypatch, stand_ins, value):
+    monkeypatch.setenv("PREDICTION_MODEL", value)
+    assert selected_model() == "prefight"
+    assert isinstance(build_prediction_service(), _Prefight)
+
+
+@pytest.mark.parametrize("value", ["current", " Current "])
+def test_current_keeps_the_earlier_model(monkeypatch, stand_ins, value):
     monkeypatch.setenv("PREDICTION_MODEL", value)
     assert selected_model() == "current"
     assert isinstance(build_prediction_service(), _Current)
@@ -77,7 +84,7 @@ def test_a_prefight_model_that_cannot_load_falls_back_to_the_current_one(monkeyp
     def broken():
         raise FileNotFoundError("no model file")
 
-    monkeypatch.setenv("PREDICTION_MODEL", "prefight")
+    monkeypatch.delenv("PREDICTION_MODEL", raising=False)
     monkeypatch.setattr(prefight_service, "PrefightPredictionService", broken)
     assert isinstance(build_prediction_service(), _Current)
 
@@ -171,6 +178,42 @@ def test_a_fighter_without_history_is_read_from_the_catalog_profile(service):
 def test_a_fighter_with_unknown_measures_gets_blanks_not_made_up_numbers(service):
     state, static = service._fighter({"name": "Nobody Atall", "age": None, "height_cm": None, "reach_cm": None, "stance": "Unknown"}, date(2026, 11, 1))
     assert static.dob is None and math.isnan(static.height) and math.isnan(static.reach) and static.stance == ""
+
+
+def _made_up(**changes) -> dict:
+    profile = {
+        "name": "Vektor Career Player", "age": 26.0, "height_cm": 178.0, "reach_cm": 183.0, "stance": "Orthodox",
+        "wins": 0, "losses": 0, "draws": 0, "sig_str_acc": 0.45, "takedown_acc": 0.38, "synthetic": True,
+    }
+    return {**profile, **changes}
+
+
+def test_a_made_up_fighter_reads_the_accuracies_and_the_record_of_its_profile(service):
+    state, _ = service._fighter(_made_up(wins=6, losses=1, sig_str_acc=0.60, takedown_acc=0.20), date(2026, 11, 1))
+    assert (state.fights, state.wins, state.losses) == (7, 6, 1)
+    assert state.elo > 1500.0
+    assert state.stat_fights > 0 and state.minutes > 0
+    # The accuracy the model computes from this history is the one in the profile.
+    from src.ufc_predictor.prefight import fighter_features
+
+    _, static = service._fighter(_made_up(), date(2026, 11, 1))
+    features = fighter_features(state, static, date(2026, 11, 1))
+    assert features["sig_acc"] == pytest.approx(0.60, abs=1e-6)
+    assert features["td_acc"] == pytest.approx(0.20, abs=1e-6)
+
+
+def test_a_made_up_fighter_with_better_skills_is_given_a_better_chance(service):
+    from backend.app.services.catalog_service import get_fighter_profile
+
+    rival = get_fighter_profile("Charlie Campbell")
+    weak = service.predict_profiles(_made_up(sig_str_acc=0.30, takedown_acc=0.10), rival)
+    strong = service.predict_profiles(_made_up(sig_str_acc=0.60, takedown_acc=0.65), rival)
+    assert strong > weak + 0.05
+
+
+def test_a_fighter_that_is_not_marked_made_up_never_gets_a_history_it_does_not_have(service):
+    state, _ = service._fighter(_made_up(synthetic=False, wins=6, sig_str_acc=0.60), date(2026, 11, 1))
+    assert state.fights == 0 and state.stat_fights == 0
 
 
 def test_the_weight_class_of_a_pair_does_not_depend_on_the_order():

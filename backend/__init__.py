@@ -1,1 +1,1 @@
-"""Backend package for the Fight Intelligence full stack application."""
+"""Backend package for the Vektor MMA full stack application."""

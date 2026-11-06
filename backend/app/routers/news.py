@@ -14,5 +14,5 @@ def news(request: Request, response: Response, limit: int = Query(6, ge=1, le=12
     return NewsResponse(
         source_name="ESPN",
         source_url="https://www.espn.com/mma/",
-        items=get_latest_news(limit),
+        items=get_latest_news(limit),  # type: ignore[arg-type]  # pydantic validates the dicts
     )

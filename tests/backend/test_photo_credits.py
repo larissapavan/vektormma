@@ -1,6 +1,5 @@
 """The photos that come from ESPN, ufc.com or onefc.com are listed, so the site can print "Foto: ESPN" / "Foto: UFC" / "Foto: ONE" on them."""
 
-from pathlib import Path
 
 from src.ufc_predictor.config import BASE_DIR
 

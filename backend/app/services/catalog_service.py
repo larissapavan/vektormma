@@ -8,12 +8,12 @@ from pathlib import Path
 
 import pandas as pd
 
-logger = logging.getLogger(__name__)
-
 from src.ufc_predictor.config import BASE_DIR, RAW_DATA_DIR
 
 from .bmf_service import BMF_FIGHTS_SOURCE_PATH, current_bmf_champion
 from .champions_service import TITLE_REIGNS_SOURCE_PATH
+
+logger = logging.getLogger(__name__)
 
 FIGHTERS_SOURCE_PATH = RAW_DATA_DIR / "fighters.csv"
 FIGHTS_SOURCE_PATH = RAW_DATA_DIR / "fights.csv"
@@ -771,7 +771,7 @@ def _to_float(value) -> float | None:
     return number
 
 
-def _normalize_name(value: str) -> str:
+def _normalize_name(value: str | None) -> str:
     if not value:
         return ""
     normalized = re.sub(r"[^a-z0-9]+", " ", str(value).lower()).strip()

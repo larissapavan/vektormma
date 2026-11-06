@@ -1,0 +1,8 @@
+# Bug-finding rules only (pyflakes, pycodestyle errors, bugbear). Style is not enforced: long lines are intentional here
+# (E501) and zip(strict=) is not wanted everywhere (B905).
+target-version = "py312"
+extend-exclude = ["frontend", "downloaded_photos", "notebooks"]
+
+[lint]
+select = ["E", "F", "B"]
+ignore = ["E501", "B905"]

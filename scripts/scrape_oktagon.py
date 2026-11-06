@@ -50,7 +50,7 @@ import requests
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from scripts.scrape_espn import ascii_name, load_csv, map_weight_class, name_key, save_csv
+from scripts.scrape_espn import ascii_name, load_csv, name_key, save_csv
 from scripts.scrape_pfl import FIGHT_FIELDS, FIGHTER_FIELDS, RANKING_FIELDS
 from src.ufc_predictor.config import RAW_DATA_DIR
 from src.ufc_predictor.countries import english_name

@@ -212,7 +212,7 @@ def _load_manual_fights() -> list[dict]:
     return frame.to_dict(orient="records")
 
 
-def _pair_key(fighter_1: str, fighter_2: str) -> tuple[str, str]:
+def _pair_key(fighter_1: str | None, fighter_2: str | None) -> tuple[str, str]:
     first, second = sorted([str(canonical_name(fighter_1)).lower(), str(canonical_name(fighter_2)).lower()])
     return first, second
 

@@ -9,11 +9,12 @@ import { LoadingSkeleton } from '../../shared/components/LoadingSkeleton'
 import { planNudge, titleShotAvailable, type Career, type Plan, type PlayerStats } from '../../shared/game/career'
 import { BAND_LABELS, chanceBand } from '../../shared/game/labels'
 import { getMatchmaking } from '../../shared/services/api'
-import type { GameOpponent } from '../../shared/types/api'
+import type { GameOpponent, MatchmakingResponse } from '../../shared/types/api'
+import { HeadToHead } from './HeadToHead'
 import { Chip, GhostButton, PrimaryButton } from './ui'
 
 interface Offers {
-  player: PlayerStats
+  player: MatchmakingResponse['player']
   opponents: GameOpponent[]
   title: GameOpponent | null
   rival: GameOpponent | null
@@ -177,30 +178,33 @@ export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { car
       )}
 
       {chosen && offers ? (
-        <fieldset className="space-y-4 border-t border-[var(--border-subtle)] pt-5">
-          <legend className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-secondary)]">{L(lang, 'Plano de luta', 'Game plan', 'Plan de combat', 'Plan de pelea')}</legend>
-          <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
-            {plans.map((option) => {
-              const edge = planNudge(option.value, offers.player, chosen) > 0.005
-              return (
-                <button key={option.value} type="button" aria-pressed={plan === option.value} onClick={() => setPlan(option.value)} className="game-pick flex h-full flex-col gap-2 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-3 text-left sm:p-4">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[var(--accent-red)]/12 text-[var(--text-red)]">{option.icon}</span>
-                  <span>
-                    <span className="block text-xs font-bold text-[var(--text-main)] sm:text-sm">{option.label}</span>
-                    <span className="block text-[11px] leading-4 text-[var(--text-secondary)] sm:text-xs sm:leading-5">
-                      {option.hint}
-                      {edge ? ` ${L(lang, 'Você tem a vantagem aqui.', 'You have the edge here.', 'Vous avez l’avantage ici.', 'Tienes la ventaja aquí.')}` : ''}
+        <div className="space-y-4 border-t border-[var(--border-subtle)] pt-5">
+          <HeadToHead career={career} player={offers.player} opponent={chosen} />
+          <fieldset className="space-y-4">
+            <legend className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-secondary)]">{L(lang, 'Plano de luta', 'Game plan', 'Plan de combat', 'Plan de pelea')}</legend>
+            <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
+              {plans.map((option) => {
+                const edge = planNudge(option.value, offers.player, chosen) > 0.005
+                return (
+                  <button key={option.value} type="button" aria-pressed={plan === option.value} onClick={() => setPlan(option.value)} className="game-pick flex h-full flex-col gap-2 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-3 text-left sm:p-4">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[var(--accent-red)]/12 text-[var(--text-red)]">{option.icon}</span>
+                    <span>
+                      <span className="block text-xs font-bold text-[var(--text-main)] sm:text-sm">{option.label}</span>
+                      <span className="block text-[11px] leading-4 text-[var(--text-secondary)] sm:text-xs sm:leading-5">
+                        {option.hint}
+                        {edge ? ` ${L(lang, 'Você tem a vantagem aqui.', 'You have the edge here.', 'Vous avez l’avantage ici.', 'Tienes la ventaja aquí.')}` : ''}
+                      </span>
                     </span>
-                  </span>
-                </button>
-              )
-            })}
-          </div>
-          <PrimaryButton onClick={() => onFight(chosen, plan, offers.player)}>
-            {L(lang, `Lutar contra ${chosen.name}`, `Fight ${chosen.name}`, `Combattre ${chosen.name}`, `Pelear contra ${chosen.name}`)}
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </PrimaryButton>
-        </fieldset>
+                  </button>
+                )
+              })}
+            </div>
+            <PrimaryButton onClick={() => onFight(chosen, plan, offers.player)}>
+              {L(lang, `Lutar contra ${chosen.name}`, `Fight ${chosen.name}`, `Combattre ${chosen.name}`, `Pelear contra ${chosen.name}`)}
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </PrimaryButton>
+          </fieldset>
+        </div>
       ) : null}
 
       {canRetire ? (

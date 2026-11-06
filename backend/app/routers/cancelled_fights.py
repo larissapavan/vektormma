@@ -17,6 +17,6 @@ def build_cancelled_fights_router(get_service: PredictionServiceGetter = get_pre
     @limiter.limit("60/minute")
     def cancelled_fights(request: Request, response: Response) -> CancelledFightsResponse:
         response.headers["Cache-Control"] = "public, max-age=3600"
-        return CancelledFightsResponse(fights=get_cancelled_fights(get_service()))
+        return CancelledFightsResponse(fights=get_cancelled_fights(get_service()))  # type: ignore[arg-type]  # pydantic validates the dicts
 
     return router

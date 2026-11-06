@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
@@ -8,25 +8,28 @@ import {
   canRetire,
   createCareer,
   decodeRetrospect,
-  fight,
   offerCoaches,
   retire,
   seededRng,
+  startFight,
   trainCamp,
   type Build,
   type Career as CareerState,
   type CoachId,
   type FightResult,
+  type FightState,
   type Plan,
   type PlayerStats,
   type Rng,
 } from '../shared/game/career'
+import { clearSave, loadSave, storeSave, type SavedGame } from '../shared/game/save'
 import type { GameOpponent } from '../shared/types/api'
 import { CampStep, type CampNote } from './career/CampStep'
 import { CreateStep } from './career/CreateStep'
 import { EndStep } from './career/EndStep'
 import { FightStep } from './career/FightStep'
 import { OffersStep } from './career/OffersStep'
+import { ResumeCard } from './career/ResumeCard'
 import { StatusCard } from './career/StatusCard'
 import { Stepper } from './career/ui'
 
@@ -39,7 +42,7 @@ interface Game {
   seed: number
   /** The three coaches on offer for the camp on screen. */
   coaches: CoachId[]
-  fight: { offer: GameOpponent; result: FightResult } | null
+  fight: { offer: GameOpponent; state: FightState } | null
 }
 
 /** The career game: build a fighter, train, take fights, and end with a picture of the retrospect. */
@@ -49,6 +52,8 @@ export function Career() {
   const [params] = useSearchParams()
   const shared = useMemo(() => decodeRetrospect(params.get('c')), [params])
   const [game, setGame] = useState<Game | null>(null)
+  /** The career this browser kept from an earlier visit, offered on the first screen until the player takes it up or sets it aside. */
+  const [saved, setSaved] = useState<SavedGame | null>(() => loadSave())
   const rng = useRef<Rng | null>(null)
   const random = useCallback(() => {
     rng.current ??= seededRng(Math.floor(Math.random() * 2 ** 31))
@@ -58,7 +63,27 @@ export function Career() {
   const steps = [L(lang, 'Criar', 'Create', 'Créer', 'Crear'), L(lang, 'Camp', 'Camp', 'Préparation', 'Campamento'), L(lang, 'Luta', 'Fight', 'Combat', 'Pelea'), L(lang, 'Retrospecto', 'Retrospect', 'Bilan', 'Balance')]
   const stepIndex = !game ? 0 : game.stage === 'camp' ? 1 : game.stage === 'end' ? 3 : 2
 
-  const start = (build: Build) => setGame({ career: createCareer(build), stage: 'camp', note: null, seed: 0, fight: null, coaches: offerCoaches(random) })
+  // Saved between fights only (at the camp and at the matchmaking), and forgotten when the career ends.
+  useEffect(() => {
+    if (!game) return
+    if (game.stage === 'camp' || game.stage === 'offers') storeSave({ career: game.career, stage: game.stage, coaches: game.coaches, seed: game.seed, note: game.note })
+    else if (game.stage === 'end') clearSave()
+  }, [game])
+
+  const start = (build: Build) => {
+    setSaved(null)
+    setGame({ career: createCareer(build), stage: 'camp', note: null, seed: 0, fight: null, coaches: offerCoaches(random) })
+  }
+
+  const resume = (save: SavedGame) => {
+    setSaved(null)
+    setGame({ career: save.career, stage: save.stage, note: save.note, seed: save.seed, fight: null, coaches: save.coaches })
+  }
+
+  const discard = () => {
+    clearSave()
+    setSaved(null)
+  }
 
   const train = (coach: CoachId) => {
     if (!game) return
@@ -68,19 +93,19 @@ export function Career() {
 
   const takeFight = (offer: GameOpponent, plan: Plan, player: PlayerStats) => {
     if (!game) return
-    setGame({ ...game, stage: 'fight', fight: { offer, result: fight(game.career, offer, plan, player, random) } })
+    setGame({ ...game, stage: 'fight', fight: { offer, state: startFight(game.career, offer, plan, player, random) } })
   }
 
-  const continueCareer = () => {
+  const continueCareer = (result: FightResult) => {
     if (!game?.fight) return
-    const career = game.fight.result.career
+    const career = result.career
     setGame({ ...game, career, fight: null, note: null, stage: career.ended ? 'end' : 'camp', coaches: offerCoaches(random) })
   }
 
   // Retiring after a fight counts that fight: its result has not been applied to the career yet.
-  const stop = () => {
+  const stop = (result?: FightResult) => {
     if (!game) return
-    setGame({ ...game, career: retire(game.fight?.result.career ?? game.career), fight: null, stage: 'end' })
+    setGame({ ...game, career: retire(result?.career ?? game.career), fight: null, stage: 'end' })
   }
 
   return (
@@ -106,8 +131,9 @@ export function Career() {
           <summary className="cursor-pointer font-bold uppercase tracking-[0.12em] text-[var(--text-secondary)]">{L(lang, 'Como funciona', 'How it works', 'Comment ça marche', 'Cómo funciona')}</summary>
           <ul className="mt-2 list-disc space-y-1 pl-5">
             <li>{L(lang, 'A chance de vencer cada luta vem do mesmo modelo do site, que lê precisão de golpes e de quedas, alcance, idade e cartel.', 'The chance of winning each fight comes from the site’s own model, which reads striking and takedown accuracy, reach, age and record.', 'La probabilité de gagner chaque combat vient du modèle du site, qui lit la précision de frappe et d’amenée au sol, l’allonge, l’âge et le bilan.', 'La probabilidad de ganar cada pelea sale del mismo modelo del sitio, que lee la precisión de golpeo y de derribos, el alcance, la edad y el récord.')}</li>
+            <li>{L(lang, 'Em cada round você manda o córner atacar, manter o plano ou proteger. Isso não muda a chance que o modelo deu para a luta: muda como você gasta o risco. Na frente nos cartões, proteger vale a pena; atrás, só atacando.', 'Every round you tell the corner to attack, stick to the plan or cover up. That does not change the chance the model gave the fight: it changes how you spend the risk. Ahead on the cards, covering pays; behind, only attacking does.', 'À chaque round, vous dites au coin d’attaquer, de tenir le plan ou de se protéger. Cela ne change pas la probabilité donnée par le modèle : cela change la façon dont vous dépensez le risque. En tête aux cartons, se protéger paie ; derrière, seule l’attaque aide.', 'En cada round le dices al córner que ataque, mantenga el plan o se proteja. Eso no cambia la probabilidad que dio el modelo: cambia cómo gastas el riesgo. Arriba en las tarjetas conviene protegerse; abajo, solo atacar.')}</li>
             <li>{L(lang, 'Regras do jogo, e não do modelo: o desconto de 4 pontos contra ranqueados e 6 contra o campeão, o plano de luta (até 4 pontos), as lesões e o acaso.', 'Game rules, not the model’s: a 4-point discount against ranked fighters and 6 against the champion, the game plan (up to 4 points), injuries and luck.', 'Règles du jeu, pas du modèle : une décote de 4 points contre les classés et de 6 contre le champion, le plan de combat (jusqu’à 4 points), les blessures et le hasard.', 'Reglas del juego, no del modelo: un descuento de 4 puntos ante rivales del ranking y de 6 ante el campeón, el plan de pelea (hasta 4 puntos), las lesiones y el azar.')}</li>
-            <li>{L(lang, 'Nada é salvo: se você sair da página, a carreira se perde. O que fica é a imagem e o link do final.', 'Nothing is saved: leave the page and the career is gone. What stays is the picture and the link at the end.', 'Rien n’est enregistré : si vous quittez la page, la carrière est perdue. Ce qui reste, c’est l’image et le lien de la fin.', 'No se guarda nada: si sales de la página, la carrera se pierde. Lo que queda es la imagen y el enlace del final.')}</li>
+            <li>{L(lang, 'A carreira fica salva neste navegador entre uma luta e outra, e só nele: nada vai para o servidor. Dá para fechar a página e retomar depois. No fim, ficam a imagem e o link.', 'The career is saved in this browser between fights, and only there: nothing goes to the server. You can close the page and pick it up later. At the end you get the picture and the link.', 'La carrière est enregistrée dans ce navigateur entre deux combats, et seulement là : rien n’est envoyé au serveur. Vous pouvez fermer la page et reprendre plus tard. À la fin, vous obtenez l’image et le lien.', 'La carrera se guarda en este navegador entre una pelea y otra, y solo ahí: nada va al servidor. Puedes cerrar la página y retomarla después. Al final quedan la imagen y el enlace.')}</li>
             <li>{L(lang, 'É uma simulação para brincar. Nada aqui é resultado real.', 'It is a simulation for fun. Nothing here is a real result.', 'C’est une simulation pour s’amuser. Rien ici n’est un résultat réel.', 'Es una simulación para divertirse. Nada de esto es un resultado real.')}</li>
           </ul>
         </details>
@@ -126,13 +152,16 @@ export function Career() {
           </div>
         </section>
       ) : !game ? (
-        <CreateStep onStart={start} />
+        <>
+          {saved ? <ResumeCard saved={saved} onResume={() => resume(saved)} onDiscard={discard} /> : null}
+          <CreateStep onStart={start} />
+        </>
       ) : (
         <>
           {game.stage !== 'end' ? <StatusCard career={game.career} /> : null}
-          {game.stage === 'camp' ? <CampStep key={game.career.ufcFights} career={game.career} coaches={game.coaches} note={game.note} onTrain={train} onRetire={stop} /> : null}
-          {game.stage === 'offers' ? <OffersStep key={game.seed} career={game.career} seed={game.seed} onFight={takeFight} onRetire={stop} canRetire={canRetire(game.career)} /> : null}
-          {game.stage === 'fight' && game.fight ? <FightStep key={game.career.ufcFights} career={game.career} offer={game.fight.offer} result={game.fight.result} onContinue={continueCareer} onRetire={stop} /> : null}
+          {game.stage === 'camp' ? <CampStep key={game.career.ufcFights} career={game.career} coaches={game.coaches} note={game.note} onTrain={train} onRetire={() => stop()} /> : null}
+          {game.stage === 'offers' ? <OffersStep key={game.seed} career={game.career} seed={game.seed} onFight={takeFight} onRetire={() => stop()} canRetire={canRetire(game.career)} /> : null}
+          {game.stage === 'fight' && game.fight ? <FightStep key={game.career.ufcFights} career={game.career} offer={game.fight.offer} start={game.fight.state} random={random} onContinue={continueCareer} onRetire={stop} /> : null}
           {game.stage === 'end' ? <EndStep career={game.career} onRestart={() => setGame(null)} /> : null}
         </>
       )}

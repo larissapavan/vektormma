@@ -231,13 +231,13 @@ def main():
     def priority(f: dict) -> tuple:
         name = f["name"]
         w = int(f.get("wins") or 0)
-        l = int(f.get("losses") or 0)
+        lost = int(f.get("losses") or 0)
         is_alias = name in KNOWN_ALIASES
         is_ranked = name in ranked_names
         is_belt = str(f.get("belt", "")).lower() == "true"
         is_active = f.get("status") == "active"
         has_url = match_url(name, f["slug"] or slugify(name)) is not None
-        return (not has_url, not is_alias, not is_belt, not is_ranked, not is_active, -(w + l))
+        return (not has_url, not is_alias, not is_belt, not is_ranked, not is_active, -(w + lost))
 
     sorted_fighters = sorted(fighters, key=priority)
 

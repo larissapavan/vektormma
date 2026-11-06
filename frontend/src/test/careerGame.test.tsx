@@ -1,11 +1,12 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import App from '../App'
 import i18n from '../i18n'
-import { encodeRetrospect, type Retrospect } from '../shared/game/career'
+import { createCareer, encodeRetrospect, type Retrospect } from '../shared/game/career'
+import { SAVE_KEY } from '../shared/game/save'
 import { respond } from './fixtures'
 
 const calls = vi.hoisted(() => ({ matchmaking: [] as unknown[] }))
@@ -40,9 +41,10 @@ async function train() {
 }
 
 async function startCareer(name = 'Maria Silva') {
-  renderAt('/career')
+  const view = renderAt('/career')
   await userEvent.type(await screen.findByLabelText('Name', undefined, { timeout: 10000 }), name)
   await click(/start the career/i)
+  return view
 }
 
 /** Camp, take the first fight on offer with the balanced plan, skip to the result and go on. */
@@ -56,6 +58,7 @@ async function playOneFight() {
 
 beforeEach(async () => {
   calls.matchmaking.length = 0
+  window.localStorage.clear()
   // jsdom has no canvas: the card then shows its text version, which is what these tests read.
   vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null)
   await i18n.changeLanguage('en-US')
@@ -119,7 +122,7 @@ describe('a career', () => {
     expect(screen.queryByText(/66%/)).toBeNull() // the chance itself stays hidden
 
     await click(/fight easy eddie/i)
-    await click(/the bell rings/i)
+    await click(/^stick to the plan/i)
     expect(screen.getAllByText(/round 1/i).length).toBeGreaterThan(0)
     // A fight finished in round 1 is already over; any other has rounds left to skip.
     if (screen.queryByRole('button', { name: /skip to the result/i })) await click(/skip to the result/i)
@@ -161,6 +164,139 @@ describe('a career', () => {
 
     await click(/start another career/i)
     expect(await findButton(/start the career/i)).toBeInTheDocument()
+  })
+})
+
+describe('a fight, round by round', () => {
+  async function toTheBell() {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5)
+    await startCareer()
+    await train()
+    await userEvent.click(await findButton(/Easy Eddie/))
+    await click(/fight easy eddie/i)
+  }
+
+  it('asks the corner what to do before every round, with the three tactics and what each one risks', async () => {
+    await toTheBell()
+    expect(screen.getByText(/what does the corner say for round 1/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /^attack/i })).toHaveTextContent(/finish/i)
+    expect(screen.getByRole('button', { name: /^stick to the plan/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /^cover up/i })).toHaveTextContent(/safe/i)
+    expect(screen.getByTestId('scorecard')).toHaveTextContent('0–0')
+    expect(screen.getByTestId('live-band')).toBeInTheDocument()
+    expect(screen.queryByTestId('fight-result')).toBeNull()
+  })
+
+  it('plays the round the player chose, moves the cards and asks again until the fight is over', async () => {
+    await toTheBell()
+    let rounds = 0
+    while (!screen.queryByTestId('fight-result')) {
+      const button = screen.getByRole('button', { name: /^attack/i })
+      await userEvent.click(button)
+      rounds += 1
+      expect(rounds).toBeLessThanOrEqual(3)
+    }
+    expect(screen.getAllByText(/^round 1$/i).length).toBeGreaterThan(0)
+    expect(screen.getByTestId('scorecard')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /^attack/i })).toBeNull() // no more choices once it is over
+    expect(screen.getByTestId('fight-result')).toHaveTextContent(/victory|defeat/i)
+    // The round log says what was told to the corner when it was not the plan.
+    const log = screen.getAllByRole('list').find((list) => list.getAttribute('aria-live') === 'polite')
+    expect(log && within(log).getAllByText('Attack').length).toBeGreaterThan(0)
+  })
+
+  it('lets the player ask the corner, which says something about the score, and hide it again', async () => {
+    await toTheBell()
+    expect(screen.queryByTestId('corner-advice')).toBeNull()
+    await click(/ask the corner/i)
+    expect(screen.getByTestId('corner-advice')).not.toBeEmptyDOMElement()
+    await click(/hide the advice/i)
+    expect(screen.queryByTestId('corner-advice')).toBeNull()
+  })
+
+  it('shows the player against the chosen opponent before the fight, with the edge lit and no chance number', async () => {
+    await startCareer()
+    await train()
+    await userEvent.click(await findButton(/Easy Eddie/))
+    const duel = screen.getByRole('region', { name: /head to head/i })
+    expect(duel).toHaveTextContent('Striking accuracy')
+    expect(duel).toHaveTextContent('50%') // the player, from the matchmaking answer
+    expect(duel).toHaveTextContent('45%') // Easy Eddie
+    expect(duel).toHaveTextContent('Reach')
+    expect(duel).toHaveTextContent('183 cm')
+    expect(duel).toHaveTextContent('180 cm')
+    expect(duel).not.toHaveTextContent(/66%/)
+  })
+
+  it('lists the last results on the fighter card once there are any', async () => {
+    await startCareer()
+    expect(screen.queryByRole('list', { name: /recent fights/i })).toBeNull()
+    await playOneFight()
+    await click(/continue the career/i)
+    const strip = screen.getByRole('list', { name: /recent fights/i })
+    expect(within(strip).getAllByRole('listitem')).toHaveLength(1)
+    expect(strip).toHaveTextContent(/^[WL]/)
+  })
+})
+
+describe('the saved career', () => {
+  it('is written at the camp and again at the matchmaking, and can be taken up in a new visit', async () => {
+    const first = await startCareer('Maria Silva')
+    expect(JSON.parse(window.localStorage.getItem(SAVE_KEY) ?? 'null')).toMatchObject({ stage: 'camp', career: { name: 'Maria Silva', wins: 6 } })
+    await train()
+    await findButton(/Easy Eddie/)
+    expect(JSON.parse(window.localStorage.getItem(SAVE_KEY) ?? 'null')).toMatchObject({ stage: 'offers' })
+    first.unmount()
+
+    renderAt('/career')
+    const card = await screen.findByRole('region', { name: /saved career/i }, { timeout: 10000 })
+    expect(card).toHaveTextContent('Maria Silva')
+    expect(card).toHaveTextContent('6-0')
+    await click(/resume the career/i)
+    expect(await findButton(/Easy Eddie/)).toBeInTheDocument() // back at the matchmaking it was saved at
+    expect(screen.getByTestId('record')).toHaveTextContent('6-0')
+    expect(screen.queryByRole('region', { name: /saved career/i })).toBeNull()
+  })
+
+  it('can be set aside, and the creation screen stays', async () => {
+    window.localStorage.setItem(SAVE_KEY, JSON.stringify({ career: createCareer({ name: 'Old Save', division: 'Lightweight', stance: 'Orthodox', striking: 50, takedowns: 50, reach: 50 }), stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 1, note: null, savedAt: 1 }))
+    renderAt('/career')
+    await screen.findByRole('region', { name: /saved career/i }, { timeout: 10000 })
+    expect(screen.getByRole('button', { name: /start the career/i })).toBeInTheDocument()
+    await click(/discard/i)
+    expect(screen.queryByRole('region', { name: /saved career/i })).toBeNull()
+    expect(window.localStorage.getItem(SAVE_KEY)).toBeNull()
+  })
+
+  it('ignores a save that has been tampered with', async () => {
+    window.localStorage.setItem(SAVE_KEY, JSON.stringify({ career: { ...createCareer({ name: 'Cheat', division: 'Lightweight', stance: 'Orthodox', striking: 50, takedowns: 50, reach: 50 }), striking: 9999 }, stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 1, note: null, savedAt: 1 }))
+    renderAt('/career')
+    expect(await findButton(/start the career/i)).toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: /saved career/i })).toBeNull()
+  })
+
+  it('is forgotten when the career ends', async () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5)
+    await startCareer('José Aldo')
+    for (let fights = 0; fights < 3; fights += 1) {
+      await playOneFight()
+      if (fights < 2) await click(/continue the career/i)
+    }
+    await click(/^retire$/i)
+    await screen.findByText(/the career is over/i)
+    expect(window.localStorage.getItem(SAVE_KEY)).toBeNull()
+  })
+
+  it('does not stop the game when the browser refuses to store anything', async () => {
+    const refuse = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('quota')
+    })
+    try {
+      await startCareer()
+      expect(screen.getByText(/camp for your ufc debut/i)).toBeInTheDocument()
+    } finally {
+      refuse.mockRestore()
+    }
   })
 })
 

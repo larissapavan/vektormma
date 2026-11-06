@@ -1,3 +1,12 @@
+import pytest
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+
+from backend.app.rate_limit import limiter
+from backend.app.routers.meta import build_meta_router
+from backend.app.services.prediction_service import PredictionService
+
+
 def test_root_lists_available_endpoints(client):
     response = client.get("/")
     assert response.status_code == 200
@@ -23,7 +32,7 @@ def test_model_info_reports_metrics_and_features(client):
     body = response.json()
     assert body["feature_count"] == len(body["features"])
     assert 0.0 <= body["metrics"]["accuracy"] <= 1.0
-    assert "dummy_most_frequent" in body["baseline_metrics"]
+    assert body["baseline_metrics"]  # whichever model is served, what it was compared with
 
 
 def test_responses_include_security_headers(client):
@@ -53,8 +62,18 @@ def test_data_info_reports_real_counts_and_sources(client):
     assert datetime.date.fromisoformat(body["last_updated"]) <= datetime.date.today()
 
 
-def test_model_info_sends_the_measured_result_and_says_the_reported_one_could_not_be_reproduced(client):
-    body = client.get("/model-info").json()
+@pytest.fixture(scope="module")
+def earlier_model_client():
+    """The earlier model (PREDICTION_MODEL=current), mounted on its own app so the session's client is left alone."""
+    app = FastAPI()
+    app.state.limiter = limiter
+    service = PredictionService()
+    app.include_router(build_meta_router(lambda: service))
+    return TestClient(app)
+
+
+def test_model_info_of_the_earlier_model_sends_the_measured_result_and_says_the_reported_one_could_not_be_reproduced(earlier_model_client):
+    body = earlier_model_client.get("/model-info").json()
     measured = body["recent_evaluation"]
     assert measured["fights"] > 1000 and 0.5 < measured["accuracy"] < 0.7  # what the model really does on recent fights
     assert f"Measured on {measured['fights']:,} recent fights" in body["metrics_note"]

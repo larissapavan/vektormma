@@ -70,7 +70,11 @@ def _merge_career_timeline(official: list[dict], cached: list[dict]) -> list[dic
         entry = dict(entry)
         if entry.get("is_ufc", True):
             when = _day(entry.get("date"))
-            candidates = [(abs((_day(fight["date"]) - when).days), fight) for fight in unmatched if when and _day(fight.get("date")) and abs((_day(fight["date"]) - when).days) <= 1]
+            candidates = []
+            for fight in unmatched:
+                fight_day = _day(fight.get("date"))
+                if when and fight_day and abs((fight_day - when).days) <= 1:
+                    candidates.append((abs((fight_day - when).days), fight))
             if candidates:
                 _, best = min(candidates, key=lambda item: (item[0], -SequenceMatcher(None, _fold(item[1]["opponent"]), _fold(entry.get("opponent", ""))).ratio()))
                 unmatched.remove(best)

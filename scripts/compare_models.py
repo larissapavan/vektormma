@@ -75,12 +75,12 @@ def pre_ufc_records(fights: list[prefight.Fight], totals: dict[str, dict[str, fl
     ufc = {}
     for f in fights:
         for who in (f.first, f.second):
-            w, l = ufc.setdefault(who, [0, 0])
+            won, lost = ufc.setdefault(who, [0, 0])
             if f.winner == who:
                 ufc[who][0] += 1
             elif f.winner:
                 ufc[who][1] += 1
-    return {who: (max(totals[who]["wins"] - w, 0), max(totals[who]["losses"] - l, 0)) for who, (w, l) in ufc.items() if who in totals and not np.isnan(totals[who]["wins"])}
+    return {who: (max(totals[who]["wins"] - won, 0), max(totals[who]["losses"] - lost, 0)) for who, (won, lost) in ufc.items() if who in totals and not np.isnan(totals[who]["wins"])}
 
 
 def deployed_inputs(test: pd.DataFrame, totals, pre_ufc, statics, swap: bool) -> pd.DataFrame:
@@ -92,7 +92,7 @@ def deployed_inputs(test: pd.DataFrame, totals, pre_ufc, statics, swap: bool) ->
         (_, red), (_, blue) = sides
         red_prefix, blue_prefix = ("b", "a") if swap else ("a", "b")
 
-        def record(prefix, key):
+        def record(prefix, key, r=r):
             wins = getattr(r, f"{prefix}__ufc_wins") + pre_ufc.get(key, (0, 0))[0]
             losses = getattr(r, f"{prefix}__ufc_losses") + pre_ufc.get(key, (0, 0))[1]
             return wins, losses

@@ -1,0 +1,3 @@
+# Tools the CI runs on the Python code (ruff.toml, mypy.ini). Not needed to run the API.
+ruff==0.17.4
+mypy==2.4.1
