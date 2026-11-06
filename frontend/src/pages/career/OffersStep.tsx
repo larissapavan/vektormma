@@ -67,15 +67,13 @@ function OfferCard({ offer, selected, onChoose, heading }: { offer: GameOpponent
   const { i18n } = useTranslation()
   const lang = i18n.language
   return (
-    <button type="button" aria-pressed={selected} onClick={onChoose} className="game-pick game-card flex w-full flex-col overflow-hidden text-left">
-      <span className="relative flex items-end justify-center bg-gradient-to-b from-[var(--accent-red)]/20 to-transparent px-4 pt-5">
-        {heading ? <span className="absolute left-3 top-3">{heading}</span> : null}
-        <FighterAvatar name={offer.name} imageUrl={offer.image_url} className="h-28 w-28 sm:h-32 sm:w-32" highlight={offer.champion} />
-      </span>
-      <span className="flex flex-1 flex-col gap-3 p-4">
-        <span>
-          <span className="block truncate font-display text-lg font-extrabold uppercase leading-tight text-[var(--text-main)]">{offer.name}</span>
-          <span className="mt-1 flex items-center gap-2 text-xs text-[var(--text-secondary)]">
+    <button type="button" aria-pressed={selected} onClick={onChoose} className="game-pick game-card flex w-full items-center gap-3 p-3 text-left sm:gap-4 sm:p-4">
+      <FighterAvatar name={offer.name} imageUrl={offer.image_url} className="h-16 w-16 sm:h-20 sm:w-20" highlight={offer.champion} />
+      <span className="flex min-w-0 flex-1 flex-col gap-2">
+        {heading ? <span className="flex">{heading}</span> : null}
+        <span className="min-w-0">
+          <span className="line-clamp-2 break-words font-display text-base font-extrabold uppercase leading-tight text-[var(--text-main)] sm:text-lg">{offer.name}</span>
+          <span className="mt-0.5 flex items-center gap-2 text-xs text-[var(--text-secondary)]">
             <FlagList fighter={{ country_code: offer.country_code }} />
             <span className="data-value text-sm font-bold text-[var(--text-main)]">{offer.record}</span>
           </span>
@@ -86,9 +84,7 @@ function OfferCard({ offer, selected, onChoose, heading }: { offer: GameOpponent
           {offer.ranking ? <Chip tone="gold">{L(lang, 'Ranqueado', 'Ranked', 'Classé', 'En el ranking')} #{offer.ranking}</Chip> : null}
           {offer.champion ? <Chip tone="gold">{L(lang, 'Campeão', 'Champion', 'Champion', 'Campeón')}</Chip> : null}
         </span>
-        <span className="mt-auto">
-          <Gauge chance={offer.win_probability} />
-        </span>
+        <Gauge chance={offer.win_probability} />
       </span>
     </button>
   )
@@ -150,13 +146,13 @@ export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { car
           </GhostButton>
         </div>
       ) : !offers ? (
-        <div className="grid gap-4 md:grid-cols-3" aria-busy="true">
-          {Array.from({ length: 3 }).map((_, index) => (
-            <LoadingSkeleton key={index} className="h-64" />
+        <div className="grid gap-3 md:grid-cols-2" aria-busy="true">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <LoadingSkeleton key={index} className="h-32" />
           ))}
         </div>
       ) : (
-        <div className="grid gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {offers.title ? (
             <OfferCard
               offer={offers.title}

@@ -43,10 +43,10 @@ export function HeadToHead({ career, player, opponent }: { career: Career; playe
   ]
   return (
     <section aria-label={L(lang, 'Frente a frente', 'Head to head', 'Face à face', 'Cara a cara')} className="space-y-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]/60 p-4">
-      <div className="flex items-center justify-between gap-3 text-[11px] font-bold uppercase tracking-[0.14em]">
-        <span className="truncate text-[var(--text-green)]">{career.name}</span>
-        <span className="shrink-0 text-[var(--text-secondary)]">{L(lang, 'Frente a frente', 'Head to head', 'Face à face', 'Cara a cara')}</span>
-        <span className="truncate text-right text-[var(--text-red)]">{opponent.name}</span>
+      <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-3 text-[11px] font-bold uppercase tracking-[0.14em]">
+        <span className="break-words text-[var(--text-green)]">{career.name}</span>
+        <span className="text-[var(--text-secondary)]">{L(lang, 'Frente a frente', 'Head to head', 'Face à face', 'Cara a cara')}</span>
+        <span className="break-words text-right text-[var(--text-red)]">{opponent.name}</span>
       </div>
       <ul className="space-y-3">
         {rows.map((row) => (
