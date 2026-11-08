@@ -5,7 +5,7 @@ pages to that: fights, fighters and upcoming cards are there and consistent, and
 
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, timedelta
 
 import pytest
 
@@ -13,6 +13,23 @@ from backend.app.services import crossorg_service as crossorg
 
 SOURCES = {"oktagon": "oktagonmma.com", "jungle-fight": "sherdog.com", "invicta": "sherdog.com"}
 SHORT_NAMES = {"oktagon": "OKTAGON", "jungle-fight": "Jungle Fight", "invicta": "Invicta FC"}
+
+# The results of an event are read by the daily data refresh, at 07:00 UTC on the day after it. Until then an event that is
+# already over has a card and no results, so a finished event is only expected to have them once a whole day has passed.
+RESULTS_GRACE_DAYS = 1
+
+
+def results_are_due(event_date: str, today: date) -> bool:
+    return date.fromisoformat(event_date) < today - timedelta(days=RESULTS_GRACE_DAYS)
+
+
+@pytest.mark.parametrize(
+    ("days_after_event", "due"),
+    [(-3, False), (0, False), (1, False), (2, True), (30, True)],
+)
+def test_a_result_is_expected_once_the_refresh_after_the_event_has_had_its_day(days_after_event, due):
+    event = date(2026, 11, 7)
+    assert results_are_due(event.isoformat(), event + timedelta(days=days_after_event)) is due
 
 
 def test_the_three_organisations_are_listed_with_their_names_and_source(client):
@@ -60,13 +77,13 @@ def test_the_data_note_counts_what_the_lists_hold(client, org_id):
 
 @pytest.mark.parametrize("org_id", SOURCES)
 def test_a_finished_event_has_results_and_a_card_to_come_has_none(client, org_id):
-    today = date.today().isoformat()
+    today = date.today()
     for event in client.get(f"/orgs/{org_id}/events").json():
-        assert event["date"] <= today or all(not fight["winner"] for fight in event["fights"])
-        if event["date"] < today:
+        assert event["date"] <= today.isoformat() or all(not fight["winner"] for fight in event["fights"])
+        if results_are_due(event["date"], today):
             assert any(fight["method"] for fight in event["fights"])
     for event in client.get(f"/orgs/{org_id}/events/upcoming").json():
-        assert event["date"] >= today and all(fight["winner"] is None and fight["method"] is None for fight in event["fights"])
+        assert event["date"] >= today.isoformat() and all(fight["winner"] is None and fight["method"] is None for fight in event["fights"])
 
 
 def test_oktagon_has_cards_still_to_come(client):
