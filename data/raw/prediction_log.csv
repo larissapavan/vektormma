@@ -32,14 +32,14 @@ fight_key,event_name,event_date,fighter_1,fighter_2,prob_fighter_1,predicted_win
 2026-10-31|luana santos|yana santos,UFC Fight Night: Moicano vs. Nolan,2026-10-31,Yana Santos,Luana Santos,0.1901,Luana Santos,0.8099,2026-10-20,Luana Santos,True,2026-10-31,
 2026-10-31|carlos leal|randy brown,UFC Fight Night: Moicano vs. Nolan,2026-10-31,Randy Brown,Carlos Leal,0.4766,Carlos Leal,0.5234,2026-10-20,,,,
 2026-10-31|renato moicano|tom nolan,UFC Fight Night: Moicano vs. Nolan,2026-10-31,Renato Moicano,Tom Nolan,0.3728,Tom Nolan,0.6272,2026-10-20,Tom Nolan,True,2026-10-31,
-2026-11-07|jonny parsons|jose souza,UFC Fight Night: Bonfim vs. TBD,2026-11-07,Jonny Parsons,Jose Souza,0.3231,Jose Souza,0.6769,2026-11-06,,,,prefight
-2026-11-07|austin bashi|lucas brennan,UFC Fight Night: Bonfim vs. TBD,2026-11-07,Austin Bashi,Lucas Brennan,0.6537,Austin Bashi,0.6537,2026-11-06,,,,prefight
-2026-11-07|keiichiro nakamura|ollie schmid,UFC Fight Night: Bonfim vs. TBD,2026-11-07,Keiichiro Nakamura,Ollie Schmid,0.4838,Ollie Schmid,0.5162,2026-11-06,,,,prefight
-2026-11-07|gabriella fernandes|karine silva,UFC Fight Night: Bonfim vs. TBD,2026-11-07,Karine Silva,Gabriella Fernandes,0.6915,Karine Silva,0.6915,2026-11-06,,,,prefight
-2026-11-07|alvin hines|gabriel lorenco,UFC Fight Night: Bonfim vs. TBD,2026-11-07,Gabriel Lorenco,Alvin Hines,0.6093,Gabriel Lorenco,0.6093,2026-11-06,,,,prefight
-2026-11-07|billy elekana|lucas fernando,UFC Fight Night: Bonfim vs. TBD,2026-11-07,Billy Elekana,Lucas Fernando,0.3574,Lucas Fernando,0.6426,2026-11-06,,,,prefight
-2026-11-07|davey grant|elijah smith,UFC Fight Night: Bonfim vs. TBD,2026-11-07,Davey Grant,Elijah Smith,0.3203,Elijah Smith,0.6797,2026-11-06,,,,prefight
-2026-11-07|tatiana suarez|virna jandiroba,UFC Fight Night: Bonfim vs. TBD,2026-11-07,Tatiana Suarez,Virna Jandiroba,0.5973,Tatiana Suarez,0.5973,2026-11-06,,,,prefight
+2026-11-07|jonny parsons|jose souza,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Jonny Parsons,Jose Souza,0.3231,Jose Souza,0.6769,2026-11-06,Jose Souza,True,2026-11-08,prefight
+2026-11-07|austin bashi|lucas brennan,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Austin Bashi,Lucas Brennan,0.6537,Austin Bashi,0.6537,2026-11-06,,,,prefight
+2026-11-07|keiichiro nakamura|ollie schmid,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Keiichiro Nakamura,Ollie Schmid,0.4838,Ollie Schmid,0.5162,2026-11-06,Ollie Schmid,True,2026-11-08,prefight
+2026-11-07|gabriella fernandes|karine silva,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Karine Silva,Gabriella Fernandes,0.6915,Karine Silva,0.6915,2026-11-06,Karine Silva,True,2026-11-08,prefight
+2026-11-07|alvin hines|gabriel lorenco,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Gabriel Lorenco,Alvin Hines,0.6093,Gabriel Lorenco,0.6093,2026-11-06,,,,prefight
+2026-11-07|billy elekana|lucas fernando,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Billy Elekana,Lucas Fernando,0.3574,Lucas Fernando,0.6426,2026-11-06,Lucas Fernando,True,2026-11-08,prefight
+2026-11-07|davey grant|elijah smith,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Davey Grant,Elijah Smith,0.3203,Elijah Smith,0.6797,2026-11-06,Elijah Smith,True,2026-11-08,prefight
+2026-11-07|tatiana suarez|virna jandiroba,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Tatiana Suarez,Virna Jandiroba,0.5973,Tatiana Suarez,0.5973,2026-11-06,Tatiana Suarez,True,2026-11-08,prefight
 2026-11-14|jefferson nascimento|nazim sadykhov,UFC 334: Gane vs. Hokit,2026-11-14,Nazim Sadykhov,Jefferson Nascimento,0.3977,Jefferson Nascimento,0.6023,2026-11-06,,,,prefight
 2026-11-14|adrian yanez|juan diaz,UFC 334: Gane vs. Hokit,2026-11-14,Adrian Yanez,Juan Diaz,0.3924,Juan Diaz,0.6076,2026-11-06,,,,prefight
 2026-11-14|bia mesquita|macy chiasson,UFC 334: Gane vs. Hokit,2026-11-14,Bia Mesquita,Macy Chiasson,0.5913,Bia Mesquita,0.5913,2026-11-06,,,,prefight
@@ -65,16 +65,16 @@ fight_key,event_name,event_date,fighter_1,fighter_2,prob_fighter_1,predicted_win
 2026-12-12|alex pereira|sergei pavlovich,UFC 335: Oliveira vs. Lopes,2026-12-12,Sergei Pavlovich,Alex Pereira,0.5559,Sergei Pavlovich,0.5559,2026-11-06,,,,prefight
 2026-12-12|charles oliveira|diego lopes,UFC 335: Oliveira vs. Lopes,2026-12-12,Charles Oliveira,Diego Lopes,0.5732,Charles Oliveira,0.5732,2026-11-06,,,,prefight
 2026-10-31|jeongyeong lee|julian erosa,UFC Fight Night: Moicano vs. Nolan,2026-10-31,Julian Erosa,JeongYeong Lee,0.519,Julian Erosa,0.519,2026-10-20,Julian Erosa,True,2026-10-31,
-2026-11-07|nina milosevic|priscila cachoeira,UFC Fight Night: Bonfim vs. TBD,2026-11-07,Priscila Cachoeira,Nina Milosevic,0.2430,Nina Milosevic,0.7570,2026-11-06,,,,prefight
-2026-11-07|jose delano|murtazali magomedov,UFC Fight Night: Bonfim vs. TBD,2026-11-07,Jose Delano,Murtazali Magomedov,0.4628,Murtazali Magomedov,0.5372,2026-11-06,,,,prefight
-2026-11-07|mantas kondratavicius|wes schultz,UFC Fight Night: Bonfim vs. TBD,2026-11-07,Mantas Kondratavicius,Wes Schultz,0.7498,Mantas Kondratavicius,0.7498,2026-11-06,,,,prefight
-2026-11-07|seokhyeon ko|wellington turman,UFC Fight Night: Bonfim vs. TBD,2026-11-07,Seokhyeon Ko,Wellington Turman,0.6583,Seokhyeon Ko,0.6583,2026-11-06,,,,prefight
+2026-11-07|nina milosevic|priscila cachoeira,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Priscila Cachoeira,Nina Milosevic,0.2430,Nina Milosevic,0.7570,2026-11-06,Nina Nikolija Milosevic,False,2026-11-08,prefight
+2026-11-07|jose delano|murtazali magomedov,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Jose Delano,Murtazali Magomedov,0.4628,Murtazali Magomedov,0.5372,2026-11-06,Murtazali Magomedov,True,2026-11-08,prefight
+2026-11-07|mantas kondratavicius|wes schultz,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Mantas Kondratavicius,Wes Schultz,0.7498,Mantas Kondratavicius,0.7498,2026-11-06,,,,prefight
+2026-11-07|seokhyeon ko|wellington turman,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Seokhyeon Ko,Wellington Turman,0.6583,Seokhyeon Ko,0.6583,2026-11-06,Ko Seok-hyeon,False,2026-11-08,prefight
 2026-12-05|israel adesanya|shara magomedov,UFC Fight Night: Adesanya vs. Magomedov,2026-12-05,Israel Adesanya,Shara Magomedov,0.4651,Shara Magomedov,0.5349,2026-11-06,,,,prefight
 2026-10-24|abubakar vagaev|jacob malkoun,UFC 333: Volkanovski vs. Evloev,2026-10-24,Abubakar Vagaev,Jacob Malkoun,0.5114,Abubakar Vagaev,0.5114,2026-10-21,Abubakar Vagaev,True,2026-10-25,
 2026-10-24|bolaji oki|daniel santos,UFC 333: Volkanovski vs. Evloev,2026-10-24,Bolaji Oki,Daniel Santos,0.2086,Daniel Santos,0.7914,2026-10-21,Daniel Santos,True,2026-10-25,
 2026-10-24|kody steele|noah gugnon,UFC 333: Volkanovski vs. Evloev,2026-10-24,Kody Steele,Noah Gugnon,0.375,Noah Gugnon,0.625,2026-10-21,Kody Steele,False,2026-10-25,
 2026-10-24|iasmin lucindo|nicolle caliari,UFC 333: Volkanovski vs. Evloev,2026-10-24,Iasmin Lucindo,Nicolle Caliari,0.7437,Iasmin Lucindo,0.7437,2026-10-21,Iasmin Lucindo,True,2026-10-25,
-2026-11-07|jonny parsons|jose henrique,UFC Fight Night: Bonfim vs. TBD,2026-11-07,Jonny Parsons,Jose Henrique,0.4762,Jose Henrique,0.5238,2026-11-06,,,,prefight
+2026-11-07|jonny parsons|jose henrique,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Jonny Parsons,Jose Henrique,0.4762,Jose Henrique,0.5238,2026-11-06,,,,prefight
 2026-12-12|brandon moreno|charles johnson,UFC 335: Oliveira vs. Lopes,2026-12-12,Brandon Moreno,Charles Johnson,0.6835,Brandon Moreno,0.6835,2026-11-06,,,,prefight
 2026-12-12|carli judice|maycee barber,UFC 335: Oliveira vs. Lopes,2026-12-12,Maycee Barber,Carli Judice,0.6006,Maycee Barber,0.6006,2026-11-06,,,,prefight
 2026-12-12|junior tafa|quentin pasley,UFC 335: Oliveira vs. Lopes,2026-12-12,Quentin Pasley,Junior Tafa,0.5749,Quentin Pasley,0.5749,2026-11-06,,,,prefight
@@ -82,8 +82,8 @@ fight_key,event_name,event_date,fighter_1,fighter_2,prob_fighter_1,predicted_win
 2026-10-31|dakota hope|francis marshall,UFC Fight Night: Moicano vs. Nolan,2026-10-31,Francis Marshall,Dakota Hope,0.578,Francis Marshall,0.578,2026-10-25,Dakota Hope,False,2026-10-31,
 2026-10-31|jacobe smith|randy brown,UFC Fight Night: Moicano vs. Nolan,2026-10-31,Randy Brown,Jacobe Smith,0.0418,Jacobe Smith,0.9582,2026-10-25,Jacobe Smith,True,2026-10-31,
 2026-10-31|mickey gall|zach reese,UFC Fight Night: Moicano vs. Nolan,2026-10-31,Zach Reese,Mickey Gall,0.8231,Zach Reese,0.8231,2026-10-25,Zach Reese,True,2026-10-31,
-2026-11-07|marcos degli|mitch raposo,UFC Fight Night: Bonfim vs. TBD,2026-11-07,Marcos Degli,Mitch Raposo,0.3523,Mitch Raposo,0.6477,2026-11-06,,,,prefight
-2026-11-07|andre petroski|mantas kondratavicius,UFC Fight Night: Bonfim vs. TBD,2026-11-07,Mantas Kondratavicius,Andre Petroski,0.6690,Mantas Kondratavicius,0.6690,2026-11-06,,,,prefight
+2026-11-07|marcos degli|mitch raposo,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Marcos Degli,Mitch Raposo,0.3523,Mitch Raposo,0.6477,2026-11-06,Mitch Raposo,True,2026-11-08,prefight
+2026-11-07|andre petroski|mantas kondratavicius,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Mantas Kondratavicius,Andre Petroski,0.6690,Mantas Kondratavicius,0.6690,2026-11-06,Andre Petroski,False,2026-11-08,prefight
 2026-11-14|evan elder|samuel sanches,UFC 334: Gane vs. Hokit,2026-11-14,Evan Elder,Samuel Sanches,0.5380,Evan Elder,0.5380,2026-11-06,,,,prefight
 2026-11-14|jared gordon|melquizael costa,UFC 334: Gane vs. Hokit,2026-11-14,Jared Gordon,Melquizael Costa,0.3968,Melquizael Costa,0.6032,2026-11-06,,,,prefight
 2026-11-14|cesar almeida|donte johnson,UFC 334: Gane vs. Hokit,2026-11-14,Donte Johnson,Cesar Almeida,0.7214,Donte Johnson,0.7214,2026-11-06,,,,prefight
@@ -100,8 +100,8 @@ fight_key,event_name,event_date,fighter_1,fighter_2,prob_fighter_1,predicted_win
 2026-12-12|chase hooper|chris padilla,UFC 335: Oliveira vs. Lopes,2026-12-12,Chase Hooper,Chris Padilla,0.4878,Chris Padilla,0.5122,2026-11-06,,,,prefight
 2027-01-30|joshua van|manel kape,UFC 336: Van vs. Kape,2027-01-30,Joshua Van,Manel Kape,0.6606,Joshua Van,0.6606,2026-11-06,,,,prefight
 2027-01-30|carlos prates|michael morales,UFC 336: Van vs. Kape,2027-01-30,Carlos Prates,Michael Morales,0.3424,Michael Morales,0.6576,2026-11-06,,,,prefight
-2026-11-07|gabriel lorenco|thomas petersen,UFC Fight Night: Bonfim vs. Brady,2026-11-07,Thomas Petersen,Gabriel Lorenco,0.4882,Gabriel Lorenco,0.5118,2026-11-06,,,,prefight
+2026-11-07|gabriel lorenco|thomas petersen,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Thomas Petersen,Gabriel Lorenco,0.4882,Gabriel Lorenco,0.5118,2026-11-06,Thomas Petersen,False,2026-11-08,prefight
 2026-12-12|angela hill|shanelle dyer,UFC 335: Oliveira vs. Lopes,2026-12-12,Angela Hill,Shanelle Dyer,0.2924,Shanelle Dyer,0.7076,2026-11-06,,,,prefight
 2027-02-06|benoit saint denis|quillan salkilld,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,Quillan Salkilld,Benoit Saint Denis,0.6315,Quillan Salkilld,0.6315,2026-11-06,,,,prefight
-2026-11-07|johnny walker|waldo cortes acosta,UFC Fight Night: Bonfim vs. Brady,2026-11-07,Waldo Cortes Acosta,Johnny Walker,0.5327,Waldo Cortes Acosta,0.5327,2026-11-06,,,,prefight
+2026-11-07|johnny walker|waldo cortes acosta,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Waldo Cortes Acosta,Johnny Walker,0.5327,Waldo Cortes Acosta,0.5327,2026-11-06,Johnny Walker,False,2026-11-08,prefight
 2027-02-06|bogdan guskov|robert whittaker,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,Bogdan Guskov,Robert Whittaker,0.4928,Robert Whittaker,0.5072,2026-11-06,,,,prefight
