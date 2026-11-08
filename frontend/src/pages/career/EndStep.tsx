@@ -12,10 +12,12 @@ import { closeCareer } from '../../shared/game/progress'
 import { recordTrophies } from '../../shared/game/trophies'
 import { useFighters } from '../../shared/hooks/useFighters'
 import { AchievementTile } from './AchievementsPanel'
+import { ChallengeEnd } from './ChallengeEnd'
+import type { Challenge } from '../../shared/game/challenge'
 import { GhostButton } from './ui'
 
 /** The end of the career: the retrospect picture, with the ways to save or share it. */
-export function EndStep({ career: ended, onRestart }: { career: Career; onRestart: () => void }) {
+export function EndStep({ career: ended, challenge, onRestart }: { career: Career; challenge: Challenge | null; onRestart: () => void }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
   const { fighters } = useFighters()
@@ -40,6 +42,7 @@ export function EndStep({ career: ended, onRestart }: { career: Career; onRestar
         </p>
       </div>
       <div className="space-y-6 p-5 sm:p-8">
+        {challenge ? <ChallengeEnd challenge={challenge} career={career} /> : null}
         <motion.div initial={reduce ? false : { opacity: 0, scale: 0.92, rotate: -2 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 120, damping: 14 }}>
           <RetrospectCard card={card} />
         </motion.div>

@@ -1,5 +1,6 @@
 import { isAchievementId } from './achievements'
-import { cleanName, type Career, type CoachId, type FightLog, type GoalState, type Method, type Stance } from './career'
+import { CHALLENGE_MAX_FIGHTS, CHALLENGE_MIN_FIGHTS, readResult, SEED_MAX, type Challenge } from './challenge'
+import { cleanName, GAME_DIVISIONS, type Career, type CoachId, type FightLog, type GoalState, type Method, type Stance } from './career'
 import { isGoalId } from './goals'
 
 /**
@@ -15,13 +16,14 @@ export interface SavedGame {
   coaches: CoachId[]
   seed: number
   note: { injured: boolean; declined: boolean } | null
+  /** The challenge being played (see challenge.ts), or null for an ordinary career. */
+  challenge: Challenge | null
   savedAt: number
 }
 
 const STANCES: Stance[] = ['Orthodox', 'Southpaw', 'Switch']
 const COACH_IDS: CoachId[] = ['striker', 'wrestler', 'allround', 'conditioning', 'sparring', 'scout']
 const METHODS: Method[] = ['ko', 'sub', 'dec']
-const DIVISIONS = ['Flyweight', 'Bantamweight', 'Featherweight', 'Lightweight', 'Welterweight', 'Middleweight', 'Light Heavyweight', 'Heavyweight', "Women's Strawweight", "Women's Flyweight", "Women's Bantamweight"]
 
 const number = (value: unknown, low: number, high: number): number | null => (typeof value === 'number' && Number.isFinite(value) && value >= low && value <= high ? value : null)
 const count = (value: unknown, high = 200): number | null => {
@@ -64,7 +66,7 @@ export function readCareer(raw: unknown): Career | null {
   if (typeof raw !== 'object' || raw === null) return null
   const c = raw as Record<string, unknown>
   const name = typeof c.name === 'string' ? cleanName(c.name) : ''
-  const division = typeof c.division === 'string' && DIVISIONS.includes(c.division) ? c.division : null
+  const division = typeof c.division === 'string' && GAME_DIVISIONS.includes(c.division) ? c.division : null
   const numbers = {
     striking: number(c.striking, 0, 100),
     takedowns: number(c.takedowns, 0, 100),
@@ -144,6 +146,18 @@ export function readCareer(raw: unknown): Career | null {
   }
 }
 
+function readChallenge(raw: unknown): Challenge | null | undefined {
+  if (raw === undefined || raw === null) return null // an ordinary career, or a save from before challenges existed
+  if (typeof raw !== 'object') return undefined
+  const c = raw as Record<string, unknown>
+  const seed = count(c.seed, SEED_MAX)
+  const fights = count(c.fights, CHALLENGE_MAX_FIGHTS)
+  if (seed === null || fights === null || fights < CHALLENGE_MIN_FIGHTS) return undefined
+  if (c.target === null || c.target === undefined) return { seed, fights, target: null }
+  const target = readResult(c.target)
+  return target ? { seed, fights, target } : undefined
+}
+
 export function readSave(raw: string | null): SavedGame | null {
   if (!raw || raw.length > 60_000) return null
   try {
@@ -159,7 +173,9 @@ export function readSave(raw: string | null): SavedGame | null {
       if (!found || typeof found.injured !== 'boolean' || typeof found.declined !== 'boolean') return null
       note = { injured: found.injured, declined: found.declined }
     }
-    return { career, stage: data.stage, coaches: data.coaches as CoachId[], seed, note, savedAt }
+    const challenge = readChallenge(data.challenge)
+    if (challenge === undefined) return null
+    return { career, stage: data.stage, coaches: data.coaches as CoachId[], seed, note, challenge, savedAt }
   } catch {
     return null
   }

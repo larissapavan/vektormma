@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import App from '../App'
 import i18n from '../i18n'
 import { createCareer, encodeRetrospect, type Retrospect } from '../shared/game/career'
+import { challengeBuild, challengeResult, decodeChallenge, encodeChallenge, type Challenge } from '../shared/game/challenge'
 import { SAVE_KEY } from '../shared/game/save'
 import { loadTrophies, TROPHY_KEY } from '../shared/game/trophies'
 import { respond } from './fixtures'
@@ -322,6 +323,128 @@ describe('goals and achievements', () => {
     await userEvent.click(await screen.findByRole('button', { name: /resume the career/i }, { timeout: 10000 }))
     expect(screen.getByText(/camp for your ufc debut/i)).toBeInTheDocument()
     expect(screen.queryByRole('region', { name: /career goals/i })).toBeNull()
+  })
+})
+
+describe('a challenge', () => {
+  const challenge = (extra: Partial<Challenge> = {}): Challenge => ({ seed: 20261108, fights: 3, target: null, ...extra })
+  const linkTo = (value: Challenge) => `/career?d=${encodeChallenge(value)}`
+  const target = { n: 'José Aldo', p: 22, w: 5, l: 1, ko: 3, sb: 1, dc: 1, t: 0, f: 6, e: 'retired' as const }
+
+  async function startChallenge(value: Challenge, name = 'Ana Lima') {
+    const view = renderAt(linkTo(value))
+    await userEvent.type(await screen.findByLabelText('Your name', undefined, { timeout: 10000 }), name)
+    await click(/start the challenge/i)
+    return view
+  }
+
+  it('is offered on the first screen: the challenge of the day, and a new one', async () => {
+    renderAt('/career')
+    const entry = await screen.findByRole('region', { name: /^challenge$/i }, { timeout: 10000 })
+    expect(within(entry).getByRole('button', { name: /today.s challenge/i })).toBeInTheDocument()
+    expect(within(entry).getByRole('button', { name: /new challenge/i })).toBeInTheDocument()
+    await userEvent.click(within(entry).getByRole('button', { name: /today.s challenge/i }))
+    expect(await screen.findByText(/take the challenge/i)).toBeInTheDocument()
+    expect(screen.getByTestId('challenge-code')).toBeInTheDocument()
+    await click(/^back$/i)
+    expect(await findButton(/start the career/i)).toBeInTheDocument() // back at the ordinary first screen
+  })
+
+  it('opens from a link with the fighter of the seed, the rules and what there is to beat', async () => {
+    renderAt(linkTo(challenge({ target })))
+    expect(await screen.findByText(/josé aldo challenged you/i, undefined, { timeout: 10000 })).toBeInTheDocument()
+    const note = screen.getByTestId('challenge-target')
+    expect(note).toHaveTextContent('José Aldo')
+    expect(note).toHaveTextContent('22')
+    expect(note).toHaveTextContent(/not been verified/i)
+    expect(screen.getByTestId('challenge-code')).toHaveTextContent(`#${(20261108).toString(36).toUpperCase()}`)
+    const fighter = screen.getByTestId('challenge-fighter')
+    const build = challengeBuild(20261108, '')
+    expect(fighter).toHaveTextContent(`${build.striking}`)
+    expect(fighter).toHaveTextContent(`${build.takedowns}`)
+    expect(fighter).toHaveTextContent(`${build.reach}`)
+    expect(fighter).toHaveTextContent('3 fights')
+    expect(screen.getByText(/no retiring early/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /start the challenge/i })).toBeDisabled() // a name first
+    expect(screen.getByRole('link', { name: /build my own career/i })).toHaveAttribute('href', '/career')
+  })
+
+  it('starts with the fighter of the seed, shows where the player is in it, and does not allow retiring', async () => {
+    await startChallenge(challenge({ target }))
+    const bar = await screen.findByTestId('challenge-bar')
+    expect(bar).toHaveTextContent('Fight 1 of 3')
+    expect(bar).toHaveTextContent('To beat: José Aldo, 22 pts')
+    const build = challengeBuild(20261108, 'Ana Lima')
+    const status = screen.getByRole('region', { name: /your fighter/i })
+    expect(status).toHaveTextContent('Ana Lima')
+    for (const skill of [build.striking, build.takedowns, build.reach]) expect(status).toHaveTextContent(String(skill))
+    expect(screen.queryByRole('button', { name: /^retire$/i })).toBeNull()
+    expect(screen.getByRole('region', { name: /career goals/i })).toBeInTheDocument()
+  })
+
+  it('offers the same coaches and the same goals to everyone who plays the same challenge', async () => {
+    const coaches = () => screen.getAllByRole('button', { name: /^Coach / }).map((button) => button.textContent)
+    const goals = () => within(screen.getByRole('region', { name: /career goals/i })).getAllByRole('listitem').map((item) => item.textContent)
+    const first = await startChallenge(challenge(), 'Ana')
+    const firstCoaches = coaches()
+    const firstGoals = goals()
+    expect(firstCoaches).toHaveLength(3)
+    first.unmount()
+    window.localStorage.clear()
+    await startChallenge(challenge(), 'Bruno')
+    expect(coaches()).toEqual(firstCoaches)
+    expect(goals()).toEqual(firstGoals)
+  })
+
+  it('plays every fight and ends by itself, with the score, how it compares and a link that challenges someone else', async () => {
+    await startChallenge(challenge({ target: { ...target, p: 500 } }))
+    for (let fights = 0; fights < 3; fights += 1) {
+      await playOneFight()
+      expect(screen.queryByRole('button', { name: /^retire$/i })).toBeNull() // not even after the third fight, when it would be allowed
+      await click(/continue the career|see the retrospect/i)
+    }
+    const end = await screen.findByTestId('challenge-end', undefined, { timeout: 10000 })
+    const score = Number(screen.getByTestId('challenge-score').textContent?.match(/\d+/)?.[0])
+    expect(end).toHaveTextContent(/points/i)
+    expect(screen.getByTestId('challenge-outcome')).toHaveTextContent(new RegExp(`José Aldo came out on top: 500 to ${score}`))
+
+    const whatsapp = within(end).getByRole('link', { name: 'WhatsApp' })
+    const href = decodeURIComponent(whatsapp.getAttribute('href') ?? '')
+    expect(href).toContain('/en/career?d=')
+    const sent = decodeChallenge(href.match(/\?d=([\w-]+)/)?.[1])
+    expect(sent).toMatchObject({ seed: 20261108, fights: 3, target: { n: 'Ana Lima', p: score } })
+    expect(within(end).getByRole('button', { name: /copy challenge link/i })).toBeInTheDocument()
+    expect(screen.getByText(/the career is over/i)).toBeInTheDocument() // the retrospect picture comes below
+
+    // Starting another career goes to the ordinary first screen, not back to this challenge.
+    await click(/start another career/i)
+    expect(await findButton(/start the career/i)).toBeInTheDocument()
+    expect(screen.queryByTestId('challenge-fighter')).toBeNull()
+    expect(window.localStorage.getItem(SAVE_KEY)).toBeNull()
+  })
+
+  it('keeps the challenge in the save, and offers the saved career above a challenge link', async () => {
+    const first = await startChallenge(challenge(), 'Ana')
+    await train()
+    await findButton(/Easy Eddie/)
+    expect(JSON.parse(window.localStorage.getItem(SAVE_KEY) ?? 'null')).toMatchObject({ stage: 'offers', challenge: { seed: 20261108, fights: 3, target: null } })
+    first.unmount()
+
+    renderAt(linkTo(challenge()))
+    const card = await screen.findByRole('region', { name: /saved career/i }, { timeout: 10000 })
+    expect(card).toHaveTextContent(`Challenge #${(20261108).toString(36).toUpperCase()}`)
+    expect(screen.getByTestId('challenge-fighter')).toBeInTheDocument() // the challenge link is still there to start a new run
+    await click(/resume the career/i)
+    expect(await findButton(/Easy Eddie/)).toBeInTheDocument()
+    expect(screen.getByTestId('challenge-bar')).toHaveTextContent('Fight 1 of 3')
+    expect(screen.queryByTestId('challenge-fighter')).toBeNull()
+  })
+
+  it('ignores a damaged link and opens the ordinary game', async () => {
+    renderAt('/career?d=this-is-not-a-challenge')
+    expect(await findButton(/start the career/i)).toBeInTheDocument()
+    expect(screen.queryByTestId('challenge-fighter')).toBeNull()
+    expect(challengeResult(createCareer({ name: 'x', division: 'Lightweight', stance: 'Orthodox', striking: 50, takedowns: 50, reach: 50 })).p).toBe(0)
   })
 })
 

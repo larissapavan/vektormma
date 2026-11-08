@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { L } from '../i18n/lang'
 import { RetrospectCard } from '../shared/components/RetrospectCard'
+import { challengeBuild, challengeDone, challengeStreams, decodeChallenge, type Challenge } from '../shared/game/challenge'
 import { drawGoals } from '../shared/game/goals'
 import {
   canRetire,
@@ -27,6 +28,8 @@ import { clearSave, loadSave, storeSave, type SavedGame } from '../shared/game/s
 import type { GameOpponent } from '../shared/types/api'
 import { AchievementsPanel } from './career/AchievementsPanel'
 import { CampStep, type CampNote } from './career/CampStep'
+import { ChallengeBar } from './career/ChallengeEnd'
+import { ChallengeEntry, ChallengeIntro } from './career/ChallengeIntro'
 import { CreateStep } from './career/CreateStep'
 import { EndStep } from './career/EndStep'
 import { FightStep } from './career/FightStep'
@@ -45,7 +48,10 @@ interface Game {
   seed: number
   /** The three coaches on offer for the camp on screen. */
   coaches: CoachId[]
-  fight: { offer: GameOpponent; state: FightState } | null
+  /** The challenge being played (same fighter, same dice for everyone), or null for an ordinary career. */
+  challenge: Challenge | null
+  /** The fight on screen, with the dice it is played with (the career's own stream, or the challenge's for this fight). */
+  fight: { offer: GameOpponent; state: FightState; dice: Rng } | null
 }
 
 /** The career game: build a fighter, train, take fights, and end with a picture of the retrospect. */
@@ -54,7 +60,13 @@ export function Career() {
   const lang = i18n.language
   const [params] = useSearchParams()
   const shared = useMemo(() => decodeRetrospect(params.get('c')), [params])
+  const linked = useMemo(() => decodeChallenge(params.get('d')), [params])
   const [game, setGame] = useState<Game | null>(null)
+  /** A challenge picked on the first screen (the day's, or a new one), before the player starts it. */
+  const [pending, setPending] = useState<Challenge | null>(null)
+  /** Set once a game has started: the link that opened the page has been taken up, so the first screen is the ordinary one again. */
+  const [linkUsed, setLinkUsed] = useState(false)
+  const incoming = !game ? (pending ?? (linkUsed ? null : linked)) : null
   /** The career this browser kept from an earlier visit, offered on the first screen until the player takes it up or sets it aside. */
   const [saved, setSaved] = useState<SavedGame | null>(() => loadSave())
   const rng = useRef<Rng | null>(null)
@@ -69,18 +81,29 @@ export function Career() {
   // Saved between fights only (at the camp and at the matchmaking), and forgotten when the career ends.
   useEffect(() => {
     if (!game) return
-    if (game.stage === 'camp' || game.stage === 'offers') storeSave({ career: game.career, stage: game.stage, coaches: game.coaches, seed: game.seed, note: game.note })
+    if (game.stage === 'camp' || game.stage === 'offers') storeSave({ career: game.career, stage: game.stage, coaches: game.coaches, seed: game.seed, note: game.note, challenge: game.challenge })
     else if (game.stage === 'end') clearSave()
   }, [game])
 
   const start = (build: Build) => {
     setSaved(null)
-    setGame({ career: createCareer(build, drawGoals(random)), stage: 'camp', note: null, seed: 0, fight: null, coaches: offerCoaches(random) })
+    setLinkUsed(true)
+    setGame({ career: createCareer(build, drawGoals(random)), stage: 'camp', note: null, seed: 0, fight: null, coaches: offerCoaches(random), challenge: null })
+  }
+
+  // A challenge: the fighter, the goals and every random event come from the seed (see challenge.ts).
+  const startChallenge = (challenge: Challenge, name: string) => {
+    const streams = challengeStreams(challenge.seed)
+    setSaved(null)
+    setPending(null)
+    setLinkUsed(true)
+    setGame({ career: createCareer(challengeBuild(challenge.seed, name), drawGoals(streams.goals())), stage: 'camp', note: null, seed: 0, fight: null, coaches: offerCoaches(streams.coaches(0)), challenge })
   }
 
   const resume = (save: SavedGame) => {
     setSaved(null)
-    setGame({ career: save.career, stage: save.stage, note: save.note, seed: save.seed, fight: null, coaches: save.coaches })
+    setLinkUsed(true)
+    setGame({ career: save.career, stage: save.stage, note: save.note, seed: save.seed, fight: null, coaches: save.coaches, challenge: save.challenge })
   }
 
   const discard = () => {
@@ -90,19 +113,24 @@ export function Career() {
 
   const train = (coach: CoachId) => {
     if (!game) return
-    const result = trainCamp(game.career, coach, random)
-    setGame({ ...game, career: result.career, note: { injured: result.injured, declined: result.declined }, stage: result.career.ended ? 'end' : 'offers', seed: Math.floor(random() * 2 ** 31) })
+    const fightNumber = game.career.ufcFights
+    const streams = game.challenge ? challengeStreams(game.challenge.seed) : null
+    const result = trainCamp(game.career, coach, streams ? streams.camp(fightNumber) : random)
+    setGame({ ...game, career: result.career, note: { injured: result.injured, declined: result.declined }, stage: result.career.ended ? 'end' : 'offers', seed: streams ? streams.offers(fightNumber) : Math.floor(random() * 2 ** 31) })
   }
 
   const takeFight = (offer: GameOpponent, plan: Plan, player: PlayerStats) => {
     if (!game) return
-    setGame({ ...game, stage: 'fight', fight: { offer, state: startFight(game.career, offer, plan, player, random) } })
+    const dice = game.challenge ? challengeStreams(game.challenge.seed).fight(game.career.ufcFights) : random
+    setGame({ ...game, stage: 'fight', fight: { offer, state: startFight(game.career, offer, plan, player, dice), dice } })
   }
 
   const continueCareer = (result: FightResult) => {
     if (!game?.fight) return
-    const career = result.career
-    setGame({ ...game, career, fight: null, note: null, stage: career.ended ? 'end' : 'camp', coaches: offerCoaches(random) })
+    // A challenge ends when its fights have been fought: there is no retiring early, and no fight to spare.
+    const career = game.challenge && challengeDone(game.challenge, result.career) ? retire(result.career) : result.career
+    const coaches = offerCoaches(game.challenge ? challengeStreams(game.challenge.seed).coaches(career.ufcFights) : random)
+    setGame({ ...game, career, fight: null, note: null, stage: career.ended ? 'end' : 'camp', coaches })
   }
 
   // Retiring after a fight counts that fight: its result has not been applied to the career yet.
@@ -135,6 +163,7 @@ export function Career() {
           <ul className="mt-2 list-disc space-y-1 pl-5">
             <li>{L(lang, 'A chance de vencer cada luta vem do mesmo modelo do site, que lê precisão de golpes e de quedas, alcance, idade e cartel.', 'The chance of winning each fight comes from the site’s own model, which reads striking and takedown accuracy, reach, age and record.', 'La probabilité de gagner chaque combat vient du modèle du site, qui lit la précision de frappe et d’amenée au sol, l’allonge, l’âge et le bilan.', 'La probabilidad de ganar cada pelea sale del mismo modelo del sitio, que lee la precisión de golpeo y de derribos, el alcance, la edad y el récord.')}</li>
             <li>{L(lang, 'Em cada round você manda o córner atacar, manter o plano ou proteger. Isso não muda a chance que o modelo deu para a luta: muda como você gasta o risco. Na frente nos cartões, proteger vale a pena; atrás, só atacando.', 'Every round you tell the corner to attack, stick to the plan or cover up. That does not change the chance the model gave the fight: it changes how you spend the risk. Ahead on the cards, covering pays; behind, only attacking does.', 'À chaque round, vous dites au coin d’attaquer, de tenir le plan ou de se protéger. Cela ne change pas la probabilité donnée par le modèle : cela change la façon dont vous dépensez le risque. En tête aux cartons, se protéger paie ; derrière, seule l’attaque aide.', 'En cada round le dices al córner que ataque, mantenga el plan o se proteja. Eso no cambia la probabilidad que dio el modelo: cambia cómo gastas el riesgo. Arriba en las tarjetas conviene protegerse; abajo, solo atacar.')}</li>
+            <li>{L(lang, 'No desafio, todos jogam o mesmo lutador com os mesmos técnicos, lesões e dados: quem faz as mesmas escolhas vive a mesma carreira. São 6 lutas, vale quem terminar com mais pontos de ranking, e o link do final desafia outra pessoa a bater o seu resultado.', 'In a challenge everyone plays the same fighter with the same coaches, injuries and dice: whoever makes the same choices lives the same career. It lasts 6 fights, whoever ends with more ranking points wins, and the link at the end challenges someone to beat your result.', 'Dans un défi, tout le monde joue le même combattant avec les mêmes entraîneurs, blessures et dés : qui fait les mêmes choix vit la même carrière. Il dure 6 combats, gagne celui qui finit avec le plus de points de classement, et le lien de la fin défie quelqu’un de battre votre résultat.', 'En un desafío todos juegan el mismo peleador con los mismos técnicos, lesiones y dados: quien hace las mismas elecciones vive la misma carrera. Dura 6 peleas, gana quien termine con más puntos de ranking, y el enlace del final desafía a otra persona a superar tu resultado.')}</li>
             <li>{L(lang, 'Cada carreira começa com 3 metas sorteadas: cumprir uma vale +2 pontos de ranking. As conquistas (como um nocaute no round 1, uma virada atacando ou uma carreira sem derrotas) ficam guardadas neste navegador e formam uma coleção.', 'Every career starts with 3 goals drawn at random: meeting one pays +2 ranking points. Achievements (such as a round-1 finish, a comeback by attacking or a career without a loss) are kept in this browser and make a collection.', 'Chaque carrière commence avec 3 objectifs tirés au sort : en atteindre un rapporte +2 points de classement. Les succès (comme une finition au round 1, une remontada en attaquant ou une carrière sans défaite) sont conservés dans ce navigateur et forment une collection.', 'Cada carrera empieza con 3 metas sorteadas: cumplir una vale +2 puntos de ranking. Los logros (como un cierre en el round 1, una remontada atacando o una carrera sin derrotas) se guardan en este navegador y forman una colección.')}</li>
             <li>{L(lang, 'Regras do jogo, e não do modelo: o desconto de 4 pontos contra ranqueados e 6 contra o campeão, o plano de luta (até 4 pontos), as lesões e o acaso.', 'Game rules, not the model’s: a 4-point discount against ranked fighters and 6 against the champion, the game plan (up to 4 points), injuries and luck.', 'Règles du jeu, pas du modèle : une décote de 4 points contre les classés et de 6 contre le champion, le plan de combat (jusqu’à 4 points), les blessures et le hasard.', 'Reglas del juego, no del modelo: un descuento de 4 puntos ante rivales del ranking y de 6 ante el campeón, el plan de pelea (hasta 4 puntos), las lesiones y el azar.')}</li>
             <li>{L(lang, 'A carreira fica salva neste navegador entre uma luta e outra, e só nele: nada vai para o servidor. Dá para fechar a página e retomar depois. No fim, ficam a imagem e o link.', 'The career is saved in this browser between fights, and only there: nothing goes to the server. You can close the page and pick it up later. At the end you get the picture and the link.', 'La carrière est enregistrée dans ce navigateur entre deux combats, et seulement là : rien n’est envoyé au serveur. Vous pouvez fermer la page et reprendre plus tard. À la fin, vous obtenez l’image et le lien.', 'La carrera se guarda en este navegador entre una pelea y otra, y solo ahí: nada va al servidor. Puedes cerrar la página y retomarla después. Al final quedan la imagen y el enlace.')}</li>
@@ -155,20 +184,28 @@ export function Career() {
             </Link>
           </div>
         </section>
+      ) : incoming ? (
+        <>
+          {/* A career saved in this browser stays on offer: starting the challenge would replace it. */}
+          {saved ? <ResumeCard saved={saved} onResume={() => resume(saved)} onDiscard={discard} /> : null}
+          <ChallengeIntro challenge={incoming} fromLink={!pending} onStart={(name) => startChallenge(incoming, name)} onBack={() => setPending(null)} />
+        </>
       ) : !game ? (
         <>
           {saved ? <ResumeCard saved={saved} onResume={() => resume(saved)} onDiscard={discard} /> : null}
           <CreateStep onStart={start} />
+          <ChallengeEntry onPick={setPending} />
           <AchievementsPanel />
         </>
       ) : (
         <>
+          {game.stage !== 'end' && game.challenge ? <ChallengeBar challenge={game.challenge} career={game.career} /> : null}
           {game.stage !== 'end' ? <StatusCard career={game.career} /> : null}
           {game.stage === 'camp' || game.stage === 'offers' ? <GoalsCard career={game.career} /> : null}
-          {game.stage === 'camp' ? <CampStep key={game.career.ufcFights} career={game.career} coaches={game.coaches} note={game.note} onTrain={train} onRetire={() => stop()} /> : null}
-          {game.stage === 'offers' ? <OffersStep key={game.seed} career={game.career} seed={game.seed} onFight={takeFight} onRetire={() => stop()} canRetire={canRetire(game.career)} /> : null}
-          {game.stage === 'fight' && game.fight ? <FightStep key={game.career.ufcFights} career={game.career} offer={game.fight.offer} start={game.fight.state} random={random} onContinue={continueCareer} onRetire={stop} /> : null}
-          {game.stage === 'end' ? <EndStep career={game.career} onRestart={() => setGame(null)} /> : null}
+          {game.stage === 'camp' ? <CampStep key={game.career.ufcFights} career={game.career} coaches={game.coaches} note={game.note} onTrain={train} onRetire={() => stop()} retirable={!game.challenge} /> : null}
+          {game.stage === 'offers' ? <OffersStep key={game.seed} career={game.career} seed={game.seed} onFight={takeFight} onRetire={() => stop()} canRetire={!game.challenge && canRetire(game.career)} /> : null}
+          {game.stage === 'fight' && game.fight ? <FightStep key={game.career.ufcFights} career={game.career} offer={game.fight.offer} start={game.fight.state} random={game.fight.dice} onContinue={continueCareer} onRetire={stop} retirable={!game.challenge} /> : null}
+          {game.stage === 'end' ? <EndStep career={game.career} challenge={game.challenge} onRestart={() => setGame(null)} /> : null}
         </>
       )}
     </div>
