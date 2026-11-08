@@ -18,7 +18,7 @@ export function StatusCard({ career }: { career: Career }) {
   const age = Math.floor(career.age)
 
   return (
-    <section aria-label={L(lang, 'Seu lutador', 'Your fighter', 'Votre combattant', 'Tu peleador')} className="game-card overflow-hidden">
+    <section aria-label={L(lang, 'Seu lutador', 'Your fighter', 'Votre combattant', 'Tu peleador')} className="surface-card rounded-2xl overflow-hidden">
       <div className="flex flex-wrap items-center gap-4 p-4 sm:p-5">
         <Emblem name={career.name} className="h-16 w-16 text-2xl sm:h-20 sm:w-20" />
         <div className="min-w-[8.5rem] flex-1">

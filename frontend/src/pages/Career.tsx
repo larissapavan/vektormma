@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { L } from '../i18n/lang'
 import { RetrospectCard } from '../shared/components/RetrospectCard'
+import { SectionHeading } from '../shared/components/SectionHeading'
 import { challengeBuild, challengeDone, challengeStreams, decodeChallenge, type Challenge } from '../shared/game/challenge'
 import { drawGoals } from '../shared/game/goals'
 import {
@@ -141,24 +142,25 @@ export function Career() {
 
   return (
     <div className="space-y-5 sm:space-y-6">
-      <header className="game-hero overflow-hidden rounded-3xl border border-[var(--border-subtle)] px-5 py-7 sm:px-10 sm:py-10">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--accent-red)]">{L(lang, 'Jogo', 'Game', 'Jeu', 'Juego')}</p>
-        <h1 className="game-title mt-2 text-3xl sm:text-5xl lg:text-6xl">{L(lang, 'Simule sua carreira no UFC', 'Simulate your UFC career', 'Simulez votre carrière à l’UFC', 'Simula tu carrera en la UFC')}</h1>
-        <p className="mt-4 max-w-2xl text-sm leading-6 text-[var(--text-secondary)] sm:text-base">
-          {L(
+      <header className="surface-card rounded-2xl border border-[var(--border-subtle)] px-4 py-5 sm:px-8 sm:py-7">
+        <SectionHeading
+          level={1}
+          eyebrow={L(lang, 'Jogo', 'Game', 'Jeu', 'Juego')}
+          title={L(lang, 'Simule sua carreira no UFC', 'Simulate your UFC career', 'Simulez votre carrière à l’UFC', 'Simula tu carrera en la UFC')}
+          description={L(
             lang,
             'Crie um lutador, treine, escolha seus adversários entre lutadores reais e veja até onde vai. No fim, salve uma imagem do seu retrospecto ou compartilhe o link.',
             'Build a fighter, train, pick your opponents among real fighters and see how far you go. At the end, save a picture of your career or share the link.',
             'Créez un combattant, entraînez-vous, choisissez vos adversaires parmi de vrais combattants et voyez jusqu’où vous allez. À la fin, enregistrez une image de votre bilan ou partagez le lien.',
             'Crea un peleador, entrena, elige a tus rivales entre peleadores reales y mira hasta dónde llegas. Al final, guarda una imagen de tu balance o comparte el enlace.',
           )}
-        </p>
+        />
         {!shared || game ? (
-          <div className="mt-6">
+          <div className="mt-4 border-t border-[var(--border-subtle)] pt-4">
             <Stepper steps={steps} current={stepIndex} />
           </div>
         ) : null}
-        <details className="mt-5 text-xs leading-5 text-[var(--text-muted)]">
+        <details className="mt-4 text-xs leading-5 text-[var(--text-muted)]">
           <summary className="cursor-pointer font-bold uppercase tracking-[0.12em] text-[var(--text-secondary)]">{L(lang, 'Como funciona', 'How it works', 'Comment ça marche', 'Cómo funciona')}</summary>
           <ul className="mt-2 list-disc space-y-1 pl-5">
             <li>{L(lang, 'A chance de vencer cada luta vem do mesmo modelo do site, que lê precisão de golpes e de quedas, alcance, idade e cartel.', 'The chance of winning each fight comes from the site’s own model, which reads striking and takedown accuracy, reach, age and record.', 'La probabilité de gagner chaque combat vient du modèle du site, qui lit la précision de frappe et d’amenée au sol, l’allonge, l’âge et le bilan.', 'La probabilidad de ganar cada pelea sale del mismo modelo del sitio, que lee la precisión de golpeo y de derribos, el alcance, la edad y el récord.')}</li>
@@ -173,7 +175,7 @@ export function Career() {
       </header>
 
       {shared && !game ? (
-        <section className="game-card space-y-5 p-5 sm:p-8">
+        <section className="surface-card rounded-2xl space-y-5 p-5 sm:p-8">
           <p className="text-center text-sm text-[var(--text-secondary)]">
             {L(lang, 'Este é o retrospecto de uma carreira simulada, aberto por um link. Os dados vêm do próprio link e não foram verificados.', 'This is the retrospect of a simulated career, opened from a link. The numbers come from the link itself and have not been verified.', 'Voici le bilan d’une carrière simulée, ouvert depuis un lien. Les chiffres viennent du lien lui-même et n’ont pas été vérifiés.', 'Este es el balance de una carrera simulada, abierto desde un enlace. Los datos vienen del propio enlace y no se han verificado.')}
           </p>

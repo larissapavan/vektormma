@@ -30,6 +30,10 @@ async function prepare(page: Page, theme: 'dark' | 'light') {
 
 /** What axe finds that matters (serious or critical), as readable lines; an empty list is a pass. */
 async function violations(page: Page) {
+  // The round commentary, the cards and the badges fade in for up to half a second, and axe measures whatever is on the screen:
+  // a line that is half faded in is read with its transparency mixed into the colors (grey on dark, "4.0:1"), and a text that passes
+  // fails. Reduced motion does not stop these (they are not CSS animations), so let them finish.
+  await page.waitForTimeout(700)
   const { violations: found } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()
   return found.filter((violation) => violation.impact === 'serious' || violation.impact === 'critical').map((violation) => `${violation.id}: ${violation.nodes.map((node) => `${node.target.join(' ')} (${node.any[0]?.message ?? violation.help})`).join(' | ')}`)
 }

@@ -871,32 +871,22 @@ select.soft-input option {
 }
 
 /* ---------------------------------------------------------------------------------------------------------------------
-   The career game (src/pages/Career.tsx): a hero with a glow, cards that lift, a pulse for the fight.
+   The career game (src/pages/Career.tsx) uses the site's own surface cards, headings and buttons. What is left here is what
+   only the game has: the choice of an option (the same look as the options of the cancelled fights), its title font and
+   the pop of a result.
    --------------------------------------------------------------------------------------------------------------------- */
-.game-hero {
-  background:
-    radial-gradient(120% 150% at 0% 0%, color-mix(in srgb, var(--accent-red) 30%, transparent), transparent 58%),
-    radial-gradient(90% 130% at 100% 100%, color-mix(in srgb, var(--accent-gold) 22%, transparent), transparent 62%),
-    var(--bg-surface);
-}
-
-.game-card {
-  border: 1px solid var(--border-subtle);
-  border-radius: 1.25rem;
-  background: linear-gradient(180deg, var(--bg-surface-elevated), var(--bg-surface));
-  box-shadow: var(--card-shadow);
-}
-
 .game-pick {
-  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+  border: 2px solid var(--rule);
+  background-color: var(--bg-surface);
+  transition: border-color 120ms ease, background-color 120ms ease;
 }
 .game-pick:hover {
-  transform: translateY(-3px);
+  border-color: var(--accent-red);
+  background-color: var(--bg-surface-subtle);
 }
 .game-pick[aria-pressed='true'] {
   border-color: var(--accent-red);
-  background: color-mix(in srgb, var(--accent-red) 9%, var(--bg-surface));
-  box-shadow: 0 0 0 1px var(--accent-red);
+  background-color: color-mix(in srgb, var(--accent-red) 10%, var(--bg-surface));
 }
 
 .game-title {
@@ -918,6 +908,5 @@ select.soft-input option {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .game-pick:hover { transform: none; }
   .game-pop { animation: none; }
 }

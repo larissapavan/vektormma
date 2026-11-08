@@ -36,7 +36,7 @@ export function AchievementsPanel() {
   const [trophies] = useState(loadTrophies)
   const have = ACHIEVEMENT_IDS.filter((id) => trophies[id] !== undefined).length
   return (
-    <details className="game-card group p-4 sm:p-5">
+    <details className="surface-card rounded-2xl group p-4 sm:p-5">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-xs font-bold uppercase tracking-[0.16em] text-[var(--accent-red)]">
         <span className="flex items-center gap-2">
           <Medal className="h-4 w-4" aria-hidden="true" />

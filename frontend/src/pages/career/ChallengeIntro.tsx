@@ -35,7 +35,7 @@ export function ChallengeEntry({ onPick }: { onPick: (challenge: Challenge) => v
   const { i18n } = useTranslation()
   const lang = i18n.language
   return (
-    <section aria-label={L(lang, 'Desafio', 'Challenge', 'Défi', 'Desafío')} className="game-card space-y-4 p-4 sm:p-5">
+    <section aria-label={L(lang, 'Desafio', 'Challenge', 'Défi', 'Desafío')} className="surface-card rounded-2xl space-y-4 p-4 sm:p-5">
       <div>
         <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[var(--accent-red)]">
           <Flag className="h-4 w-4" aria-hidden="true" />
@@ -83,7 +83,7 @@ export function ChallengeIntro({ challenge, fromLink, onStart, onBack }: { chall
 
   return (
     <form
-      className="game-card space-y-6 p-5 sm:p-7"
+      className="surface-card rounded-2xl space-y-6 p-5 sm:p-7"
       onSubmit={(event) => {
         event.preventDefault()
         if (ready) onStart(cleanName(name))

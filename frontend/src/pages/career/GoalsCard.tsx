@@ -14,7 +14,7 @@ export function GoalsCard({ career }: { career: Career }) {
   if (!goals.length) return null
   const met = goals.filter((goal) => goal.done).length
   return (
-    <section aria-label={L(lang, 'Metas da carreira', 'Career goals', 'Objectifs de carrière', 'Metas de la carrera')} className="game-card p-4 sm:p-5">
+    <section aria-label={L(lang, 'Metas da carreira', 'Career goals', 'Objectifs de carrière', 'Metas de la carrera')} className="surface-card rounded-2xl p-4 sm:p-5">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
         <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[var(--accent-red)]">
           <Target className="h-4 w-4" aria-hidden="true" />

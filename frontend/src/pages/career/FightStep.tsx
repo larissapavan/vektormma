@@ -54,7 +54,7 @@ function TacticButton({ tactic, onPick }: { tactic: Tactic; onPick: () => void }
   const lang = i18n.language
   const text = TACTIC_TEXT[tactic]
   return (
-    <button type="button" onClick={onPick} className="game-pick flex h-full flex-col gap-2 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-3 text-left sm:p-4">
+    <button type="button" onClick={onPick} className="game-pick flex h-full flex-col gap-2 p-3 text-left sm:p-4">
       <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[var(--accent-red)]/12 text-[var(--text-red)]">{TACTIC_ICON[tactic]}</span>
       <span>
         <span className="block text-xs font-bold text-[var(--text-main)] sm:text-sm">{pick(lang, text.name)}</span>
@@ -99,8 +99,8 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
   }
 
   return (
-    <section className="game-card overflow-hidden">
-      <div className="game-hero px-5 pb-6 pt-5 sm:px-8">
+    <section className="surface-card rounded-2xl overflow-hidden">
+      <div className="border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-5 pb-6 pt-5 sm:px-8">
         {title ? (
           <p className="mb-3 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-gold)]">
             <Trophy className="h-4 w-4" aria-hidden="true" />

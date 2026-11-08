@@ -67,7 +67,7 @@ function OfferCard({ offer, selected, onChoose, heading }: { offer: GameOpponent
   const { i18n } = useTranslation()
   const lang = i18n.language
   return (
-    <button type="button" aria-pressed={selected} onClick={onChoose} className="game-pick game-card flex w-full items-center gap-3 p-3 text-left sm:gap-4 sm:p-4">
+    <button type="button" aria-pressed={selected} onClick={onChoose} className="game-pick flex w-full items-center gap-3 p-3 text-left sm:gap-4 sm:p-4">
       <FighterAvatar name={offer.name} imageUrl={offer.image_url} className="h-16 w-16 sm:h-20 sm:w-20" highlight={offer.champion} />
       <span className="flex min-w-0 flex-1 flex-col gap-2">
         {heading ? <span className="flex">{heading}</span> : null}
@@ -123,7 +123,7 @@ export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { car
   ]
 
   return (
-    <section className="game-card space-y-5 p-4 sm:space-y-6 sm:p-7">
+    <section className="surface-card rounded-2xl space-y-5 p-4 sm:space-y-6 sm:p-7">
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--accent-red)]">{L(lang, 'Matchmaking', 'Matchmaking', 'Matchmaking', 'Matchmaking')}</p>
         <h2 ref={heading} tabIndex={-1} className="game-title mt-1 text-xl focus:outline-none sm:text-3xl">
@@ -183,7 +183,7 @@ export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { car
               {plans.map((option) => {
                 const edge = planNudge(option.value, offers.player, chosen) > 0.005
                 return (
-                  <button key={option.value} type="button" aria-pressed={plan === option.value} onClick={() => setPlan(option.value)} className="game-pick flex h-full flex-col gap-2 rounded-2xl border border-[var(--border-default)] bg-[var(--bg-surface)] p-3 text-left sm:p-4">
+                  <button key={option.value} type="button" aria-pressed={plan === option.value} onClick={() => setPlan(option.value)} className="game-pick flex h-full flex-col gap-2 p-3 text-left sm:p-4">
                     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[var(--accent-red)]/12 text-[var(--text-red)]">{option.icon}</span>
                     <span>
                       <span className="block text-xs font-bold text-[var(--text-main)] sm:text-sm">{option.label}</span>
