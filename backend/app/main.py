@@ -70,6 +70,13 @@ async def lifespan(_: FastAPI):
         set_prediction_service(None)
         prediction_service = None
     try:
+        # The fighter list takes seconds to build and is asked for by the health check on the very first visit: build it now.
+        from backend.app.services.catalog_service import list_fighters
+
+        logger.info("Fighter profiles ready: %d.", len(list_fighters(ufc_only=True)))
+    except Exception:
+        logger.exception("Could not warm the fighter list.")
+    try:
         yield
     finally:
         set_prediction_service(None)

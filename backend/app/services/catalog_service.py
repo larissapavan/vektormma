@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import logging
 import math
+import os
 import re
 import time
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
@@ -451,11 +453,43 @@ def get_latest_fight_date() -> str | None:
     return None if pd.isna(latest) else latest.date().isoformat()
 
 
+_profiles_cache: dict = {"signature": None, "data": {}}
+
+
+def _profiles_signature() -> tuple:
+    """What the profiles are built from: every file of data/raw (one stat each), the historical photos and the day.
+
+    The profiles read many of those files (fights, cards, titles, aliases...) and show ages, so any change to a file, or a new
+    day, must rebuild them. One pass over the folder costs about 40 stats; building the list costs several seconds."""
+    try:
+        with os.scandir(RAW_DATA_DIR) as entries:
+            stamps = tuple(sorted((entry.name, entry.stat().st_mtime_ns) for entry in entries if entry.is_file()))
+    except OSError:
+        stamps = ()
+    historical = HISTORICAL_PHOTOS_SOURCE_PATH.stat().st_mtime_ns if HISTORICAL_PHOTOS_SOURCE_PATH.exists() else None
+    return (stamps, historical, date.today().isoformat())
+
+
 def list_fighters(ufc_only: bool = False) -> list[dict]:
     """Every fighter in the catalog; with `ufc_only`, only those who fought in the UFC or are on the roster/a card.
 
     The catalog also holds fighters from other promotions (status "never"): they feed the model but are not part of
-    what the site shows or lets you pick."""
+    what the site shows or lets you pick.
+
+    The list is kept until a data file changes (see `_profiles_signature`): rebuilding it takes seconds, and the health check,
+    the fighters page and the gym pages all ask for it. Each caller gets its own copy of the profiles."""
+    signature = _profiles_signature()
+    if _profiles_cache["signature"] != signature:
+        _profiles_cache["signature"] = signature
+        _profiles_cache["data"] = {}
+    profiles = _profiles_cache["data"].get(ufc_only)
+    if profiles is None:
+        profiles = _build_profiles(ufc_only)
+        _profiles_cache["data"][ufc_only] = profiles
+    return [dict(profile) for profile in profiles]
+
+
+def _build_profiles(ufc_only: bool) -> list[dict]:
     catalog = get_fighter_catalog()
     if ufc_only:
         catalog = catalog[catalog["ufc_status"] != "never"]
