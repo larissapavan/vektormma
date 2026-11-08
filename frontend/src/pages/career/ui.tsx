@@ -1,8 +1,21 @@
-import type { ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { Check } from 'lucide-react'
 
 /** The small building blocks of the game screens: the emblem, the skill meters, the radar and the step bar. */
+
+/**
+ * Puts the keyboard focus on a screen's heading when the screen appears. The screens of the game replace one another (camp,
+ * matchmaking, fight, end): left where it was, on a button that is gone, the focus falls to the page body and a keyboard or
+ * screen reader user loses their place at every step. The page does not scroll for it, so what the player sees stays as it is.
+ */
+export function useFocusOnMount<T extends HTMLElement>(): React.RefObject<T | null> {
+  const ref = useRef<T>(null)
+  useEffect(() => {
+    ref.current?.focus({ preventScroll: true })
+  }, [])
+  return ref
+}
 
 /** A round badge with the initials: the player's stand-in for a photo. */
 export function Emblem({ name, className = 'h-16 w-16 text-xl' }: { name: string; className?: string }) {

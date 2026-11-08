@@ -204,7 +204,7 @@ export function Career() {
           {game.stage === 'camp' || game.stage === 'offers' ? <GoalsCard career={game.career} /> : null}
           {game.stage === 'camp' ? <CampStep key={game.career.ufcFights} career={game.career} coaches={game.coaches} note={game.note} onTrain={train} onRetire={() => stop()} retirable={!game.challenge} /> : null}
           {game.stage === 'offers' ? <OffersStep key={game.seed} career={game.career} seed={game.seed} onFight={takeFight} onRetire={() => stop()} canRetire={!game.challenge && canRetire(game.career)} /> : null}
-          {game.stage === 'fight' && game.fight ? <FightStep key={game.career.ufcFights} career={game.career} offer={game.fight.offer} start={game.fight.state} random={game.fight.dice} onContinue={continueCareer} onRetire={stop} retirable={!game.challenge} /> : null}
+          {game.stage === 'fight' && game.fight ? <FightStep key={game.career.ufcFights} career={game.career} offer={game.fight.offer} start={game.fight.state} random={game.fight.dice} onContinue={continueCareer} onRetire={stop} retirable={!game.challenge} endsCareer={Boolean(game.challenge && game.career.ufcFights + 1 >= game.challenge.fights)} /> : null}
           {game.stage === 'end' ? <EndStep career={game.career} challenge={game.challenge} onRestart={() => setGame(null)} /> : null}
         </>
       )}

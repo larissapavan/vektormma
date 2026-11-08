@@ -11,7 +11,7 @@ import { BAND_LABELS, chanceBand } from '../../shared/game/labels'
 import { getMatchmaking } from '../../shared/services/api'
 import type { GameOpponent, MatchmakingResponse } from '../../shared/types/api'
 import { HeadToHead } from './HeadToHead'
-import { Chip, GhostButton, PrimaryButton } from './ui'
+import { Chip, GhostButton, PrimaryButton, useFocusOnMount } from './ui'
 
 interface Offers {
   player: MatchmakingResponse['player']
@@ -99,6 +99,7 @@ export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { car
   const [attempt, setAttempt] = useState(0)
   const [chosen, setChosen] = useState<GameOpponent | null>(null)
   const [plan, setPlan] = useState<Plan>('balanced')
+  const heading = useFocusOnMount<HTMLHeadingElement>()
 
   useEffect(() => {
     let active = true
@@ -125,7 +126,7 @@ export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { car
     <section className="game-card space-y-5 p-4 sm:space-y-6 sm:p-7">
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--accent-red)]">{L(lang, 'Matchmaking', 'Matchmaking', 'Matchmaking', 'Matchmaking')}</p>
-        <h2 className="game-title mt-1 text-xl sm:text-3xl">
+        <h2 ref={heading} tabIndex={-1} className="game-title mt-1 text-xl focus:outline-none sm:text-3xl">
           {career.champion
             ? L(lang, 'Defesa de cinturão: escolha o desafiante', 'Title defense: choose the challenger', 'Défense de ceinture : choisissez le challenger', 'Defensa del cinturón: elige al retador')
             : L(lang, 'Escolha seu próximo adversário', 'Choose your next opponent', 'Choisissez votre prochain adversaire', 'Elige a tu próximo rival')}
