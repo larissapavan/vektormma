@@ -14,7 +14,7 @@ const offer = (extra: Partial<Offer> = {}): Offer => ({ label: 'even', name: 'Ri
 const rookie = (goals: string[] = ['wins4', 'kos2', 'streak3']): Career => createCareer(build, goals)
 const story = (round: number, edge: Edge, tactic: Tactic = 'steady', finish = false): RoundStory => ({ round, edge, variant: 0, finish, tactic })
 const fightResult = (extra: Partial<FightResult> = {}): FightResult => ({
-  career: rookie(), won: true, method: 'dec', round: 3, split: false, chance: 0.5, pointsGained: 2, rounds: [], lostBelt: false, wonBelt: false, standingBefore: 'prospect', standingAfter: 'prospect', ...extra,
+  career: rookie(), won: true, method: 'dec', round: 3, split: false, chance: 0.5, pointsGained: 2, streakPoints: 0, rounds: [], lostBelt: false, wonBelt: false, standingBefore: 'prospect', standingAfter: 'prospect', ...extra,
 })
 const context = (extra: Partial<AchievementContext> = {}): AchievementContext => ({ before: rookie(), after: rookie(), result: fightResult(), opponent: 'Rival One', ended: false, ...extra })
 const earns = (id: AchievementId, ctx: AchievementContext) => ACHIEVEMENTS.find((achievement) => achievement.id === id)!.check(ctx)

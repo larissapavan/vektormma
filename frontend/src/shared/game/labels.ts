@@ -14,6 +14,15 @@ export const STANDING_LABELS: Record<Standing, ByLang> = {
 
 /** How a career ended, as one sentence ("Retired at 34 after 17 UFC fights."). */
 export function endingText(language: string, card: Pick<Retrospect, 'e' | 'a' | 'f'>): string {
+  if (card.e === 'banned') {
+    return L(
+      language,
+      `Banido do UFC aos ${card.a} anos, depois de combinar o resultado de uma luta.`,
+      `Banned from the UFC at ${card.a} after fixing a fight.`,
+      `Banni de l’UFC à ${card.a} ans après avoir truqué un combat.`,
+      `Vetado de la UFC a los ${card.a} años, tras arreglar una pelea.`,
+    )
+  }
   if (card.e === 'released') {
     return L(
       language,

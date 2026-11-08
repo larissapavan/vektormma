@@ -1,11 +1,10 @@
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ArrowRight, HeartPulse } from 'lucide-react'
 
 import { L, pick } from '../../i18n/lang'
 import { canRetire, COACHES, previewCamp, type Career, type CoachId } from '../../shared/game/career'
 import { COACH_TEXT } from '../../shared/game/coaches'
-import { Chip, Emblem, GhostButton, PrimaryButton, useFocusOnMount } from './ui'
+import { Chip, Emblem, GhostButton, useFocusOnMount } from './ui'
 
 export interface CampNote {
   injured: boolean
@@ -13,14 +12,14 @@ export interface CampNote {
 }
 
 /** One coach: who they are, what they are good at, and exactly what a camp with them would do to this fighter. */
-function CoachCard({ coachId, career, selected, onChoose }: { coachId: CoachId; career: Career; selected: boolean; onChoose: () => void }) {
+function CoachCard({ coachId, career, onTrain }: { coachId: CoachId; career: Career; onTrain: () => void }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
   const text = COACH_TEXT[coachId]
   const preview = previewCamp(career, COACHES[coachId])
   const injury = Math.round(preview.injury * 100)
   return (
-    <button type="button" aria-pressed={selected} onClick={onChoose} className="game-pick flex w-full flex-col gap-3 p-4 text-left">
+    <article aria-label={text.name} className="flex w-full flex-col gap-3 border-2 border-[var(--rule)] bg-[var(--bg-surface)] p-4 text-left">
       <span className="flex items-center gap-3">
         <Emblem name={text.name.replace('Coach ', '')} className="h-12 w-12 text-lg" />
         <span className="min-w-0">
@@ -36,15 +35,23 @@ function CoachCard({ coachId, career, selected, onChoose }: { coachId: CoachId; 
         <Chip>{L(lang, `+${preview.age} ano`, `+${preview.age} yr`, `+${preview.age} an`, `+${preview.age} año`)}</Chip>
         {preview.scout > 0 ? <Chip tone="gold">{L(lang, 'Vantagem na próxima luta', 'Edge in the next fight', 'Avantage au prochain combat', 'Ventaja en la próxima pelea')}</Chip> : null}
       </span>
-    </button>
+      <button
+        type="button"
+        onClick={onTrain}
+        aria-label={L(lang, `Treinar com ${text.name}`, `Train with ${text.name}`, `S’entraîner avec ${text.name}`, `Entrenar con ${text.name}`)}
+        className="ghost-action inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl px-4 text-xs uppercase hover:!border-[var(--accent-red)]"
+      >
+        {L(lang, 'Treinar', 'Train', 'S’entraîner', 'Entrenar')}
+        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+      </button>
+    </article>
   )
 }
 
-/** Between fights: three coaches on offer; the player picks who to train with. */
+/** Between fights: three coaches on offer, each with its own "Train" button: one touch chooses and starts the camp. */
 export function CampStep({ career, coaches, note, onTrain, onRetire, retirable = true }: { career: Career; coaches: CoachId[]; note: CampNote | null; onTrain: (coach: CoachId) => void; onRetire: () => void; retirable?: boolean }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
-  const [chosen, setChosen] = useState<CoachId | null>(null)
   const heading = useFocusOnMount<HTMLHeadingElement>()
 
   return (
@@ -56,7 +63,7 @@ export function CampStep({ career, coaches, note, onTrain, onRetire, retirable =
             ? L(lang, 'Camp para a estreia no UFC', 'Camp for your UFC debut', 'Préparation pour vos débuts à l’UFC', 'Campamento para tu debut en la UFC')
             : L(lang, `Camp para a luta ${career.ufcFights + 1} no UFC`, `Camp for UFC fight ${career.ufcFights + 1}`, `Préparation pour le combat n° ${career.ufcFights + 1} à l’UFC`, `Campamento para la pelea ${career.ufcFights + 1} en la UFC`)}
         </h2>
-        <p className="mt-2 text-sm text-[var(--text-secondary)]">{L(lang, 'Escolha com quem treinar. Cada técnico muda o que você ganha e o que arrisca.', 'Choose who to train with. Each coach changes what you gain and what you risk.', 'Choisissez avec qui vous entraîner. Chaque entraîneur change ce que vous gagnez et ce que vous risquez.', 'Elige con quién entrenar. Cada técnico cambia lo que ganas y lo que arriesgas.')}</p>
+        <p className="mt-2 text-sm text-[var(--text-secondary)]">{L(lang, 'Cada técnico muda o que você ganha e o que arrisca. O camp começa assim que você escolhe.', 'Each coach changes what you gain and what you risk. The camp starts as soon as you choose.', 'Chaque entraîneur change ce que vous gagnez et ce que vous risquez. La préparation commence dès que vous choisissez.', 'Cada técnico cambia lo que ganas y lo que arriesgas. El campamento empieza en cuanto eliges.')}</p>
       </div>
 
       {note?.injured ? (
@@ -78,20 +85,16 @@ export function CampStep({ career, coaches, note, onTrain, onRetire, retirable =
         <legend className="sr-only">{L(lang, 'Técnicos disponíveis', 'Coaches on offer', 'Entraîneurs proposés', 'Técnicos disponibles')}</legend>
         <div className="grid gap-3 md:grid-cols-3 sm:gap-4">
           {coaches.map((coachId) => (
-            <CoachCard key={coachId} coachId={coachId} career={career} selected={chosen === coachId} onChoose={() => setChosen(coachId)} />
+            <CoachCard key={coachId} coachId={coachId} career={career} onTrain={() => onTrain(coachId)} />
           ))}
         </div>
       </fieldset>
 
-      <div className="flex flex-wrap items-center gap-3">
-        <PrimaryButton disabled={!chosen} onClick={() => chosen && onTrain(chosen)}>
-          {chosen
-            ? L(lang, `Treinar com ${COACH_TEXT[chosen].name}`, `Train with ${COACH_TEXT[chosen].name}`, `S’entraîner avec ${COACH_TEXT[chosen].name}`, `Entrenar con ${COACH_TEXT[chosen].name}`)
-            : L(lang, 'Escolha um técnico', 'Choose a coach', 'Choisissez un entraîneur', 'Elige un técnico')}
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </PrimaryButton>
-        {retirable && canRetire(career) ? <GhostButton onClick={onRetire}>{L(lang, 'Aposentar', 'Retire', 'Prendre sa retraite', 'Retirarse')}</GhostButton> : null}
-      </div>
+      {retirable && canRetire(career) ? (
+        <div className="flex flex-wrap items-center gap-3">
+          <GhostButton onClick={onRetire}>{L(lang, 'Aposentar', 'Retire', 'Prendre sa retraite', 'Retirarse')}</GhostButton>
+        </div>
+      ) : null}
     </section>
   )
 }

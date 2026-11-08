@@ -12,6 +12,9 @@ import { loadTrophies, TROPHY_KEY } from '../shared/game/trophies'
 import { respond } from './fixtures'
 
 const calls = vi.hoisted(() => ({ matchmaking: [] as unknown[] }))
+// A camp is followed by a card in two of five cases, drawn from the game's dice: the tests choose it (none unless a test sets one).
+const cards = vi.hoisted(() => ({ next: null as unknown }))
+vi.mock('../shared/game/events', async (importOriginal) => ({ ...(await importOriginal<typeof import('../shared/game/events')>()), drawCard: () => cards.next }))
 
 vi.mock('axios', () => {
   const instance = {
@@ -35,11 +38,9 @@ function renderAt(path: string) {
 const click = (name: RegExp | string) => userEvent.click(screen.getByRole('button', { name }))
 const findButton = (name: RegExp | string) => screen.findByRole('button', { name }, { timeout: 10000 })
 
-/** Picks the first of the three coaches on offer and trains with them. */
+/** Trains with the first of the three coaches on offer: each card has its own Train button, so it is one touch. */
 async function train() {
-  const coaches = screen.getAllByRole('button', { name: /^Coach /, pressed: false })
-  await userEvent.click(coaches[0])
-  await click(/^train with coach/i)
+  await userEvent.click(screen.getAllByRole('button', { name: /^train with coach/i })[0])
 }
 
 async function startCareer(name = 'Maria Silva') {
@@ -60,6 +61,7 @@ async function playOneFight() {
 
 beforeEach(async () => {
   calls.matchmaking.length = 0
+  cards.next = null
   window.localStorage.clear()
   // jsdom has no canvas: the card then shows its text version, which is what these tests read.
   vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null)
@@ -96,16 +98,22 @@ describe('creating the fighter', () => {
 })
 
 describe('a career', () => {
-  it('offers three coaches, shows what each camp does, and trains only once one is chosen', async () => {
+  it('offers three coaches, shows what each camp does, and trains with one touch on the coach’s own button', async () => {
     await startCareer()
-    const coaches = screen.getAllByRole('button', { name: /^Coach / })
-    expect(coaches).toHaveLength(3)
-    for (const coach of coaches) expect(coach).toHaveTextContent(/Striking \+\d+\.\d/)
+    const cards = screen.getAllByRole('article', { name: /^Coach / })
+    expect(cards).toHaveLength(3)
+    for (const card of cards) {
+      expect(card).toHaveTextContent(/Striking \+\d+\.\d/)
+      expect(within(card).getByRole('button', { name: /^train with coach/i })).toBeEnabled()
+    }
+    // There is nothing to choose first and confirm after: the effects are on the card, so the button is the choice.
+    expect(screen.queryByRole('button', { name: /choose a coach/i })).toBeNull()
+    expect(calls.matchmaking).toHaveLength(0)
 
-    expect(screen.getByRole('button', { name: /choose a coach/i })).toBeDisabled()
-    await userEvent.click(coaches[1])
-    expect(coaches[1]).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByRole('button', { name: /^train with coach/i })).toBeEnabled()
+    await userEvent.click(within(cards[1]).getByRole('button', { name: /^train with coach/i }))
+    expect(await findButton(/Easy Eddie/)).toBeInTheDocument()
+    expect(screen.queryByRole('article', { name: /^Coach / })).toBeNull() // the camp is over
+    expect(calls.matchmaking).toHaveLength(1)
   })
 
   it('asks the API for fights built from the fighter, then plays one and goes on', async () => {
@@ -166,6 +174,66 @@ describe('a career', () => {
 
     await click(/start another career/i)
     expect(await findButton(/start the career/i)).toBeInTheDocument()
+  })
+})
+
+describe('the touches a fight takes', () => {
+  it('is four on the quickest way: train, choose the opponent, fight and skip to the result, continue (it used to be six)', async () => {
+    await startCareer()
+    await userEvent.click(screen.getAllByRole('button', { name: /^train with coach/i })[0]) // 1
+    await userEvent.click(await findButton(/Easy Eddie/)) // 2
+    await click(/fight and skip to the result/i) // 3
+    expect(screen.getByTestId('fight-result')).toHaveTextContent(/victory|defeat/i)
+    await click(/continue the career/i) // 4
+    expect(screen.getByText(/camp for ufc fight 2/i)).toBeInTheDocument()
+  })
+
+  it('plays every round at once with the plan unchanged, ends on the result and leaves nothing to decide', async () => {
+    await startCareer()
+    await train()
+    await userEvent.click(await findButton(/Easy Eddie/))
+    await click(/fight and skip to the result/i)
+    expect(screen.getByTestId('fight-result')).toHaveFocus()
+    expect(screen.queryByRole('button', { name: /^attack/i })).toBeNull() // no round left to give a tactic for
+    expect(screen.queryByRole('button', { name: /skip to the result/i })).toBeNull()
+    expect(screen.getByTestId('scorecard')).toBeInTheDocument()
+    await click(/continue the career/i)
+    const [wins, losses] = screen.getByTestId('record').textContent?.split('-').map(Number) ?? []
+    expect(wins + losses).toBe(7) // the fight counts like any other
+  })
+
+  it('still lets the player fight the same opponent round by round', async () => {
+    await startCareer()
+    await train()
+    await userEvent.click(await findButton(/Easy Eddie/))
+    expect(screen.getByRole('button', { name: /^fight easy eddie/i })).toBeInTheDocument()
+    await click(/^fight easy eddie/i)
+    expect(screen.getByRole('button', { name: /^attack/i })).toBeInTheDocument() // the corner asks before round 1
+    expect(screen.queryByTestId('fight-result')).toBeNull()
+  })
+
+  it('gives a challenge the same fight whichever way it is played: fight and skip, or fight and then skip to the result', async () => {
+    const link = `/career?d=${encodeChallenge({ seed: 20261108, fights: 3, target: null })}`
+    const play = async (quick: boolean) => {
+      const view = renderAt(link)
+      await userEvent.type(await screen.findByLabelText('Your name', undefined, { timeout: 10000 }), 'Ana')
+      await click(/start the challenge/i)
+      await train()
+      await userEvent.click(await findButton(/Easy Eddie/))
+      if (quick) await click(/fight and skip to the result/i)
+      else {
+        await click(/^fight easy eddie/i)
+        await click(/skip to the result/i)
+      }
+      const text = screen.getByTestId('fight-result').textContent
+      const rounds = screen.getAllByText(/^round \d$/i).length
+      view.unmount()
+      window.localStorage.clear()
+      return { text, rounds }
+    }
+    const quick = await play(true)
+    const slow = await play(false)
+    expect(quick).toEqual(slow)
   })
 })
 
@@ -433,7 +501,7 @@ describe('a challenge', () => {
   })
 
   it('offers the same coaches and the same goals to everyone who plays the same challenge', async () => {
-    const coaches = () => screen.getAllByRole('button', { name: /^Coach / }).map((button) => button.textContent)
+    const coaches = () => screen.getAllByRole('article', { name: /^Coach / }).map((card) => card.textContent)
     const goals = () => within(screen.getByRole('region', { name: /career goals/i })).getAllByRole('listitem').map((item) => item.textContent)
     const first = await startChallenge(challenge(), 'Ana')
     const firstCoaches = coaches()
@@ -582,5 +650,108 @@ describe('a shared link', () => {
     renderAt(`/career?c=${encodeRetrospect({ ...card, n: '<img src=x onerror=alert(1)>' })}`)
     const fallback = await screen.findByTestId('card-fallback', undefined, { timeout: 10000 })
     expect(fallback.querySelector('img')).toBeNull()
+  })
+})
+
+describe('the cards between a camp and a fight', () => {
+  const rookie = () => createCareer({ name: 'Maria Silva', division: 'Lightweight', stance: 'Orthodox', striking: 50, takedowns: 50, reach: 50 })
+  const stored = () => JSON.parse(window.localStorage.getItem(SAVE_KEY) ?? 'null')
+
+  it('shows a sponsor’s offer before the fights, with what it pays and what it costs, and keeps it in the save', async () => {
+    cards.next = { kind: 'sponsor', deal: 'finisher' }
+    await startCareer()
+    await train()
+    const heading = await screen.findByRole('heading', { name: /Linha Octógono/ })
+    expect(heading).toHaveFocus()
+    expect(screen.getByText(/win the next fight by knockout or submission/i)).toBeInTheDocument()
+    expect(screen.getByText(/met: \+4 points/i)).toBeInTheDocument()
+    expect(screen.getByText(/missed: −1 point$/i)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Easy Eddie/ })).toBeNull() // the fights wait for the answer
+    expect(calls.matchmaking).toHaveLength(0)
+    expect(stored()).toMatchObject({ stage: 'offers', card: { kind: 'sponsor', deal: 'finisher' } })
+  })
+
+  it('goes on to the fights when the player declines, with nothing signed', async () => {
+    cards.next = { kind: 'sponsor', deal: 'winner' }
+    await startCareer()
+    await train()
+    await click(/^decline$/i)
+    expect(await findButton(/Easy Eddie/)).toBeInTheDocument()
+    expect(screen.queryByText(/Rede Ponto Forte/)).toBeNull()
+    expect(stored()).toMatchObject({ card: null, career: { pact: null } })
+  })
+
+  it('reminds the player of the contract at the matchmaking, and settles it with the fight', async () => {
+    cards.next = { kind: 'sponsor', deal: 'winner' }
+    await startCareer()
+    await train()
+    await click(/accept the contract/i)
+    await userEvent.click(await findButton(/Easy Eddie/))
+    expect(screen.getByText(/Rede Ponto Forte contract: win the next fight/i)).toBeInTheDocument()
+    expect(stored()).toMatchObject({ career: { pact: { kind: 'deal', id: 'winner' } } })
+    await click(/fight and skip to the result/i)
+    expect(screen.getByText(/Rede Ponto Forte contract (met: \+3|missed: -2)/i)).toBeInTheDocument()
+    await click(/continue the career/i)
+    expect(stored()?.career?.pact ?? null).toBeNull() // for one fight only
+  })
+
+  it('offers an arranged fight as what it is, with the refusal first and the risk in numbers', async () => {
+    cards.next = { kind: 'fix' }
+    await startCareer()
+    await train()
+    expect(await screen.findByRole('heading', { name: /a manager wants to fix a fight/i })).toHaveFocus()
+    expect(screen.getByText(/crime and a betrayal/i)).toBeInTheDocument()
+    expect(screen.getByText(/35% chance of being found out and banned for life/i)).toBeInTheDocument()
+    const buttons = screen.getAllByRole('button').filter((button) => /^(refuse|accept and lose on purpose)$/i.test(button.textContent ?? ''))
+    expect(buttons.map((button) => button.textContent)).toEqual(['Refuse', 'Accept and lose on purpose'])
+    await click(/^refuse$/i)
+    expect(await findButton(/Easy Eddie/)).toBeInTheDocument()
+    expect(screen.queryByText(/arranged fight:/i)).toBeNull()
+  })
+
+  it('loses an accepted arranged fight without a round to play, and pays for it', async () => {
+    cards.next = { kind: 'fix' }
+    await startCareer()
+    await train()
+    await click(/accept and lose on purpose/i)
+    await userEvent.click(await findButton(/Easy Eddie/))
+    expect(screen.getByText(/arranged fight: you will lose this one on purpose/i)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /fight and skip to the result/i })).toBeNull()
+    await click(/^fight easy eddie/i)
+    expect(screen.getByTestId('fight-result')).toHaveTextContent(/defeat/i)
+    expect(screen.queryByRole('button', { name: /^attack/i })).toBeNull() // nothing to decide
+    expect(screen.getByText(/arranged fight: \+6/i)).toBeInTheDocument()
+    expect(screen.getByText(/nobody found out|banned from the ufc for life/i)).toBeInTheDocument()
+  })
+
+  it('ends the career, banned, when the investigation finds an arranged fight', async () => {
+    window.localStorage.setItem(SAVE_KEY, JSON.stringify({ career: { ...rookie(), ufcFights: 3, pact: { kind: 'fix', caught: true } }, stage: 'offers', coaches: ['striker', 'wrestler', 'allround'], seed: 4, note: null, card: null, savedAt: 1 }))
+    renderAt('/career')
+    await userEvent.click(await findButton(/resume the career/i))
+    await userEvent.click(await findButton(/Easy Eddie/))
+    await click(/^fight easy eddie/i)
+    expect(screen.getByText(/an investigation found the arranged result/i)).toBeInTheDocument()
+    await click(/see the retrospect/i)
+    expect(await screen.findByText(/banned from the ufc at 24 after fixing a fight/i)).toBeInTheDocument()
+    expect(window.localStorage.getItem(SAVE_KEY)).toBeNull() // an ended career is not kept
+  })
+
+  it('brings the card back when the career is taken up again in a new visit', async () => {
+    window.localStorage.setItem(SAVE_KEY, JSON.stringify({ career: rookie(), stage: 'offers', coaches: ['striker', 'wrestler', 'allround'], seed: 4, note: null, card: { kind: 'sponsor', deal: 'underdog' }, savedAt: 1 }))
+    renderAt('/career')
+    await userEvent.click(await findButton(/resume the career/i))
+    expect(await screen.findByRole('heading', { name: /Energético Faísca/ })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Easy Eddie/ })).toBeNull()
+  })
+
+  it('shows the winning-run bonus on the result, from the third win in a row', async () => {
+    window.localStorage.setItem(SAVE_KEY, JSON.stringify({ career: { ...rookie(), ufcFights: 2, wins: 8, winStreak: 2, bestStreak: 2 }, stage: 'offers', coaches: ['striker', 'wrestler', 'allround'], seed: 4, note: null, card: null, savedAt: 1 }))
+    renderAt('/career')
+    await userEvent.click(await findButton(/resume the career/i))
+    await userEvent.click(await findButton(/Easy Eddie/))
+    await click(/fight and skip to the result/i)
+    // The fight is won or lost by the dice: the chip is there exactly when it was won.
+    const won = /victory/i.test(screen.getByTestId('fight-result').textContent ?? '')
+    expect(screen.queryByText(/3-win streak: \+1/i) !== null).toBe(won)
   })
 })

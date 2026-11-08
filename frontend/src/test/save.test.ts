@@ -146,7 +146,7 @@ describe('a challenge in a save', () => {
 describe('the save in the browser', () => {
   it('is stored, read back and cleared', () => {
     expect(loadSave()).toBeNull()
-    storeSave({ career: veteran(), stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 5, note: null, challenge: null })
+    storeSave({ career: veteran(), stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 5, note: null, challenge: null, card: null })
     expect(loadSave()).toMatchObject({ stage: 'camp', seed: 5, career: { name: 'Maria Silva', ufcFights: 4 } })
     expect(window.localStorage.getItem(SAVE_KEY)).toContain('Maria Silva')
     clearSave()
@@ -164,7 +164,56 @@ describe('the save in the browser', () => {
       throw new Error('blocked')
     })
     expect(loadSave()).toBeNull()
-    expect(() => storeSave({ career: createCareer(build), stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 1, note: null, challenge: null })).not.toThrow()
+    expect(() => storeSave({ career: createCareer(build), stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 1, note: null, challenge: null, card: null })).not.toThrow()
     expect(() => clearSave()).not.toThrow()
+  })
+})
+
+describe('the pact and the card in a save', () => {
+  const career = createCareer(build)
+
+  it('keeps a sponsor’s deal and an arranged fight on the career', () => {
+    for (const pact of [{ kind: 'deal', id: 'finisher' }, { kind: 'fix', caught: true }, { kind: 'fix', caught: false }] as const) {
+      const kept = { ...veteran(), pact }
+      expect(readCareer(JSON.parse(JSON.stringify(kept)))).toEqual(kept)
+    }
+  })
+
+  it('reads a save from before cards existed as a career with no pact', () => {
+    const old: Record<string, unknown> = JSON.parse(JSON.stringify(career))
+    delete old.pact
+    expect(readCareer(old)).toEqual(career)
+    expect(readSave(save(old as unknown as Career, { stage: 'offers' }))?.card).toBeNull()
+  })
+
+  it.each([
+    ['a pact that is not an object', 'deal'],
+    ['a deal nobody offers', { kind: 'deal', id: 'free-money' }],
+    ['a deal with no name', { kind: 'deal' }],
+    ['an arranged fight that does not say if it is found out', { kind: 'fix' }],
+    ['a made-up kind', { kind: 'loan', caught: false }],
+  ])('refuses %s', (_label, pact) => {
+    expect(readCareer({ ...JSON.parse(JSON.stringify(career)), pact })).toBeNull()
+  })
+
+  it('keeps the card that is waiting at the matchmaking', () => {
+    expect(readSave(save(career, { stage: 'offers', card: { kind: 'fix' } }))?.card).toEqual({ kind: 'fix' })
+    expect(readSave(save(career, { stage: 'offers', card: { kind: 'sponsor', deal: 'winner' } }))?.card).toEqual({ kind: 'sponsor', deal: 'winner' })
+  })
+
+  it.each([
+    ['a card that is not one', { stage: 'offers', card: { kind: 'sponsor', deal: 'free-money' } }],
+    ['a card waiting at the camp', { stage: 'camp', card: { kind: 'fix' } }],
+  ])('refuses %s', (_label, extra) => {
+    expect(readSave(save(career, extra))).toBeNull()
+  })
+
+  it('refuses a card for a career that has already agreed to something', () => {
+    expect(readSave(save({ ...career, pact: { kind: 'fix', caught: false } }, { stage: 'offers', card: { kind: 'fix' } }))).toBeNull()
+  })
+
+  it('stores and loads the card with the rest', () => {
+    storeSave({ career, stage: 'offers', coaches: ['striker', 'wrestler', 'allround'], seed: 5, note: null, challenge: null, card: { kind: 'fix' } })
+    expect(loadSave()?.card).toEqual({ kind: 'fix' })
   })
 })

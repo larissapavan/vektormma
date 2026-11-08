@@ -74,6 +74,8 @@ export function challengeStreams(seed: number) {
     /** The number sent to the matchmaking, which shuffles the opponents with it. */
     offers: (fight: number) => Math.floor(challengeRng(seed, 'offers', fight)() * 2 ** 31),
     fight: (fight: number) => challengeRng(seed, 'fight', fight),
+    /** Whether a card turns up after this camp, which one, and (for an arranged fight) whether the player is caught. */
+    cards: (fight: number) => challengeRng(seed, 'cards', fight),
   }
 }
 
@@ -114,8 +116,9 @@ export function challengeResult(career: Career): ChallengeResult {
   }
 }
 
-/** Who did better: more ranking points, and with the same points more wins. */
+/** Who did better: a career that ended banned for an arranged fight loses to one that did not, then more ranking points, and with the same points more wins. */
 export function compareResults(mine: ChallengeResult, theirs: ChallengeResult): 'win' | 'loss' | 'tie' {
+  if ((mine.e === 'banned') !== (theirs.e === 'banned')) return mine.e === 'banned' ? 'loss' : 'win'
   if (mine.p !== theirs.p) return mine.p > theirs.p ? 'win' : 'loss'
   if (mine.w !== theirs.w) return mine.w > theirs.w ? 'win' : 'loss'
   return 'tie'

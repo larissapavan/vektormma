@@ -1,12 +1,14 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ArrowRight, Crown, Dumbbell, RotateCcw, Scale, Swords } from 'lucide-react'
+import { ArrowRight, ChevronsRight, Crown, Dumbbell, RotateCcw, Scale, Swords } from 'lucide-react'
 
 import { L, pick } from '../../i18n/lang'
 import { FighterAvatar } from '../../shared/components/FighterAvatar'
 import { FlagList } from '../../shared/components/FighterBadges'
 import { LoadingSkeleton } from '../../shared/components/LoadingSkeleton'
 import { planNudge, titleShotAvailable, type Career, type Plan, type PlayerStats } from '../../shared/game/career'
+import { isDealId } from '../../shared/game/events'
+import { DEAL_TEXT } from '../../shared/game/eventsText'
 import { BAND_LABELS, chanceBand } from '../../shared/game/labels'
 import { getMatchmaking } from '../../shared/services/api'
 import type { GameOpponent, MatchmakingResponse } from '../../shared/types/api'
@@ -90,8 +92,15 @@ function OfferCard({ offer, selected, onChoose, heading }: { offer: GameOpponent
   )
 }
 
+/** The line that reminds the player of the contract that is on for this fight. */
+function dealChip(lang: string, id: string) {
+  const text = isDealId(id) ? DEAL_TEXT[id] : null
+  if (!text) return ''
+  return L(lang, `Contrato ${text.sponsor}: ${pick(lang, text.ask)}`, `${text.sponsor} contract: ${pick(lang, text.ask)}`, `Contrat ${text.sponsor} : ${pick(lang, text.ask)}`, `Contrato ${text.sponsor}: ${pick(lang, text.ask)}`)
+}
+
 /** The fights on offer, and a game plan for the one the player takes. */
-export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { career: Career; seed: number; onFight: (offer: GameOpponent, plan: Plan, player: PlayerStats) => void; onRetire: () => void; canRetire: boolean }) {
+export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { career: Career; seed: number; onFight: (offer: GameOpponent, plan: Plan, player: PlayerStats, quick?: boolean) => void; onRetire: () => void; canRetire: boolean }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
   const [offers, setOffers] = useState<Offers | null>(null)
@@ -131,6 +140,15 @@ export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { car
             ? L(lang, 'Defesa de cinturão: escolha o desafiante', 'Title defense: choose the challenger', 'Défense de ceinture : choisissez le challenger', 'Defensa del cinturón: elige al retador')
             : L(lang, 'Escolha seu próximo adversário', 'Choose your next opponent', 'Choisissez votre prochain adversaire', 'Elige a tu próximo rival')}
         </h2>
+        {career.pact ? (
+          <div className="mt-2">
+            {career.pact.kind === 'fix' ? (
+              <Chip tone="red">{L(lang, 'Luta combinada: você vai perder esta luta de propósito', 'Arranged fight: you will lose this one on purpose', 'Combat truqué : vous perdrez celui-ci exprès', 'Pelea arreglada: perderás esta a propósito')}</Chip>
+            ) : (
+              <Chip tone="gold">{dealChip(lang, career.pact.id)}</Chip>
+            )}
+          </div>
+        ) : null}
         {career.scouted ? (
           <div className="mt-2">
             <Chip tone="gold">{L(lang, 'Estudo de vídeo: +2 pontos de chance na luta', 'Film study: +2 points of chance in the fight', 'Étude vidéo : +2 points de chances au combat', 'Estudio de video: +2 puntos de probabilidad en la pelea')}</Chip>
@@ -196,10 +214,19 @@ export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { car
                 )
               })}
             </div>
-            <PrimaryButton onClick={() => onFight(chosen, plan, offers.player)}>
-              {L(lang, `Lutar contra ${chosen.name}`, `Fight ${chosen.name}`, `Combattre ${chosen.name}`, `Pelear contra ${chosen.name}`)}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </PrimaryButton>
+            <div className="flex flex-wrap items-center gap-3">
+              <PrimaryButton onClick={() => onFight(chosen, plan, offers.player)}>
+                {L(lang, `Lutar contra ${chosen.name}`, `Fight ${chosen.name}`, `Combattre ${chosen.name}`, `Pelear contra ${chosen.name}`)}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </PrimaryButton>
+              {/* The same fight with the plan unchanged in every round, played at once: what "Skip to the result" does on the fight screen. */}
+              {career.pact?.kind === 'fix' ? null : (
+                <GhostButton onClick={() => onFight(chosen, plan, offers.player, true)}>
+                  <ChevronsRight className="h-4 w-4" aria-hidden="true" />
+                  {L(lang, 'Lutar e ir direto ao resultado', 'Fight and skip to the result', 'Combattre et passer au résultat', 'Pelear e ir al resultado')}
+                </GhostButton>
+              )}
+            </div>
           </fieldset>
         </div>
       ) : null}

@@ -14,6 +14,7 @@ import {
   offerCoaches,
   planNudge,
   playRound,
+  playToTheEnd,
   previewCamp,
   retire,
   retrospect,
@@ -22,6 +23,10 @@ import {
   similarFighter,
   startFight,
   standing,
+  streakBonus,
+  throwFight,
+  CAMP_YEARS,
+  CONDITIONING_YEARS,
   TACTICS,
   titleShotAvailable,
   trainCamp,
@@ -309,6 +314,51 @@ describe('the shared link', () => {
   })
 })
 
+describe('playing the rest of a fight at once', () => {
+  const rookie = createCareer(build)
+  const begin = (seed: number) => startFight(rookie, offer(0.5), 'balanced', player, seededRng(seed))
+
+  it('is the same as playing every round with the steady tactic, one at a time, for any seed', () => {
+    for (let seed = 1; seed <= 300; seed += 1) {
+      const at_once = playToTheEnd(begin(seed), seededRng(seed + 1000))
+      let by_hand = begin(seed)
+      const dice = seededRng(seed + 1000)
+      while (!by_hand.over) by_hand = playRound(by_hand, 'steady', dice)
+      expect(at_once).toEqual(by_hand)
+    }
+  })
+
+  it('plays only the rounds that are left, from wherever the fight is', () => {
+    const rng = seededRng(77)
+    let state = begin(7)
+    state = playRound(state, 'attack', rng)
+    if (state.over) return
+    const rest = playToTheEnd(state, rng)
+    expect(rest.over).not.toBeNull()
+    expect(rest.stories[0]).toEqual(state.stories[0]) // the round already fought is kept as it was
+    expect(rest.played).toBeGreaterThan(state.played)
+  })
+
+  it('leaves a fight that is over as it is, and takes another tactic when told to', () => {
+    const over = playToTheEnd(begin(3), seededRng(5))
+    expect(playToTheEnd(over, seededRng(9))).toBe(over)
+    const tactics = (tactic: 'attack' | 'cover') => {
+      let ended = 0
+      for (let seed = 1; seed <= 400; seed += 1) ended += playToTheEnd(begin(seed), seededRng(seed + 5000), tactic).stories.length === 3 ? 1 : 0
+      return ended // fights that went all three rounds
+    }
+    expect(tactics('cover')).toBeGreaterThan(tactics('attack')) // covering up ends fewer fights early than attacking
+  })
+
+  it('keeps fight() as it was: one call plays and settles', () => {
+    for (let seed = 1; seed <= 50; seed += 1) {
+      const result = fight(rookie, offer(0.5), 'balanced', player, seededRng(seed))
+      expect(result.career.ufcFights).toBe(1)
+      expect(result.rounds.length).toBeLessThanOrEqual(3)
+    }
+  })
+})
+
 describe('a fight, round by round', () => {
   const rookie = createCareer(build)
   const begin = (chance: number, extra: Partial<Offer> = {}) => startFight(rookie, offer(chance, extra), 'balanced', player, seededRng(1), extra.champion)
@@ -426,5 +476,84 @@ describe('a fight, round by round', () => {
     expect(result.rounds).toBe(state.stories)
     expect(result.career.ufcFights).toBe(1)
     expect(result.career.wins + result.career.losses).toBe(7)
+  })
+})
+
+describe('the pace of a career', () => {
+  const rookie = createCareer(build)
+  const safe = () => 0.99 // a roll that never hurts anyone
+
+  it('takes 0.3 of a year for a camp and its fight (about three a year), a little over a sixth with the conditioning coach', () => {
+    expect(CAMP_YEARS).toBeCloseTo(0.3, 5)
+    let career: Career = rookie
+    for (let cycle = 0; cycle < 3; cycle += 1) career = trainCamp(career, 'allround', safe).career
+    expect(career.age - rookie.age).toBeCloseTo(0.9, 5) // three fights in less than a year
+    expect(trainCamp(rookie, 'conditioning', safe).career.age - rookie.age).toBeCloseTo(CONDITIONING_YEARS, 5)
+    expect(Object.values(COACHES).every((coach) => coach.age <= CAMP_YEARS)).toBe(true)
+  })
+
+  it('lets a career that is never hurt last over 50 fights before 41', () => {
+    let career: Career = rookie
+    let cycles = 0
+    while (!career.ended && cycles < 200) {
+      career = trainCamp(career, 'allround', safe).career
+      cycles += 1
+    }
+    expect(career.ended).toBe('age')
+    expect(cycles).toBeGreaterThanOrEqual(50)
+  })
+})
+
+describe('a winning run', () => {
+  it('pays nothing extra for the first two wins, +1 from the third in a row and +2 from the fifth', () => {
+    expect([0, 1, 2, 3, 4, 5, 6, 12].map(streakBonus)).toEqual([0, 0, 0, 1, 1, 2, 2, 2])
+  })
+
+  it('adds the bonus to the points of the win that makes the run, and a loss starts the count again', () => {
+    let career = createCareer(build)
+    const gains: number[] = []
+    const streakGains: number[] = []
+    for (let index = 0; index < 6; index += 1) {
+      const result = fight(career, offer(0.7, { name: `Rival ${index}` }), 'balanced', player, () => 0)
+      expect(result.won).toBe(true)
+      gains.push(result.pointsGained)
+      streakGains.push(result.streakPoints)
+      career = result.career
+    }
+    expect(streakGains).toEqual([0, 0, 1, 1, 2, 2])
+    expect(gains[2] - gains[1]).toBe(1) // the same fight, one point richer from the third win
+    expect(gains[4] - gains[1]).toBe(2)
+    const lost = fight(career, offer(0.7, { name: 'Upset' }), 'balanced', player, () => 0.999)
+    expect(lost.career.winStreak).toBe(0)
+    expect(lost.streakPoints).toBe(0)
+    expect(fight(lost.career, offer(0.7), 'balanced', player, () => 0).streakPoints).toBe(0)
+  })
+
+  it('reaches the title shot in far fewer than 20 fights for someone who keeps winning the easy ones', () => {
+    let career = createCareer(build)
+    let fights = 0
+    while (!titleShotAvailable(career) && fights < 40) {
+      career = fight(career, offer(0.7, { name: `Rival ${fights}` }), 'balanced', player, () => 0).career // wins on the cards
+      fights += 1
+    }
+    expect(fights).toBeLessThanOrEqual(10)
+  })
+})
+
+describe('an arranged fight', () => {
+  it('is lost on the cards in every round, with no dice, whatever the chance was', () => {
+    for (const chance of [0.1, 0.5, 0.97]) {
+      const start = startFight(createCareer(build), offer(chance), 'balanced', player, () => 0.5)
+      const thrown = throwFight(start)
+      expect(thrown.over).toEqual({ won: false, method: 'dec', round: 3, split: false })
+      expect(thrown).toMatchObject({ played: 3, youRounds: 0, oppRounds: 3 })
+      expect(thrown.stories).toHaveLength(3)
+      expect(thrown.stories.every((story) => story.edge === 'opp' && !story.finish)).toBe(true)
+      expect(settleFight(createCareer(build), offer(chance), thrown).career).toMatchObject({ losses: 1, lossStreak: 1 })
+    }
+  })
+
+  it('goes five rounds in a title fight', () => {
+    expect(throwFight(startFight(createCareer(build), offer(0.5, { champion: true }), 'balanced', player, () => 0.5)).stories).toHaveLength(5)
   })
 })
