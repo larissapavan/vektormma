@@ -34,14 +34,13 @@ def calls(monkeypatch):
     monkeypatch.setattr(update_all.scrape_oktagon, "main", lambda argv=None: log.append(("oktagon", list(argv or []))) or 0)
     monkeypatch.setattr(update_all.scrape_sherdog_org, "main", lambda argv=None: log.append(("sherdog", list(argv or []))) or 0)
     monkeypatch.setattr(update_all.log_predictions, "log_upcoming", lambda: log.append(("log", None)) or 0)
-    monkeypatch.setattr(update_all.build_feed, "main", lambda argv=None: log.append(("feed", None)) or 0)
     monkeypatch.setattr(update_all.log_predictions, "resolve", lambda: log.append(("settle", None)) or 0)
     return log
 
 
 def test_logs_picks_before_espn_and_settles_them_after(calls):
     assert update_all.main([]) == 0
-    assert [name for name, _ in calls] == ["log", "espn", "settle", "stats", "rankings", "photos", "origins", "roster", "records", "career", "pfl", "one", "espn_orgs", "oktagon", "sherdog", "gyms", "feed"]
+    assert [name for name, _ in calls] == ["log", "espn", "settle", "stats", "rankings", "photos", "origins", "roster", "records", "career", "pfl", "one", "espn_orgs", "oktagon", "sherdog", "gyms"]
 
 
 def test_dry_run_only_previews_the_espn_pfl_and_one_steps(calls):
@@ -63,7 +62,7 @@ def test_a_failing_step_does_not_stop_the_others_and_sets_exit_status(monkeypatc
 
     monkeypatch.setattr(update_all.scrape_espn, "main", boom)
     assert update_all.main([]) == 1
-    assert [name for name, _ in calls] == ["log", "settle", "stats", "rankings", "photos", "origins", "roster", "records", "career", "pfl", "one", "espn_orgs", "oktagon", "sherdog", "gyms", "feed"]
+    assert [name for name, _ in calls] == ["log", "settle", "stats", "rankings", "photos", "origins", "roster", "records", "career", "pfl", "one", "espn_orgs", "oktagon", "sherdog", "gyms"]
     assert "FAILED" in capsys.readouterr().out
 
 
@@ -177,7 +176,7 @@ def test_nothing_is_written_outside_github_actions(monkeypatch, tmp_path, capsys
 def test_the_static_pages_are_built_after_the_scrapers_and_before_the_data_is_validated(monkeypatch, calls, generated_pages):
     monkeypatch.setattr(update_all, "require_valid", lambda: generated_pages.append("validate"))
     assert update_all.main([]) == 0
-    assert calls[-1] == ("feed", None)  # the feed comes last of the scrapers
+    assert calls[-1] == ("gyms", [])  # the gym scraper comes last of the scrapers
     # The share images are drawn from the data the first one writes, and the validation looks at what both produced.
     assert generated_pages == ["seo", "og", "validate"]
 

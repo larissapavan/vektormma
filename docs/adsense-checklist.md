@@ -10,7 +10,6 @@ What the code already does, and what only the AdSense / Vercel dashboards can do
   They are linked from the footer of every page, including the landing page.
 - These text pages open at once, without waiting for the API (`frontend/src/shared/data/staticPages.ts`).
 - The build writes one HTML file per route (`seoPages` in `frontend/vite.config.ts`) with its own title, description, canonical address **and the text of the page inside `<div id="root">`**, so a crawler that does not run scripts, or does not wait for data, still reads real content. The text pages carry their whole text; the others carry their heading and description. All of them are in `sitemap.xml`.
-- `frontend/public/feed.xml` is written by `python -m scripts.build_feed` (also part of `scripts.update_all`).
 - Photos of fighters are **not** handled here: they still come from ESPN and ufc.com (see `data/raw/fighter_photos.csv`). The terms page promises to remove any image on request.
 
 ## Only you can do (dashboards)

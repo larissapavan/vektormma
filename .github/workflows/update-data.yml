@@ -49,13 +49,13 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          if git diff --quiet -- data/raw frontend/public/fighter-photos frontend/public/feed.xml frontend/public/og frontend/src/seo/athletes.json && [ -z "$(git ls-files --others --exclude-standard frontend/public/fighter-photos frontend/public/og)" ]; then
+          if git diff --quiet -- data/raw frontend/public/fighter-photos frontend/public/og frontend/src/seo/athletes.json && [ -z "$(git ls-files --others --exclude-standard frontend/public/fighter-photos frontend/public/og)" ]; then
             echo "No data changes."
             exit 0
           fi
           git config user.name "fight-intelligence-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/raw frontend/public/fighter-photos frontend/public/feed.xml frontend/public/og frontend/src/seo/athletes.json
+          git add data/raw frontend/public/fighter-photos frontend/public/og frontend/src/seo/athletes.json
           git commit -m "chore(data): daily refresh $(date -u +%F)"
           git push
 
