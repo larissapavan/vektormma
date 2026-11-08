@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { ArrowRight, ChevronsRight, Lightbulb, Scale, Shield, Swords, Trophy } from 'lucide-react'
@@ -16,7 +16,7 @@ import { BAND_LABELS, chanceBand, STANDING_LABELS } from '../../shared/game/labe
 import { decisionText, roundText } from '../../shared/game/narration'
 import type { GameOpponent } from '../../shared/types/api'
 import { AchievementTile } from './AchievementsPanel'
-import { Chip, Emblem, GhostButton, PrimaryButton } from './ui'
+import { Chip, Emblem, GhostButton, PrimaryButton, useFocusOnMount } from './ui'
 
 const EDGE_STYLE: Record<Edge, string> = {
   you: 'border-[var(--accent-green)] bg-[var(--accent-green)]/8',
@@ -68,11 +68,13 @@ function TacticButton({ tactic, onPick }: { tactic: Tactic; onPick: () => void }
  * The fight, a round at a time. Before every round the player tells the corner what to do (attack, stick to the plan or cover
  * up); the round is fought, the cards and the odds move, and so on until a finish or the last bell. Then what it did to the career.
  */
-export function FightStep({ career, offer, start, random, onContinue, onRetire, retirable = true }: { career: Career; offer: GameOpponent; start: FightState; random: Rng; onContinue: (result: FightResult) => void; onRetire: (result: FightResult) => void; retirable?: boolean }) {
+export function FightStep({ career, offer, start, random, onContinue, onRetire, retirable = true, endsCareer = false }: { career: Career; offer: GameOpponent; start: FightState; random: Rng; onContinue: (result: FightResult) => void; onRetire: (result: FightResult) => void; retirable?: boolean; endsCareer?: boolean }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
   const [state, setState] = useState(start)
   const [asked, setAsked] = useState(false)
+  const heading = useFocusOnMount<HTMLHeadingElement>()
+  const resultText = useRef<HTMLParagraphElement>(null)
   const result = useMemo(() => (state.over ? finishFight(career, offer, state) : null), [career, offer, state])
   // The collection grows the moment the fight is over, not when the player moves on.
   useEffect(() => {
@@ -80,6 +82,10 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
   }, [result])
   const title = offer.champion || career.champion
   const finished = state.over !== null
+  // The button that was pressed to play the last round is gone when the fight ends: the focus goes to the result, which is read out.
+  useEffect(() => {
+    if (finished) resultText.current?.focus({ preventScroll: true })
+  }, [finished])
 
   // The bar sits where the exact odds of the fight are right now, with every round to come taken steady: it swings with each round.
   const chance = liveChance(state)
@@ -101,7 +107,7 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
             {L(lang, 'Disputa de cinturão', 'Title fight', 'Combat pour la ceinture', 'Pelea por el cinturón')}
           </p>
         ) : null}
-        <h2 className="sr-only">
+        <h2 ref={heading} tabIndex={-1} className="sr-only">
           {career.name} vs. {offer.name}
         </h2>
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-6">
@@ -181,7 +187,7 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
         ) : result ? (
           <div className="space-y-5 border-t border-[var(--border-subtle)] pt-6">
             <div className={`game-pop rounded-2xl px-5 py-6 text-center ring-2 ${result.won ? 'bg-[var(--accent-green)]/10 ring-[var(--accent-green)]/50' : 'bg-[var(--accent-red)]/10 ring-[var(--accent-red)]/50'}`}>
-              <p className={`game-title text-4xl sm:text-6xl ${result.won ? 'text-[var(--text-green)]' : 'text-[var(--text-red)]'}`} data-testid="fight-result">
+              <p className={`game-title text-4xl focus:outline-none sm:text-6xl ${result.won ? 'text-[var(--text-green)]' : 'text-[var(--text-red)]'}`} ref={resultText} tabIndex={-1} data-testid="fight-result">
                 {result.won ? L(lang, 'Vitória', 'Victory', 'Victoire', 'Victoria') : L(lang, 'Derrota', 'Defeat', 'Défaite', 'Derrota')}
                 <span className="sr-only"> · </span>
                 <span className="mt-2 block text-base tracking-[0.1em] text-[var(--text-secondary)] sm:text-xl">
@@ -223,7 +229,7 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
 
             <div className="flex flex-wrap gap-3">
               <PrimaryButton onClick={() => onContinue(result)}>
-                {result.career.ended ? L(lang, 'Ver o retrospecto', 'See the retrospect', 'Voir le bilan', 'Ver el balance') : L(lang, 'Continuar a carreira', 'Continue the career', 'Poursuivre la carrière', 'Continuar la carrera')}
+                {result.career.ended || endsCareer ? L(lang, 'Ver o retrospecto', 'See the retrospect', 'Voir le bilan', 'Ver el balance') : L(lang, 'Continuar a carreira', 'Continue the career', 'Poursuivre la carrière', 'Continuar la carrera')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </PrimaryButton>
               {retirable && !result.career.ended && canRetire(result.career) ? <GhostButton onClick={() => onRetire(result)}>{L(lang, 'Aposentar', 'Retire', 'Prendre sa retraite', 'Retirarse')}</GhostButton> : null}

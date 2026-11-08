@@ -241,6 +241,56 @@ describe('a fight, round by round', () => {
   })
 })
 
+describe('the keyboard focus', () => {
+  // When a screen is replaced by the next one the focus must land on the new screen: left on a button that is gone it falls to
+  // the page body, and a keyboard or screen reader user has to find their place again at every step of a career.
+  it('follows the player from one screen to the next, all the way to the end', async () => {
+    await startCareer('Maria Silva')
+    expect(screen.getByRole('heading', { name: /camp for your ufc debut/i })).toHaveFocus()
+
+    await train()
+    await findButton(/Easy Eddie/)
+    expect(screen.getByRole('heading', { name: /choose your next opponent/i })).toHaveFocus()
+
+    await userEvent.click(screen.getByRole('button', { name: /Easy Eddie/ }))
+    await click(/fight easy eddie/i)
+    expect(screen.getByRole('heading', { name: /vs\. Easy Eddie/ })).toHaveFocus()
+
+    await click(/skip to the result/i)
+    expect(screen.getByTestId('fight-result')).toHaveFocus()
+
+    await click(/continue the career/i)
+    expect(screen.getByRole('heading', { name: /camp for ufc fight 2/i })).toHaveFocus()
+  })
+
+  it('moves to the result when the last round is played by hand, not only when it is skipped', async () => {
+    await startCareer('Maria Silva')
+    await train()
+    await userEvent.click(await findButton(/Easy Eddie/))
+    await click(/fight easy eddie/i)
+    while (!screen.queryByTestId('fight-result')) await click(/^stick to the plan/i)
+    expect(screen.getByTestId('fight-result')).toHaveFocus()
+  })
+
+  it('lands on the end of the career', async () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5)
+    await startCareer('José Aldo')
+    for (let fights = 0; fights < 3; fights += 1) {
+      await playOneFight()
+      if (fights < 2) await click(/continue the career/i)
+    }
+    await click(/^retire$/i)
+    expect(await screen.findByRole('heading', { name: /the career is over/i })).toHaveFocus()
+  })
+
+  it('does not take the focus when a saved career is only offered on the first screen', async () => {
+    window.localStorage.setItem(SAVE_KEY, JSON.stringify({ career: createCareer({ name: 'Old Save', division: 'Lightweight', stance: 'Orthodox', striking: 50, takedowns: 50, reach: 50 }), stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 1, note: null, challenge: null, savedAt: 1 }))
+    renderAt('/career')
+    await screen.findByRole('button', { name: /resume the career/i }, { timeout: 10000 })
+    expect(document.body).toHaveFocus()
+  })
+})
+
 describe('goals and achievements', () => {
   it('gives the new career three goals to go after, each with its progress', async () => {
     await startCareer()
@@ -401,7 +451,8 @@ describe('a challenge', () => {
     for (let fights = 0; fights < 3; fights += 1) {
       await playOneFight()
       expect(screen.queryByRole('button', { name: /^retire$/i })).toBeNull() // not even after the third fight, when it would be allowed
-      await click(/continue the career|see the retrospect/i)
+      // The last fight of the challenge does not offer to continue: the next screen is the end.
+      await click(fights < 2 ? /continue the career/i : /see the retrospect/i)
     }
     const end = await screen.findByTestId('challenge-end', undefined, { timeout: 10000 })
     const score = Number(screen.getByTestId('challenge-score').textContent?.match(/\d+/)?.[0])

@@ -119,7 +119,7 @@ export function RetrospectCard({ card, actions = true }: { card: Retrospect; act
       {actions ? (
         <div className="mx-auto flex max-w-md flex-wrap justify-center gap-2">
           {drawn ? (
-            <button type="button" onClick={save} className={`${button} bg-[var(--accent-red)] !border-[var(--accent-red)] text-white`}>
+            <button type="button" onClick={save} className={`${button} bg-[var(--accent-red-solid)] !border-[var(--accent-red-solid)] text-white`}>
               <Download className="h-4 w-4" aria-hidden="true" />
               {L(lang, 'Salvar imagem', 'Save image', 'Enregistrer l’image', 'Guardar imagen')}
             </button>

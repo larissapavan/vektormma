@@ -140,7 +140,7 @@ export function Header() {
             >
               <BrandMark className="h-7 w-7 xs:h-8 xs:w-8 sm:h-9 sm:w-9 shrink-0 drop-shadow-sm" />
               <span className="flex flex-col items-start justify-center leading-tight min-w-0">
-                <span className="hidden sm:block font-mono text-[9px] font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                <span className="hidden sm:block font-mono text-[9px] font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
                   {t('header.matchupAnalytics', 'Análise de Combates')}
                 </span>
                 <span className="text-xs xs:text-sm sm:text-base font-bold tracking-tight whitespace-nowrap text-[var(--text-primary)]">

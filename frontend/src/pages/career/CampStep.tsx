@@ -5,7 +5,7 @@ import { ArrowRight, HeartPulse } from 'lucide-react'
 import { L, pick } from '../../i18n/lang'
 import { canRetire, COACHES, previewCamp, type Career, type CoachId } from '../../shared/game/career'
 import { COACH_TEXT } from '../../shared/game/coaches'
-import { Chip, Emblem, GhostButton, PrimaryButton } from './ui'
+import { Chip, Emblem, GhostButton, PrimaryButton, useFocusOnMount } from './ui'
 
 export interface CampNote {
   injured: boolean
@@ -45,12 +45,13 @@ export function CampStep({ career, coaches, note, onTrain, onRetire, retirable =
   const { i18n } = useTranslation()
   const lang = i18n.language
   const [chosen, setChosen] = useState<CoachId | null>(null)
+  const heading = useFocusOnMount<HTMLHeadingElement>()
 
   return (
     <section className="game-card space-y-5 p-4 sm:space-y-6 sm:p-7">
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--accent-red)]">{L(lang, 'Preparação', 'Preparation', 'Préparation', 'Preparación')}</p>
-        <h2 className="game-title mt-1 text-xl sm:text-3xl">
+        <h2 ref={heading} tabIndex={-1} className="game-title mt-1 text-xl focus:outline-none sm:text-3xl">
           {career.ufcFights === 0
             ? L(lang, 'Camp para a estreia no UFC', 'Camp for your UFC debut', 'Préparation pour vos débuts à l’UFC', 'Campamento para tu debut en la UFC')
             : L(lang, `Camp para a luta ${career.ufcFights + 1} no UFC`, `Camp for UFC fight ${career.ufcFights + 1}`, `Préparation pour le combat n° ${career.ufcFights + 1} à l’UFC`, `Campamento para la pelea ${career.ufcFights + 1} en la UFC`)}
