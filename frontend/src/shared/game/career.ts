@@ -8,7 +8,7 @@ export type Stance = 'Orthodox' | 'Southpaw' | 'Switch'
 export type CoachId = 'striker' | 'wrestler' | 'allround' | 'conditioning' | 'sparring' | 'scout'
 export type Plan = 'striking' | 'grappling' | 'balanced'
 export type Method = 'ko' | 'sub' | 'dec'
-export type EndReason = 'retired' | 'released' | 'age'
+export type EndReason = 'retired' | 'released' | 'age' | 'banned'
 export type Standing = 'prospect' | 'rising' | 'top15' | 'top5' | 'contender' | 'champion'
 export type Edge = 'you' | 'opp' | 'even'
 
@@ -50,6 +50,17 @@ export const MIN_FIGHTS_TO_RETIRE = 3
 export const RELEASE_AFTER_LOSSES = 3
 export const MAX_AGE = 41
 export const TITLE_SHOT_POINTS = 20
+/** The time a training camp takes (a camp and the fight after it are one cycle: about three a year), and the conditioning coach's shorter camp. */
+export const CAMP_YEARS = 0.3
+export const CONDITIONING_YEARS = 0.18
+/** A winning run pays extra ranking points: +1 from the third win in a row, +2 from the fifth. */
+export const STREAK_BONUS_FROM: [number, number][] = [
+  [5, 2],
+  [3, 1],
+]
+export function streakBonus(streak: number) {
+  return STREAK_BONUS_FROM.find(([from]) => streak >= from)?.[1] ?? 0
+}
 export const STANDING_STEPS: [number, Standing][] = [
   [20, 'contender'],
   [15, 'top5'],
@@ -72,6 +83,13 @@ export interface FightLog {
   title: boolean
   chance: number
 }
+
+/**
+ * What the player agreed to before the next fight (see events.ts): a sponsor's deal, which pays if the fight goes as the
+ * contract says, or an arranged fight, which the player loses on purpose and may be caught for (`caught` is rolled when
+ * the player accepts, so the screen and the save show the same outcome).
+ */
+export type Pact = { kind: 'deal'; id: string } | { kind: 'fix'; caught: boolean }
 
 export interface Career {
   name: string
@@ -109,6 +127,8 @@ export interface Career {
   goals: GoalState[]
   /** The achievements earned in this career (see achievements.ts). */
   earned: string[]
+  /** The sponsor's deal or the arranged fight waiting for the next fight, or null. */
+  pact: Pact | null
   ended: EndReason | null
 }
 
@@ -167,6 +187,7 @@ export function createCareer(build: Build, goals: string[] = []): Career {
     history: [],
     goals: goals.map((id) => ({ id, done: false })),
     earned: [],
+    pact: null,
     ended: null,
   }
 }
@@ -211,12 +232,12 @@ export interface Coach {
 }
 
 export const COACHES: Record<CoachId, Coach> = {
-  striker: { id: 'striker', strike: 1.7, takedown: 0.3, injury: 0.03, age: 0.4, scout: 0 },
-  wrestler: { id: 'wrestler', strike: 0.3, takedown: 1.7, injury: 0.03, age: 0.4, scout: 0 },
-  allround: { id: 'allround', strike: 1, takedown: 1, injury: 0, age: 0.4, scout: 0 },
-  conditioning: { id: 'conditioning', strike: 0.5, takedown: 0.5, injury: -0.06, age: 0.25, scout: 0 },
-  sparring: { id: 'sparring', strike: 1.4, takedown: 1.4, injury: 0.08, age: 0.4, scout: 0 },
-  scout: { id: 'scout', strike: 0.7, takedown: 0.7, injury: 0, age: 0.4, scout: 0.02 },
+  striker: { id: 'striker', strike: 1.7, takedown: 0.3, injury: 0.03, age: CAMP_YEARS, scout: 0 },
+  wrestler: { id: 'wrestler', strike: 0.3, takedown: 1.7, injury: 0.03, age: CAMP_YEARS, scout: 0 },
+  allround: { id: 'allround', strike: 1, takedown: 1, injury: 0, age: CAMP_YEARS, scout: 0 },
+  conditioning: { id: 'conditioning', strike: 0.5, takedown: 0.5, injury: -0.06, age: CONDITIONING_YEARS, scout: 0 },
+  sparring: { id: 'sparring', strike: 1.4, takedown: 1.4, injury: 0.08, age: CAMP_YEARS, scout: 0 },
+  scout: { id: 'scout', strike: 0.7, takedown: 0.7, injury: 0, age: CAMP_YEARS, scout: 0.02 },
 }
 
 const BASE_GAIN = 3.4
@@ -330,6 +351,8 @@ export interface FightResult {
   split: boolean
   chance: number
   pointsGained: number
+  /** The part of `pointsGained` that is the winning-run bonus. */
+  streakPoints: number
   rounds: RoundStory[]
   lostBelt: boolean
   wonBelt: boolean
@@ -557,6 +580,7 @@ export function settleFight(career: Career, offer: Offer, state: FightState, tit
   const next: Career = { ...career, scouted: false, history: [...career.history], fought: career.fought.includes(offer.name) ? career.fought : [...career.fought, offer.name] }
   next.ufcFights += 1
   let pointsGained: number
+  let streakPoints = 0
   let wonBelt = false
   let lostBelt = false
   if (won) {
@@ -567,7 +591,8 @@ export function settleFight(career: Career, offer: Offer, state: FightState, tit
     if (method === 'ko') next.koWins += 1
     else if (method === 'sub') next.subWins += 1
     else next.decWins += 1
-    pointsGained = (chance >= 0.6 ? 1 : chance >= 0.45 ? 2 : 3) + (method === 'dec' ? 0 : 1)
+    streakPoints = streakBonus(next.winStreak)
+    pointsGained = (chance >= 0.6 ? 1 : chance >= 0.45 ? 2 : 3) + (method === 'dec' ? 0 : 1) + streakPoints
     if (career.champion) {
       next.defenses += 1
       pointsGained += 4
@@ -595,7 +620,7 @@ export function settleFight(career: Career, offer: Offer, state: FightState, tit
   next.history.push({ opponent: offer.name, won, method, round: finishRound, title: titleFight, chance })
   if (next.lossStreak >= RELEASE_AFTER_LOSSES) next.ended = 'released'
 
-  return { career: next, won, method, round: finishRound, split, chance, pointsGained, rounds: state.stories, lostBelt, wonBelt, standingBefore: before, standingAfter: standing(next) }
+  return { career: next, won, method, round: finishRound, split, chance, pointsGained, streakPoints, rounds: state.stories, lostBelt, wonBelt, standingBefore: before, standingAfter: standing(next) }
 }
 
 /**
@@ -607,6 +632,15 @@ export function playToTheEnd(state: FightState, rng: Rng, tactic: Tactic = 'stea
   let next = state
   while (!next.over) next = playRound(next, tactic, rng)
   return next
+}
+
+/**
+ * An arranged fight: the player gives away every round and the fight goes to the cards, lost. No dice are rolled, so it cannot
+ * come out any other way (the only chance in it is the one rolled when the player agreed to it: see events.ts).
+ */
+export function throwFight(state: FightState): FightState {
+  const stories: RoundStory[] = Array.from({ length: state.scheduled }, (_, index) => ({ round: index + 1, edge: 'opp' as const, variant: (state.variantStart + index + 1) % 3, finish: false, tactic: 'cover' as const }))
+  return { ...state, played: state.scheduled, youRounds: 0, oppRounds: state.scheduled, stories, over: { won: false, method: 'dec', round: state.scheduled, split: false } }
 }
 
 /** Fights a whole fight with the steady tactic in every round. */
@@ -692,7 +726,7 @@ export function retrospect(career: Career, similar: string | null): Retrospect {
 }
 
 const STANDINGS: Standing[] = ['prospect', 'rising', 'top15', 'top5', 'contender', 'champion']
-export const END_REASONS: EndReason[] = ['retired', 'released', 'age']
+export const END_REASONS: EndReason[] = ['retired', 'released', 'age', 'banned']
 
 export function toBase64Url(text: string) {
   const bytes = new TextEncoder().encode(text)

@@ -1,6 +1,7 @@
 import { isAchievementId } from './achievements'
 import { CHALLENGE_MAX_FIGHTS, CHALLENGE_MIN_FIGHTS, readResult, SEED_MAX, type Challenge } from './challenge'
-import { cleanName, GAME_DIVISIONS, type Career, type CoachId, type FightLog, type GoalState, type Method, type Stance } from './career'
+import { cleanName, GAME_DIVISIONS, type Career, type CoachId, type FightLog, type GoalState, type Method, type Pact, type Stance } from './career'
+import { isCard, isDealId, type Card } from './events'
 import { isGoalId } from './goals'
 
 /**
@@ -18,6 +19,8 @@ export interface SavedGame {
   note: { injured: boolean; declined: boolean } | null
   /** The challenge being played (see challenge.ts), or null for an ordinary career. */
   challenge: Challenge | null
+  /** The card waiting for an answer before the matchmaking (see events.ts), or null. */
+  card: Card | null
   savedAt: number
 }
 
@@ -59,6 +62,15 @@ function readEarned(raw: unknown): string[] | null {
   if (!Array.isArray(raw) || raw.length > 20) return null
   if (!raw.every((id) => isAchievementId(id)) || new Set(raw).size !== raw.length) return null
   return raw as string[]
+}
+
+function readPact(raw: unknown): Pact | null | undefined {
+  if (raw === undefined || raw === null) return null // none, or a save from before cards existed
+  if (typeof raw !== 'object') return undefined
+  const pact = raw as Record<string, unknown>
+  if (pact.kind === 'deal' && isDealId(pact.id)) return { kind: 'deal', id: pact.id }
+  if (pact.kind === 'fix' && typeof pact.caught === 'boolean') return { kind: 'fix', caught: pact.caught }
+  return undefined
 }
 
 /** A career read back from storage, or null when anything about it is not what the game itself would have written. */
@@ -110,7 +122,8 @@ export function readCareer(raw: unknown): Career | null {
   if (bestStreak === null) return null
   const goals = readGoals(c.goals)
   const earned = readEarned(c.earned)
-  if (!goals || !earned) return null
+  const pact = readPact(c.pact)
+  if (!goals || !earned || pact === undefined) return null
   const n = numbers as Record<keyof typeof numbers, number>
   return {
     name,
@@ -142,6 +155,7 @@ export function readCareer(raw: unknown): Career | null {
     history: history as FightLog[],
     goals,
     earned,
+    pact,
     ended: null,
   }
 }
@@ -175,7 +189,10 @@ export function readSave(raw: string | null): SavedGame | null {
     }
     const challenge = readChallenge(data.challenge)
     if (challenge === undefined) return null
-    return { career, stage: data.stage, coaches: data.coaches as CoachId[], seed, note, challenge, savedAt }
+    // A card is only waiting at the matchmaking, and only for a career that has not already agreed to something.
+    if (data.card !== undefined && data.card !== null && (!isCard(data.card) || data.stage !== 'offers' || career.pact)) return null
+    const card = data.card && isCard(data.card) ? data.card : null
+    return { career, stage: data.stage, coaches: data.coaches as CoachId[], seed, note, challenge, card, savedAt }
   } catch {
     return null
   }

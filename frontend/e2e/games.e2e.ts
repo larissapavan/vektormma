@@ -1,6 +1,7 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
 
+import { createCareer } from '../src/shared/game/career'
 import { respond } from '../src/test/fixtures'
 
 /**
@@ -9,6 +10,8 @@ import { respond } from '../src/test/fixtures'
  * the test server, so the API (at /api in a build) is answered with the same fake data the unit tests use.
  */
 const THEME_KEY = 'ufc-predictor:theme-v2'
+// The key of the career save (src/shared/game/save.ts, which cannot be imported here: it reads the browser's window).
+const SAVE_KEY = 'vektor:career:v1'
 const challengeLink = (fights: number) => `/en/career?d=${Buffer.from(JSON.stringify({ s: 20261108, f: fights })).toString('base64url')}`
 
 async function prepare(page: Page, theme: 'dark' | 'light') {
@@ -64,6 +67,23 @@ for (const theme of ['dark', 'light'] as const) {
       expect(await violations(page)).toEqual([])
     })
 
+    for (const [name, card, heading] of [
+      ['a sponsor’s offer', { kind: 'sponsor', deal: 'underdog' }, /Energético Faísca/],
+      ['an arranged fight', { kind: 'fix' }, /a manager wants to fix a fight/i],
+    ] as const) {
+      test(`the card: ${name}`, async ({ page }) => {
+        await prepare(page, theme)
+        const career = { ...createCareer({ name: 'Ana Lima', division: 'Lightweight', stance: 'Orthodox', striking: 50, takedowns: 50, reach: 50 }), ufcFights: 3 }
+        await page.addInitScript(([key, value]) => localStorage.setItem(key, value), [SAVE_KEY, JSON.stringify({ career, stage: 'offers', coaches: ['striker', 'wrestler', 'allround'], seed: 7, note: null, challenge: null, card, savedAt: 1 })])
+        await page.goto('/en/career')
+        await page.getByRole('button', { name: /resume the career/i }).click()
+        await expect(page.getByRole('heading', { name: heading })).toBeFocused()
+        expect(await violations(page), name).toEqual([])
+        await page.getByRole('button', { name: /^(decline|refuse)$/i }).click()
+        await expect(page.getByRole('heading', { name: /choose your next opponent/i })).toBeFocused()
+      })
+    }
+
     test('every screen of a challenge, with the focus on the new screen each time', async ({ page }) => {
       await prepare(page, theme)
       await page.goto(challengeLink(3))
@@ -76,7 +96,15 @@ for (const theme of ['dark', 'light'] as const) {
         if (fight === 1) expect(await violations(page), 'the camp').toEqual([])
 
         await page.getByRole('button', { name: /^train with coach/i }).first().click()
-        await expect(page.getByRole('heading', { name: /choose your next opponent/i })).toBeFocused()
+        // A card may follow the camp (the challenge's dice decide, the same on every run): look at it once, and turn it down.
+        const card = page.locator('#card-title')
+        const matchmaking = page.getByRole('heading', { name: /choose your next opponent/i })
+        await expect(card.or(matchmaking)).toBeFocused()
+        if (await card.isVisible()) {
+          expect(await violations(page), 'a card between the camp and the fights').toEqual([])
+          await page.getByRole('button', { name: /^(decline|refuse)$/i }).click()
+        }
+        await expect(matchmaking).toBeFocused()
         await page.getByRole('button', { name: /Easy Eddie/ }).click()
         if (fight === 1) expect(await violations(page), 'the matchmaking with an opponent chosen').toEqual([])
 

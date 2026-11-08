@@ -10,6 +10,7 @@ import { METHOD_LABELS } from '../../shared/data/cancelledFights'
 import { canRetire, cornerAdvice, liveChance, playRound, playToTheEnd, recordText, TACTICS, type Career, type Edge, type FightResult, type FightState, type Rng, type Tactic } from '../../shared/game/career'
 import { ADVICE_TEXT, TACTIC_TEXT } from '../../shared/game/corner'
 import { GOAL_TEXT } from '../../shared/game/rewardsText'
+import { DEAL_TEXT } from '../../shared/game/eventsText'
 import { finishFight } from '../../shared/game/progress'
 import { recordTrophies } from '../../shared/game/trophies'
 import { BAND_LABELS, chanceBand, STANDING_LABELS } from '../../shared/game/labels'
@@ -204,6 +205,21 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
                   <Chip tone="gold">{L(lang, `Nova posição: ${pick(lang, STANDING_LABELS[result.standingAfter])}`, `New standing: ${pick(lang, STANDING_LABELS[result.standingAfter])}`, `Nouvelle position : ${pick(lang, STANDING_LABELS[result.standingAfter])}`, `Nueva posición: ${pick(lang, STANDING_LABELS[result.standingAfter])}`)}</Chip>
                 </li>
               ) : null}
+              {result.streakPoints > 0 ? (
+                <li>
+                  <Chip tone="green">{L(lang, `Sequência de ${result.career.winStreak} vitórias: +${result.streakPoints}`, `${result.career.winStreak}-win streak: +${result.streakPoints}`, `Série de ${result.career.winStreak} victoires : +${result.streakPoints}`, `Racha de ${result.career.winStreak} victorias: +${result.streakPoints}`)}</Chip>
+                </li>
+              ) : null}
+              {result.deal ? (
+                <li>
+                  <Chip tone={result.deal.met ? 'green' : 'red'}>
+                    {result.deal.met
+                      ? L(lang, `Contrato ${DEAL_TEXT[result.deal.id].sponsor} cumprido: +${result.pactPoints}`, `${DEAL_TEXT[result.deal.id].sponsor} contract met: +${result.pactPoints}`, `Contrat ${DEAL_TEXT[result.deal.id].sponsor} rempli : +${result.pactPoints}`, `Contrato ${DEAL_TEXT[result.deal.id].sponsor} cumplido: +${result.pactPoints}`)
+                      : L(lang, `Contrato ${DEAL_TEXT[result.deal.id].sponsor} não cumprido: ${result.pactPoints}`, `${DEAL_TEXT[result.deal.id].sponsor} contract missed: ${result.pactPoints}`, `Contrat ${DEAL_TEXT[result.deal.id].sponsor} manqué : ${result.pactPoints}`, `Contrato ${DEAL_TEXT[result.deal.id].sponsor} incumplido: ${result.pactPoints}`)}
+                  </Chip>
+                </li>
+              ) : null}
+              {result.fix ? <li><Chip tone="gold">{L(lang, `Luta combinada: +${result.pactPoints}`, `Arranged fight: +${result.pactPoints}`, `Combat truqué : +${result.pactPoints}`, `Pelea arreglada: +${result.pactPoints}`)}</Chip></li> : null}
               {result.wonBelt ? <li><Chip tone="gold">{L(lang, 'Você é o novo campeão!', 'You are the new champion!', 'Vous êtes le nouveau champion !', '¡Eres el nuevo campeón!')}</Chip></li> : null}
               {result.lostBelt ? <li><Chip tone="red">{L(lang, 'Você perdeu o cinturão.', 'You lost the belt.', 'Vous avez perdu la ceinture.', 'Perdiste el cinturón.')}</Chip></li> : null}
               {result.goalsDone.map((id) => (
@@ -222,7 +238,14 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
                 </ul>
               </div>
             ) : null}
-            {!result.won && result.career.ended !== 'released' ? <p className="text-sm text-[var(--text-secondary)]">{L(lang, `${offer.name} agora é seu rival: dá para pedir a revanche.`, `${offer.name} is now your rival: you can ask for the rematch.`, `${offer.name} est maintenant votre rival : vous pouvez réclamer la revanche.`, `${offer.name} es ahora tu rival: puedes pedir la revancha.`)}</p> : null}
+            {result.fix ? (
+              <p className="text-sm font-semibold text-[var(--text-red)]">
+                {result.fix.caught
+                  ? L(lang, 'A investigação descobriu o resultado combinado: você está banido do UFC para sempre.', 'An investigation found the arranged result: you are banned from the UFC for life.', 'Une enquête a révélé le résultat truqué : vous êtes banni de l’UFC à vie.', 'Una investigación descubrió el resultado arreglado: estás vetado de la UFC de por vida.')
+                  : L(lang, 'Ninguém descobriu, desta vez. O resultado combinado ficou só entre vocês.', 'Nobody found out, this time. The arranged result stayed between you.', 'Personne ne l’a su, cette fois. Le résultat truqué est resté entre vous.', 'Nadie se enteró, esta vez. El resultado arreglado quedó entre ustedes.')}
+              </p>
+            ) : null}
+            {!result.won && result.career.ended !== 'released' && !result.fix ? <p className="text-sm text-[var(--text-secondary)]">{L(lang, `${offer.name} agora é seu rival: dá para pedir a revanche.`, `${offer.name} is now your rival: you can ask for the rematch.`, `${offer.name} est maintenant votre rival : vous pouvez réclamer la revanche.`, `${offer.name} es ahora tu rival: puedes pedir la revancha.`)}</p> : null}
             {result.career.ended === 'released' ? <p className="text-sm font-semibold text-[var(--text-red)]">{L(lang, 'Três derrotas seguidas: o UFC dispensou você.', 'Three straight losses: the UFC has released you.', 'Trois défaites de suite : l’UFC vous a libéré.', 'Tres derrotas seguidas: la UFC te liberó.')}</p> : null}
 
             <div className="flex flex-wrap gap-3">
