@@ -14,6 +14,7 @@ import type {
   GymSummary,
   HealthInfo,
   UpcomingPick,
+  RecentResults,
   TrackRecord,
   NewsResponse,
   OpponentsResponse,
@@ -77,6 +78,11 @@ export const getDivisionMatrix = async (category: string, top = 8) => {
 
 export const getUpcomingPicks = async () => {
   const response = await api.get<UpcomingPick[]>('/predict/upcoming')
+  return response.data
+}
+
+export const getRecentResults = async (days: number) => {
+  const response = await api.get<RecentResults>('/results/recent', { params: { days } })
   return response.data
 }
 

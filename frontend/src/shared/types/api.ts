@@ -733,3 +733,45 @@ export interface SyncTrackRecordResponse {
   pending: number
   message: string
 }
+
+export interface ResultPick {
+  predicted_winner: string
+  confidence: number
+  /** null until the fight has a winner. */
+  correct: boolean | null
+}
+
+export interface ResultFight {
+  fighter_1: string
+  fighter_2: string
+  winner: string | null
+  outcome: 'win' | 'draw' | 'no_contest' | 'pending'
+  weight_class: string | null
+  stage: string | null
+  method: string | null
+  method_detail: string | null
+  round: number | null
+  time: string | null
+  title_fight: boolean | null
+  discipline: string | null
+  pick: ResultPick | null
+}
+
+export interface ResultEvent {
+  org_id: string
+  org_name: string
+  name: string
+  date: string
+  location: string | null
+  fights: ResultFight[]
+  decided: number
+  total: number
+}
+
+export interface RecentResults {
+  since: string
+  until: string
+  events: ResultEvent[]
+  picks_resolved: number
+  picks_correct: number
+}

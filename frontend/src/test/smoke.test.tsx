@@ -29,6 +29,7 @@ const pages: [string, string, string | RegExp][] = [
   ['UFC home', '/home', 'Alpha One'],
   ['Fighters', '/fighters', /weight classes/i],
   ['Events', '/events', 'UFC fight cards'],
+  ['Results', '/results', 'UFC 900: Alpha vs. Beta'],
   ['Rankings', '/rankings', /divisional & pound-for-pound/i],
   ['Champions', '/champions', 'Current champions'],
   ['Record book', '/record-book', 'Total Fights'],

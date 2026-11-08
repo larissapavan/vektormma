@@ -60,6 +60,10 @@
         "title": "Eventos",
         "description": "Arquivo histórico de eventos do UFC com resultados oficiais e próximos cards."
       },
+      "/results": {
+        "title": "Resultados Recentes",
+        "description": "Os eventos mais recentes de todas as organizações, com o palpite que o modelo deu antes de cada luta."
+      },
       "/rankings": {
         "title": "Rankings",
         "description": "Rankings oficiais do UFC por categoria e peso por peso com fotos dos atletas."
@@ -333,6 +337,10 @@
       "/events": {
         "title": "Events",
         "description": "The full UFC event archive with results, plus upcoming cards and the model's picks."
+      },
+      "/results": {
+        "title": "Recent Results",
+        "description": "The latest events from every organization, with the pick the model made before each fight."
       },
       "/rankings": {
         "title": "Rankings",
@@ -608,6 +616,10 @@
         "title": "Événements",
         "description": "Les archives complètes des événements UFC avec résultats, plus les prochaines cartes et les pronostics du modèle."
       },
+      "/results": {
+        "title": "Résultats récents",
+        "description": "Les derniers événements de toutes les organisations, avec le pronostic du modèle avant chaque combat."
+      },
       "/rankings": {
         "title": "Classements",
         "description": "Les classements officiels UFC par catégorie et livre pour livre, avec les photos des combattants."
@@ -881,6 +893,10 @@
       "/events": {
         "title": "Eventos",
         "description": "El archivo completo de eventos de la UFC con resultados, más las próximas carteleras y los pronósticos del modelo."
+      },
+      "/results": {
+        "title": "Resultados Recientes",
+        "description": "Los eventos más recientes de todas las organizaciones, con el pronóstico del modelo antes de cada pelea."
       },
       "/rankings": {
         "title": "Ranking",

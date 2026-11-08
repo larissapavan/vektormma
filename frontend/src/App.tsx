@@ -14,6 +14,7 @@ const Predictor = lazy(() => import('./pages/Predictor').then((module) => ({ def
 const Home = lazy(() => import('./pages/Home').then((module) => ({ default: module.Home })))
 const Fighters = lazy(() => import('./pages/Fighters').then((module) => ({ default: module.Fighters })))
 const Events = lazy(() => import('./pages/Events').then((module) => ({ default: module.Events })))
+const Results = lazy(() => import('./pages/Results').then((module) => ({ default: module.Results })))
 const Rankings = lazy(() => import('./pages/Rankings').then((module) => ({ default: module.Rankings })))
 const TrackRecord = lazy(() => import('./pages/TrackRecord').then((module) => ({ default: module.TrackRecord })))
 const RecordBook = lazy(() => import('./pages/RecordBook').then((module) => ({ default: module.RecordBook })))
@@ -90,6 +91,7 @@ function App() {
               <Route path="/athlete/:name" element={<AthleteDossier />} />
               <Route path="/fight/:pair" element={<FightPage />} />
               <Route path="/events" element={<Events />} />
+              <Route path="/results" element={<Results />} />
               <Route path="/rankings" element={<Rankings />} />
               <Route path="/gyms" element={<Gyms />} />
               <Route path="/gyms/:slug" element={<GymDetail />} />

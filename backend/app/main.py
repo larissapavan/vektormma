@@ -26,6 +26,7 @@ from backend.app.routers.orgs import router as orgs_router
 from backend.app.routers.prediction import build_prediction_router
 from backend.app.routers.rankings import router as rankings_router
 from backend.app.routers.record_book import router as record_book_router
+from backend.app.routers.results import router as results_router
 from backend.app.routers.track_record import router as track_record_router
 from backend.app.services.prediction_service import PredictionService
 from backend.app.services.prefight_service import build_prediction_service
@@ -134,4 +135,5 @@ app.include_router(news_router)
 app.include_router(orgs_router)
 app.include_router(gyms_router)
 app.include_router(track_record_router)
+app.include_router(results_router)
 app.include_router(build_prediction_router(get_prediction_service))

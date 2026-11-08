@@ -435,6 +435,28 @@ export const routes: Record<string, unknown> = {
       },
     ],
   },
+  '/results/recent': {
+    since: '2026-11-02',
+    until: '2026-11-08',
+    picks_resolved: 2,
+    picks_correct: 1,
+    events: [
+      {
+        org_id: 'ufc',
+        org_name: 'UFC',
+        name: 'UFC 900: Alpha vs. Beta',
+        date: '2026-11-07',
+        location: 'Las Vegas, Nevada, USA',
+        decided: 2,
+        total: 3,
+        fights: [
+          { fighter_1: 'Alpha One', fighter_2: 'Beta Two', winner: 'Alpha One', outcome: 'win', weight_class: 'Lightweight', stage: null, method: 'KO/TKO', method_detail: 'Punches', round: 1, time: '2:10', title_fight: true, discipline: null, pick: { predicted_winner: 'Alpha One', confidence: 0.71, correct: true } },
+          { fighter_1: 'Gamma Three', fighter_2: 'Delta Four', winner: 'Delta Four', outcome: 'win', weight_class: 'Welterweight', stage: null, method: 'U-DEC', method_detail: null, round: 3, time: '5:00', title_fight: null, discipline: null, pick: { predicted_winner: 'Gamma Three', confidence: 0.6, correct: false } },
+          { fighter_1: 'Eps Five', fighter_2: 'Zeta Six', winner: null, outcome: 'pending', weight_class: null, stage: null, method: null, method_detail: null, round: null, time: null, title_fight: null, discipline: null, pick: null },
+        ],
+      },
+    ],
+  },
   '/news': { source_name: 'ESPN', source_url: 'https://www.espn.com/mma/', items: [{ title: 'Alpha One retains the title', summary: null, url: 'https://www.espn.com/ufc/story/1', image_url: null, published: '2026-10-15T10:00:00Z', kind: 'story' }] },
   '/track-record': { tracking_since: '2026-10-15', logged: 4, resolved: 0, correct: 0, accuracy: null, average_confidence: null, pending: 4, earlier_model_picks: 1, earlier_model_note: '1 of these picks were saved before 2026-10-20, by an earlier version of the model.', model_change_note: '1 of these picks were saved by the pre-fight model, in use since 2026-11-10. Earlier picks came from the model it replaced and are kept exactly as they were shown. The record of each model is counted separately below.', models: [{ model: 'current', label: 'Current model', since: '2026-10-15', logged: 3, resolved: 2, correct: 1, accuracy: 0.5 }, { model: 'prefight', label: 'Pre-fight model', since: '2026-11-10', logged: 1, resolved: 0, correct: 0, accuracy: null }], next_event: { name: 'UFC 900: Alpha vs. Beta', date: '2030-01-01' }, bands: [], recent: [], biggest_misses: [] },
   '/head-to-head': { fighter_a: 'Alpha One', fighter_b: 'Beta Two', fighter_a_wins: 1, fighter_b_wins: 0, no_contests: 0, meetings: [], common_opponents: [], network_path: [], degrees_of_separation: 0 },
