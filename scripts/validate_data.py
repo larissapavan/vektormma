@@ -47,6 +47,11 @@ ORG_MIN_ROWS = {
 }
 # A column added at the end on purpose (the ONE file now says the sport of each bout). Once it is committed it is the header to keep.
 ADDED_COLUMNS = {"one/fights.csv": ["discipline"]}
+PHOTO_DIR = Path("frontend") / "public" / "fighter-photos"
+# A refresh once replaced the champion belt photos (50 to 170 KB) with 4 KB files: the source had served a tiny thumbnail. A photo
+# that was big enough to matter and shrinks to under this share of its committed size is a bad download, not a new picture.
+PHOTO_MIN_COMMITTED_BYTES = 20_000
+PHOTO_MAX_SHRINK = 0.30
 STALE_UPCOMING_DAYS = 3  # a card this far past its date should have turned into results by now
 
 
@@ -167,6 +172,33 @@ def photo_manifest_problems() -> list[str]:
     return [f"fighter_photos.csv: {len(missing)} listed photos are missing on disk (first: {missing[0]})"] if missing else []
 
 
+def committed_photo_sizes(photo_dir: Path = PHOTO_DIR) -> dict[str, int]:
+    """The size in bytes of every photo in git HEAD, by repository path (one git call for all of them)."""
+    result = subprocess.run(["git", "ls-tree", "-r", "-l", "HEAD", "--", photo_dir.as_posix()], capture_output=True, text=True, encoding="utf-8")
+    sizes: dict[str, int] = {}
+    if result.returncode != 0:
+        return sizes
+    for line in result.stdout.splitlines():
+        info, _, name = line.partition("	")
+        parts = info.split()
+        if len(parts) == 4 and parts[3].isdigit():
+            sizes[name] = int(parts[3])
+    return sizes
+
+
+def photo_shrink_problems(photo_dir: Path = PHOTO_DIR, committed: dict[str, int] | None = None) -> list[str]:
+    """A photo that got much smaller than the one in git HEAD was overwritten by a bad download (a thumbnail, a placeholder)."""
+    sizes = committed_photo_sizes(photo_dir) if committed is None else committed
+    shrunk = []
+    for name, old in sizes.items():
+        path = Path(name)
+        if old >= PHOTO_MIN_COMMITTED_BYTES and path.exists() and path.stat().st_size < old * PHOTO_MAX_SHRINK:
+            shrunk.append(f"{path.name} ({old // 1000} KB -> {path.stat().st_size // 1000} KB)")
+    if not shrunk:
+        return []
+    return [f"fighter-photos: {len(shrunk)} photos shrank to under {int(PHOTO_MAX_SHRINK * 100)}% of the committed size (first: {shrunk[0]})"]
+
+
 def fight_stats_problems() -> list[str]:
     """Per-fight statistics that would feed the model nonsense: a fight without both sides, more landed than attempted,
     a negative count, or a fight that is not in event_cards.csv."""
@@ -254,6 +286,7 @@ def structure_problems() -> list[str]:
         + upcoming_structure_problems()
         + fighter_record_problems()
         + photo_manifest_problems()
+        + photo_shrink_problems()
         + fight_stats_problems()
         + gym_problems()
         + cancelled_fight_problems()

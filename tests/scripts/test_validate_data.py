@@ -123,6 +123,19 @@ def test_a_photo_listed_in_the_manifest_must_exist_on_disk(tmp_path, monkeypatch
     assert validate_data.photo_manifest_problems() == ["fighter_photos.csv: 1 listed photos are missing on disk (first: Ghost)"]
 
 
+def test_a_photo_that_shrinks_to_a_thumbnail_is_flagged_but_ordinary_small_photos_are_not(tmp_path):
+    big = tmp_path / "champion.webp"
+    big.write_bytes(b"x" * 4_000)  # was 60 KB in git
+    fine = tmp_path / "fine.webp"
+    fine.write_bytes(b"x" * 30_000)  # was 60 KB: smaller, but not a collapse
+    tiny_before = tmp_path / "small.webp"
+    tiny_before.write_bytes(b"x" * 1_000)  # was 8 KB: too small to matter
+    gone = tmp_path / "gone.webp"  # deleted photos are the manifest check's business
+    committed = {big.as_posix(): 60_000, fine.as_posix(): 60_000, tiny_before.as_posix(): 8_000, gone.as_posix(): 60_000}
+    assert validate_data.photo_shrink_problems(tmp_path, committed) == ["fighter-photos: 1 photos shrank to under 30% of the committed size (first: champion.webp (60 KB -> 4 KB))"]
+    assert validate_data.photo_shrink_problems(tmp_path, {}) == []
+
+
 STATS_HEADER = "fight_url,event_date,fighter,opponent,espn_event_id,espn_competition_id,espn_athlete_id,sig_landed,sig_attempted,td_landed,td_attempted\n"
 
 
