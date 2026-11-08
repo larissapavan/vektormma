@@ -15,7 +15,7 @@ export function ResumeCard({ saved, onResume, onDiscard }: { saved: SavedGame; o
   const { career } = saved
   const fights = career.ufcFights
   return (
-    <section aria-label={L(lang, 'Carreira salva', 'Saved career', 'Carrière enregistrée', 'Carrera guardada')} className="game-card flex flex-wrap items-center gap-4 p-4 sm:p-5">
+    <section aria-label={L(lang, 'Carreira salva', 'Saved career', 'Carrière enregistrée', 'Carrera guardada')} className="surface-card rounded-2xl flex flex-wrap items-center gap-4 p-4 sm:p-5">
       <Emblem name={career.name} className="h-14 w-14 text-xl" />
       <div className="min-w-[10rem] flex-1">
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--accent-red)]">{L(lang, 'Carreira salva neste navegador', 'Career saved in this browser', 'Carrière enregistrée dans ce navigateur', 'Carrera guardada en este navegador')}</p>

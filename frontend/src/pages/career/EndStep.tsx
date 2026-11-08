@@ -34,8 +34,8 @@ export function EndStep({ career: ended, challenge, onRestart }: { career: Caree
   const card = useMemo(() => retrospect(career, similar), [career, similar])
 
   return (
-    <section className="game-card overflow-hidden">
-      <div className="game-hero px-5 py-7 text-center sm:px-8">
+    <section className="surface-card rounded-2xl overflow-hidden">
+      <div className="border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-5 py-7 text-center sm:px-8">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--accent-red)]">{L(lang, 'Retrospecto', 'Retrospect', 'Bilan', 'Balance')}</p>
         <h2 ref={heading} tabIndex={-1} className="game-title mt-1 text-2xl focus:outline-none sm:text-4xl">{L(lang, 'Fim de carreira', 'The career is over', 'Fin de carrière', 'Fin de la carrera')}</h2>
         <p className="mx-auto mt-3 max-w-md text-sm text-[var(--text-secondary)]">

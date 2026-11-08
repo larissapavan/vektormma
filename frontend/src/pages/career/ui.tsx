@@ -29,7 +29,7 @@ export function Emblem({ name, className = 'h-16 w-16 text-xl' }: { name: string
   return (
     <span
       aria-hidden="true"
-      className={`grid shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[var(--accent-red-solid)] to-[var(--accent-gold)] font-display font-extrabold text-white shadow-lg ${className}`}
+      className={`grid shrink-0 place-items-center rounded-lg border-2 border-[var(--rule)] bg-gradient-to-br from-[var(--accent-red-solid)] to-[var(--accent-gold)] font-display font-extrabold text-white ${className}`}
     >
       {initials || '?'}
     </span>
@@ -115,12 +115,7 @@ export function Stepper({ steps, current }: { steps: string[]; current: number }
 
 export function PrimaryButton({ children, onClick, disabled, type = 'button' }: { children: ReactNode; onClick?: () => void; disabled?: boolean; type?: 'button' | 'submit' }) {
   return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[var(--accent-red-solid)] px-7 text-sm font-bold uppercase tracking-[0.12em] text-white shadow-lg shadow-[var(--accent-red)]/25 transition hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
-    >
+    <button type={type} onClick={onClick} disabled={disabled} className="primary-action inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-7 text-sm uppercase">
       {children}
     </button>
   )
@@ -128,22 +123,19 @@ export function PrimaryButton({ children, onClick, disabled, type = 'button' }: 
 
 export function GhostButton({ children, onClick }: { children: ReactNode; onClick?: () => void }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--border-default)] px-5 text-sm font-bold uppercase tracking-[0.12em] text-[var(--text-secondary)] transition hover:border-[var(--accent-red)] hover:text-[var(--text-main)]"
-    >
+    <button type="button" onClick={onClick} className="ghost-action inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-5 text-sm uppercase">
       {children}
     </button>
   )
 }
 
+/** A small badge, squared like the ones on the other pages (the title fight, the reason a fight fell through). */
 export function Chip({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'red' | 'gold' | 'green' }) {
   const tones = {
-    neutral: 'bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)] ring-[var(--border-default)]',
-    red: 'bg-[var(--accent-red)]/12 text-[var(--text-red)] ring-[var(--accent-red)]/40',
-    gold: 'bg-[var(--accent-gold)]/15 text-[var(--text-gold)] ring-[var(--accent-gold)]/40',
-    green: 'bg-[var(--accent-green)]/15 text-[var(--text-green)] ring-[var(--accent-green)]/40',
+    neutral: 'border-[var(--border-default)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)]',
+    red: 'border-[var(--accent-red)]/60 bg-[var(--accent-red)]/10 text-[var(--text-red)]',
+    gold: 'border-[var(--accent-gold)]/60 bg-[var(--accent-gold)]/15 text-[var(--text-gold)]',
+    green: 'border-[var(--accent-green)]/60 bg-[var(--accent-green)]/15 text-[var(--text-green)]',
   }
-  return <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.1em] ring-1 ${tones[tone]}`}>{children}</span>
+  return <span className={`inline-flex items-center gap-1 border px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] ${tones[tone]}`}>{children}</span>
 }

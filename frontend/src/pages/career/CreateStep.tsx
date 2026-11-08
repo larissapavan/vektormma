@@ -56,7 +56,7 @@ export function CreateStep({ onStart }: { onStart: (build: Build) => void }) {
         if (validBuild(build)) onStart(build)
       }}
     >
-      <div className="game-card space-y-6 p-5 sm:p-7">
+      <div className="surface-card rounded-2xl space-y-6 p-5 sm:p-7">
         <div>
           <h2 className="game-title text-xl sm:text-3xl">{L(lang, 'Crie seu lutador', 'Create your fighter', 'Créez votre combattant', 'Crea a tu peleador')}</h2>
           <p className="mt-2 text-sm text-[var(--text-secondary)]">{L(lang, 'Escolha um perfil pronto ou monte o seu.', 'Pick a ready-made style or build your own.', 'Choisissez un profil prêt à l’emploi ou composez le vôtre.', 'Elige un perfil listo o arma el tuyo.')}</p>
@@ -66,7 +66,7 @@ export function CreateStep({ onStart }: { onStart: (build: Build) => void }) {
                 key={archetype.id}
                 type="button"
                 onClick={() => setBuild((current) => ({ ...current, ...archetype.skills }))}
-                className="min-h-10 rounded-full border border-[var(--border-default)] px-4 text-xs font-bold uppercase tracking-[0.1em] text-[var(--text-secondary)] transition hover:border-[var(--accent-red)] hover:text-[var(--text-main)]"
+                className="min-h-10 border-2 border-[var(--rule)] px-4 text-xs font-bold uppercase tracking-[0.1em] text-[var(--text-secondary)] transition hover:border-[var(--accent-red)] hover:text-[var(--text-main)]"
               >
                 {archetypeName[archetype.id]}
               </button>
@@ -104,7 +104,7 @@ export function CreateStep({ onStart }: { onStart: (build: Build) => void }) {
         <fieldset className="space-y-5">
           <legend className="flex w-full items-baseline justify-between text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-secondary)]">
             <span>{L(lang, 'Distribua os pontos', 'Spend your points', 'Répartissez vos points', 'Reparte tus puntos')}</span>
-            <span className="data-value rounded-full bg-[var(--accent-red)]/12 px-3 py-1 text-sm text-[var(--text-red)]" data-testid="points-left">
+            <span className="data-value border border-[var(--accent-red)]/40 bg-[var(--accent-red)]/12 px-3 py-1 text-sm text-[var(--text-red)]" data-testid="points-left">
               {L(lang, `${left} livres`, `${left} left`, `${left} restants`, `${left} libres`)}
             </span>
           </legend>
@@ -129,7 +129,8 @@ export function CreateStep({ onStart }: { onStart: (build: Build) => void }) {
         </fieldset>
       </div>
 
-      <aside className="game-card flex flex-col items-center gap-4 p-5 text-center sm:p-7 lg:sticky lg:top-4 lg:self-start" aria-label={L(lang, 'Prévia do lutador', 'Fighter preview', 'Aperçu du combattant', 'Vista previa del peleador')}>
+      <div className="lg:sticky lg:top-4 lg:self-start">
+      <aside className="surface-card rounded-2xl flex flex-col items-center gap-4 p-5 text-center sm:p-7" aria-label={L(lang, 'Prévia do lutador', 'Fighter preview', 'Aperçu du combattant', 'Vista previa del peleador')}>
         <Emblem name={build.name || '?'} className="h-24 w-24 text-4xl" />
         <div>
           <p className="game-title text-2xl">{build.name || L(lang, 'Seu nome', 'Your name', 'Votre nom', 'Tu nombre')}</p>
@@ -153,6 +154,7 @@ export function CreateStep({ onStart }: { onStart: (build: Build) => void }) {
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </PrimaryButton>
       </aside>
+      </div>
     </form>
   )
 }

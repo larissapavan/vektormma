@@ -20,11 +20,11 @@ function CoachCard({ coachId, career, selected, onChoose }: { coachId: CoachId; 
   const preview = previewCamp(career, COACHES[coachId])
   const injury = Math.round(preview.injury * 100)
   return (
-    <button type="button" aria-pressed={selected} onClick={onChoose} className="game-pick game-card flex w-full flex-col gap-3 p-4 text-left">
+    <button type="button" aria-pressed={selected} onClick={onChoose} className="game-pick flex w-full flex-col gap-3 p-4 text-left">
       <span className="flex items-center gap-3">
         <Emblem name={text.name.replace('Coach ', '')} className="h-12 w-12 text-lg" />
         <span className="min-w-0">
-          <span className="block truncate font-display text-base font-extrabold uppercase leading-tight text-[var(--text-main)]">{text.name}</span>
+          <span className="block break-words font-display text-base font-extrabold uppercase leading-tight text-[var(--text-main)]">{text.name}</span>
           <span className="block text-xs font-bold uppercase tracking-[0.1em] text-[var(--text-red)]">{pick(lang, text.specialty)}</span>
         </span>
       </span>
@@ -48,7 +48,7 @@ export function CampStep({ career, coaches, note, onTrain, onRetire, retirable =
   const heading = useFocusOnMount<HTMLHeadingElement>()
 
   return (
-    <section className="game-card space-y-5 p-4 sm:space-y-6 sm:p-7">
+    <section className="surface-card rounded-2xl space-y-5 p-4 sm:space-y-6 sm:p-7">
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--accent-red)]">{L(lang, 'Preparação', 'Preparation', 'Préparation', 'Preparación')}</p>
         <h2 ref={heading} tabIndex={-1} className="game-title mt-1 text-xl focus:outline-none sm:text-3xl">
