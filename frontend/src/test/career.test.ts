@@ -14,6 +14,7 @@ import {
   offerCoaches,
   planNudge,
   playRound,
+  playToTheEnd,
   previewCamp,
   retire,
   retrospect,
@@ -306,6 +307,51 @@ describe('the shared link', () => {
     expect(decoded?.n.length).toBeLessThanOrEqual(24)
     expect(decoded?.n).not.toMatch(/[<>]/)
     expect(decoded?.b.length).toBeLessThanOrEqual(40)
+  })
+})
+
+describe('playing the rest of a fight at once', () => {
+  const rookie = createCareer(build)
+  const begin = (seed: number) => startFight(rookie, offer(0.5), 'balanced', player, seededRng(seed))
+
+  it('is the same as playing every round with the steady tactic, one at a time, for any seed', () => {
+    for (let seed = 1; seed <= 300; seed += 1) {
+      const at_once = playToTheEnd(begin(seed), seededRng(seed + 1000))
+      let by_hand = begin(seed)
+      const dice = seededRng(seed + 1000)
+      while (!by_hand.over) by_hand = playRound(by_hand, 'steady', dice)
+      expect(at_once).toEqual(by_hand)
+    }
+  })
+
+  it('plays only the rounds that are left, from wherever the fight is', () => {
+    const rng = seededRng(77)
+    let state = begin(7)
+    state = playRound(state, 'attack', rng)
+    if (state.over) return
+    const rest = playToTheEnd(state, rng)
+    expect(rest.over).not.toBeNull()
+    expect(rest.stories[0]).toEqual(state.stories[0]) // the round already fought is kept as it was
+    expect(rest.played).toBeGreaterThan(state.played)
+  })
+
+  it('leaves a fight that is over as it is, and takes another tactic when told to', () => {
+    const over = playToTheEnd(begin(3), seededRng(5))
+    expect(playToTheEnd(over, seededRng(9))).toBe(over)
+    const tactics = (tactic: 'attack' | 'cover') => {
+      let ended = 0
+      for (let seed = 1; seed <= 400; seed += 1) ended += playToTheEnd(begin(seed), seededRng(seed + 5000), tactic).stories.length === 3 ? 1 : 0
+      return ended // fights that went all three rounds
+    }
+    expect(tactics('cover')).toBeGreaterThan(tactics('attack')) // covering up ends fewer fights early than attacking
+  })
+
+  it('keeps fight() as it was: one call plays and settles', () => {
+    for (let seed = 1; seed <= 50; seed += 1) {
+      const result = fight(rookie, offer(0.5), 'balanced', player, seededRng(seed))
+      expect(result.career.ufcFights).toBe(1)
+      expect(result.rounds.length).toBeLessThanOrEqual(3)
+    }
   })
 })
 

@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ArrowRight, Crown, Dumbbell, RotateCcw, Scale, Swords } from 'lucide-react'
+import { ArrowRight, ChevronsRight, Crown, Dumbbell, RotateCcw, Scale, Swords } from 'lucide-react'
 
 import { L, pick } from '../../i18n/lang'
 import { FighterAvatar } from '../../shared/components/FighterAvatar'
@@ -91,7 +91,7 @@ function OfferCard({ offer, selected, onChoose, heading }: { offer: GameOpponent
 }
 
 /** The fights on offer, and a game plan for the one the player takes. */
-export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { career: Career; seed: number; onFight: (offer: GameOpponent, plan: Plan, player: PlayerStats) => void; onRetire: () => void; canRetire: boolean }) {
+export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { career: Career; seed: number; onFight: (offer: GameOpponent, plan: Plan, player: PlayerStats, quick?: boolean) => void; onRetire: () => void; canRetire: boolean }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
   const [offers, setOffers] = useState<Offers | null>(null)
@@ -196,10 +196,17 @@ export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { car
                 )
               })}
             </div>
-            <PrimaryButton onClick={() => onFight(chosen, plan, offers.player)}>
-              {L(lang, `Lutar contra ${chosen.name}`, `Fight ${chosen.name}`, `Combattre ${chosen.name}`, `Pelear contra ${chosen.name}`)}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </PrimaryButton>
+            <div className="flex flex-wrap items-center gap-3">
+              <PrimaryButton onClick={() => onFight(chosen, plan, offers.player)}>
+                {L(lang, `Lutar contra ${chosen.name}`, `Fight ${chosen.name}`, `Combattre ${chosen.name}`, `Pelear contra ${chosen.name}`)}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </PrimaryButton>
+              {/* The same fight with the plan unchanged in every round, played at once: what "Skip to the result" does on the fight screen. */}
+              <GhostButton onClick={() => onFight(chosen, plan, offers.player, true)}>
+                <ChevronsRight className="h-4 w-4" aria-hidden="true" />
+                {L(lang, 'Lutar e ir direto ao resultado', 'Fight and skip to the result', 'Combattre et passer au résultat', 'Pelear e ir al resultado')}
+              </GhostButton>
+            </div>
           </fieldset>
         </div>
       ) : null}

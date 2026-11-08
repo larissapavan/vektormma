@@ -75,8 +75,7 @@ for (const theme of ['dark', 'light'] as const) {
         await expect(page.getByRole('heading', { name: fight === 1 ? /camp for your ufc debut/i : new RegExp(`camp for ufc fight ${fight}`, 'i') })).toBeFocused()
         if (fight === 1) expect(await violations(page), 'the camp').toEqual([])
 
-        await page.getByRole('button', { name: /^Coach /i }).first().click()
-        await page.getByRole('button', { name: /^train with coach/i }).click()
+        await page.getByRole('button', { name: /^train with coach/i }).first().click()
         await expect(page.getByRole('heading', { name: /choose your next opponent/i })).toBeFocused()
         await page.getByRole('button', { name: /Easy Eddie/ }).click()
         if (fight === 1) expect(await violations(page), 'the matchmaking with an opponent chosen').toEqual([])

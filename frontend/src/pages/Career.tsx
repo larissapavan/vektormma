@@ -12,6 +12,7 @@ import {
   createCareer,
   decodeRetrospect,
   offerCoaches,
+  playToTheEnd,
   retire,
   seededRng,
   startFight,
@@ -120,10 +121,12 @@ export function Career() {
     setGame({ ...game, career: result.career, note: { injured: result.injured, declined: result.declined }, stage: result.career.ended ? 'end' : 'offers', seed: streams ? streams.offers(fightNumber) : Math.floor(random() * 2 ** 31) })
   }
 
-  const takeFight = (offer: GameOpponent, plan: Plan, player: PlayerStats) => {
+  const takeFight = (offer: GameOpponent, plan: Plan, player: PlayerStats, quick = false) => {
     if (!game) return
     const dice = game.challenge ? challengeStreams(game.challenge.seed).fight(game.career.ufcFights) : random
-    setGame({ ...game, stage: 'fight', fight: { offer, state: startFight(game.career, offer, plan, player, dice), dice } })
+    const first = startFight(game.career, offer, plan, player, dice)
+    // "Fight and skip to the result": every round with the plan unchanged, the same function the fight screen's own skip uses.
+    setGame({ ...game, stage: 'fight', fight: { offer, state: quick ? playToTheEnd(first, dice) : first, dice } })
   }
 
   const continueCareer = (result: FightResult) => {

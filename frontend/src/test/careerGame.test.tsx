@@ -35,11 +35,9 @@ function renderAt(path: string) {
 const click = (name: RegExp | string) => userEvent.click(screen.getByRole('button', { name }))
 const findButton = (name: RegExp | string) => screen.findByRole('button', { name }, { timeout: 10000 })
 
-/** Picks the first of the three coaches on offer and trains with them. */
+/** Trains with the first of the three coaches on offer: each card has its own Train button, so it is one touch. */
 async function train() {
-  const coaches = screen.getAllByRole('button', { name: /^Coach /, pressed: false })
-  await userEvent.click(coaches[0])
-  await click(/^train with coach/i)
+  await userEvent.click(screen.getAllByRole('button', { name: /^train with coach/i })[0])
 }
 
 async function startCareer(name = 'Maria Silva') {
@@ -96,16 +94,22 @@ describe('creating the fighter', () => {
 })
 
 describe('a career', () => {
-  it('offers three coaches, shows what each camp does, and trains only once one is chosen', async () => {
+  it('offers three coaches, shows what each camp does, and trains with one touch on the coach’s own button', async () => {
     await startCareer()
-    const coaches = screen.getAllByRole('button', { name: /^Coach / })
-    expect(coaches).toHaveLength(3)
-    for (const coach of coaches) expect(coach).toHaveTextContent(/Striking \+\d+\.\d/)
+    const cards = screen.getAllByRole('article', { name: /^Coach / })
+    expect(cards).toHaveLength(3)
+    for (const card of cards) {
+      expect(card).toHaveTextContent(/Striking \+\d+\.\d/)
+      expect(within(card).getByRole('button', { name: /^train with coach/i })).toBeEnabled()
+    }
+    // There is nothing to choose first and confirm after: the effects are on the card, so the button is the choice.
+    expect(screen.queryByRole('button', { name: /choose a coach/i })).toBeNull()
+    expect(calls.matchmaking).toHaveLength(0)
 
-    expect(screen.getByRole('button', { name: /choose a coach/i })).toBeDisabled()
-    await userEvent.click(coaches[1])
-    expect(coaches[1]).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByRole('button', { name: /^train with coach/i })).toBeEnabled()
+    await userEvent.click(within(cards[1]).getByRole('button', { name: /^train with coach/i }))
+    expect(await findButton(/Easy Eddie/)).toBeInTheDocument()
+    expect(screen.queryByRole('article', { name: /^Coach / })).toBeNull() // the camp is over
+    expect(calls.matchmaking).toHaveLength(1)
   })
 
   it('asks the API for fights built from the fighter, then plays one and goes on', async () => {
@@ -166,6 +170,66 @@ describe('a career', () => {
 
     await click(/start another career/i)
     expect(await findButton(/start the career/i)).toBeInTheDocument()
+  })
+})
+
+describe('the touches a fight takes', () => {
+  it('is four on the quickest way: train, choose the opponent, fight and skip to the result, continue (it used to be six)', async () => {
+    await startCareer()
+    await userEvent.click(screen.getAllByRole('button', { name: /^train with coach/i })[0]) // 1
+    await userEvent.click(await findButton(/Easy Eddie/)) // 2
+    await click(/fight and skip to the result/i) // 3
+    expect(screen.getByTestId('fight-result')).toHaveTextContent(/victory|defeat/i)
+    await click(/continue the career/i) // 4
+    expect(screen.getByText(/camp for ufc fight 2/i)).toBeInTheDocument()
+  })
+
+  it('plays every round at once with the plan unchanged, ends on the result and leaves nothing to decide', async () => {
+    await startCareer()
+    await train()
+    await userEvent.click(await findButton(/Easy Eddie/))
+    await click(/fight and skip to the result/i)
+    expect(screen.getByTestId('fight-result')).toHaveFocus()
+    expect(screen.queryByRole('button', { name: /^attack/i })).toBeNull() // no round left to give a tactic for
+    expect(screen.queryByRole('button', { name: /skip to the result/i })).toBeNull()
+    expect(screen.getByTestId('scorecard')).toBeInTheDocument()
+    await click(/continue the career/i)
+    const [wins, losses] = screen.getByTestId('record').textContent?.split('-').map(Number) ?? []
+    expect(wins + losses).toBe(7) // the fight counts like any other
+  })
+
+  it('still lets the player fight the same opponent round by round', async () => {
+    await startCareer()
+    await train()
+    await userEvent.click(await findButton(/Easy Eddie/))
+    expect(screen.getByRole('button', { name: /^fight easy eddie/i })).toBeInTheDocument()
+    await click(/^fight easy eddie/i)
+    expect(screen.getByRole('button', { name: /^attack/i })).toBeInTheDocument() // the corner asks before round 1
+    expect(screen.queryByTestId('fight-result')).toBeNull()
+  })
+
+  it('gives a challenge the same fight whichever way it is played: fight and skip, or fight and then skip to the result', async () => {
+    const link = `/career?d=${encodeChallenge({ seed: 20261108, fights: 3, target: null })}`
+    const play = async (quick: boolean) => {
+      const view = renderAt(link)
+      await userEvent.type(await screen.findByLabelText('Your name', undefined, { timeout: 10000 }), 'Ana')
+      await click(/start the challenge/i)
+      await train()
+      await userEvent.click(await findButton(/Easy Eddie/))
+      if (quick) await click(/fight and skip to the result/i)
+      else {
+        await click(/^fight easy eddie/i)
+        await click(/skip to the result/i)
+      }
+      const text = screen.getByTestId('fight-result').textContent
+      const rounds = screen.getAllByText(/^round \d$/i).length
+      view.unmount()
+      window.localStorage.clear()
+      return { text, rounds }
+    }
+    const quick = await play(true)
+    const slow = await play(false)
+    expect(quick).toEqual(slow)
   })
 })
 
@@ -433,7 +497,7 @@ describe('a challenge', () => {
   })
 
   it('offers the same coaches and the same goals to everyone who plays the same challenge', async () => {
-    const coaches = () => screen.getAllByRole('button', { name: /^Coach / }).map((button) => button.textContent)
+    const coaches = () => screen.getAllByRole('article', { name: /^Coach / }).map((card) => card.textContent)
     const goals = () => within(screen.getByRole('region', { name: /career goals/i })).getAllByRole('listitem').map((item) => item.textContent)
     const first = await startChallenge(challenge(), 'Ana')
     const firstCoaches = coaches()

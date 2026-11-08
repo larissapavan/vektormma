@@ -598,10 +598,20 @@ export function settleFight(career: Career, offer: Offer, state: FightState, tit
   return { career: next, won, method, round: finishRound, split, chance, pointsGained, rounds: state.stories, lostBelt, wonBelt, standingBefore: before, standingAfter: standing(next) }
 }
 
-/** Fights a whole fight with the steady tactic in every round (the corner's default, and what "skip to the result" plays). */
+/**
+ * Plays every round that is left with the same tactic (the steady one unless told otherwise): the corner's default, what "skip
+ * to the result" does on the fight screen and what "fight and skip to the result" does from the matchmaking. One function for all
+ * of them, so a fight played at once is the same fight whichever button started it.
+ */
+export function playToTheEnd(state: FightState, rng: Rng, tactic: Tactic = 'steady'): FightState {
+  let next = state
+  while (!next.over) next = playRound(next, tactic, rng)
+  return next
+}
+
+/** Fights a whole fight with the steady tactic in every round. */
 export function fight(career: Career, offer: Offer, plan: Plan, player: PlayerStats, rng: Rng, title = offer.champion): FightResult {
-  let state = startFight(career, offer, plan, player, rng, title)
-  while (!state.over) state = playRound(state, 'steady', rng)
+  const state = playToTheEnd(startFight(career, offer, plan, player, rng, title), rng)
   return settleFight(career, offer, state, title)
 }
 

@@ -7,7 +7,7 @@ import type { ReactNode } from 'react'
 import { L, pick } from '../../i18n/lang'
 import { FighterAvatar } from '../../shared/components/FighterAvatar'
 import { METHOD_LABELS } from '../../shared/data/cancelledFights'
-import { canRetire, cornerAdvice, liveChance, playRound, recordText, TACTICS, type Career, type Edge, type FightResult, type FightState, type Rng, type Tactic } from '../../shared/game/career'
+import { canRetire, cornerAdvice, liveChance, playRound, playToTheEnd, recordText, TACTICS, type Career, type Edge, type FightResult, type FightState, type Rng, type Tactic } from '../../shared/game/career'
 import { ADVICE_TEXT, TACTIC_TEXT } from '../../shared/game/corner'
 import { GOAL_TEXT } from '../../shared/game/rewardsText'
 import { finishFight } from '../../shared/game/progress'
@@ -93,9 +93,7 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
 
   const play = (tactic: Tactic) => setState(playRound(state, tactic, random))
   const toTheEnd = () => {
-    let next = state
-    while (!next.over) next = playRound(next, 'steady', random)
-    setState(next)
+    setState(playToTheEnd(state, random))
   }
 
   return (
