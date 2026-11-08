@@ -183,7 +183,7 @@ describe('the loop on the page', () => {
 
   it('describes itself for a screen reader and keeps the picture itself out of the reading order', () => {
     const { container } = render(<FightLoop />)
-    expect(screen.getByRole('img', { name: /two stylised fighters.*red one takes the blue one down/i })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: /two stylised fighters.*red one lands a straight right and knocks the blue one down/i })).toBeInTheDocument()
     expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
   })
 

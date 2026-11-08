@@ -61,10 +61,10 @@ export function FightLoop({ className = '' }: { className?: string }) {
 
   const describe = L(
     lang,
-    'Ilustração animada: dois lutadores estilizados, de bermuda vermelha e azul, trocam golpes; o vermelho derruba o azul, finaliza no chão e vence.',
-    'Animated illustration: two stylised fighters, in red and blue shorts, trade blows; the red one takes the blue one down, finishes on the ground and wins.',
-    'Illustration animée : deux combattants stylisés, en short rouge et bleu, échangent des coups ; le rouge amène le bleu au sol, conclut au sol et gagne.',
-    'Ilustración animada: dos peleadores estilizados, con short rojo y azul, intercambian golpes; el rojo derriba al azul, finaliza en el suelo y gana.',
+    'Ilustração animada: dois lutadores estilizados, de bermuda vermelha e azul, trocam golpes; o vermelho acerta um direto, o azul cai e o vermelho vence.',
+    'Animated illustration: two stylised fighters, in red and blue shorts, trade blows; the red one lands a straight right and knocks the blue one down, and wins.',
+    'Illustration animée : deux combattants stylisés, en short rouge et bleu, échangent des coups ; le rouge place un direct, envoie le bleu au tapis et gagne.',
+    'Ilustración animada: dos peleadores estilizados, con short rojo y azul, intercambian golpes; el rojo conecta un recto, tumba al azul y gana.',
   )
 
   return (
