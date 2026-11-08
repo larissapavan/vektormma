@@ -5,6 +5,17 @@ import pytest
 from scripts import update_all
 
 
+@pytest.fixture(autouse=True)
+def generated_pages(monkeypatch):
+    """The two generators at the end of the update write tracked files (frontend/src/seo/athletes.json and the share images
+    under frontend/public/og), and they have no skip flag, so every full run reaches them: no test of the update may run them
+    for real. What they were asked to do is recorded here, apart from `calls`, whose exact contents the other tests assert."""
+    log: list[str] = []
+    monkeypatch.setattr(update_all.build_seo_athletes, "main", lambda: log.append("seo") or True)
+    monkeypatch.setattr(update_all.build_og_images, "main", lambda: log.append("og") or True)
+    return log
+
+
 @pytest.fixture
 def calls(monkeypatch):
     log: list[tuple[str, object]] = []
@@ -161,3 +172,27 @@ def test_nothing_is_written_outside_github_actions(monkeypatch, tmp_path, capsys
     update_all.report_to_github({"Gyms (FightHub)": "RuntimeError: nothing"})
     assert "::error title=Refresh step failed: Gyms (FightHub)::RuntimeError: nothing" in capsys.readouterr().out
     assert "Gyms (FightHub)" in summary.read_text(encoding="utf-8")
+
+
+def test_the_static_pages_are_built_after_the_scrapers_and_before_the_data_is_validated(monkeypatch, calls, generated_pages):
+    monkeypatch.setattr(update_all, "require_valid", lambda: generated_pages.append("validate"))
+    assert update_all.main([]) == 0
+    assert calls[-1] == ("feed", None)  # the feed comes last of the scrapers
+    # The share images are drawn from the data the first one writes, and the validation looks at what both produced.
+    assert generated_pages == ["seo", "og", "validate"]
+
+
+def test_a_dry_run_builds_no_pages(calls, generated_pages):
+    update_all.main(["--dry-run"])
+    assert generated_pages == []
+
+
+def test_a_failing_page_generator_does_not_stop_the_next_step_and_sets_exit_status(monkeypatch, calls, generated_pages, capsys):
+    def boom():
+        raise RuntimeError("no athletes")
+
+    monkeypatch.setattr(update_all, "require_valid", lambda: generated_pages.append("validate"))
+    monkeypatch.setattr(update_all.build_seo_athletes, "main", boom)
+    assert update_all.main([]) == 1
+    assert generated_pages == ["og", "validate"]
+    assert "SEO pages data" in capsys.readouterr().out
