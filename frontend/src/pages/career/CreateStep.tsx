@@ -4,22 +4,8 @@ import { ArrowRight } from 'lucide-react'
 
 import { L } from '../../i18n/lang'
 import { getDivisionName } from '../../shared/data/divisions'
-import { budgetLeft, CREATE_BUDGET, SKILL_MAX, SKILL_MIN, START_RECORD, validBuild, type Build, type Stance } from '../../shared/game/career'
+import { budgetLeft, CREATE_BUDGET, GAME_DIVISIONS, SKILL_MAX, SKILL_MIN, START_RECORD, validBuild, type Build, type Stance } from '../../shared/game/career'
 import { Chip, Emblem, PrimaryButton, Radar } from './ui'
-
-export const GAME_DIVISIONS = [
-  'Flyweight',
-  'Bantamweight',
-  'Featherweight',
-  'Lightweight',
-  'Welterweight',
-  'Middleweight',
-  'Light Heavyweight',
-  'Heavyweight',
-  "Women's Strawweight",
-  "Women's Flyweight",
-  "Women's Bantamweight",
-]
 
 const STANCES: Stance[] = ['Orthodox', 'Southpaw', 'Switch']
 

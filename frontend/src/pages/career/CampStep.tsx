@@ -41,7 +41,7 @@ function CoachCard({ coachId, career, selected, onChoose }: { coachId: CoachId; 
 }
 
 /** Between fights: three coaches on offer; the player picks who to train with. */
-export function CampStep({ career, coaches, note, onTrain, onRetire }: { career: Career; coaches: CoachId[]; note: CampNote | null; onTrain: (coach: CoachId) => void; onRetire: () => void }) {
+export function CampStep({ career, coaches, note, onTrain, onRetire, retirable = true }: { career: Career; coaches: CoachId[]; note: CampNote | null; onTrain: (coach: CoachId) => void; onRetire: () => void; retirable?: boolean }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
   const [chosen, setChosen] = useState<CoachId | null>(null)
@@ -89,7 +89,7 @@ export function CampStep({ career, coaches, note, onTrain, onRetire }: { career:
             : L(lang, 'Escolha um técnico', 'Choose a coach', 'Choisissez un entraîneur', 'Elige un técnico')}
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </PrimaryButton>
-        {canRetire(career) ? <GhostButton onClick={onRetire}>{L(lang, 'Aposentar', 'Retire', 'Prendre sa retraite', 'Retirarse')}</GhostButton> : null}
+        {retirable && canRetire(career) ? <GhostButton onClick={onRetire}>{L(lang, 'Aposentar', 'Retire', 'Prendre sa retraite', 'Retirarse')}</GhostButton> : null}
       </div>
     </section>
   )

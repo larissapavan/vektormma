@@ -68,7 +68,7 @@ function TacticButton({ tactic, onPick }: { tactic: Tactic; onPick: () => void }
  * The fight, a round at a time. Before every round the player tells the corner what to do (attack, stick to the plan or cover
  * up); the round is fought, the cards and the odds move, and so on until a finish or the last bell. Then what it did to the career.
  */
-export function FightStep({ career, offer, start, random, onContinue, onRetire }: { career: Career; offer: GameOpponent; start: FightState; random: Rng; onContinue: (result: FightResult) => void; onRetire: (result: FightResult) => void }) {
+export function FightStep({ career, offer, start, random, onContinue, onRetire, retirable = true }: { career: Career; offer: GameOpponent; start: FightState; random: Rng; onContinue: (result: FightResult) => void; onRetire: (result: FightResult) => void; retirable?: boolean }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
   const [state, setState] = useState(start)
@@ -226,7 +226,7 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire }
                 {result.career.ended ? L(lang, 'Ver o retrospecto', 'See the retrospect', 'Voir le bilan', 'Ver el balance') : L(lang, 'Continuar a carreira', 'Continue the career', 'Poursuivre la carrière', 'Continuar la carrera')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </PrimaryButton>
-              {!result.career.ended && canRetire(result.career) ? <GhostButton onClick={() => onRetire(result)}>{L(lang, 'Aposentar', 'Retire', 'Prendre sa retraite', 'Retirarse')}</GhostButton> : null}
+              {retirable && !result.career.ended && canRetire(result.career) ? <GhostButton onClick={() => onRetire(result)}>{L(lang, 'Aposentar', 'Retire', 'Prendre sa retraite', 'Retirarse')}</GhostButton> : null}
             </div>
           </div>
         ) : null}

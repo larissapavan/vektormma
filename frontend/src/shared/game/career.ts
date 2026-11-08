@@ -26,6 +26,21 @@ export function seededRng(seed: number): Rng {
   }
 }
 
+/** The divisions the game offers (the UFC's, men's and women's). */
+export const GAME_DIVISIONS = [
+  'Flyweight',
+  'Bantamweight',
+  'Featherweight',
+  'Lightweight',
+  'Welterweight',
+  'Middleweight',
+  'Light Heavyweight',
+  'Heavyweight',
+  "Women's Strawweight",
+  "Women's Flyweight",
+  "Women's Bantamweight",
+]
+
 export const START_RECORD = { wins: 6, losses: 0 }
 export const START_AGE = 24
 export const SKILL_MIN = 20
@@ -667,9 +682,9 @@ export function retrospect(career: Career, similar: string | null): Retrospect {
 }
 
 const STANDINGS: Standing[] = ['prospect', 'rising', 'top15', 'top5', 'contender', 'champion']
-const END_REASONS: EndReason[] = ['retired', 'released', 'age']
+export const END_REASONS: EndReason[] = ['retired', 'released', 'age']
 
-function toBase64Url(text: string) {
+export function toBase64Url(text: string) {
   const bytes = new TextEncoder().encode(text)
   let binary = ''
   bytes.forEach((byte) => {
@@ -678,7 +693,7 @@ function toBase64Url(text: string) {
   return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
 }
 
-function fromBase64Url(text: string) {
+export function fromBase64Url(text: string) {
   const padded = text.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - (text.length % 4)) % 4)
   const binary = atob(padded)
   return new TextDecoder().decode(Uint8Array.from(binary, (char) => char.charCodeAt(0)))
@@ -688,8 +703,8 @@ export function encodeRetrospect(value: Retrospect): string {
   return toBase64Url(JSON.stringify(value))
 }
 
-const counter = (value: unknown, max = 200) => (typeof value === 'number' && Number.isInteger(value) && value >= 0 && value <= max ? value : null)
-const text = (value: unknown, max: number) => (typeof value === 'string' ? cleanName(value, max) : null)
+export const counter = (value: unknown, max = 200) => (typeof value === 'number' && Number.isInteger(value) && value >= 0 && value <= max ? value : null)
+export const text = (value: unknown, max: number) => (typeof value === 'string' ? cleanName(value, max) : null)
 
 /**
  * Reads a shared link. Anyone can write one by hand, so every field is checked and the texts are cut and stripped; what comes

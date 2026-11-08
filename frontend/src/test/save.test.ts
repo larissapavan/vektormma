@@ -114,10 +114,39 @@ describe('goals and achievements in a save', () => {
   })
 })
 
+describe('a challenge in a save', () => {
+  const target = { n: 'Rival', p: 14, w: 4, l: 1, ko: 2, sb: 1, dc: 1, t: 0, f: 5, e: 'retired' }
+  const withChallenge = (challenge: unknown) => readSave(save(createCareer(build), { challenge }))
+
+  it('is read back, with or without a result to beat', () => {
+    expect(withChallenge({ seed: 20261108, fights: 6, target: null })?.challenge).toEqual({ seed: 20261108, fights: 6, target: null })
+    expect(withChallenge({ seed: 7, fights: 3, target })?.challenge).toEqual({ seed: 7, fights: 3, target })
+    expect(withChallenge({ seed: 7, fights: 3 })?.challenge).toEqual({ seed: 7, fights: 3, target: null })
+  })
+
+  it('reads as no challenge for an ordinary career, and for a save from before challenges existed', () => {
+    expect(withChallenge(null)?.challenge).toBeNull()
+    expect(readSave(save(createCareer(build)))?.challenge).toBeNull() // the field is missing altogether
+  })
+
+  it.each([
+    ['a seed above the range', { seed: 2 ** 31, fights: 6, target: null }],
+    ['a seed that is not a whole number', { seed: 1.5, fights: 6, target: null }],
+    ['a negative seed', { seed: -1, fights: 6, target: null }],
+    ['fewer fights than a challenge has', { seed: 1, fights: 2, target: null }],
+    ['more fights than a challenge has', { seed: 1, fights: 11, target: null }],
+    ['a result to beat that is damaged', { seed: 1, fights: 6, target: { ...target, e: 'cheated' } }],
+    ['a result with an absurd score', { seed: 1, fights: 6, target: { ...target, p: 99999 } }],
+    ['a challenge that is not an object', 'hard'],
+  ])('refuses %s', (_label, challenge) => {
+    expect(withChallenge(challenge)).toBeNull()
+  })
+})
+
 describe('the save in the browser', () => {
   it('is stored, read back and cleared', () => {
     expect(loadSave()).toBeNull()
-    storeSave({ career: veteran(), stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 5, note: null })
+    storeSave({ career: veteran(), stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 5, note: null, challenge: null })
     expect(loadSave()).toMatchObject({ stage: 'camp', seed: 5, career: { name: 'Maria Silva', ufcFights: 4 } })
     expect(window.localStorage.getItem(SAVE_KEY)).toContain('Maria Silva')
     clearSave()
@@ -135,7 +164,7 @@ describe('the save in the browser', () => {
       throw new Error('blocked')
     })
     expect(loadSave()).toBeNull()
-    expect(() => storeSave({ career: createCareer(build), stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 1, note: null })).not.toThrow()
+    expect(() => storeSave({ career: createCareer(build), stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 1, note: null, challenge: null })).not.toThrow()
     expect(() => clearSave()).not.toThrow()
   })
 })
