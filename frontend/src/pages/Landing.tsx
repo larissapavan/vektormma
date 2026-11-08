@@ -9,6 +9,7 @@ import { historyDecades, historyRange } from '../shared/data/history'
 import { SocialLinks } from '../shared/components/SocialLinks'
 import { SiteLinks } from '../shared/components/SiteLinks'
 import { FeaturedMatchup } from '../shared/components/FeaturedMatchup'
+import { FightLoop } from '../shared/components/fightScene/FightLoop'
 import { useDataInfo } from '../shared/hooks/useDataInfo'
 import { useModelInfo } from '../shared/hooks/useModelInfo'
 import { OrganizationsSection } from './landing/OrganizationsSection'
@@ -130,50 +131,17 @@ export function Landing() {
               <FeaturedMatchup />
             </motion.div>
 
-            {/* Lado Direito: Cinturão de Campeonato Flutuante */}
+            {/* Lado Direito: a luta animada (dois lutadores estilizados, desenhados em SVG; ver fightScene/) */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               className="lg:col-span-6 relative flex flex-col items-center justify-center"
             >
-              <div className="relative w-full max-w-[260px] sm:max-w-[320px] lg:max-w-[360px] aspect-square flex items-center justify-center p-2">
-                {/* Brilho radial ambiente sutil atrás do cinturão */}
+              <div className="relative w-full max-w-[300px] sm:max-w-[380px] lg:max-w-[440px] aspect-square">
+                {/* Brilho radial ambiente sutil atrás do painel */}
                 <div className="absolute inset-0 rounded-full bg-[#E11D48]/[0.1] blur-3xl pointer-events-none" />
-
-                {/* Levitação suave via Framer Motion */}
-                <motion.div
-                  animate={{ y: [-8, 8, -8], rotate: [-0.4, 0.4, -0.4] }}
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                  className="relative z-10 w-full h-full flex items-center justify-center"
-                >
-                  <img
-                    src="/vektor_mma_championship_belt.webp"
-                    width={720}
-                    height={537}
-                    decoding="async"
-                    alt={L(i18n.language, 'Cinturão de campeão da Vektor MMA', 'Vektor MMA championship belt', 'Ceinture de champion Vektor MMA', 'Cinturón de campeón de Vektor MMA')}
-                    className="h-auto w-full object-contain filter drop-shadow-[0_20px_35px_rgba(225,29,72,0.25)] select-none pointer-events-none"
-                  />
-                </motion.div>
-
-                {/* Sombra difusa dinâmica que responde à distância de flutuação */}
-                <motion.div
-                  animate={{
-                    scale: [0.95, 1.15, 0.95],
-                    opacity: [0.35, 0.55, 0.35],
-                  }}
-                  transition={{
-                    duration: 5,
-                    repeat: Infinity,
-                    ease: 'easeInOut',
-                  }}
-                  className="absolute -bottom-2 h-6 w-48 rounded-full bg-gradient-to-r from-transparent via-[#E11D48]/40 to-transparent blur-xl pointer-events-none"
-                />
+                <FightLoop className="relative z-10 h-full w-full" />
               </div>
             </motion.div>
           </div>
