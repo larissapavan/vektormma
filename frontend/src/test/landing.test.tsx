@@ -35,6 +35,10 @@ describe('Landing', () => {
     expect(card).toHaveTextContent('72%')
     expect(card).toHaveTextContent('Model favors Gamma Three (72%)')
     expect(card).not.toHaveTextContent(/clear edge/i)
+    // Both headliners face to face: a photo each, or their initials when there is none.
+    const faceOff = within(card).getByTestId('featured-faceoff')
+    expect(faceOff).toHaveTextContent('GT')
+    expect(faceOff).toHaveTextContent('DF')
     // Where the fight sits on the card, and the day of the event.
     expect(card).toHaveTextContent('Co-main event')
     expect(card).toHaveTextContent('UFC 900: Alpha vs. Beta · Jan 1, 2030')

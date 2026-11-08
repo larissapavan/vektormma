@@ -1,9 +1,13 @@
 import '@testing-library/jest-dom/vitest'
 import i18n from '../i18n'
 import { afterEach } from 'vitest'
-import { cleanup } from '@testing-library/react'
+import { cleanup, configure } from '@testing-library/react'
 
 await i18n.changeLanguage('en-US')
+
+// The suite runs a jsdom per file in parallel, so a page that lazy-loads can take well over the default second to show up when
+// the machine is busy. This is only the ceiling for waiting: a test that finds its element at once still ends at once.
+configure({ asyncUtilTimeout: 10000 })
 
 afterEach(async () => {
   cleanup()

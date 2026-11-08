@@ -6,6 +6,9 @@ import { L, localeTag } from '../../i18n/lang'
 import { fightPath } from '../../seo/athletes'
 import { cardPositionLabel } from '../data/cardPosition'
 import { useFeaturedPick } from '../hooks/useFeaturedPick'
+import { useFighterLookup } from '../hooks/useFighterLookup'
+import { getFighterImageUrl, useFighterImages } from '../hooks/useFighterImages'
+import { FighterAvatar } from './FighterAvatar'
 import { WinProbabilityBar } from './WinProbabilityBar'
 
 /** Address of the head-to-head page for two fighters (the page reads ?a= and ?b=). */
@@ -19,6 +22,20 @@ function eventDay(date: string | null, language: string): string | null {
   const parsed = date ? new Date(`${date}T00:00:00Z`) : null
   if (!parsed || Number.isNaN(parsed.getTime())) return null
   return parsed.toLocaleDateString(localeTag(language), { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
+}
+
+/** The two headliners face to face: their photos, as the fight cards show them (initials where a fighter has none). */
+function FaceOff({ nameA, nameB }: { nameA: string; nameB: string }) {
+  const lookup = useFighterLookup()
+  const { imageByName } = useFighterImages()
+  const photo = (name: string) => getFighterImageUrl(name, imageByName, lookup(name)?.image_url)
+  return (
+    <div className="mt-3 flex items-center justify-center gap-3" data-testid="featured-faceoff">
+      <FighterAvatar name={nameA} imageUrl={photo(nameA)} className="h-24 w-20" />
+      <span className="font-mono text-xs font-bold uppercase tracking-widest text-[var(--text-secondary)] dark:text-neutral-400">vs</span>
+      <FighterAvatar name={nameB} imageUrl={photo(nameB)} className="h-24 w-20" />
+    </div>
+  )
 }
 
 /** The next card's headline fight with the model's odds, and a link to compare the two fighters. Renders nothing without one. */
@@ -50,6 +67,7 @@ export function FeaturedMatchup() {
         {pick.event_name}
         {day ? ` · ${day}` : ''}
       </p>
+      <FaceOff nameA={pick.fighter_1} nameB={pick.fighter_2} />
       <div className="mt-3">
         <WinProbabilityBar
           nameA={pick.fighter_1}
