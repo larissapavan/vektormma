@@ -38,9 +38,6 @@ export const INFO_PATHS: Record<InfoPageId, string> = {
   guide: '/guide',
 }
 
-/** The day the privacy policy and the terms were last changed. */
-export const INFO_UPDATED = '2026-11-06'
-
 const UPDATED_LABEL: ByLang = {
   pt: 'Última atualização: 6 de novembro de 2026',
   en: 'Last updated: November 6, 2026',

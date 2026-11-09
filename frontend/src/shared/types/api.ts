@@ -255,16 +255,6 @@ export interface HeadToHeadResponse {
   degrees_of_separation: number | null
 }
 
-export interface SimilarFighter {
-  name: string
-  similarity: number
-  division: string | null
-  wins: number
-  losses: number
-  draws: number
-  image_url: string | null
-}
-
 export interface YearlyTrend {
   year: number
   fights: number
@@ -707,21 +697,6 @@ export interface DivisionMatrix {
   skipped: string[]
 }
 
-
-export interface EloRankingEntry {
-  name: string
-  division: string
-  elo: number
-  peak_elo: number
-  fights: number
-  wins: number
-  losses: number
-  draws: number
-  image_url: string | null
-  belt: boolean
-  active: boolean
-  rank: number
-}
 
 export interface SyncTrackRecordResponse {
   status: string
