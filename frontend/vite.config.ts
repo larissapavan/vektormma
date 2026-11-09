@@ -122,6 +122,10 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     css: false,
     testTimeout: 20000,
+    // Every test file gets a jsdom of its own, a few hundred MB each. By default one worker per CPU is opened, and on a machine with
+    // many cores and little free memory (a laptop with other programs open) the workers swap and the heavy pages (Matchup) time out.
+    // Four is as fast as the default on a CI runner (four cores) and keeps a bigger machine from starving itself.
+    maxWorkers: 4,
     exclude: [...configDefaults.exclude, 'e2e/**'],
   },
 })
