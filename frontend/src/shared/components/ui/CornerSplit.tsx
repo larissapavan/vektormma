@@ -11,36 +11,53 @@ export type Corner = {
   action?: ReactNode
 }
 
-/** The surname as the corner block prints it: the last word of the name. */
-export function surnameOf(name: string) {
+/** Lowercase particles that belong to the surname: "Rafael dos Anjos" is printed "Rafael" over "dos Anjos". */
+const PARTICLES = new Set(['da', 'das', 'de', 'del', 'della', 'der', 'di', 'do', 'dos', 'du', 'la', 'le', 'van', 'von'])
+
+/** The name split as the corner block prints it: given names small on top, the surname large below. */
+export function splitName(name: string): { given: string; surname: string } {
   const parts = name.trim().split(/\s+/)
-  return parts[parts.length - 1] ?? name
+  if (parts.length < 2) return { given: '', surname: parts[0] ?? name }
+  let start = parts.length - 1
+  while (start > 1 && PARTICLES.has(parts[start - 1])) start -= 1
+  return { given: parts.slice(0, start).join(' '), surname: parts.slice(start).join(' ') }
+}
+
+/** The surname as the corner block prints it. */
+export function surnameOf(name: string) {
+  return splitName(name).surname
 }
 
 function CornerBlock({ corner, side, headingLevel }: { corner: Corner; side: 'red' | 'blue'; headingLevel: 'h2' | 'h3' | 'p' }) {
   const red = side === 'red'
-  const surname = surnameOf(corner.name)
+  const { given, surname } = splitName(corner.name)
   const Name = headingLevel
   // The surname fills the block without ever breaking: its size is the design's clamp, capped by the width one letter
   // can take inside the block (Big Shoulders Display at 900 runs about 0.52em per capital).
   const fit = `${(100 / (Math.max(surname.length, 3) * 0.54)).toFixed(1)}cqw`
 
   return (
-    <div className={`flex min-w-0 flex-1 basis-0 flex-col justify-between gap-4 p-4 text-white sm:min-h-[380px] sm:basis-[420px] sm:gap-6 sm:p-7 lg:px-8 ${red ? 'bg-[var(--red)]' : 'bg-[var(--blue)] text-right'}`}>
+    <div className={`flex min-w-0 flex-1 basis-0 flex-col justify-between gap-3 p-4 text-white sm:basis-[420px] sm:gap-4 sm:p-6 lg:px-7 ${red ? 'bg-[var(--red)]' : 'bg-[var(--blue)] text-right'}`}>
       <div className={`flex flex-wrap items-center justify-between gap-3 ${red ? '' : 'flex-row-reverse'}`}>
         <p className="text-sm font-bold sm:text-base">{corner.label}</p>
         {corner.action ? <div className="max-sm:hidden">{corner.action}</div> : null}
       </div>
       <div className={`flex flex-col gap-3 sm:items-end sm:justify-between sm:gap-5 ${red ? 'sm:flex-row' : 'sm:flex-row-reverse'}`}>
         <div className="min-w-0 flex-1 [container-type:inline-size]">
-          <Name className="!font-sans text-[17px] !font-bold !leading-tight sm:text-[22px]">{corner.name}</Name>
-          <span
-            aria-hidden="true"
-            className="caps mt-2 block whitespace-nowrap font-display font-black leading-[0.8] tracking-[-0.01em]"
-            style={{ fontSize: `min(clamp(68px, 11vw, 152px), ${fit})` }}
-          >
-            {surname}
-          </span>
+          {/* One heading reads the whole name; on screen the given names sit small over the large surname. */}
+          <Name className="!leading-none">
+            {given ? (
+              <>
+                <span className="block !font-sans text-[17px] font-bold leading-tight sm:text-[22px]">{given}</span>{' '}
+              </>
+            ) : null}
+            <span
+              className="caps mt-1.5 block whitespace-nowrap font-display font-black leading-[0.8] tracking-[-0.01em]"
+              style={{ fontSize: `min(clamp(56px, 8.5vw, 112px), ${fit})` }}
+            >
+              {surname}
+            </span>
+          </Name>
         </div>
         {corner.photo ? <div className="shrink-0 max-sm:w-full">{corner.photo}</div> : null}
       </div>
@@ -51,8 +68,8 @@ function CornerBlock({ corner, side, headingLevel }: { corner: Corner; side: 're
 }
 
 /**
- * The two corners of a fight as straight blocks side by side: red on the left, blue on the right, each fighter's surname
- * large in white and the photos on the inner edges, so the eye lands on the middle of the matchup.
+ * The two corners of a fight as straight blocks side by side: red on the left, blue on the right, each fighter's given
+ * names small over the surname large in white and the photos on the inner edges, so the eye lands on the middle of the matchup.
  */
 export function CornerSplit({
   red,
@@ -75,4 +92,4 @@ export function CornerSplit({
 
 /** A corner photo: straight edges, a thin light rule, sized for the block. */
 export const cornerPhotoClass =
-  'h-[130px] w-full sm:h-[220px] sm:w-[150px] lg:h-[250px] lg:w-[170px] !rounded-none !border !border-white/55 !bg-black/20 !shadow-none'
+  'h-[120px] w-full sm:h-[170px] sm:w-[124px] lg:h-[190px] lg:w-[138px] !rounded-none !border !border-white/55 !bg-black/20 !shadow-none'

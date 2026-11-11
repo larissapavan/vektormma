@@ -15,9 +15,6 @@ import { useModelInfo } from '../shared/hooks/useModelInfo'
 import { OrganizationsSection } from './landing/OrganizationsSection'
 
 // Shown until the API answers (or if it never does): the last figures checked by hand.
-const FALLBACK_FIGHTS = 8985
-const FALLBACK_FIGHTERS = 2796
-const FALLBACK_FEATURES = 46
 const HISTORY_RANGE = historyRange()
 
 /** The page column: the same width and side padding as the header. */
@@ -28,15 +25,14 @@ export function Landing() {
   const lang = i18n.language
   const { dataInfo } = useDataInfo()
   const { modelInfo } = useModelInfo()
-  const fightsCount = dataInfo?.fights_count ?? FALLBACK_FIGHTS
-  const fightersCount = dataInfo?.fighters_count ?? FALLBACK_FIGHTERS
-  const featureCount = modelInfo?.feature_count ?? FALLBACK_FEATURES
+  // Counts come from the API; until it answers the cell shows a dash, never a number typed into the code.
+  const count = (value: number | undefined) => (value != null ? <AnimatedCounter value={value} /> : '—')
   const accuracy = shownMetrics(modelInfo, lang)
 
   const figures = [
-    { value: <AnimatedCounter value={fightsCount} />, label: L(lang, 'lutas catalogadas', 'fights on file', 'combats répertoriés', 'peleas registradas') },
-    { value: <AnimatedCounter value={fightersCount} />, label: L(lang, 'lutadores', 'fighters', 'combattants', 'peleadores') },
-    { value: <AnimatedCounter value={featureCount} />, label: L(lang, 'dados usados em cada previsão', 'figures behind each prediction', 'données utilisées pour chaque pronostic', 'datos usados en cada pronóstico') },
+    { value: count(dataInfo?.fights_count), label: L(lang, 'lutas catalogadas', 'fights on file', 'combats répertoriés', 'peleas registradas') },
+    { value: count(dataInfo?.fighters_count), label: L(lang, 'lutadores', 'fighters', 'combattants', 'peleadores') },
+    { value: count(modelInfo?.feature_count), label: L(lang, 'dados usados em cada previsão', 'figures behind each prediction', 'données utilisées pour chaque pronostic', 'datos usados en cada pronóstico') },
     { value: <>{historyDecades()}+</>, label: L(lang, `anos de histórico (${HISTORY_RANGE})`, `years of history (${HISTORY_RANGE})`, `ans d’historique (${HISTORY_RANGE})`, `años de historia (${HISTORY_RANGE})`) },
   ]
 
@@ -59,13 +55,13 @@ export function Landing() {
           </Link>
         </div>
 
-        <div className="mt-9">
+        <div className="mt-6">
           <FeaturedMatchup />
         </div>
       </section>
 
       {/* 2. What the site holds, and how often the model has been right. */}
-      <section className={`${COLUMN} grid gap-x-[72px] gap-y-12 pt-16 sm:pt-[72px] lg:grid-cols-2`}>
+      <section className={`${COLUMN} grid gap-x-[72px] gap-y-10 pt-10 sm:pt-12 lg:grid-cols-2`}>
         <div>
           <h2 className="text-[32px] leading-[1.05] sm:text-[40px]">{L(lang, 'O que está por trás das previsões', 'What the predictions draw on', 'Sur quoi reposent les pronostics', 'En qué se basan los pronósticos')}</h2>
           <dl className="mt-5 border-t-[3px] border-[var(--ink)]">
@@ -115,12 +111,12 @@ export function Landing() {
       </section>
 
       {/* 3. The organizations, as rows. */}
-      <div className={`${COLUMN} pt-20 sm:pt-[88px]`}>
+      <div className={`${COLUMN} pt-12 sm:pt-14`}>
         <OrganizationsSection />
       </div>
 
       {/* 4. Footer. */}
-      <footer className="mt-20 border-t-[3px] border-[var(--ink)] sm:mt-28">
+      <footer className="mt-14 border-t-[3px] border-[var(--ink)] sm:mt-16">
         <div className={`${COLUMN} pb-10 pt-8`}>
           <div className="flex flex-wrap items-start justify-between gap-x-10 gap-y-5">
             <div>
