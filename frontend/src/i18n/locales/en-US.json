@@ -19,44 +19,24 @@
     "career": "Game"
   },
   "header": {
-    "matchupAnalytics": "Matchup analytics",
     "apiLive": "Live",
     "apiOffline": "Offline",
     "apiWaking": "Starting",
     "apiLiveTitle": "API live and model loaded",
     "apiOfflineTitle": "API offline",
     "apiWakingTitle": "Starting API server...",
-    "searchPlaceholder": "Search fighter...",
     "themeLight": "light",
     "themeDark": "dark",
-    "switchTheme": "Switch to {{theme}} mode",
-    "github": "GitHub"
+    "switchTheme": "Switch to {{theme}} mode"
   },
   "language": {
     "switch": "Switch language",
-    "pt": "PT",
-    "en": "EN",
-    "fr": "FR",
-    "es": "ES",
     "ptLong": "Portuguese",
     "enLong": "English",
     "frLong": "French",
     "esLong": "Spanish"
   },
   "landing": {
-    "eyebrow": "Vektor MMA",
-    "title": "Pick an organization",
-    "description": "Stats, rankings and fight results. Win predictions powered by machine learning.",
-    "archive": "Archive",
-    "enter": "Enter {{name}}",
-    "open": "Open {{name}}",
-    "sections": {
-      "Rankings": "Rankings",
-      "Champions": "Champions",
-      "Fighters": "Fighters",
-      "Events": "Events",
-      "Gyms": "Gyms"
-    },
     "taglines": {
       "ufc": "Fight stats, rankings and the model’s win predictions.",
       "pfl": "Fighter profiles, official events and league rankings.",
@@ -77,37 +57,24 @@
     "disclaimer": "Independent personal project, not affiliated with {{org}}"
   },
   "common": {
-    "loading": "Loading...",
     "pageLoading": "Loading data...",
     "pageLoadingLabel": "Loading data",
     "serverFast": "The server is now dedicated, so this shouldn't take long.",
     "serverSlow": "This is taking longer than usual. The server may be down right now; try reloading the page in a moment.",
-    "error": "An error occurred",
     "serverDown": "The server is down right now. It should be back soon, try reloading the page in a moment.",
     "skipToContent": "Skip to content",
-    "all": "All",
-    "search": "Search...",
     "vs": "VS",
-    "round": "Round",
-    "rounds": "rounds",
-    "time": "Time",
-    "method": "Method",
-    "referee": "Referee",
-    "winner": "Winner",
-    "viewProfile": "View profile",
     "noResults": "No results found."
   },
   "home": {
     "nextCard": "Next UFC card",
     "mainEvent": "Main event",
-    "analyzeMatchup": "Analyze matchup",
     "restOfCard": "Rest of the card • {{count}} fights",
     "restOfCard_one": "Rest of the card • 1 fight",
     "trending": "Trending",
     "poundForPound": "Pound-for-Pound",
     "winStreak": "win streak",
-    "finishRate": "finish rate",
-    "predictedWinner": "Model’s favourite"
+    "finishRate": "finish rate"
   },
   "predictor": {
     "question": "Featured bout",
@@ -124,12 +91,9 @@
     "searchPlaceholder": "Search fighter by name...",
     "predictMatchup": "Predict matchup",
     "predicting": "Predicting...",
-    "swap": "Swap corners",
     "pickTwoPrompt": "Pick two fighters to predict the fight.",
     "selectTwoDifferent": "Select two different fighters",
-    "winningChance": "Win chance estimated by the model",
-    "explanation": "Model explainability",
-    "predictionError": "Prediction failed. Check backend connection and try again."
+    "winningChance": "Win chance estimated by the model"
   },
   "fighters": {
     "title": "Fighters",
@@ -138,13 +102,7 @@
     "all": "All",
     "activeOnly": "Active roster",
     "former": "Former",
-    "status": "Status",
-    "record": "Record",
-    "division": "Weight classes",
-    "viewProfile": "View profile",
-    "stats": "Stats",
-    "strikes": "Sig. Str. / Min",
-    "takedowns": "Takedowns / 15 min"
+    "division": "Weight classes"
   },
   "events": {
     "eyebrow": "Events archive",
@@ -160,9 +118,7 @@
     "upcomingSection": "Upcoming cards",
     "noEventsFound": "No events found.",
     "noEventsSub": "Adjust your search filters.",
-    "pick": "Pick",
-    "fights": "fights",
-    "agreement": "Model agreement rate"
+    "fights": "fights"
   },
   "rankings": {
     "eyebrow": "Official UFC rankings",
@@ -170,9 +126,6 @@
     "description": "Official UFC rankings with win rates and recent records.",
     "categoryRanking": "Divisions",
     "p4p": "P4P (pound-for-pound)",
-    "activeOnly": "Active roster",
-    "elo": "Elo rating",
-    "allDivisions": "All divisions",
     "division": "Division",
     "champion": "Champion",
     "rankingsUnavailable": "Rankings currently unavailable."
@@ -235,7 +188,6 @@
     "syncing": "Syncing..."
   },
   "headToHead": {
-    "eyebrow": "Head-to-Head",
     "title": "Head-to-head history",
     "description": "Pick two fighters to see every previous meeting, winner, method and round.",
     "fighterA": "Fighter A",
@@ -282,7 +234,6 @@
     "title": "How the model works",
     "description": "The model, how it compares with simpler ones, and what goes into each prediction.",
     "modelCard": "Model",
-    "testAccuracy": "Test accuracy",
     "rocAuc": "ROC AUC",
     "baselines": "Baselines comparison",
     "featureImportance": "Feature importance"
@@ -292,15 +243,6 @@
     "title": "Why this matchup is interesting",
     "description": "Striking, grappling and physical numbers for both fighters, plus model deciding factors.",
     "analyze": "Analyze matchup",
-    "analyzing": "Analyzing...",
-    "radar": "Radar profile",
-    "recentFights": "Recent fights"
-  },
-  "fighterProfile": {
-    "fights": "Fights",
-    "wins": "Wins",
-    "losses": "Losses",
-    "close": "Close performance profile",
-    "p4pRank": "P4P Elo rank"
+    "analyzing": "Analyzing..."
   }
 }

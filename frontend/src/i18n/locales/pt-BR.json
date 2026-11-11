@@ -19,44 +19,24 @@
     "career": "Jogo"
   },
   "header": {
-    "matchupAnalytics": "Análise de combates",
     "apiLive": "Ao vivo",
     "apiOffline": "Desconectado",
     "apiWaking": "Iniciando",
     "apiLiveTitle": "API no ar e modelo carregado",
     "apiOfflineTitle": "API offline",
     "apiWakingTitle": "Iniciando servidor API...",
-    "searchPlaceholder": "Buscar lutador...",
     "themeLight": "claro",
     "themeDark": "escuro",
-    "switchTheme": "Mudar para o modo {{theme}}",
-    "github": "GitHub"
+    "switchTheme": "Mudar para o modo {{theme}}"
   },
   "language": {
     "switch": "Mudar idioma",
-    "pt": "PT",
-    "en": "EN",
-    "fr": "FR",
-    "es": "ES",
     "ptLong": "Português",
     "enLong": "Inglês",
     "frLong": "Francês",
     "esLong": "Espanhol"
   },
   "landing": {
-    "eyebrow": "Vektor MMA",
-    "title": "Escolha uma organização",
-    "description": "Estatísticas, rankings e resultados oficiais. Previsões de vitória com aprendizado de máquina.",
-    "archive": "Arquivo histórico",
-    "enter": "Entrar na {{name}}",
-    "open": "Acessar {{name}}",
-    "sections": {
-      "Rankings": "Rankings",
-      "Champions": "Campeões",
-      "Fighters": "Lutadores",
-      "Events": "Eventos",
-      "Gyms": "Academias"
-    },
     "taglines": {
       "ufc": "Estatísticas, rankings e previsões de vitória feitas pelo modelo.",
       "pfl": "Atletas, eventos oficiais e rankings por pontuação da liga.",
@@ -77,37 +57,24 @@
     "disclaimer": "Projeto independente, sem afiliação com {{org}}"
   },
   "common": {
-    "loading": "Carregando...",
     "pageLoading": "Carregando dados...",
     "pageLoadingLabel": "Carregando dados",
     "serverFast": "O servidor agora é dedicado, então isso não deve demorar.",
     "serverSlow": "Está demorando mais que o normal. O servidor pode estar fora do ar no momento; tente recarregar a página em instantes.",
-    "error": "Ocorreu um erro",
     "serverDown": "Servidor fora do ar no momento. Já deve voltar, tente recarregar a página em instantes.",
     "skipToContent": "Ir para o conteúdo",
-    "all": "Todos",
-    "search": "Buscar...",
     "vs": "VS",
-    "round": "Round",
-    "rounds": "rounds",
-    "time": "Tempo",
-    "method": "Método",
-    "referee": "Árbitro",
-    "winner": "Vencedor",
-    "viewProfile": "Ver perfil",
     "noResults": "Nenhum resultado encontrado."
   },
   "home": {
     "nextCard": "Próximo evento do UFC",
     "mainEvent": "Luta principal",
-    "analyzeMatchup": "Analisar combate completo",
     "restOfCard": "Card completo • {{count}} lutas",
     "restOfCard_one": "Card completo • 1 luta",
     "trending": "Destaques do momento",
     "poundForPound": "Ranking peso por peso (P4P)",
     "winStreak": "vitórias seguidas",
-    "finishRate": "taxa de nocaute/finalização",
-    "predictedWinner": "Favorito do modelo"
+    "finishRate": "taxa de nocaute/finalização"
   },
   "predictor": {
     "question": "Combate em destaque",
@@ -124,12 +91,9 @@
     "searchPlaceholder": "Buscar lutador...",
     "predictMatchup": "Simular combate",
     "predicting": "Simulando...",
-    "swap": "Inverter cantos",
     "pickTwoPrompt": "Escolha dois lutadores para simular o combate.",
     "selectTwoDifferent": "Selecione dois lutadores diferentes",
-    "winningChance": "Chance de vitória estimada pelo modelo",
-    "explanation": "Explicabilidade do modelo",
-    "predictionError": "Falha na previsão. Verifique a conexão com o servidor e tente novamente."
+    "winningChance": "Chance de vitória estimada pelo modelo"
   },
   "fighters": {
     "title": "Lutadores",
@@ -138,13 +102,7 @@
     "all": "Todos",
     "activeOnly": "Plantel ativo",
     "former": "Histórico",
-    "status": "Status",
-    "record": "Cartel",
-    "division": "Divisões",
-    "viewProfile": "Ver perfil",
-    "stats": "Estatísticas",
-    "strikes": "Golpes Sig. / Min",
-    "takedowns": "Quedas / 15 min"
+    "division": "Divisões"
   },
   "events": {
     "eyebrow": "Arquivo de eventos",
@@ -160,9 +118,7 @@
     "upcomingSection": "Cards confirmados",
     "noEventsFound": "Nenhum evento encontrado.",
     "noEventsSub": "Ajuste os filtros de busca.",
-    "pick": "Palpite",
-    "fights": "lutas",
-    "agreement": "Taxa de concordância"
+    "fights": "lutas"
   },
   "rankings": {
     "eyebrow": "Rankings oficiais",
@@ -170,9 +126,6 @@
     "description": "Rankings oficiais com taxas de vitória e histórico recente.",
     "categoryRanking": "Divisões",
     "p4p": "P4P (peso por peso)",
-    "activeOnly": "Plantel ativo",
-    "elo": "Pontuação Elo",
-    "allDivisions": "Todas as divisões",
     "division": "Divisão",
     "champion": "Campeão",
     "rankingsUnavailable": "Rankings indisponíveis no momento."
@@ -235,7 +188,6 @@
     "syncing": "Sincronizando..."
   },
   "headToHead": {
-    "eyebrow": "Confronto direto",
     "title": "Histórico de confrontos diretos",
     "description": "Escolha dois atletas para ver duelos anteriores, vencedores, método e round.",
     "fighterA": "Lutador A",
@@ -282,7 +234,6 @@
     "title": "Como funciona o modelo preditivo",
     "description": "A arquitetura do algoritmo, calibração estatística, comparação com métodos simplificados e o peso de cada variável na decisão.",
     "modelCard": "Ficha técnica do modelo",
-    "testAccuracy": "Acurácia no conjunto de teste",
     "rocAuc": "ROC AUC (discriminação)",
     "baselines": "Comparação com métodos tradicionais",
     "featureImportance": "Variáveis mais decisivas"
@@ -292,15 +243,6 @@
     "title": "Análise de confronto",
     "description": "Trocação, luta no chão e biometria dos dois atletas, mais os fatores determinantes do modelo.",
     "analyze": "Analisar combate",
-    "analyzing": "Analisando...",
-    "radar": "Perfil radar",
-    "recentFights": "Lutas recentes"
-  },
-  "fighterProfile": {
-    "fights": "Lutas no UFC",
-    "wins": "Vitórias",
-    "losses": "Derrotas",
-    "close": "Fechar perfil",
-    "p4pRank": "Posição no ranking Elo"
+    "analyzing": "Analisando..."
   }
 }

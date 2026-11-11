@@ -19,44 +19,24 @@
     "career": "Juego"
   },
   "header": {
-    "matchupAnalytics": "Análisis de peleas",
     "apiLive": "En vivo",
     "apiOffline": "Sin conexión",
     "apiWaking": "Iniciando",
     "apiLiveTitle": "API en línea y modelo cargado",
     "apiOfflineTitle": "API sin conexión",
     "apiWakingTitle": "Iniciando el servidor de la API...",
-    "searchPlaceholder": "Buscar peleador...",
     "themeLight": "claro",
     "themeDark": "oscuro",
-    "switchTheme": "Cambiar a modo {{theme}}",
-    "github": "GitHub"
+    "switchTheme": "Cambiar a modo {{theme}}"
   },
   "language": {
     "switch": "Cambiar idioma",
-    "pt": "PT",
-    "en": "EN",
-    "fr": "FR",
-    "es": "ES",
     "ptLong": "Portugués",
     "enLong": "Inglés",
     "frLong": "Francés",
     "esLong": "Español"
   },
   "landing": {
-    "eyebrow": "Vektor MMA",
-    "title": "Elige una organización",
-    "description": "Estadísticas, rankings y resultados oficiales. Pronósticos de victoria con aprendizaje automático.",
-    "archive": "Archivo histórico",
-    "enter": "Entrar a {{name}}",
-    "open": "Abrir {{name}}",
-    "sections": {
-      "Rankings": "Ranking",
-      "Champions": "Campeones",
-      "Fighters": "Peleadores",
-      "Events": "Eventos",
-      "Gyms": "Gimnasios"
-    },
     "taglines": {
       "ufc": "Estadísticas, ranking y pronósticos de victoria del modelo.",
       "pfl": "Perfiles de peleadores, eventos oficiales y ranking por puntos de la liga.",
@@ -77,37 +57,24 @@
     "disclaimer": "Proyecto personal independiente, sin afiliación con {{org}}"
   },
   "common": {
-    "loading": "Cargando...",
     "pageLoading": "Cargando datos...",
     "pageLoadingLabel": "Cargando datos",
     "serverFast": "El servidor ahora es dedicado, así que esto no debería tardar.",
     "serverSlow": "Está tardando más de lo normal. Puede que el servidor esté caído en este momento; intenta recargar la página en un momento.",
-    "error": "Ocurrió un error",
     "serverDown": "El servidor está caído en este momento. Debería volver pronto, intenta recargar la página en un momento.",
     "skipToContent": "Saltar al contenido",
-    "all": "Todos",
-    "search": "Buscar...",
     "vs": "VS",
-    "round": "Asalto",
-    "rounds": "asaltos",
-    "time": "Tiempo",
-    "method": "Método",
-    "referee": "Árbitro",
-    "winner": "Ganador",
-    "viewProfile": "Ver perfil",
     "noResults": "No se encontraron resultados."
   },
   "home": {
     "nextCard": "Próxima cartelera de la UFC",
     "mainEvent": "Pelea estelar",
-    "analyzeMatchup": "Analizar la pelea",
     "restOfCard": "Resto de la cartelera • {{count}} peleas",
     "restOfCard_one": "Resto de la cartelera • 1 pelea",
     "trending": "Tendencias",
     "poundForPound": "Libra por libra",
     "winStreak": "victorias seguidas",
-    "finishRate": "tasa de finalización",
-    "predictedWinner": "Favorito del modelo"
+    "finishRate": "tasa de finalización"
   },
   "predictor": {
     "question": "Pelea destacada",
@@ -124,12 +91,9 @@
     "searchPlaceholder": "Buscar peleador por nombre...",
     "predictMatchup": "Pronosticar la pelea",
     "predicting": "Pronosticando...",
-    "swap": "Intercambiar esquinas",
     "pickTwoPrompt": "Elige a dos peleadores para pronosticar la pelea.",
     "selectTwoDifferent": "Selecciona a dos peleadores distintos",
-    "winningChance": "Probabilidad de victoria estimada por el modelo",
-    "explanation": "Explicabilidad del modelo",
-    "predictionError": "Falló el pronóstico. Revisa la conexión con el servidor e inténtalo de nuevo."
+    "winningChance": "Probabilidad de victoria estimada por el modelo"
   },
   "fighters": {
     "title": "Peleadores",
@@ -138,13 +102,7 @@
     "all": "Todos",
     "activeOnly": "Plantel activo",
     "former": "Histórico",
-    "status": "Estado",
-    "record": "Récord",
-    "division": "Divisiones de peso",
-    "viewProfile": "Ver perfil",
-    "stats": "Estadísticas",
-    "strikes": "Golpes Sig. / Min",
-    "takedowns": "Derribos / 15 min"
+    "division": "Divisiones de peso"
   },
   "events": {
     "eyebrow": "Archivo de eventos",
@@ -160,9 +118,7 @@
     "upcomingSection": "Próximas carteleras",
     "noEventsFound": "No se encontraron eventos.",
     "noEventsSub": "Ajusta los filtros de búsqueda.",
-    "pick": "Pronóstico",
-    "fights": "peleas",
-    "agreement": "Tasa de coincidencia con el modelo"
+    "fights": "peleas"
   },
   "rankings": {
     "eyebrow": "Ranking oficial de la UFC",
@@ -170,9 +126,6 @@
     "description": "Ranking oficial de la UFC con porcentajes de victoria y récord reciente.",
     "categoryRanking": "Divisiones",
     "p4p": "P4P (libra por libra)",
-    "activeOnly": "Plantel activo",
-    "elo": "Puntuación Elo",
-    "allDivisions": "Todas las divisiones",
     "division": "División",
     "champion": "Campeón",
     "rankingsUnavailable": "El ranking no está disponible por ahora."
@@ -235,7 +188,6 @@
     "syncing": "Sincronizando..."
   },
   "headToHead": {
-    "eyebrow": "Cara a cara",
     "title": "Historial cara a cara",
     "description": "Elige a dos peleadores para ver cada enfrentamiento previo, el ganador, el método y el asalto.",
     "fighterA": "Peleador A",
@@ -282,7 +234,6 @@
     "title": "Cómo funciona el modelo",
     "description": "El modelo, cómo se compara con otros más simples y qué entra en cada pronóstico.",
     "modelCard": "Modelo",
-    "testAccuracy": "Precisión en la prueba",
     "rocAuc": "ROC AUC",
     "baselines": "Comparación con referencias",
     "featureImportance": "Importancia de las variables"
@@ -292,15 +243,6 @@
     "title": "Por qué este enfrentamiento es interesante",
     "description": "Números de golpeo, lucha en el suelo y físicos de ambos peleadores, más los factores decisivos del modelo.",
     "analyze": "Analizar la pelea",
-    "analyzing": "Analizando...",
-    "radar": "Perfil radar",
-    "recentFights": "Peleas recientes"
-  },
-  "fighterProfile": {
-    "fights": "Peleas",
-    "wins": "Victorias",
-    "losses": "Derrotas",
-    "close": "Cerrar perfil de rendimiento",
-    "p4pRank": "Puesto Elo libra por libra"
+    "analyzing": "Analizando..."
   }
 }
