@@ -227,7 +227,7 @@
     "events": "Eventos",
     "fights": "Peleas",
     "pipelineTitle": "Del sitio oficial al pronóstico",
-    "pipelineDesc": "Cada pronóstico parte de las estadísticas de cada pelea, unificadas entre organizaciones y resumidas en 29 números que el modelo compara."
+    "pipelineDesc": "Cada pronóstico parte de las estadísticas de cada pelea, unificadas entre organizaciones y resumidas en los números que el modelo compara."
   },
   "model": {
     "eyebrow": "El modelo",

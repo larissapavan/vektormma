@@ -227,7 +227,7 @@
     "events": "Événements",
     "fights": "Combats",
     "pipelineTitle": "Du site officiel au pronostic",
-    "pipelineDesc": "Chaque pronostic part des statistiques de chaque combat, harmonisées entre les organisations et résumées en 29 chiffres que le modèle compare."
+    "pipelineDesc": "Chaque pronostic part des statistiques de chaque combat, harmonisées entre les organisations et résumées en chiffres que le modèle compare."
   },
   "model": {
     "eyebrow": "Le modèle",

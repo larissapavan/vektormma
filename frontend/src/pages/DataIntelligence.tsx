@@ -6,6 +6,7 @@ import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { SectionHeading } from '../shared/components/SectionHeading'
 import { historyRange } from '../shared/data/history'
 import { useDataInfo } from '../shared/hooks/useDataInfo'
+import { useModelInfo } from '../shared/hooks/useModelInfo'
 
 const HISTORY_RANGE = historyRange()
 
@@ -172,6 +173,10 @@ function DataSteps({ fights, fighters }: { fights: number; fighters: number }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
   const n = (value: number) => value.toLocaleString(localeTag(lang))
+  const { modelInfo } = useModelInfo()
+  const featureCount = modelInfo?.feature_count ?? null
+  // The breakdown below describes the pre-fight model; the API can still serve the earlier one (PREDICTION_MODEL=current).
+  const prefight = /pre-fight/i.test(modelInfo?.model_name ?? '')
 
   const steps = [
     {
@@ -205,15 +210,26 @@ function DataSteps({ fights, fighters }: { fights: number; fighters: number }) {
       ),
     },
     {
-      title: L(lang, 'Os 29 números de cada luta', 'The 29 numbers behind each fight', 'Les 29 chiffres de chaque combat', 'Los 29 números de cada pelea'),
-      text: L(
+      title:
+        featureCount != null
+          ? L(lang, `Os ${featureCount} números de cada luta`, `The ${featureCount} numbers behind each fight`, `Les ${featureCount} chiffres de chaque combat`, `Los ${featureCount} números de cada pelea`)
+          : L(lang, 'Os números de cada luta', 'The numbers behind each fight', 'Les chiffres de chaque combat', 'Los números de cada pelea'),
+      text: prefight
+        ? L(
         lang,
         'Tudo é medido como estava antes da luta. 22 números comparam os dois lutadores, e 7 descrevem a luta em si (mesma base ou não, número de rounds, disputa de título, categoria).',
         'Everything is measured as it stood before the fight. 22 numbers compare the two fighters, and 7 describe the fight itself (same stance or not, number of rounds, title fight, weight class).',
         'Tout est mesuré tel que c’était avant le combat. 22 chiffres comparent les deux combattants et 7 décrivent le combat lui-même (même garde ou non, nombre de rounds, combat pour le titre, catégorie).',
         'Todo se mide como estaba antes de la pelea. 22 números comparan a los dos peleadores y 7 describen la pelea en sí (misma guardia o no, número de rounds, pelea por el título, categoría).',
-      ),
-      groups: [
+      )
+        : L(
+            lang,
+            'Números dos dois lutadores, como estavam antes da luta: idade, altura, envergadura, cartel, precisão de golpes e de quedas, base.',
+            'Numbers for both fighters as they stood before the fight: age, height, reach, record, striking and takedown accuracy, stance.',
+            'Les chiffres des deux combattants tels qu’ils étaient avant le combat : âge, taille, allonge, palmarès, précision des frappes et des amenées au sol, garde.',
+            'Números de ambos peleadores como estaban antes de la pelea: edad, estatura, alcance, récord, precisión de golpes y de derribos, guardia.',
+          ),
+      groups: !prefight ? undefined : [
         [L(lang, 'Corpo e idade', 'Body and age', 'Physique et âge', 'Cuerpo y edad'), L(lang, 'Diferença de envergadura, altura e idade.', 'Reach, height and age gaps.', 'Écarts d’allonge, de taille et d’âge.', 'Diferencia de alcance, estatura y edad.')],
         [L(lang, 'Trocação', 'Striking', 'Pieds-poings', 'Striking'), L(lang, 'Golpes significativos acertados e sofridos por minuto, precisão, defesa e knockdowns.', 'Significant strikes landed and absorbed per minute, accuracy, defense and knockdowns.', 'Frappes significatives portées et encaissées par minute, précision, défense et knockdowns.', 'Golpes significativos conectados y recibidos por minuto, precisión, defensa y knockdowns.')],
         [L(lang, 'Luta agarrada', 'Grappling', 'Lutte', 'Lucha'), L(lang, 'Quedas por 15 minutos, precisão e defesa de quedas, tempo de controle e tentativas de finalização.', 'Takedowns per 15 minutes, takedown accuracy and defense, control time and submission attempts.', 'Amenées au sol par 15 minutes, précision et défense, temps de contrôle et tentatives de soumission.', 'Derribos por 15 minutos, precisión y defensa de derribos, tiempo de control e intentos de sumisión.')],

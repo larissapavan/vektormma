@@ -227,7 +227,7 @@
     "events": "Eventos",
     "fights": "Lutas",
     "pipelineTitle": "Do site oficial à previsão",
-    "pipelineDesc": "Cada previsão parte das estatísticas de cada luta, padronizadas entre as organizações e resumidas em 29 números que o modelo compara."
+    "pipelineDesc": "Cada previsão parte das estatísticas de cada luta, padronizadas entre as organizações e resumidas nos números que o modelo compara."
   },
   "model": {
     "eyebrow": "Inteligência artificial",

@@ -227,7 +227,7 @@
     "events": "Events",
     "fights": "Fights",
     "pipelineTitle": "From the official site to the prediction",
-    "pipelineDesc": "Every prediction starts from fight-by-fight stats, made consistent across organizations and boiled down to 29 numbers the model compares."
+    "pipelineDesc": "Every prediction starts from fight-by-fight stats, made consistent across organizations and boiled down to the numbers the model compares."
   },
   "model": {
     "eyebrow": "The model",
