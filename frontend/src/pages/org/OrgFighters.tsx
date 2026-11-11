@@ -12,7 +12,6 @@ import {
   Hammer,
   HandFist,
   Radio,
-  Ruler,
   Search,
   Shield,
   Swords,
@@ -26,9 +25,8 @@ import { FighterAvatar } from '../../shared/components/FighterAvatar'
 import { FlagIcon } from '../../shared/components/FlagIcon'
 import { ChampionBelt } from '../../shared/components/ChampionBelt'
 import { LoadingSkeleton } from '../../shared/components/LoadingSkeleton'
-import { MiniStat } from '../../shared/components/MiniStat'
 import { OrgFighterModal } from '../../shared/components/OrgFighterModal'
-import { SectionHeading } from '../../shared/components/SectionHeading'
+import { PageHeader } from '../../shared/components/ui/PageHeader'
 import { L, localeTag } from '../../i18n/lang'
 import { orgEs, orgFr, orgPt } from '../../shared/data/orgs'
 import { getDivisionName } from '../../shared/data/divisions'
@@ -128,11 +126,8 @@ export function OrgFighters() {
   const reset = () => setShown(PAGE_SIZE)
 
   return (
-    <div className="space-y-4 sm:space-y-5">
-      <section className="page-hero rounded-[20px] px-3 py-3 sm:px-5 sm:py-5">
-        <div className="grid gap-3 xl:grid-cols-[1.2fr_0.8fr] xl:items-end">
-          <SectionHeading
-            level={1}
+    <div className="space-y-6 sm:space-y-8">
+      <PageHeader
             eyebrow={L(i18n.language, `Atletas ${orgPt(org, 'de')}`, `${org.shortName} roster`, `Combattants ${org.shortName}`, `Peleadores de ${orgEs(org)}`)}
             title={L(i18n.language, `Lutadores ${orgPt(org, 'de')}`, `${org.shortName} fighters`, `Combattants ${org.shortName}`, `Peleadores de ${orgEs(org)}`)}
             description={
@@ -152,34 +147,18 @@ export function OrgFighters() {
                     `Todos los peleadores registrados de ${orgEs(org)}, con récord completo, datos físicos, volumen de golpes y gimnasio. Primero los peleadores activos.`,
                   )
             }
-          />
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-            <Tile
-              label={L(i18n.language, 'Lutadores', 'Fighters', 'Combattants', 'Peleadores')}
-              value={fighters.length.toLocaleString(localeTag(i18n.language))}
-            />
-            {isArchived ? (
-              <Tile
-                label={L(i18n.language, 'Últimos Campeões', 'Final Champions', 'Derniers champions', 'Últimos campeones')}
-                value={championsCount.toLocaleString(localeTag(i18n.language))}
-              />
-            ) : (
-              <Tile
-                label={L(i18n.language, 'Em atividade', 'Active', 'En activité', 'En actividad')}
-                value={activeCount.toLocaleString(localeTag(i18n.language))}
-              />
-            )}
-            <Tile
-              label={L(i18n.language, 'Categorias', 'Divisions', 'Catégories', 'Divisiones')}
-              value={`${divisions.length}`}
-            />
-          </div>
-        </div>
-
+            stats={[
+              { label: L(i18n.language, 'Lutadores', 'Fighters', 'Combattants', 'Peleadores'), value: fighters.length.toLocaleString(localeTag(i18n.language)) },
+              isArchived
+                ? { label: L(i18n.language, 'Últimos campeões', 'Final champions', 'Derniers champions', 'Últimos campeones'), value: championsCount.toLocaleString(localeTag(i18n.language)) }
+                : { label: L(i18n.language, 'Em atividade', 'Active', 'En activité', 'En actividad'), value: activeCount.toLocaleString(localeTag(i18n.language)) },
+              { label: L(i18n.language, 'Categorias', 'Divisions', 'Catégories', 'Divisiones'), value: `${divisions.length}` },
+            ]}
+      >
         {/* Search & Status Bar */}
-        <div className="mt-4 grid gap-2.5 md:grid-cols-[1fr_auto]">
-          <div className="soft-input flex min-w-0 flex-1 items-center gap-2.5 rounded-xl px-3.5 py-2.5">
-            <Search className="h-4 w-4 shrink-0 text-[var(--accent-red)]" />
+        <div className="grid gap-2.5 md:grid-cols-[1fr_auto]">
+          <div className="soft-input flex min-w-0 flex-1 items-center gap-2.5 rounded-control px-3 py-2.5">
+            <Search className="h-4 w-4 shrink-0 text-[var(--text-red)]" />
             <input
               value={query}
               onChange={(event) => {
@@ -194,7 +173,7 @@ export function OrgFighters() {
                 'Buscar por nombre, apodo, división o gimnasio...',
               )}
               aria-label={L(i18n.language, 'Buscar lutadores', 'Search fighters', 'Chercher des combattants', 'Buscar peleadores')}
-              className="theme-text w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-[var(--text-muted)]"
+              className="w-full min-w-0 bg-transparent text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)]"
             />
           </div>
 
@@ -202,7 +181,7 @@ export function OrgFighters() {
             <div
               role="group"
               aria-label={L(i18n.language, 'Status', 'Status', 'Statut', 'Estado')}
-              className="inline-flex max-w-full overflow-x-auto rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] p-1"
+              className="chip-scroll inline-flex max-w-full overflow-x-auto rounded-control border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-0.5"
             >
               <button
                 type="button"
@@ -212,18 +191,16 @@ export function OrgFighters() {
                   setStatus('active')
                   reset()
                 }}
-                className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.1em] transition ${
-                  status === 'active'
-                    ? 'bg-[var(--rule)] text-[var(--card-bg)] shadow-sm'
-                    : 'text-[var(--text-main)] hover:bg-[var(--bg-surface-hover)]'
+                className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 text-xs font-semibold transition-colors ${
+                  status === 'active' ? 'bg-[var(--text-primary)] text-[var(--bg-surface)]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 <Radio className="h-3 w-3" />
                 <span>{L(i18n.language, 'Ativos', 'Active', 'Actifs', 'Activos')}</span>
                 <span
                   aria-hidden="true"
-                  className={`ml-1 rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
-                    status === 'active' ? 'bg-[var(--tape)] text-[#0E0E0E]' : 'bg-[var(--bg-surface-subtle)] text-[var(--text-muted)]'
+                  className={`ml-1 rounded-full px-1.5 py-px text-label font-bold tabular-nums ${
+                    status === 'active' ? 'bg-[var(--bg-surface)]/20 text-[var(--bg-surface)]' : 'bg-[var(--bg-surface-subtle)] text-[var(--text-muted)]'
                   }`}
                 >
                   {activeCount}
@@ -238,17 +215,15 @@ export function OrgFighters() {
                   setStatus('all')
                   reset()
                 }}
-                className={`inline-flex items-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.1em] transition ${
-                  status === 'all'
-                    ? 'bg-[var(--rule)] text-[var(--card-bg)] shadow-sm'
-                    : 'text-[var(--text-main)] hover:bg-[var(--bg-surface-hover)]'
+                className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 text-xs font-semibold transition-colors ${
+                  status === 'all' ? 'bg-[var(--text-primary)] text-[var(--bg-surface)]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 <span>{L(i18n.language, 'Todos', 'All time', 'Tous', 'Todos')}</span>
                 <span
                   aria-hidden="true"
-                  className={`ml-1 rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
-                    status === 'all' ? 'bg-[var(--tape)] text-[#0E0E0E]' : 'bg-[var(--bg-surface-subtle)] text-[var(--text-muted)]'
+                  className={`ml-1 rounded-full px-1.5 py-px text-label font-bold tabular-nums ${
+                    status === 'all' ? 'bg-[var(--bg-surface)]/20 text-[var(--bg-surface)]' : 'bg-[var(--bg-surface-subtle)] text-[var(--text-muted)]'
                   }`}
                 >
                   {fighters.length}
@@ -257,10 +232,10 @@ export function OrgFighters() {
             </div>
           ) : null}
         </div>
-      </section>
+      </PageHeader>
 
       {error ? (
-        <p className="rounded-xl border border-[#C8102E]/25 bg-[#C8102E]/8 px-3 py-2 text-sm text-[var(--text-main)]">
+        <p className="rounded-card border border-[var(--accent-red)]/30 bg-[var(--accent-red)]/10 px-3 py-2 text-sm font-semibold text-[var(--text-red)]">
           {error}
         </p>
       ) : null}
@@ -281,19 +256,19 @@ export function OrgFighters() {
 
       {/* Division Spotlight Header */}
       {division !== 'ALL' && !loading ? (
-        <div className="surface-card flex items-center justify-between rounded-2xl px-4 py-3">
+        <div className="flex items-center justify-between gap-3 border-b border-[var(--border-subtle)] pb-3">
           <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-[var(--accent-red)]/15 text-[var(--accent-red)]">
+            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-control border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)]">
               {(() => {
                 const Icon = getDivisionIcon(division)
                 return <Icon className="h-5 w-5" />
               })()}
             </div>
             <div>
-              <p className="broadcast-label text-[10px] text-[var(--text-muted)]">
-                {L(i18n.language, 'Categoria Ativa', 'Active Division', 'Catégorie active', 'División activa')}
+              <p className="font-mono text-label font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]">
+                {L(i18n.language, 'Categoria ativa', 'Active division', 'Catégorie active', 'División activa')}
               </p>
-              <h2 className="text-lg font-bold uppercase tracking-wide text-[var(--text-main)]">
+              <h2 className="mt-1 text-xl text-[var(--text-primary)] sm:text-2xl">
                 {getDivisionName(division, i18n.language)}
               </h2>
             </div>
@@ -370,8 +345,8 @@ export function OrgFighters() {
           ) : null}
         </section>
       ) : (
-        <div className="surface-card rounded-[20px] px-4 py-8 text-center">
-          <p className="type-display text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">
+        <div className="px-4 py-12 text-center">
+          <p className="type-display text-2xl text-[var(--text-primary)]">
             {L(i18n.language, 'Nenhum lutador encontrado', 'No fighters found', 'Aucun combattant trouvé', 'No se encontraron peleadores')}
           </p>
           <p className="mt-2 text-sm text-[var(--text-muted)]">
@@ -399,11 +374,12 @@ export function OrgFighters() {
   )
 }
 
-function Tile({ label, value }: { label: string; value: string }) {
+/** One fact on a fighter card: a quiet label over its value, with no box of its own. */
+function CardFact({ label, value }: { label: string; value: string }) {
   return (
-    <div className="metric-tile rounded-xl px-3.5 py-3">
-      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{label}</p>
-      <p className="data-value mt-1 text-2xl font-bold text-[var(--text-main)]">{value}</p>
+    <div className="min-w-0">
+      <dt className="truncate text-label text-[var(--text-muted)]">{label}</dt>
+      <dd title={value} className="mt-0.5 truncate text-sm font-semibold tabular-nums text-[var(--text-primary)]">{value}</dd>
     </div>
   )
 }
@@ -466,16 +442,16 @@ function OrgWeightClassBar({
           aria-pressed={activeDivision === 'ALL'}
           className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] transition duration-200 ${
             activeDivision === 'ALL'
-              ? 'border-[var(--rule)] bg-[var(--rule)] text-[var(--card-bg)] shadow-sm'
-              : 'border-[var(--line-soft)] bg-[var(--card-bg)] text-[var(--text-main)] hover:bg-[var(--tape)] hover:text-[#0E0E0E]'
+              ? 'border-[var(--ink)] bg-[var(--ink)] text-[var(--on-ink)]'
+              : 'border-[var(--line-soft)] bg-[var(--card-bg)] text-[var(--text-main)] hover:bg-[var(--tape)] hover:text-[var(--on-tape)]'
           }`}
         >
           <Swords className="h-3.5 w-3.5 shrink-0" />
-          <span>{L(i18n.language, 'Todas as Categorias', 'All Divisions', 'Toutes', 'Todas las divisiones')}</span>
+          <span>{L(i18n.language, 'Todas as categorias', 'All divisions', 'Toutes', 'Todas las divisiones')}</span>
           <span
             className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
               activeDivision === 'ALL'
-                ? 'bg-[var(--tape)] text-[#0E0E0E]'
+                ? 'bg-[var(--tape)] text-[var(--on-tape)]'
                 : 'bg-[var(--surface-3)] text-[var(--text-muted)]'
             }`}
           >
@@ -495,8 +471,8 @@ function OrgWeightClassBar({
               aria-pressed={isActive}
               className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] transition duration-200 ${
                 isActive
-                  ? 'border-[var(--rule)] bg-[var(--rule)] text-[var(--card-bg)] shadow-sm'
-                  : 'border-[var(--line-soft)] bg-[var(--card-bg)] text-[var(--text-main)] hover:bg-[var(--tape)] hover:text-[#0E0E0E]'
+                  ? 'border-[var(--ink)] bg-[var(--ink)] text-[var(--on-ink)]'
+                  : 'border-[var(--line-soft)] bg-[var(--card-bg)] text-[var(--text-main)] hover:bg-[var(--tape)] hover:text-[var(--on-tape)]'
               }`}
             >
               <Icon className="h-3.5 w-3.5 shrink-0" />
@@ -504,7 +480,7 @@ function OrgWeightClassBar({
               <span
                 className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
                   isActive
-                    ? 'bg-[var(--tape)] text-[#0E0E0E]'
+                    ? 'bg-[var(--tape)] text-[var(--on-tape)]'
                     : 'bg-[var(--surface-3)] text-[var(--text-muted)]'
                 }`}
               >
@@ -574,13 +550,13 @@ function FighterCard({
 
   return (
     <motion.article
-      className="surface-card group flex h-full flex-col overflow-hidden rounded-[18px] border border-[var(--border-subtle)] transition duration-200 hover:-translate-y-0.5 hover:border-[#F2C230]/40"
+      className="surface-card group flex h-full flex-col overflow-hidden !rounded-card hover:border-[var(--border-default)]"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
     >
       <div className={`h-1 w-full ${fighter.belt ? 'bg-[#F2C230]' : 'bg-[var(--accent-red)]'}`} />
-      <div className="flex flex-1 flex-col p-3.5">
+      <div className="flex flex-1 flex-col p-4">
         <div className="grid grid-cols-1 content-start justify-items-center gap-3 text-center sm:min-h-[160px] sm:grid-cols-[72px_1fr] sm:justify-items-stretch sm:text-left">
           <FighterAvatar
             name={fighter.name}
@@ -593,7 +569,7 @@ function FighterCard({
             <div className="flex items-start justify-between gap-1.5">
               <div className="min-w-0 max-sm:w-full">
                 {fighter.division ? (
-                  <p className="broadcast-label text-[11px] text-[var(--accent-red)]">
+                  <p className="font-mono text-label font-semibold uppercase tracking-[0.08em] text-[var(--text-red)]">
                     {getDivisionName(fighter.division, i18n.language)}
                   </p>
                 ) : null}
@@ -610,7 +586,7 @@ function FighterCard({
               {fighter.nickname ? <span> • “{fighter.nickname}”</span> : null}
             </p>
 
-            <div className="mt-1.5 flex flex-wrap items-center gap-1.5 max-sm:justify-center text-[10px]">
+            <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-label max-sm:justify-center">
               {fighter.belt ? (
                 <span className="rounded bg-[#F2C230] px-1.5 py-0.5 font-bold uppercase text-[#0E0E0E]">
                   {interim ? L(i18n.language, 'Interino', 'Interim', 'Intérimaire', 'Interino') : L(i18n.language, 'Campeão', 'Champion', 'Champion', 'Campeón')}
@@ -622,8 +598,8 @@ function FighterCard({
               ) : null}
 
               {!archived && fighter.is_active ? (
-                <span className="inline-flex items-center gap-1 text-[#22c55e] font-semibold">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#22c55e] animate-pulse" />
+                <span className="inline-flex items-center gap-1 font-semibold text-[var(--text-green)]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
                   {L(i18n.language, 'Ativo', 'Active', 'Actif', 'Activo')}
                 </span>
               ) : !archived ? (
@@ -642,38 +618,36 @@ function FighterCard({
         </div>
 
         {/* 4 Performance & Build Mini Stats (UFC style) */}
-        <div className="mt-auto grid grid-cols-2 gap-2 border-t border-[var(--border-subtle)] pt-3">
-          <MiniStat
-            icon={Shield}
-            label={L(i18n.language, 'Aproveitamento', 'Win Rate', 'Taux de victoire', 'Porcentaje de victorias')}
+        <div className="mt-auto pt-4">
+        <dl className="grid grid-cols-2 gap-x-3 gap-y-3 border-t border-[var(--border-subtle)] pt-3">
+          <CardFact
+            label={L(i18n.language, 'Aproveitamento', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias')}
             value={winRate ?? '—'}
           />
-          <MiniStat
-            icon={Ruler}
+          <CardFact
             label={L(i18n.language, 'Envergadura', 'Reach', 'Allonge', 'Alcance')}
             value={reachStr ?? heightStr ?? '—'}
           />
-          <MiniStat
-            icon={Target}
+          <CardFact
             label={L(i18n.language, 'Precisão de golpes', 'Str. Acc', 'Préc. coups', 'Prec. golpes')}
             value={strAcc ?? '—'}
           />
-          <MiniStat
-            icon={Zap}
-            label={L(i18n.language, 'Taxa de finalização', 'Finish Rate', 'Avant la limite', 'Tasa de finalización')}
+          <CardFact
+            label={L(i18n.language, 'Taxa de finalização', 'Finish rate', 'Avant la limite', 'Tasa de finalización')}
             value={finishRate ?? (fighter.org_record ? fighter.org_record : '—')}
           />
+        </dl>
         </div>
 
-        <div className="mt-3 flex gap-2">
+        <div className="mt-4 flex gap-2">
           <button
             type="button"
             onClick={() => onOpen(fighter.name)}
             aria-label={L(i18n.language, `${fighter.name}. Ver perfil`, `${fighter.name}. View profile`, `${fighter.name}. Voir le profil`, `${fighter.name}. Ver perfil`)}
-            className="primary-action inline-flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-white"
+            className="primary-action inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-full px-3 text-xs uppercase"
           >
             <Award className="h-3.5 w-3.5" />
-            {L(i18n.language, 'Ver Perfil', 'View profile', 'Voir le profil', 'Ver perfil')}
+            {L(i18n.language, 'Ver perfil', 'View profile', 'Voir le profil', 'Ver perfil')}
           </button>
           {fighter.profile_url ? (
             <a
@@ -682,7 +656,7 @@ function FighterCard({
               rel="noreferrer"
               onClick={(e) => e.stopPropagation()}
               title={L(i18n.language, 'Perfil oficial no ONE', 'Official profile on ONE', 'Profil officiel', 'Perfil oficial en ONE')}
-              className="ghost-action inline-flex items-center justify-center gap-1 rounded-full px-2.5 py-1.5 text-xs text-[var(--text-main)] hover:text-[#F2C230]"
+              className="ghost-action inline-flex min-h-10 min-w-10 items-center justify-center rounded-full px-3 text-[var(--text-red)]"
             >
               <ExternalLink className="h-3.5 w-3.5" />
             </a>

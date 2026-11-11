@@ -33,7 +33,7 @@ describe('Landing', () => {
     expect(card).toHaveTextContent('Gamma Three')
     expect(card).toHaveTextContent('Delta Four')
     expect(card).toHaveTextContent('72%')
-    expect(card).toHaveTextContent('Model favors Gamma Three (72%)')
+    expect(card).toHaveTextContent('The model gives Gamma Three a 72% chance of winning.')
     expect(card).not.toHaveTextContent(/clear edge/i)
     // Both headliners face to face: a photo each, or their initials when there is none.
     const faceOff = within(card).getByTestId('featured-faceoff')
@@ -80,11 +80,11 @@ describe('Landing', () => {
     )
     // The org cards show rounded-down snapshots with a plus, in the same grouping as the exact figures in the strip.
     await screen.findByTestId('featured-matchup')
-    const grouped = Array.from(document.querySelectorAll('dd')).map((n) => n.textContent)
-    expect(grouped).toContain('8,900+')
-    expect(grouped).not.toContain('8.9k+')
-    // The strip's first two figures (bouts, athletes) are exact totals from the API: no plus.
-    const metrics = Array.from(document.querySelector('section.border-y > div')?.children ?? [])
+    const ufc = screen.getByRole('link', { name: /open ultimate fighting championship/i })
+    expect(ufc).toHaveTextContent('8,900+')
+    expect(ufc).not.toHaveTextContent('8.9k+')
+    // The site's first two figures (fights, fighters) are exact totals from the API: no plus.
+    const metrics = Array.from(document.querySelectorAll('main dl > div dd'))
     expect(metrics[0]?.textContent).not.toContain('+')
     expect(metrics[1]?.textContent).not.toContain('+')
   })
@@ -97,7 +97,7 @@ describe('the organizations section', () => {
         <App />
       </MemoryRouter>,
     )
-    return (await screen.findByRole('heading', { name: /pick an organization/i })).closest('section')!
+    return (await screen.findByRole('heading', { name: /choose an organization/i })).closest('section')!
   }
   const hrefs = (root: Element) => Array.from(root.querySelectorAll('a')).map((link) => link.getAttribute('href'))
 
@@ -107,13 +107,13 @@ describe('the organizations section', () => {
     expect(hrefs(root)).toEqual(['/home', '/pfl', '/one', '/bellator', '/rizin', '/ksw', '/lfa', '/cage-warriors', '/oktagon', '/jungle-fight', '/invicta'])
   })
 
-  it('gives the UFC a card of its own, with the badge, the counts and one call to enter', async () => {
+  it('gives the UFC a row of its own, with the badge, the description and three counts', async () => {
     const root = await section()
     const ufc = within(root).getByRole('link', { name: /open ultimate fighting championship/i })
 
     expect(ufc).toHaveAttribute('href', '/home')
-    expect(ufc).toHaveTextContent('AI Predictions')
-    expect(ufc).toHaveTextContent('Enter the UFC')
+    expect(ufc).toHaveTextContent('Predictions')
+    expect(ufc).toHaveTextContent('The model’s estimated win chance for every fight')
     // 797 events, 2796 fighters and 8985 bouts, rounded down.
     expect(ufc).toHaveTextContent('790+')
     expect(ufc).toHaveTextContent('2,700+')
@@ -121,31 +121,31 @@ describe('the organizations section', () => {
     expect(within(ufc).queryByText(/simulate/i)).toBeNull()
   })
 
-  it('shows PFL, ONE and Bellator as cards with their badge and a single number, the bouts', async () => {
+  it('shows PFL, ONE and Bellator as rows with their badge and a single number, the fights', async () => {
     const root = await section()
 
     // PFL 1380, ONE 4817 and Bellator 3004 bouts, rounded down.
     for (const [name, badge, bouts] of [
-      [/open professional fighters league/i, 'AI Predictions', '1,300+'],
-      [/open one championship/i, 'AI Predictions', '4,800+'],
-      [/open bellator mma/i, 'Historical Archive', '3,000+'],
+      [/open professional fighters league/i, 'Predictions', '1,300+'],
+      [/open one championship/i, 'Predictions', '4,800+'],
+      [/open bellator mma/i, 'Historical archive', '3,000+'],
     ] as const) {
       const card = within(root).getByRole('link', { name })
       expect(card).toHaveTextContent(badge)
       expect(card).toHaveTextContent(bouts)
-      expect(card).toHaveTextContent(/bouts/i)
-      expect(card.querySelectorAll('dd')).toHaveLength(0)
+      expect(card).toHaveTextContent(/fights/i)
+      expect(card).not.toHaveTextContent(/events/i)
     }
   })
 
-  it('lists the other seven as one chip each under "More leagues", with only the name: no badge, glove or counts', async () => {
+  it('lists the other seven as one chip each under "Other leagues", with only the name: no badge, glove or counts', async () => {
     const root = await section()
-    const list = within(root).getByRole('heading', { name: /more leagues/i }).parentElement!.querySelector('ul')!
+    const list = within(root).getByRole('heading', { name: /other leagues/i }).parentElement!.querySelector('ul')!
 
     expect(list.querySelectorAll('li')).toHaveLength(7)
     expect(list).toHaveTextContent('RIZIN')
     expect(list.querySelector('img')).toBeNull()
     expect(list.textContent).not.toMatch(/\d/)
-    expect(list).not.toHaveTextContent(/events|fighters|bouts/i)
+    expect(list).not.toHaveTextContent(/events|fighters|fights/i)
   })
 })

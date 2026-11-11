@@ -46,8 +46,8 @@ function OrgHistory({ item }: { item: OtherOrganization }) {
   const shown = all ? item.fights : item.fights.slice(0, FIRST_SHOWN)
   const other = { id: item.org_id, shortName: item.short_name }
   return (
-    <div className="metric-tile rounded-2xl p-3">
-      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">
+    <div className="metric-tile p-3">
+      <p className="broadcast-label text-label text-[var(--text-muted)]">
         {L(
           i18n.language,
           `Também lutou ${orgPt(other, 'em')}${item.org_record ? ` · ${item.org_record} por lá` : ''}`,
@@ -66,14 +66,14 @@ function OrgHistory({ item }: { item: OtherOrganization }) {
           type="button"
           onClick={() => setAll((current) => !current)}
           aria-expanded={all}
-          className="ghost-action mt-2 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#FFFFFF]"
+          className="ghost-action mt-2 px-3 py-1.5 text-label font-bold text-[#FFFFFF]"
         >
           {all
             ? L(i18n.language, 'Mostrar menos', 'Show fewer', 'Afficher moins', 'Mostrar menos')
             : L(i18n.language, `Mostrar todas as ${item.fights.length} lutas ${orgPt(other, 'em')}`, `Show all ${item.fights.length} ${item.short_name} fights`, `Afficher les ${item.fights.length} combats ${item.short_name}`, `Mostrar las ${item.fights.length} peleas en ${orgEs(other)}`)}
         </button>
       ) : null}
-      <p className="theme-muted mt-2 text-[11px] leading-4">
+      <p className="theme-muted mt-2 text-label leading-4">
         {L(
           i18n.language,
           'Exibido para contexto completo. O cartel, tendências e palpites do modelo acima consideram apenas lutas do UFC.',

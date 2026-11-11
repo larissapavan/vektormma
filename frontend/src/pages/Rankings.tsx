@@ -9,7 +9,7 @@ import { FighterBadges, FlagList } from '../shared/components/FighterBadges'
 import { badgesForRankings } from '../shared/data/badges'
 import { FighterProfileModal } from '../shared/components/FighterProfileModal'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
-import { SectionHeading } from '../shared/components/SectionHeading'
+import { PageHeader } from '../shared/components/ui/PageHeader'
 import { getDivisionName, poundForPoundLabel } from '../shared/data/divisions'
 import { getFighterImageUrl, normalizeFighterName, useFighterImages } from '../shared/hooks/useFighterImages'
 import { useFighters } from '../shared/hooks/useFighters'
@@ -33,16 +33,9 @@ export function Rankings() {
   const activeP4p = p4pCategories.find((category) => category.category === selectedP4p) ?? p4pCategories[0] ?? null
 
   return (
-    <div className="space-y-4 sm:space-y-5">
-      <section className="page-hero rounded-[20px] px-3 py-3 sm:px-4 sm:py-4">
-        <SectionHeading
-          level={1}
-          eyebrow={t('rankings.eyebrow')}
-          title={t('rankings.title')}
-          description={t('rankings.description')}
-        />
-
-        <div className="mt-4 inline-flex max-w-full overflow-x-auto chip-scroll rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] p-1">
+    <div className="space-y-6 sm:space-y-8">
+      <PageHeader eyebrow={t('rankings.eyebrow')} title={t('rankings.title')} description={t('rankings.description')}>
+        <div className="chip-scroll inline-flex max-w-full overflow-x-auto rounded-control border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-0.5">
           <TabButton active={tab === 'division'} onClick={() => setTab('division')}>
             {t('rankings.categoryRanking')}
           </TabButton>
@@ -50,14 +43,14 @@ export function Rankings() {
             {t('rankings.p4p')}
           </TabButton>
         </div>
-      </section>
+      </PageHeader>
 
       {error ? (
-        <p className="rounded-xl border border-[#C8102E]/25 bg-[#C8102E]/8 px-3 py-2 text-sm font-semibold text-[var(--text-red)]">{error}</p>
+        <p className="rounded-card border border-[var(--accent-red)]/30 bg-[var(--accent-red)]/10 px-3 py-2 text-sm font-semibold text-[var(--text-red)]">{error}</p>
       ) : null}
 
       {loading ? (
-        <section className="grid gap-2.5">
+        <section className="grid gap-2">
           {Array.from({ length: 6 }).map((_, index) => (
             <LoadingSkeleton key={index} className="h-[64px]" />
           ))}
@@ -76,8 +69,11 @@ function TabButton({ active, onClick, children }: { active: boolean; onClick: ()
     <button
       type="button"
       onClick={onClick}
-      className={`cursor-pointer rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] transition sm:text-[13px] ${
-        active ? 'bg-[var(--rule)] text-[var(--card-bg)]' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
+      aria-pressed={active}
+      className={`inline-flex min-h-10 shrink-0 cursor-pointer items-center whitespace-nowrap rounded-md px-4 text-sm font-semibold transition-colors ${
+        active
+          ? 'bg-[var(--text-primary)] text-[var(--bg-surface)]'
+          : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]'
       }`}
     >
       {children}
@@ -98,23 +94,21 @@ function DivisionView({
 
   if (!active) {
     return (
-      <div className="surface-card rounded-[20px] px-4 py-7 text-center text-sm text-[var(--text-muted)]">
-        {t('rankings.rankingsUnavailable')}
-      </div>
+      <p className="px-4 py-12 text-center text-sm text-[var(--text-muted)]">{t('rankings.rankingsUnavailable')}</p>
     )
   }
 
   return (
-    <div className="space-y-4">
-      <div className="surface-card rounded-[18px] p-3.5">
-        <label htmlFor="ranking-division" className="broadcast-label mb-2 block text-xs text-[var(--text-secondary)]">
+    <div className="space-y-6">
+      <div className="max-w-sm">
+        <label htmlFor="ranking-division" className="mb-1.5 block font-mono text-label font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]">
           {t('rankings.division')}
         </label>
         <select
           id="ranking-division"
           value={active.category}
           onChange={(event) => onSelect(event.target.value)}
-          className="soft-input theme-text w-full rounded-xl px-3 py-2.5 text-sm outline-none"
+          className="soft-input w-full rounded-control px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
         >
           {divisions.map((division) => (
             <option key={division.category} value={division.category}>
@@ -144,15 +138,13 @@ function P4pView({
 
   if (!active) {
     return (
-      <div className="surface-card rounded-[20px] px-4 py-7 text-center text-sm text-[var(--text-muted)]">
-        {t('rankings.rankingsUnavailable')}
-      </div>
+      <p className="px-4 py-12 text-center text-sm text-[var(--text-muted)]">{t('rankings.rankingsUnavailable')}</p>
     )
   }
 
   return (
-    <div className="space-y-4">
-      <div className="surface-card flex flex-wrap gap-2 rounded-[18px] border-[var(--border-subtle)] p-3">
+    <div className="space-y-6">
+      <div className="flex flex-wrap gap-2">
         {categories.map((category) => {
           const label = poundForPoundLabel(category.category, i18n.language)
           return (
@@ -160,11 +152,14 @@ function P4pView({
               key={category.category}
               type="button"
               onClick={() => onSelect(category.category)}
-              className={`ghost-action inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] ${
-                category.category === active.category ? 'ring-1 ring-[#C8102E]/45' : ''
+              aria-pressed={category.category === active.category}
+              className={`inline-flex min-h-10 items-center gap-1.5 rounded-control border px-3 text-sm font-semibold transition-colors ${
+                category.category === active.category
+                  ? 'border-[var(--text-primary)] bg-[var(--text-primary)] text-[var(--bg-surface)]'
+                  : 'border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:border-[var(--border-default)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]'
               }`}
             >
-              <Sparkles className="h-3.5 w-3.5 text-[#C8102E]" />
+              <Sparkles className="h-3.5 w-3.5" />
               {label}
             </button>
           )
@@ -196,16 +191,16 @@ function RankingList({ entries }: { entries: RankingEntry[] }) {
   const contenders = entries.filter((entry) => entry.rank > 0)
 
   return (
-    <section aria-label={L(i18n.language, 'Atletas ranqueados', 'Ranked athletes', 'Combattants classés', 'Peleadores clasificados')} className="space-y-2.5">
-      <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-1 pb-2">
-        <h2 className="broadcast-label text-xs text-[var(--text-main)]">
-          {L(i18n.language, 'Lutadores Ranqueados', 'Ranked athletes', 'Combattants classés', 'Peleadores clasificados')}
+    <section aria-label={L(i18n.language, 'Atletas ranqueados', 'Ranked athletes', 'Combattants classés', 'Peleadores clasificados')} >
+      <div className="flex min-h-10 items-center justify-between gap-3 border-b border-[var(--border-subtle)] pb-2">
+        <h2 className="section-title">
+          {L(i18n.language, 'Lutadores ranqueados', 'Ranked athletes', 'Combattants classés', 'Peleadores clasificados')}
         </h2>
-        <span className="text-xs text-[var(--text-secondary)]">
+        <span className="shrink-0 text-sm text-[var(--text-muted)]">
           {contenders.length + (champion ? 1 : 0)} {L(i18n.language, 'atletas', 'listed', 'listés', 'registrados')}
         </span>
       </div>
-      <div className="grid gap-2.5">
+      <div className="divide-y divide-[var(--border-subtle)]">
       {champion ? (
         <RankingRow
           entry={champion}
@@ -225,7 +220,7 @@ function RankingList({ entries }: { entries: RankingEntry[] }) {
         />
       ))}
       {!champion && contenders.length === 0 ? (
-        <div className="surface-card rounded-[18px] px-4 py-6 text-center text-sm text-[var(--text-muted)]">
+        <div className="px-4 py-12 text-center text-sm text-[var(--text-muted)]">
           {L(i18n.language, 'Nenhum atleta ranqueado nesta categoria.', 'No ranked athletes in this category.', 'Aucun combattant classé dans cette catégorie.', 'No hay peleadores clasificados en esta división.')}
         </div>
       ) : null}
@@ -261,8 +256,8 @@ function RankingRow({
   const content = (
     <>
       <span
-        className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl text-base font-bold ${
-          isChampion ? 'bg-[#C8102E] text-white' : 'bg-[var(--surface-3)] text-[var(--text-main)]'
+        className={`grid h-9 w-9 shrink-0 place-items-center font-display text-lg font-bold tabular-nums ${
+          isChampion ? 'rounded-full bg-[var(--accent-red-solid)] text-white' : 'text-[var(--text-secondary)]'
         }`}
       >
         {isChampion ? <Crown className="h-4 w-4" /> : entry.rank}
@@ -271,14 +266,14 @@ function RankingRow({
       <FighterAvatar name={entry.fighter} imageUrl={imageUrl} highlight={isChampion} className="h-12 w-12" />
 
       <div className="min-w-0 flex-1">
-        <p className="flex min-w-0 items-center gap-2 text-base font-semibold text-[var(--text-main)]">
+        <p className="flex min-w-0 items-center gap-2 text-base font-semibold text-[var(--text-primary)]">
           {profile ? <FlagList fighter={profile} /> : null}
           <span className="min-w-0 truncate">{entry.fighter}</span>
         </p>
         {profile ? <FighterBadges badges={badgesForRankings(profile.badges)} className="mt-1" /> : null}
-        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-[var(--text-secondary)]">
+        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[var(--text-muted)]">
           {isChampion ? (
-            <span className="inline-flex items-center gap-1 rounded-full border border-[var(--rule)] bg-[#F2C230] px-2 py-0.5 text-xs font-bold uppercase tracking-[0.06em] text-[#0E0E0E]">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#F2C230] px-2 py-0.5 text-xs font-bold uppercase tracking-[0.06em] text-[#0E0E0E]">
               <Trophy className="h-3.5 w-3.5" /> {t('rankings.champion')}
             </span>
           ) : null}
@@ -291,7 +286,7 @@ function RankingRow({
     </>
   )
 
-  const base = 'metric-tile flex w-full items-center gap-3.5 rounded-2xl px-3.5 py-3'
+  const base = '-mx-2 flex w-[calc(100%+1rem)] items-center gap-3 rounded-control px-2 py-3 sm:gap-4'
 
   return profile ? (
     <button
@@ -306,7 +301,7 @@ function RankingRow({
           `${entry.fighter}, ${entry.rank === 0 ? 'campeón' : `puesto ${entry.rank}`}. Ver perfil`,
         )
       }
-      className={`${base} cursor-pointer text-left transition hover:!bg-[#F2C230]/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F2C230]`}
+      className={`${base} cursor-pointer text-left transition-colors hover:bg-[var(--bg-surface-hover)]`}
     >
       {content}
     </button>
@@ -320,7 +315,7 @@ function RankChangeBadge({ change }: { change: string | null }) {
 
   if (change === 'up') {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-400">
+      <span className="inline-flex items-center gap-1 rounded-full border border-[var(--accent-green)]/30 bg-[var(--accent-green)]/10 px-2 py-0.5 text-label font-semibold text-[var(--text-green)]">
         <ArrowUp className="h-3 w-3" />
       </span>
     )
@@ -328,14 +323,14 @@ function RankChangeBadge({ change }: { change: string | null }) {
 
   if (change === 'down') {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full border border-[#C8102E]/20 bg-[#C8102E]/10 px-2 py-0.5 text-[11px] font-semibold text-[#C8102E]">
+      <span className="inline-flex items-center gap-1 rounded-full border border-[var(--accent-red)]/30 bg-[var(--accent-red)]/10 px-2 py-0.5 text-label font-semibold text-[var(--text-red)]">
         <ArrowDown className="h-3 w-3" />
       </span>
     )
   }
 
   return (
-    <span className="type-tech rounded-full border border-[var(--border-subtle)] px-2 py-0.5 text-[11px] font-semibold uppercase text-[var(--text-muted)]">
+    <span className="type-tech rounded-full border border-[var(--border-subtle)] px-2 py-0.5 text-label font-semibold uppercase text-[var(--text-muted)]">
       {change}
     </span>
   )

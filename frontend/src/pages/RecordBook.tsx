@@ -191,7 +191,7 @@ export function RecordBook() {
 
   return (
     <div className="space-y-3 sm:space-y-4">
-      <section className="page-hero rounded-[20px] px-3 py-3 sm:px-4 sm:py-4">
+      <section>
         <SectionHeading
           level={1}
           eyebrow={t('recordBook.eyebrow')}
@@ -207,10 +207,10 @@ export function RecordBook() {
                 type="button"
                 aria-pressed={category.name === active?.name}
                 onClick={() => setCategoryName(category.name)}
-                className={`shrink-0 px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] transition sm:px-5 ${
+                className={`min-h-11 shrink-0 px-4 text-sm font-semibold transition-colors sm:px-5 ${
                   category.name === active?.name
-                    ? 'bg-[var(--rule)] text-[var(--card-bg)]'
-                    : 'text-[var(--text-main)] hover:bg-[#F2C230] hover:text-[#0E0E0E]'
+                    ? 'bg-[var(--ink)] text-[var(--on-ink)]'
+                    : 'text-[var(--ink)] hover:bg-[var(--panel)]'
                 }`}
               >
                 {localizedLabel(i18n.language, category.name, { pt: CATEGORY_NAMES_PT, fr: CATEGORY_NAMES_FR, es: CATEGORY_NAMES_ES }, category.name)}
@@ -222,7 +222,7 @@ export function RecordBook() {
         {active ? <p className="mt-2 text-sm text-[var(--text-muted)]">{getBlurb(active.name)}</p> : null}
       </section>
 
-      {error ? <p className="rounded-xl border border-[#C8102E]/25 bg-[#C8102E]/8 px-3 py-2 text-sm font-semibold text-[var(--text-red)]">{error}</p> : null}
+      {error ? <p className="border-l-[3px] border-[var(--ink)] bg-[var(--panel)] px-4 py-3 text-base font-semibold">{error}</p> : null}
 
       {loading ? (
         <section className="grid gap-2.5">
@@ -258,7 +258,7 @@ function StatCard({ stat, onOpenProfile }: { stat: RecordBookStat; onOpenProfile
   const note = stat.note ? localizedLabel(i18n.language, stat.note, { pt: STAT_NOTES_PT, fr: STAT_NOTES_FR, es: STAT_NOTES_ES }, stat.note) : stat.note
 
   return (
-    <section className="surface-card overflow-hidden rounded-[20px]">
+    <section className="surface-card overflow-hidden">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
@@ -266,7 +266,7 @@ function StatCard({ stat, onOpenProfile }: { stat: RecordBookStat; onOpenProfile
         aria-controls={panelId}
         className="flex w-full items-center gap-2 px-3 py-2.5 text-left transition duration-150 hover:bg-[var(--bg-surface-subtle)] sm:px-4"
       >
-        <Trophy className="h-4 w-4 shrink-0 text-[#C8102E]" />
+        <Trophy className="h-4 w-4 shrink-0 text-[var(--ink)]" />
         <h3 className="broadcast-label text-xs text-[var(--text-main)]">{title}</h3>
         <span className="theme-muted text-xs">({stat.leaders.length})</span>
         <ChevronDown className={`theme-muted ml-auto h-4 w-4 shrink-0 transition ${open ? 'rotate-180' : ''}`} />
@@ -274,7 +274,7 @@ function StatCard({ stat, onOpenProfile }: { stat: RecordBookStat; onOpenProfile
 
       {open ? (
         <div id={panelId} className="border-t border-[var(--line-soft)] px-3 py-3 sm:px-4">
-          {note ? <p className="theme-muted mb-2 text-[11px] leading-4">{note}</p> : null}
+          {note ? <p className="theme-muted mb-2 text-label leading-4">{note}</p> : null}
           <ol className="lg:columns-2 lg:gap-x-8">
             {stat.leaders.map((leader, index) => (
               <li key={`${leader.rank}-${leader.fighter}-${index}`} className="break-inside-avoid">
@@ -301,9 +301,9 @@ function LeaderRow({
       type="button"
       onClick={() => onOpenProfile(leader.fighter)}
       aria-label={L(i18n.language, `${leader.fighter}, #${leader.rank}. Ver perfil`, `${leader.fighter}, rank ${leader.rank}. View profile`, `${leader.fighter}, rang ${leader.rank}. Voir le profil`, `${leader.fighter}, puesto ${leader.rank}. Ver perfil`)}
-      className="flex w-full cursor-pointer items-center text-left gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-[#F2C230]/40 focus-visible:bg-[#F2C230]/40 focus-visible:outline-none"
+      className="flex w-full cursor-pointer items-center text-left gap-2.5 px-2 py-1.5 transition-colors hover:bg-[var(--gold-fill)] focus-visible:bg-[var(--gold-fill)] focus-visible:outline-none"
     >
-      <span className="type-num w-4 shrink-0 text-right text-[11px] text-[var(--text-muted)]">{leader.rank}</span>
+      <span className="type-num w-4 shrink-0 text-right text-label text-[var(--text-muted)]">{leader.rank}</span>
       <div className="min-w-0 flex-1">
         <p className="truncate text-[13px] font-semibold leading-tight text-[var(--text-main)]">{leader.fighter}</p>
       </div>

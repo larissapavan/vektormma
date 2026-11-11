@@ -152,7 +152,7 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
           </ol>
         </nav>
       ) : null}
-      <section className="page-hero rounded-[20px] px-3 py-3 sm:px-4 sm:py-4">
+      <section>
         <SectionHeading
           level={1}
           eyebrow={t('matchup.eyebrow')}
@@ -177,7 +177,7 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
               type="button"
               onClick={swapCorners}
               disabled={!fighterAName && !fighterBName}
-              title={L(i18n.language, 'Inverter cantos (Vermelho ⇄ Azul)', 'Swap corners (Red ⇄ Blue)', 'Inverser les coins (rouge ⇄ bleu)', 'Intercambiar esquinas (roja ⇄ azul)')}
+              title={L(i18n.language, 'Inverter cantos (vermelho ⇄ azul)', 'Swap corners (red ⇄ blue)', 'Inverser les coins (rouge ⇄ bleu)', 'Intercambiar esquinas (roja ⇄ azul)')}
               aria-label={L(i18n.language, 'Inverter cantos', 'Swap corners', 'Inverser les coins', 'Intercambiar esquinas')}
               className="ghost-action inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--text-muted)] transition hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
             >
@@ -206,7 +206,7 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
       </section>
 
       {systemError ? (
-        <p className="flex items-center gap-2 rounded-xl border border-[#C8102E]/20 bg-[#C8102E]/8 px-3 py-2 text-sm text-[var(--text-main)]">
+        <p className="flex items-center gap-2 border-l-[3px] border-[var(--ink)] bg-[var(--panel)] px-4 py-3 text-base font-semibold">
           <ShieldAlert className="h-4 w-4 shrink-0 text-[var(--accent-red)]" />
           {systemError}
         </p>
@@ -218,7 +218,7 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
             <div className="flex items-end justify-between gap-3">
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Probabilidade do Modelo', 'Model odds', 'Cotes du modèle', 'Probabilidad del modelo')}</p>
+                  <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Probabilidade do modelo', 'Model odds', 'Cotes du modèle', 'Probabilidad del modelo')}</p>
                   {titleFightInfo?.title_fight ? <TitleFightBadge fight={titleFightInfo} /> : null}
                 </div>
                 <h2 className="mt-0.5 text-xl font-black uppercase tracking-[0.03em] text-[var(--text-main)] sm:text-2xl">{t('predictor.winningChance')}</h2>
@@ -285,7 +285,7 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
 
             <div className="mt-4">
               {analyzing || !showResults || !fighterA || !fighterB || !prediction ? (
-                <LoadingSkeleton className="h-[120px]" label={L(i18n.language, 'Carregando probabilidade de vitória', 'Loading win probability', 'Chargement de la probabilité de victoire', 'Cargando la probabilidad de victoria')} />
+                <LoadingSkeleton className="h-[120px]" label={L(i18n.language, 'Carregando a chance de vitória', 'Loading the win chance', 'Chargement de la chance de victoire', 'Cargando la probabilidad de victoria')} />
               ) : (
                 <WinProbabilityBar
                   showNames={false}
@@ -327,23 +327,23 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
                   fighterB={fighterB}
                   rows={[
                     { label: L(i18n.language, 'Precisão', 'Accuracy', 'Précision', 'Precisión'), key: 'sig_str_acc', format: formatPercent },
-                    { label: L(i18n.language, 'Golpes Conectados', 'Sig. Strikes', 'Coups sign.', 'Golpes sig.'), key: 'sig_strikes_landed_per_min', format: formatPerMin },
+                    { label: L(i18n.language, 'Golpes conectados', 'Sig. Strikes', 'Coups sign.', 'Golpes sig.'), key: 'sig_strikes_landed_per_min', format: formatPerMin },
                     { label: L(i18n.language, 'Defesa', 'Defense', 'Défense', 'Defensa'), key: 'striking_defense', format: formatPercent },
                   ]}
                 />
                 <StatComparisonCard
-                  title={L(i18n.language, 'Luta no Chão', 'Grappling', 'Lutte', 'Lucha en el suelo')}
+                  title={L(i18n.language, 'Luta no chão', 'Grappling', 'Lutte', 'Lucha en el suelo')}
                   icon={Target}
                   fighterA={fighterA}
                   fighterB={fighterB}
                   rows={[
-                    { label: L(i18n.language, 'Precisão de Quedas', 'TD Accuracy', 'Précision des amenées', 'Precisión de derribos'), key: 'takedown_acc', format: formatPercent },
-                    { label: L(i18n.language, 'Defesa de Quedas', 'TD Defense', 'Défense des amenées', 'Defensa de derribos'), key: 'takedown_defense', format: formatPercent },
-                    { label: L(i18n.language, 'Tentativas de Finalização', 'Sub Attempts', 'Tentatives de soumission', 'Intentos de sumisión'), key: 'submission_avg_per_15min', format: formatPlainNumber },
+                    { label: L(i18n.language, 'Precisão de quedas', 'TD accuracy', 'Précision des amenées', 'Precisión de derribos'), key: 'takedown_acc', format: formatPercent },
+                    { label: L(i18n.language, 'Defesa de quedas', 'TD defense', 'Défense des amenées', 'Defensa de derribos'), key: 'takedown_defense', format: formatPercent },
+                    { label: L(i18n.language, 'Tentativas de finalização', 'Sub attempts', 'Tentatives de soumission', 'Intentos de sumisión'), key: 'submission_avg_per_15min', format: formatPlainNumber },
                   ]}
                 />
                 <StatComparisonCard
-                  title={L(i18n.language, 'Atributos Físicos', 'Physical', 'Physique', 'Atributos físicos')}
+                  title={L(i18n.language, 'Atributos físicos', 'Physical', 'Physique', 'Atributos físicos')}
                   icon={Ruler}
                   fighterA={fighterA}
                   fighterB={fighterB}
@@ -405,7 +405,7 @@ function MatchupAnalysisSkeleton({ includeOdds = true }: { includeOdds?: boolean
   const { i18n } = useTranslation()
   return (
     <div className="space-y-3" role="status" aria-label={L(i18n.language, 'Analisando confronto', 'Analyzing matchup', 'Analyse du combat', 'Analizando el enfrentamiento')}>
-      {includeOdds ? <LoadingSkeleton className="h-[180px] rounded-[20px]" label={L(i18n.language, 'Carregando probabilidade de vitória', 'Loading win probability', 'Chargement de la probabilité de victoire', 'Cargando la probabilidad de victoria')} /> : null}
+      {includeOdds ? <LoadingSkeleton className="h-[180px] rounded-[20px]" label={L(i18n.language, 'Carregando a chance de vitória', 'Loading the win chance', 'Chargement de la chance de victoire', 'Cargando la probabilidad de victoria')} /> : null}
       <LoadingSkeleton className="h-[340px] rounded-[20px]" label={L(i18n.language, 'Carregando gráfico de radar', 'Loading radar chart', 'Chargement du graphique radar', 'Cargando el gráfico de radar')} />
       <div className="grid gap-3 lg:grid-cols-3">
         <LoadingSkeleton className="h-[180px] rounded-[20px]" />
@@ -441,7 +441,7 @@ function StatComparisonCard({
   return (
     <article className="surface-card rounded-[20px] p-3 sm:p-4">
       <div className="mb-3 flex items-center gap-2.5">
-        <div className="rounded-xl bg-[#C8102E]/12 p-2 text-[#C8102E]">
+        <div className="p-2">
           <Icon className="h-4 w-4" />
         </div>
         <h2 className="text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{title}</h2>
@@ -452,7 +452,7 @@ function StatComparisonCard({
         <span className="type-tech truncate text-right text-xs font-bold uppercase tracking-[0.1em] text-[var(--accent-red)]">
           {firstName(fighterA.name)}
         </span>
-        <span className="type-tech truncate text-right text-xs font-bold uppercase tracking-[0.1em] text-[var(--accent-blue)]">
+        <span className="type-tech truncate text-right text-xs font-bold uppercase tracking-[0.1em] text-[var(--blue-text)]">
           {firstName(fighterB.name)}
         </span>
 
@@ -466,10 +466,10 @@ function StatComparisonCard({
           return (
             <Fragment key={row.label}>
               <span className="py-2 text-base font-semibold text-[var(--text-main)]">{row.label}</span>
-              <span className={`py-2 text-right text-lg font-bold ${aWins ? 'text-[#C8102E]' : 'text-[var(--text-main)]'}`}>
+              <span className={`py-2 text-right text-lg font-bold ${aWins ? 'text-[var(--red-text)]' : 'text-[var(--text-main)]'}`}>
                 {row.format(valueA)}
               </span>
-              <span className={`py-2 text-right text-lg font-bold ${bWins ? 'text-[var(--accent-blue)]' : 'text-[var(--text-main)]'}`}>
+              <span className={`py-2 text-right text-lg font-bold ${bWins ? 'text-[var(--blue-text)]' : 'text-[var(--text-main)]'}`}>
                 {row.format(valueB)}
               </span>
             </Fragment>

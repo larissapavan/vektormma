@@ -2,17 +2,7 @@
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *, .dark, .dark *));
 
 @theme {
-  --color-octagon-bg: #000000;
-  --color-octagon-card: #141414;
-  --color-octagon-red: #d32f2f;
-  --color-brand-red-dark: #b71c1c;
-  --color-brand-ink: #0a0a0a;
-  --color-brand-graphite: #2a2a2a;
-  --color-octagon-blue: #2f5fa8;
-  --color-octagon-text: #ffffff;
-  --color-octagon-muted: #999999;
-
-  /* Semantic Design Tokens for Tailwind v4 */
+  /* Semantic colours for Tailwind utilities; the values live in the theme blocks below. */
   --color-canvas: var(--bg-app);
   --color-surface-base: var(--bg-surface);
   --color-surface-elevated: var(--bg-surface-elevated);
@@ -28,280 +18,171 @@
   --color-text-secondary: var(--text-secondary);
   --color-text-muted: var(--text-muted);
 
+  --color-mat: var(--mat);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-rule: var(--rule);
+  --color-track: var(--track);
+  --color-corner-red: var(--red);
+  --color-corner-red-deep: var(--red-deep);
+  --color-corner-blue: var(--blue);
+  --color-corner-blue-deep: var(--blue-deep);
+
   --color-accent-red: var(--accent-red);
   --color-accent-blue: var(--accent-blue);
   --color-accent-green: var(--accent-green);
   --color-accent-gold: var(--accent-gold);
 
-  --font-display: 'Syne', sans-serif;
-  --font-sans: 'Plus Jakarta Sans', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  /* Big Shoulders Display for names, numbers and titles; Hanken Grotesk for everything else. There is no monospaced
+     face any more: `font-mono` and the old aliases resolve to the text face. */
+  --font-display: 'Big Shoulders Display', 'Arial Narrow', 'Roboto Condensed', Impact, sans-serif;
+  --font-sans: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: var(--font-sans);
 
-  --font-sports-display: 'Syne', sans-serif;
-  --font-sports-ui: 'Plus Jakarta Sans', sans-serif;
-  --font-sports-tech: 'JetBrains Mono', monospace;
-  --font-poster: 'Syne', sans-serif;
-  --font-body: 'Plus Jakarta Sans', sans-serif;
-  --font-ui: 'Plus Jakarta Sans', sans-serif;
+  --font-sports-display: var(--font-display);
+  --font-sports-ui: var(--font-sans);
+  --font-sports-tech: var(--font-sans);
+  --font-poster: var(--font-display);
+  --font-body: var(--font-sans);
+  --font-ui: var(--font-sans);
+
+  /* One radius everywhere. */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+  --radius-2xl: 4px;
+  --radius-3xl: 4px;
+  --radius-4xl: 4px;
+  --radius-control: 4px;
+  --radius-card: 4px;
+  --radius-panel: 4px;
+
+  /* Nothing under 13px. */
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.125rem;
+  --text-label: 0.8125rem;
+  --text-label--line-height: 1.125rem;
+
   --breakpoint-xs: 30rem; /* 480px */
   --breakpoint-3xl: 90rem; /* 1440px */
 }
 
 /* ==========================================================================
-   SCALABLE DESIGN TOKENS ARCHITECTURE (WCAG AA COMPLIANT)
-   Octagon Dark (Graphite / Deep Charcoal) & Championship Light (Crisp SaaS)
+   DESIGN TOKENS
+   Red and blue mean the red corner and the blue corner of a fight, and nothing else (plus the logo). A generic
+   accent, a link, "live" or an error is ink, with an icon or a dot.
    ========================================================================== */
 
 :root,
-:root[data-theme='dark'] {
-  color-scheme: dark;
-
-  /* Backgrounds & Surfaces */
-  --bg-app: #08090d;
-  --bg-surface: #10131b;
-  --bg-surface-elevated: #161a25;
-  --bg-surface-subtle: #191e2b;
-  --bg-surface-hover: #22293b;
-  --bg-surface-active: #2b344a;
-
-  /* Borders & Dividers */
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-default: rgba(255, 255, 255, 0.16);
-  --border-strong: rgba(255, 255, 255, 0.28);
-
-  /* Typography (WCAG AA: >= 4.5:1 against #08090d & #10131b) */
-  --text-primary: #f8fafc;        /* Slate 50: 16.9:1 */
-  --text-secondary: #cbd5e1;      /* Slate 300: 12.0:1 */
-  --text-muted: #94a3b8;          /* Slate 400: 6.8:1 */
-
-  /* Accents & States */
-  --accent-red: #ef4444;
-  --accent-red-solid: #dc2626;    /* fill behind white text: 4.8:1 (the lighter red above is 3.8:1) */
-  --text-red: #f87171;            /* 6.4:1 */
-  --accent-blue: #3b82f6;
-  --accent-blue-solid: #2563eb;   /* fill behind white text: 5.2:1 */
-  --text-blue: #60a5fa;           /* 7.4:1 */
-  --accent-green: #22c55e;
-  --text-green: #4ade80;          /* 10.3:1 */
-  --accent-gold: #f59e0b;
-  --text-gold: #fbbf24;           /* 10.6:1 */
-
-  /* Inputs & Components */
-  --input-bg: #10131b;
-  --input-border: rgba(255, 255, 255, 0.16);
-  --input-focus: #ef4444;
-  --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
-  --elevated-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.65);
-  --modal-backdrop: rgba(0, 0, 0, 0.78);
-  --grid-pattern: radial-gradient(rgba(255, 255, 255, 0.06) 1.2px, transparent 1.3px);
-
-  /* Backward compatibility aliases */
-  --app-background: var(--bg-app);
-  --card-bg: var(--bg-surface);
-  --hero-bg: var(--bg-surface);
-  --tile-bg: var(--bg-surface-subtle);
-  --tile-hover-bg: var(--bg-surface-hover);
-  --input-hover-bg: var(--bg-surface-hover);
-  --action-bg: var(--bg-surface-subtle);
-  --action-hover-bg: var(--bg-surface-hover);
-  --option-bg: var(--bg-surface);
-  --option-hover-bg: var(--bg-surface-hover);
-  --chip-bg: var(--bg-surface-subtle);
-  --surface-1: var(--bg-surface);
-  --surface-2: var(--bg-surface-subtle);
-  --surface-3: var(--bg-surface-subtle);
-  --rule: var(--text-primary);
-  --hard: var(--border-default);
-  --line-soft: var(--border-subtle);
-  --line-strong: var(--border-strong);
-  --text-main: var(--text-primary);
-  --text-soft: var(--text-secondary);
-  --shadow-soft: rgba(0, 0, 0, 0.4);
-  --shadow-page: rgba(0, 0, 0, 0.4);
-  --avatar-bg: #1c2230;
-  --logo-bg: #000000;
-  --tape: #f59e0b;
-  --on-tape: #0e0e0e;
-}
-
 :root[data-theme='light'] {
   color-scheme: light;
 
-  /* Backgrounds & Surfaces (Crisp, High-Grade Sports Analytics) */
-  --bg-app: #f1f5f9;              /* Slate 100: Soft cool backdrop, never washed-out */
-  --bg-surface: #ffffff;          /* Pure crisp white card/surface */
-  --bg-surface-elevated: #ffffff; /* Elevated cards and popovers with rich soft shadow */
-  --bg-surface-subtle: #f8fafc;   /* Slate 50: Chips, pill controls, inputs */
-  --bg-surface-hover: #e2e8f0;    /* Slate 200: Clear responsive hover state */
-  --bg-surface-active: #cbd5e1;   /* Slate 300: Active/pressed */
+  --mat: #e3e6e9;        /* page background */
+  --panel: #f4f5f6;      /* panels and fields */
+  --ink: #10151d;        /* text and the primary button */
+  --on-ink: #ffffff;     /* text on ink */
+  --muted: #4a5463;      /* secondary text: 6.1:1 on mat, 7.0:1 on panel */
+  --rule: #c3c9d0;       /* thin lines */
+  --track: #d2d7dd;      /* the empty part of a bar */
+  --red: #d62f2f;        /* red corner: white on it is 4.9:1 */
+  --red-deep: #b01f25;   /* red for small text and bars: 5.5:1 on mat */
+  --blue: #2b59d9;       /* blue corner: white on it is 5.9:1 */
+  --blue-deep: #1f46b5;  /* blue for small text and bars: 6.4:1 on mat */
+  --red-text: var(--red-deep);
+  --blue-text: var(--blue-deep);
+  --focus: #2b59d9;
+  --radius: 4px;
 
-  /* Borders & Dividers */
-  --border-subtle: #cbd5e1;       /* Slate 300: Clean card borders with visible boundary */
-  --border-default: #94a3b8;      /* Slate 400: UI borders with strong contrast */
-  --border-strong: #64748b;       /* Slate 500: Clear emphasis */
+  --field: #ffffff;
+  --panel-hover: #ebedef;
+  --panel-active: #d2d7dd;
+  --border-mid: #8a94a3;
+  --modal-backdrop: rgba(16, 21, 29, 0.55);
+  --positive: #1b6b3a;   /* a win, "active": 5.3:1 on mat */
+  --gold: #8a5a00;       /* a title: 4.9:1 on mat */
+  --gold-fill: #f2c230;
+}
 
-  /* Typography (WCAG AA: >= 4.5:1 against #ffffff & #f1f5f9) */
-  --text-primary: #090d16;        /* Deep Slate-black: 18.5:1 on #ffffff (AAA) */
-  --text-secondary: #1e293b;      /* Slate 800: 12.6:1 on #ffffff (AAA, ultra-crisp!) */
-  --text-muted: #334155;          /* Slate 700: 10.0:1 on #ffffff (AAA, never washed-out!) */
+:root[data-theme='dark'] {
+  color-scheme: dark;
 
-  /* Accents & States */
-  --accent-red: #c8102e;          /* Official Combat Red */
-  --accent-red-solid: #c8102e;
-  --text-red: #b91c1c;            /* 7.6:1 on #ffffff (AAA) */
-  --accent-blue: #1d4ed8;
-  --accent-blue-solid: #1d4ed8;
-  --text-blue: #1e40af;           /* 7.8:1 on #ffffff (AAA) */
-  --accent-green: #15803d;
-  --text-green: #166534;          /* 6.8:1 on #ffffff (AA) */
-  --accent-gold: #b45309;
-  --text-gold: #92400e;           /* 6.9:1 on #ffffff (AA) */
+  --mat: #10151d;        /* the ink becomes the page */
+  --panel: #1b222d;
+  --ink: #f4f5f6;        /* text and the primary button: 16.8:1 on the page */
+  --on-ink: #10151d;
+  --muted: #a9b2bf;      /* 8.6:1 on the page, 7.5:1 on a panel */
+  --rule: #3a4556;
+  --track: #2c3644;
+  --red: #d62f2f;        /* the corners keep their colours; white on them reads the same */
+  --red-deep: #b01f25;
+  --blue: #2b59d9;
+  --blue-deep: #1f46b5;
+  --red-text: #ff8f8a;   /* small red text on a dark page: 8.3:1 */
+  --blue-text: #9db8ff;  /* small blue text on a dark page: 9.4:1 */
+  --focus: #9db8ff;
+  --radius: 4px;
 
-  /* Inputs & Components */
-  --input-bg: #ffffff;
-  --input-border: #cbd5e1;
-  --input-focus: #c8102e;
-  --card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.05);
-  --elevated-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
-  --modal-backdrop: rgba(15, 23, 42, 0.55);
-  --grid-pattern: radial-gradient(rgba(15, 23, 42, 0.05) 1.2px, transparent 1.3px);
+  --field: #0b0f15;
+  --panel-hover: #252e3b;
+  --panel-active: #323d4d;
+  --border-mid: #6b7686;
+  --modal-backdrop: rgba(0, 0, 0, 0.72);
+  --positive: #6fd39a;
+  --gold: #f2c230;
+  --gold-fill: #f2c230;
+}
 
-  /* Backward compatibility aliases */
+/* The names the components were written with, mapped onto the tokens above. */
+:root {
+  --bg-app: var(--mat);
+  --bg-surface: var(--panel);
+  --bg-surface-elevated: var(--panel);
+  --bg-surface-subtle: var(--panel-hover);
+  --bg-surface-hover: var(--panel-hover);
+  --bg-surface-active: var(--panel-active);
+
+  --border-subtle: var(--rule);
+  --border-default: var(--border-mid);
+  --border-strong: var(--ink);
+
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink);
+  --text-muted: var(--muted);
+
+  /* The old accent was red. A generic accent is ink now; the corner colours are --red and --blue. */
+  --accent-red: var(--ink);
+  --accent-red-solid: var(--ink);
+  --text-red: var(--ink);
+  --accent-blue: var(--blue);
+  --accent-blue-solid: var(--blue);
+  --text-blue: var(--blue-text);
+  --accent-green: var(--positive);
+  --text-green: var(--positive);
+  --accent-gold: var(--gold);
+  --text-gold: var(--gold);
+
+  --input-bg: var(--field);
+  --input-border: var(--ink);
+  --input-focus: var(--focus);
+  --card-shadow: none;
+  --elevated-shadow: 0 12px 32px -8px rgba(16, 21, 29, 0.35);
+  --grid-pattern: none;
+
   --app-background: var(--bg-app);
   --card-bg: var(--bg-surface);
-  --hero-bg: var(--bg-surface);
   --tile-bg: var(--bg-surface-subtle);
-  --tile-hover-bg: var(--bg-surface-hover);
-  --input-hover-bg: var(--bg-surface-hover);
-  --action-bg: var(--bg-surface);
-  --action-hover-bg: var(--bg-surface-hover);
-  --option-bg: var(--bg-surface);
-  --option-hover-bg: var(--bg-surface-hover);
-  --chip-bg: var(--bg-surface-subtle);
   --surface-1: var(--bg-surface);
   --surface-2: var(--bg-surface-subtle);
   --surface-3: var(--bg-surface-subtle);
-  --rule: var(--text-primary);
   --hard: var(--border-default);
   --line-soft: var(--border-subtle);
-  --line-strong: var(--border-strong);
   --text-main: var(--text-primary);
-  --text-soft: var(--text-secondary);
-  --shadow-soft: rgba(15, 23, 42, 0.06);
-  --shadow-page: rgba(15, 23, 42, 0.05);
-  --avatar-bg: #e2e8f0;
-  --logo-bg: #0f172a;
-  --tape: #b45309;
-  --on-tape: #ffffff;
-}
-
-/* Organization Specific Theme Customizations */
-:root[data-org='pfl'] {
-  --accent-red: #3b82f6;
-  --text-red: #60a5fa;
-  --hard: #1d4ed8;
-}
-
-:root[data-org='pfl'][data-theme='light'] {
-  --accent-red: #1d4ed8;
-  --text-red: #1e40af;
-  --hard: #cbd5e1;
-}
-
-:root[data-org='bellator'] {
-  --accent-red: #22c55e;
-  --text-red: #4ade80;
-  --hard: #15803d;
-}
-
-:root[data-org='bellator'][data-theme='light'] {
-  --accent-red: #15803d;
-  --text-red: #166534;
-  --hard: #cbd5e1;
-}
-
-:root[data-org='rizin'] {
-  --accent-red: #a855f7;
-  --text-red: #c084fc;
-  --hard: #7e22ce;
-}
-
-:root[data-org='rizin'][data-theme='light'] {
-  --accent-red: #7e22ce;
-  --text-red: #6b21a8;
-  --hard: #cbd5e1;
-}
-
-:root[data-org='ksw'] {
-  --accent-red: #06b6d4;
-  --text-red: #22d3ee;
-  --hard: #0e7490;
-}
-
-:root[data-org='ksw'][data-theme='light'] {
-  --accent-red: #0e7490;
-  --text-red: #155e75;
-  --hard: #cbd5e1;
-}
-
-:root[data-org='lfa'] {
-  --accent-red: #ec4899;
-  --text-red: #f472b6;
-  --hard: #be185d;
-}
-
-:root[data-org='lfa'][data-theme='light'] {
-  --accent-red: #be185d;
-  --text-red: #9d174d;
-  --hard: #cbd5e1;
-}
-
-:root[data-org='cage-warriors'] {
-  --accent-red: #f97316;
-  --text-red: #fb923c;
-  --hard: #c2410c;
-}
-
-:root[data-org='cage-warriors'][data-theme='light'] {
-  --accent-red: #c2410c;
-  --text-red: #9a3412;
-  --hard: #cbd5e1;
-}
-
-:root[data-org='oktagon'] {
-  --accent-red: #84cc16;
-  --text-red: #a3e635;
-  --hard: #4d7c0f;
-}
-
-:root[data-org='oktagon'][data-theme='light'] {
-  --accent-red: #4d7c0f;
-  --text-red: #3f6212;
-  --hard: #cbd5e1;
-}
-
-:root[data-org='jungle-fight'] {
-  --accent-red: #6366f1;
-  --text-red: #818cf8;
-  --hard: #4338ca;
-}
-
-:root[data-org='jungle-fight'][data-theme='light'] {
-  --accent-red: #4338ca;
-  --text-red: #3730a3;
-  --hard: #cbd5e1;
-}
-
-:root[data-org='invicta'] {
-  --accent-red: #14b8a6;
-  --text-red: #2dd4bf;
-  --hard: #0f766e;
-}
-
-:root[data-org='invicta'][data-theme='light'] {
-  --accent-red: #0f766e;
-  --text-red: #115e59;
-  --hard: #cbd5e1;
+  --avatar-bg: var(--track);
+  --tape: var(--gold-fill);
+  --on-tape: #10151d;
 }
 
 html {
@@ -323,16 +204,6 @@ body {
   position: relative;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background-image: var(--grid-pattern);
-  background-size: 8px 8px;
-}
-
 #root {
   min-height: 100vh;
   width: 100%;
@@ -341,8 +212,8 @@ body::before {
 }
 
 ::selection {
-  background: var(--tape);
-  color: #0e0e0e;
+  background: var(--ink);
+  color: var(--on-ink);
 }
 
 button,
@@ -359,61 +230,105 @@ select {
   overflow-x: hidden;
 }
 
-/* Typography: Anton for headlines and big numbers, Barlow Condensed for labels, Barlow for text. */
+/* Typography. Titles, names and numbers use the display face; labels are plain sentence-case text. */
 h1,
 h2,
 h3,
 .type-display {
-  font-family: var(--font-poster);
-  font-weight: 400;
+  font-family: var(--font-display);
+  font-weight: 800;
   font-style: normal;
-  font-synthesis: none;
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-  line-height: 0.98;
+  letter-spacing: 0;
+  line-height: 1.02;
   color: inherit;
+  text-wrap: balance;
 }
 
-.type-tech {
-  font-family: var(--font-sports-tech);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
+h3 {
+  line-height: 1.1;
 }
 
-.type-num {
-  font-family: var(--font-poster);
-  font-weight: 400;
-  font-synthesis: none;
-  font-variant-numeric: tabular-nums;
+/* The title of a section that sits on the page background (see shared/components/ui/Section.tsx). */
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.25rem;
+  line-height: 1.05;
+  letter-spacing: 0;
+  text-wrap: balance;
 }
 
+@media (max-width: 639px) {
+  .section-title {
+    font-size: 2rem;
+  }
+}
+
+/* Small labels: what used to be spaced capitals in a monospaced face. */
+.type-tech,
 .broadcast-label {
-  font-family: var(--font-sports-tech);
+  font-family: var(--font-sans);
   font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.type-num,
+.data-value,
+.poster-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: normal;
+  letter-spacing: 0;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
 .data-value {
-  font-family: var(--font-poster);
-  font-weight: 400;
-  font-synthesis: none;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  font-variant-numeric: tabular-nums;
   color: var(--text-primary);
+}
+
+/* The one place capitals stay: a fighter's surname in a corner block. */
+.caps {
+  text-transform: uppercase !important;
+}
+
+/* Sentence case everywhere else. These rules are unlayered, so they win over the `uppercase` and `tracking-*`
+   utilities still written on older components; text is now written in the case it should be read in. */
+.uppercase {
+  text-transform: none;
+}
+
+.tracking-wide,
+.tracking-wider,
+.tracking-widest,
+[class*='tracking-['] {
+  letter-spacing: 0;
+}
+
+/* Nothing under 13px, whatever an older component asks for. */
+.text-\[9px\],
+.text-\[10px\],
+.text-\[11px\],
+.text-\[12px\] {
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+}
+
+/* One radius: arbitrary radii and pills collapse to it. A dot of 8px or less still reads as a circle. */
+[class*='rounded-['],
+.rounded-full {
+  border-radius: var(--radius);
+}
+
+.keep-round {
+  border-radius: 9999px !important;
 }
 
 .page-hero {
   position: relative;
   background-color: var(--bg-surface);
-  background-image: var(--grid-pattern);
-  background-size: 7px 7px;
-  border: 1px solid var(--border-subtle);
-  box-shadow: var(--card-shadow);
   color: var(--text-primary);
-  border-radius: 1rem;
+  border-radius: var(--radius);
 }
 
 /* Surface Cards & Containers */
@@ -421,10 +336,9 @@ h3,
   position: relative;
   background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  box-shadow: var(--card-shadow);
   color: var(--text-primary);
-  border-radius: 1rem;
-  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+  border-radius: var(--radius);
+  transition: background-color 150ms ease, border-color 150ms ease;
 }
 
 .surface-card-elevated {
@@ -433,130 +347,93 @@ h3,
   border: 1px solid var(--border-default);
   box-shadow: var(--elevated-shadow);
   color: var(--text-primary);
-  border-radius: 1.25rem;
+  border-radius: var(--radius);
   transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
 }
 
 .metric-tile {
   position: relative;
-  background-color: var(--bg-surface-subtle);
+  background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 0.75rem;
+  border-radius: var(--radius);
   overflow: hidden;
   color: var(--text-primary);
-  transition:
-    transform 120ms ease,
-    box-shadow 120ms ease,
-    border-color 120ms ease,
-    background-color 120ms ease;
-}
-
-.metric-tile::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 3px;
-  background: var(--accent-red);
-}
-
-.metric-tile--blue::before {
-  background: var(--accent-blue);
+  transition: background-color 120ms ease, border-color 120ms ease;
 }
 
 .metric-tile:hover {
   background-color: var(--bg-surface-hover);
-  border-color: var(--border-default);
-  transform: translateY(-1px);
-  box-shadow: var(--card-shadow);
 }
 
 /* Interactive Component Tokens */
+/* Primary: ink with the page colour on it. Secondary: a 1.5px ink outline. Both are at least 44px tall. */
 .primary-action {
   position: relative;
-  font-family: var(--font-sports-tech);
+  min-height: 44px;
+  font-family: var(--font-sans);
   font-weight: 700;
-  letter-spacing: 0.12em;
-  background-color: var(--accent-red-solid);
-  color: #ffffff !important;
-  border: 1px solid transparent;
-  box-shadow: 0 4px 14px -2px rgba(200, 16, 46, 0.4);
-  transition:
-    transform 120ms ease,
-    box-shadow 120ms ease,
-    filter 120ms ease;
+  font-size: 0.9375rem;
+  letter-spacing: 0;
+  background-color: var(--ink);
+  color: var(--on-ink) !important;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius);
+  transition: opacity 120ms ease;
 }
 
 .primary-action:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px -2px rgba(200, 16, 46, 0.5);
-}
-
-.primary-action:active {
-  transform: translateY(1px);
-  box-shadow: 0 2px 6px -1px rgba(200, 16, 46, 0.3);
+  opacity: 0.88;
 }
 
 .primary-action:disabled {
-  opacity: 0.45;
+  background-color: var(--rule);
+  border-color: var(--rule);
+  color: var(--muted) !important;
+  opacity: 1;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-  filter: grayscale(0.5);
 }
 
 .ghost-action {
-  font-family: var(--font-sports-tech);
+  min-height: 44px;
+  font-family: var(--font-sans);
   font-weight: 700;
-  letter-spacing: 0.1em;
-  background-color: var(--bg-surface-subtle);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-primary);
-  transition:
-    background-color 120ms ease,
-    border-color 120ms ease,
-    transform 120ms ease;
+  font-size: 0.9375rem;
+  letter-spacing: 0;
+  background-color: transparent;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius);
+  color: var(--ink);
+  transition: background-color 120ms ease, color 120ms ease;
 }
 
 .ghost-action:hover {
-  background-color: var(--bg-surface-hover);
-  border-color: var(--border-default);
-  transform: translateY(-1px);
+  background-color: var(--ink);
+  color: var(--on-ink);
 }
 
 .soft-input {
-  background-color: var(--input-bg);
-  border: 1px solid var(--border-default);
+  min-height: 44px;
+  background-color: var(--field);
+  border: 1.5px solid var(--ink);
+  border-radius: var(--radius);
   color: var(--text-primary);
-  transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
 }
 
 .soft-input:focus-within,
-.soft-input:focus {
-  background-color: var(--bg-surface);
-  border-color: var(--accent-red);
-  box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.18);
-}
-
+.soft-input:focus,
 .soft-input-blue:focus-within,
 .soft-input-blue:focus {
-  background-color: var(--bg-surface);
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
 }
 
 .progress-track {
-  background-color: var(--bg-surface-subtle);
-  border: 1px solid var(--border-subtle);
+  background-color: var(--track);
 }
 
 /* Semantic Helper Utilities */
 .theme-text {
   color: var(--text-primary) !important;
-}
-
-.theme-secondary {
-  color: var(--text-secondary) !important;
 }
 
 .theme-muted {
@@ -565,30 +442,6 @@ h3,
 
 .theme-soft-text {
   color: var(--text-secondary) !important;
-}
-
-.theme-border {
-  border-color: var(--border-subtle) !important;
-}
-
-.theme-border-default {
-  border-color: var(--border-default) !important;
-}
-
-.theme-border-strong {
-  border-color: var(--border-strong) !important;
-}
-
-.theme-bg-surface {
-  background-color: var(--bg-surface) !important;
-}
-
-.theme-bg-subtle {
-  background-color: var(--bg-surface-subtle) !important;
-}
-
-.theme-bg-elevated {
-  background-color: var(--bg-surface-elevated) !important;
 }
 
 .selector-backdrop {
@@ -605,19 +458,14 @@ h3,
 .selector-option:hover,
 .selector-option-active {
   background-color: var(--bg-surface-hover);
-  border-color: var(--accent-red);
-}
-
-.picker-blue .selector-option:hover,
-.picker-blue .selector-option-active {
-  border-color: var(--accent-blue);
+  border-color: var(--ink);
 }
 
 .selector-chip {
   border: 1px solid var(--border-subtle);
   background-color: var(--bg-surface-subtle);
   color: var(--text-secondary);
-  border-radius: 9999px;
+  border-radius: var(--radius);
   padding: 0.25rem 0.75rem;
 }
 
@@ -633,28 +481,6 @@ select.soft-input option {
 .soft-input input,
 .soft-input select {
   color: var(--text-primary);
-}
-
-.pill-scroll {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
-}
-
-.pill-scroll::-webkit-scrollbar {
-  height: 6px;
-}
-
-.pill-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.18);
-  border-radius: 999px;
-}
-
-:root[data-theme='light'] .pill-scroll {
-  scrollbar-color: rgba(15, 23, 42, 0.18) transparent;
-}
-
-:root[data-theme='light'] .pill-scroll::-webkit-scrollbar-thumb {
-  background: rgba(15, 23, 42, 0.18);
 }
 
 /* Horizontal chip rows: scrollable but without a visible scrollbar. */
@@ -710,51 +536,7 @@ select.soft-input option {
   min-width: 0;
 }
 
-/* Flat slab before a headline, like a scorebug. */
-.title-chamfer {
-  position: relative;
-  padding-left: 0.8rem;
-}
-
-.title-chamfer::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.12em;
-  bottom: 0.12em;
-  width: 0.28em;
-  background: var(--accent-red);
-  transform: skewX(-18deg);
-}
-
-/* Square the whole interface: poster prints have no rounded corners. Opt back in with .keep-round. */
-/* Square corners override disabled for modern UI */
-/* .dashboard-shell [class*="rounded"]:not(.keep-round) { border-radius: 2px !important; } */
-
-.keep-round {
-  border-radius: 9999px !important;
-}
-
 /* Poster utilities */
-.poster-display {
-  font-family: var(--font-poster);
-  font-weight: 400;
-  font-style: normal;
-  font-synthesis: none;
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-  line-height: 0.95;
-}
-
-.poster-hatch {
-  background-image: repeating-linear-gradient(135deg, rgba(14, 14, 14, 0.09) 0 10px, transparent 10px 20px);
-}
-
-.poster-halftone {
-  background-image: radial-gradient(rgba(14, 14, 14, 0.16) 1.2px, transparent 1.3px);
-  background-size: 7px 7px;
-}
-
 .poster-stamp {
   display: inline-block;
   border: 3px solid currentColor;
@@ -771,11 +553,38 @@ select.soft-input option {
   opacity: 0.45;
 }
 
-/* Red text (hard-coded blood red or the accent variable) uses the text shade: lighter on ink, a touch darker on paper,
-   so small labels reach WCAG AA contrast in both themes. Red fills and borders keep the brand colours. */
+/* A list row: the arrow at its end moves 8px when the row is pointed at or focused. */
+.row-arrow {
+  transition: transform 0.18s ease;
+}
+
+.row-link:hover .row-arrow,
+.row-link:focus-visible .row-arrow {
+  transform: translateX(8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row-arrow {
+    transition: none;
+  }
+}
+
+/* Red written as a literal on older components was a generic accent; a generic accent is ink now. Corner blocks use
+   the --red and --blue tokens, which this does not touch. */
 .text-\[\#C8102E\],
+.text-\[\#FF2E54\],
+.text-\[\#E11D48\],
 .text-\[var\(--accent-red\)\] {
-  color: var(--text-red) !important;
+  color: var(--ink) !important;
+}
+
+.bg-\[\#C8102E\],
+.bg-\[\#E11D48\],
+.bg-\[\#1F4E9C\],
+.bg-\[var\(--accent-red\)\],
+.bg-\[var\(--accent-red-solid\)\] {
+  background-color: var(--ink) !important;
+  color: var(--on-ink) !important;
 }
 
 /* Org-card gloves: a soft rim in the organization colour + float, driven by --glove-duration / --glove-delay on the card.
@@ -864,9 +673,9 @@ select.soft-input option {
 /* One visible focus ring for every link, button and control reached by keyboard. It sits in the base layer so the
    focus styles written on individual elements (utilities) still win. */
 @layer base {
-  :where(a, button, summary, select, [role='button'], [tabindex]:not([tabindex='-1'])):focus-visible {
-    outline: 2px solid var(--input-focus);
-    outline-offset: 2px;
+  :where(a, button, summary, select, input, textarea, [role='button'], [tabindex]:not([tabindex='-1'])):focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
   }
 }
 
@@ -876,7 +685,7 @@ select.soft-input option {
    the pop of a result.
    --------------------------------------------------------------------------------------------------------------------- */
 .game-pick {
-  border: 2px solid var(--rule);
+  border: 1.5px solid var(--rule);
   background-color: var(--bg-surface);
   transition: border-color 120ms ease, background-color 120ms ease;
 }
@@ -891,9 +700,8 @@ select.soft-input option {
 
 .game-title {
   font-family: var(--font-display);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
+  font-weight: 800;
+  letter-spacing: 0;
   line-height: 1.05;
   text-wrap: balance;
 }

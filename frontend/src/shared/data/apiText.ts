@@ -127,7 +127,7 @@ const TEMPLATES: Template[] = [
   {
     pattern: /^Measured on ([\d,]+) recent fights \((\w+ \d{4}) to (\w+ \d{4})\), given each fighter's age and record as of the fight\. The model's own file reports ([\d.]+)% accuracy, from when it was trained on data that is not in this repository; that could not be reproduced\. The picks it rated (\d+)% or more were right (\d+)% of the time\. Read its probabilities as rough\.$/,
     text: {
-      pt: (m, l) => `Medido em ${number(m[1], l)} lutas recentes (${monthYear(m[2], l)} a ${monthYear(m[3], l)}), com a idade e o cartel de cada lutador na data da luta. O arquivo do próprio modelo informa ${m[4]}% de acurácia, de quando foi treinado com dados que não estão neste repositório; isso não pôde ser reproduzido. Os palpites que ele classificou com ${m[5]}% ou mais acertaram ${m[6]}% das vezes. Leia as probabilidades dele como aproximadas.`,
+      pt: (m, l) => `Medido em ${number(m[1], l)} lutas recentes (${monthYear(m[2], l)} a ${monthYear(m[3], l)}), com a idade e o cartel de cada lutador na data da luta. O arquivo do próprio modelo informa ${m[4]}% de acerto, de quando foi treinado com dados que não estão neste repositório; isso não pôde ser reproduzido. Os palpites que ele classificou com ${m[5]}% ou mais acertaram ${m[6]}% das vezes. Trate as chances que ele dá como aproximadas.`,
       fr: (m, l) => `Mesuré sur ${number(m[1], l)} combats récents (${monthYear(m[2], l)} à ${monthYear(m[3], l)}), avec l’âge et le palmarès de chaque combattant à la date du combat. Le fichier du modèle annonce ${m[4]} % de précision, à l’époque où il a été entraîné sur des données absentes de ce dépôt ; cela n’a pas pu être reproduit. Les pronostics qu’il notait ${m[5]} % ou plus étaient justes ${m[6]} % du temps. Lisez ses probabilités comme approximatives.`,
       es: (m, l) => `Medido en ${number(m[1], l)} peleas recientes (${monthYear(m[2], l)} a ${monthYear(m[3], l)}), con la edad y el récord de cada peleador en la fecha de la pelea. El archivo del propio modelo informa un ${m[4]} % de precisión, de cuando se entrenó con datos que no están en este repositorio; eso no se pudo reproducir. Los pronósticos que calificó con ${m[5]} % o más acertaron el ${m[6]} % de las veces. Interpreta sus probabilidades como aproximadas.`,
     },
@@ -135,7 +135,7 @@ const TEMPLATES: Template[] = [
   {
     pattern: /^The test accuracy it reports \(([\d.]+)%\) could not be reproduced: on ([\d,]+) recent fights it got (\d+)% right\.$/,
     text: {
-      pt: (m, l) => `A acurácia de teste que ele informa (${m[1]}%) não pôde ser reproduzida: em ${number(m[2], l)} lutas recentes ele acertou ${m[3]}%.`,
+      pt: (m, l) => `A taxa de acerto de teste que ele informa (${m[1]}%) não pôde ser reproduzida: em ${number(m[2], l)} lutas recentes ele acertou ${m[3]}%.`,
       fr: (m, l) => `La précision au test qu’il annonce (${m[1]} %) n’a pas pu être reproduite : sur ${number(m[2], l)} combats récents, il a eu ${m[3]} % de bonnes réponses.`,
       es: (m, l) => `La precisión de prueba que informa (${m[1]} %) no se pudo reproducir: en ${number(m[2], l)} peleas recientes acertó el ${m[3]} %.`,
     },

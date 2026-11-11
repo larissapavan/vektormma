@@ -1,10 +1,11 @@
-import { FolderGit2, Maximize2, Moon, Sun } from 'lucide-react'
+import { ChevronDown, FolderGit2, Maximize2, Moon, Sun } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { L, langPath, uiLang } from '../../i18n/lang'
-import { isLandingPath, LANDING_PATH, orgPath, type OrgConfig } from '../data/orgs'
+import { isLandingPath, LANDING_PATH } from '../data/orgs'
+import { isAboutPath, isItemActive, NAV_I18N_KEYS, navItemsFor, type NavItem } from '../data/navItems'
 import { isInfoOnlyPath } from '../data/staticPages'
 import { useModelInfo } from '../hooks/useModelInfo'
 import { useOrg } from '../hooks/useOrg'
@@ -15,51 +16,8 @@ import { SocialLinks } from './SocialLinks'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { OrgSwitcher } from './OrgSwitcher'
 
-type NavItem = { to: string; label: string; group?: string[]; section?: boolean }
-
-const NAV_I18N_KEYS: Record<string, string> = {
-  Predict: 'nav.predict',
-  Fighters: 'nav.fighters',
-  Events: 'nav.events',
-  Results: 'nav.results',
-  Rankings: 'nav.rankings',
-  Gyms: 'nav.gyms',
-  Champions: 'nav.champions',
-  Game: 'nav.career',
-  About: 'nav.about',
-}
-
-const ufcNavItems: NavItem[] = [
-  { to: '/predictor', label: 'Predict', group: ['/predictor', '/head-to-head', '/matchup-intelligence', '/cancelled-fights'] },
-  { to: '/fighters', label: 'Fighters' },
-  { to: '/events', label: 'Events' },
-  { to: '/results', label: 'Results' },
-  { to: '/rankings', label: 'Rankings' },
-  { to: '/gyms', label: 'Gyms', section: true },
-  { to: '/champions', label: 'Champions', group: ['/champions', '/record-book'] },
-  { to: '/career', label: 'Game' },
-]
-
-function navItemsFor(org: OrgConfig): NavItem[] {
-  if (org.id === 'ufc') return ufcNavItems
-  return [
-    ...(org.hasPredictions ? [{ to: orgPath(org, 'predictor'), label: 'Predict' }] : []),
-    { to: orgPath(org, 'fighters'), label: 'Fighters' },
-    { to: orgPath(org, 'events'), label: 'Events' },
-    ...(org.hasRankings ? [{ to: orgPath(org, 'rankings'), label: 'Rankings' }] : []),
-    ...(org.hasChampions ? [{ to: orgPath(org, 'champions'), label: 'Champions' }] : []),
-    { to: orgPath(org, 'gyms'), label: 'Gyms', section: true },
-  ]
-}
-
-function isItemActive(item: NavItem, pathname: string) {
-  const current = pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname
-  if (item.section && current.startsWith(`${item.to}/`)) return true
-  return (item.group ?? [item.to]).includes(current)
-}
-
 /**
- * The phone menus scroll sideways. They open with the current page's tab in view, and while more tabs are hidden at an edge
+ * The tablet menu scrolls sideways (a phone has the bar at the bottom of the screen instead). It opens with the current page's tab in view, and while more tabs are hidden at an edge
  * the bar fades out there, so a cut-off tab reads as "more this way" and not as a truncated label.
  */
 function useScrollingTabs(pathname: string) {
@@ -87,19 +45,91 @@ function useScrollingTabs(pathname: string) {
   return [ref, moreOnRight, moreOnLeft] as const
 }
 
-/**
- * Modern, Minimalist SaaS Combat Sports Analytics Navbar (Clean Single-Bar Layout).
- */
+const DESKTOP_BAR_ITEMS = 4
+
+/** The entries that do not fit the desktop bar, in a small menu. It is remounted on every page change, which closes it. */
+function MoreMenu({
+  items,
+  pathname,
+  label,
+  itemLabel,
+  triggerClass,
+}: {
+  items: NavItem[]
+  pathname: string
+  label: string
+  itemLabel: (item: NavItem) => string
+  triggerClass: string
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const onDown = (event: MouseEvent) => {
+      if (!ref.current?.contains(event.target as Node)) setOpen(false)
+    }
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open])
+
+  return (
+    <div ref={ref} className="relative flex h-full items-center">
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls="header-more-menu"
+        onClick={() => setOpen((current) => !current)}
+        className={`${triggerClass} cursor-pointer gap-1`}
+      >
+        {label}
+        <ChevronDown className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
+      </button>
+      {open ? (
+        <ul id="header-more-menu" className="absolute left-0 top-full z-50 min-w-44 border-[1.5px] border-[var(--ink)] bg-[var(--panel)] py-1 rounded-sm">
+          {items.map((item) => {
+            const active = isItemActive(item, pathname)
+            return (
+              <li key={item.to}>
+                <NavLink
+                  to={item.to}
+                  aria-current={active ? 'page' : undefined}
+                  className={`flex min-h-11 items-center px-4 text-[15px] text-[var(--ink)] underline-offset-[6px] hover:bg-[var(--panel-hover)] ${
+                    active ? 'font-bold underline decoration-[3px]' : 'font-semibold'
+                  }`}
+                >
+                  {itemLabel(item)}
+                </NavLink>
+              </li>
+            )
+          })}
+        </ul>
+      ) : null}
+    </div>
+  )
+}
+
+/** The site header: logo, text navigation, league switcher, search, language and theme. */
 export function Header() {
   const { t, i18n } = useTranslation()
   const { health, loading } = useModelInfo()
   const { pathname } = useLocation()
   const org = useOrg()
   const landing = isLandingPath(pathname)
-  const isAbout = pathname === '/about' || pathname.startsWith('/about/') || pathname === '/data' || pathname === '/model' || pathname === '/track-record'
+  const isAbout = isAboutPath(pathname)
   // The privacy, terms, contact and guide pages have the same bare menu as About, but "About" is not their current page.
   const bare = isAbout || isInfoOnlyPath(pathname)
   const navItems = landing || bare ? [] : navItemsFor(org)
+  // The desktop bar holds this many entries; a longer menu puts the rest under "More".
+  const barItems = navItems.length > DESKTOP_BAR_ITEMS + 1 ? navItems.slice(0, DESKTOP_BAR_ITEMS) : navItems
+  const moreItems = navItems.slice(barItems.length)
   const { isLight, toggleTheme } = useTheme()
   const githubLabel = L(i18n.language, 'Perfil no GitHub (abre em nova aba)', 'GitHub profile (opens in a new tab)', 'Profil GitHub (s’ouvre dans un nouvel onglet)', 'Perfil de GitHub (se abre en una pestaña nueva)')
   const [tabsRef, moreTabsOnRight, moreTabsOnLeft] = useScrollingTabs(pathname)
@@ -121,11 +151,12 @@ export function Header() {
       ? t('header.apiLiveTitle', 'API is live and the model is loaded')
       : t('header.apiOfflineTitle', 'API is unreachable')
 
-  const apiDotColor = loading
-    ? 'bg-[#F2C230] animate-pulse'
-    : health?.model_loaded
-      ? 'bg-[#22c55e]'
-      : 'bg-[#C8102E]'
+  // "Live" is ink with a dot, never a corner colour.
+  const apiDotColor = loading ? 'bg-[var(--muted)]' : health?.model_loaded ? 'bg-[var(--ink)]' : 'border-[1.5px] border-[var(--ink)]'
+  const navLinkClass = (active: boolean) =>
+    `flex h-full shrink-0 items-center whitespace-nowrap text-[15px] underline-offset-[6px] hover:underline ${
+      active ? 'font-bold underline decoration-[3px]' : 'font-semibold decoration-2'
+    } text-[var(--ink)]`
 
   return (
     <header className="w-full shrink-0">
@@ -138,94 +169,69 @@ export function Header() {
             <Link
               to={LANDING_PATH}
               aria-label={L(i18n.language, 'Vektor MMA • Início', 'Vektor MMA home', 'Vektor MMA • Accueil', 'Vektor MMA • Inicio')}
-              className="flex shrink-0 items-center gap-1.5 xs:gap-2 sm:gap-2.5 transition opacity-95 hover:opacity-100 min-w-0"
+              className="flex min-h-11 min-w-0 shrink-0 items-center gap-2 sm:gap-2.5"
             >
-              <BrandMark className="h-7 w-7 xs:h-8 xs:w-8 sm:h-9 sm:w-9 shrink-0 drop-shadow-sm" />
-              <span className="flex flex-col items-start justify-center leading-tight min-w-0">
-                <span className="hidden sm:block font-mono text-[9px] font-bold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
-                  {t('header.matchupAnalytics', 'Análise de Combates')}
-                </span>
-                <span className="text-xs xs:text-sm sm:text-base font-bold tracking-tight whitespace-nowrap text-[var(--text-primary)]">
-                  VEKTOR <span className="text-[#C8102E] dark:text-[#FF2E54]">MMA</span>
-                </span>
+              <BrandMark className="h-[26px] w-[26px] sm:h-[30px] sm:w-[30px]" />
+              <span className="whitespace-nowrap font-display text-[26px] leading-none tracking-[0.01em] text-[var(--ink)] sm:text-[30px]">
+                <span className="font-black">Vektor</span> <span className="font-medium max-xs:hidden">MMA</span>
               </span>
             </Link>
 
-            {/* Center-Left: Desktop Navigation com Indicador Neon Ancorado na Borda */}
+            {/* Text navigation: underlined on hover and on the current page. */}
             {landing || bare ? (
               <nav
                 aria-label={L(i18n.language, 'Navegação principal', 'Main navigation', 'Navigation principale', 'Navegación principal')}
                 className="min-w-0 flex-1"
               >
                 <div ref={tabsRef} style={fadeStyle} className="overflow-x-auto no-scrollbar overscroll-x-contain">
-                <div className="flex h-14 min-w-max shrink-0 items-center gap-1 whitespace-nowrap sm:h-16 sm:gap-2">
-                <a
-                  href={`${langPath(uiLang(i18n.language), '/')}#organizations-grid`}
-                  onClick={(e) => {
-                    if (landing) {
-                      e.preventDefault()
-                      document.getElementById('organizations-grid')?.scrollIntoView({ behavior: 'smooth' })
-                    }
-                  }}
-                  className="relative flex h-full shrink-0 items-center px-2.5 text-xs font-bold whitespace-nowrap text-[var(--text-secondary)] transition duration-200 hover:text-[var(--text-primary)] dark:hover:text-white sm:px-3 xl:text-[13px]"
-                >
-                  <span>{L(i18n.language, 'Organizações', 'Organizations', 'Organisations', 'Organizaciones')}</span>
-                  {landing && !bare && pathname === '/' && (
-                    <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#FF2E54] rounded-full shadow-[0_0_12px_#FF2E54,0_0_4px_#FF2E54]" />
-                  )}
-                </a>
-                <NavLink
-                  to="/about"
-                  className={({ isActive }) =>
-                    `relative flex h-full shrink-0 items-center px-2.5 text-xs font-bold whitespace-nowrap transition duration-200 sm:px-3 xl:text-[13px] ${
-                      isActive || isAbout
-                        ? 'text-[var(--text-primary)] dark:text-white'
-                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] dark:hover:text-white'
-                    }`
-                  }
-                >
-                  {({ isActive }) => (
-                    <>
-                      <span>{t('nav.about', 'About')}</span>
-                      {(isActive || isAbout) && (
-                        <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#FF2E54] rounded-full shadow-[0_0_12px_#FF2E54,0_0_4px_#FF2E54]" />
-                      )}
-                    </>
-                  )}
-                </NavLink>
-                </div>
+                  <div className="flex h-14 min-w-max shrink-0 items-center gap-5 whitespace-nowrap sm:h-16 sm:gap-7">
+                    <a
+                      href={`${langPath(uiLang(i18n.language), '/')}#organizations-grid`}
+                      onClick={(e) => {
+                        if (landing) {
+                          e.preventDefault()
+                          document.getElementById('organizations-grid')?.scrollIntoView({ behavior: 'smooth' })
+                        }
+                      }}
+                      className={navLinkClass(landing && !bare && pathname === '/')}
+                    >
+                      {L(i18n.language, 'Organizações', 'Organizations', 'Organisations', 'Organizaciones')}
+                    </a>
+                    <NavLink to="/about" className={navLinkClass(isAbout)}>
+                      {t('nav.about', 'About')}
+                    </NavLink>
+                  </div>
                 </div>
               </nav>
             ) : (
               <nav
                 aria-label={L(i18n.language, 'Navegação principal', 'Main navigation', 'Navigation principale', 'Navegación principal')}
-                className="hidden min-w-0 items-center overflow-x-auto overscroll-x-contain no-scrollbar min-[1200px]:flex h-14 sm:h-16 gap-1 sm:gap-2"
+                className="hidden h-14 min-w-0 items-center gap-5 sm:h-16 xl:flex"
               >
-                {navItems.map((item) => {
+                {barItems.map((item) => {
                   const active = isItemActive(item, pathname)
                   return (
-                    <NavLink
-                      key={item.to}
-                      to={item.to}
-                      className={`relative h-full flex shrink-0 items-center px-3 xl:px-2.5 text-xs xl:text-[13px] font-bold transition duration-200 whitespace-nowrap ${
-                        active
-                          ? 'text-[var(--text-primary)] dark:text-white'
-                          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] dark:hover:text-white'
-                      }`}
-                    >
-                      <span>{t(NAV_I18N_KEYS[item.label] ?? item.label, item.label)}</span>
-                      {active && (
-                        <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#FF2E54] rounded-full shadow-[0_0_12px_#FF2E54,0_0_4px_#FF2E54]" />
-                      )}
+                    <NavLink key={item.to} to={item.to} aria-current={active ? 'page' : undefined} className={navLinkClass(active)}>
+                      {t(NAV_I18N_KEYS[item.label] ?? item.label, item.label)}
                     </NavLink>
                   )
                 })}
+                {moreItems.length ? (
+                  <MoreMenu
+                    key={pathname}
+                    items={moreItems}
+                    pathname={pathname}
+                    label={L(i18n.language, 'Mais', 'More', 'Plus', 'Más')}
+                    itemLabel={(item) => t(NAV_I18N_KEYS[item.label] ?? item.label, item.label)}
+                    triggerClass={navLinkClass(moreItems.some((item) => isItemActive(item, pathname)))}
+                  />
+                ) : null}
               </nav>
             )}
           </div>
 
           {/* Right: Modern SaaS Utility Toolbar */}
-          <div className="flex shrink-0 items-center gap-1 sm:gap-3">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
             {!landing && !bare && <OrgSwitcher className="shrink-0" />}
 
             {!landing && !bare && <FighterSearch />}
@@ -234,30 +240,25 @@ export function Header() {
             {landing || bare ? (
             <div
               title={apiTitle}
-              className="hidden sm:inline-flex items-center gap-2 px-2.5 sm:px-3 py-1 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] dark:border-white/10 dark:bg-white/[0.04] backdrop-blur-md cursor-default text-[var(--text-secondary)] shadow-xs transition-colors"
+              className="hidden min-h-11 cursor-default items-center gap-2 border-[1.5px] border-[var(--rule)] px-3 text-[15px] font-bold text-[var(--ink)] sm:inline-flex rounded-sm"
             >
-              <span className="relative flex h-2 w-2">
-                <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${apiDotColor} opacity-75`} />
-                <span className={`relative inline-flex rounded-full h-2 w-2 ${apiDotColor} shadow-[0_0_6px_#22c55e]`} />
-              </span>
-              <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-[var(--text-secondary)] dark:text-neutral-300">
-                {apiLabel}
-              </span>
+              <span className={`h-2 w-2 rounded-full ${apiDotColor}`} aria-hidden="true" />
+              {apiLabel}
             </div>
             ) : null}
 
             <LanguageSwitcher />
 
             {/* Minimalist Secondary Control Icons (Theme, Fullscreen & Social/GitHub) */}
-            <div className="inline-flex items-center gap-0.5 sm:gap-1 border-l border-[var(--border-subtle)] dark:border-white/10 pl-1.5 sm:pl-2.5 max-xs:border-l-0 max-xs:pl-0">
+            <div className="inline-flex items-center">
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="inline-flex h-7.5 w-7.5 sm:h-8 sm:w-8 items-center justify-center rounded-lg transition cursor-pointer text-[var(--text-secondary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)] dark:hover:text-white"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-sm cursor-pointer text-[var(--ink)] hover:bg-[var(--panel-hover)]"
                 aria-label={t('header.switchTheme', { theme: isLight ? t('header.themeDark') : t('header.themeLight') })}
                 title={t('header.switchTheme', { theme: isLight ? t('header.themeDark') : t('header.themeLight') })}
               >
-                {isLight ? <Moon className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <Sun className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
+                {isLight ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
               </button>
 
               <button
@@ -269,11 +270,11 @@ export function Header() {
                     document.exitFullscreen?.()
                   }
                 }}
-                className="hidden md:inline-flex h-7.5 w-7.5 sm:h-8 sm:w-8 items-center justify-center rounded-lg transition cursor-pointer text-[var(--text-secondary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)] dark:hover:text-white"
+                className="hidden md:inline-flex h-11 w-11 items-center justify-center rounded-sm cursor-pointer text-[var(--ink)] hover:bg-[var(--panel-hover)]"
                 aria-label={L(i18n.language, 'Alternar tela cheia', 'Toggle fullscreen', 'Plein écran', 'Pantalla completa')}
                 title={L(i18n.language, 'Alternar tela cheia', 'Toggle fullscreen', 'Plein écran', 'Pantalla completa')}
               >
-                <Maximize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <Maximize2 className="h-5 w-5" />
               </button>
 
               {/* Same on the social icons: the footer carries them on inner pages. */}
@@ -289,24 +290,24 @@ export function Header() {
                 rel="noreferrer"
                 title={githubLabel}
                 aria-label={githubLabel}
-                className="hidden sm:inline-flex h-7.5 w-7.5 sm:h-8 sm:w-8 items-center justify-center rounded-lg transition text-[var(--text-secondary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)] dark:hover:text-white"
+                className="hidden sm:inline-flex h-11 w-11 items-center justify-center rounded-sm text-[var(--ink)] hover:bg-[var(--panel-hover)]"
               >
-                <FolderGit2 className="h-4 w-4" aria-hidden="true" />
+                <FolderGit2 className="h-5 w-5" aria-hidden="true" />
               </a>
             </div>
           </div>
         </div>
 
-        {/* Mobile Navigation: Seamless integrated sub-bar */}
+        {/* Tablet navigation: a sub-bar under the header. Phones use the bottom bar (MobileTabBar). */}
         {!landing && !bare && (
           <div
             ref={tabsRef}
             style={fadeStyle}
-            className="min-[1200px]:hidden min-w-0 border-t border-[var(--border-subtle)] px-2 py-1 overflow-x-auto no-scrollbar overscroll-x-contain"
+            className="min-w-0 overflow-x-auto overscroll-x-contain border-t border-[var(--rule)] no-scrollbar max-md:hidden xl:hidden"
           >
             <nav
               aria-label={L(i18n.language, 'Navegação móvel', 'Mobile navigation', 'Navigation mobile', 'Navegación móvil')}
-              className="flex items-center gap-1 w-max"
+              className="flex w-max items-center gap-6"
             >
               {navItems.map((item) => {
                 const active = isItemActive(item, pathname)
@@ -315,13 +316,7 @@ export function Header() {
                     key={item.to}
                     to={item.to}
                     aria-current={active ? 'page' : undefined}
-                    style={{
-                      color: active ? '#ffffff' : 'var(--text-primary)',
-                      backgroundColor: active ? '#C8102E' : undefined,
-                    }}
-                    className={`shrink-0 rounded-md px-2.5 py-1 text-xs font-semibold transition whitespace-nowrap hover:bg-black/5 dark:hover:bg-white/10 ${
-                      active ? 'shadow-xs font-bold' : 'text-[var(--text-secondary)]'
-                    }`}
+                    className={`${navLinkClass(active)} min-h-11`}
                   >
                     {t(NAV_I18N_KEYS[item.label] ?? item.label, item.label)}
                   </NavLink>

@@ -31,7 +31,7 @@ export function Model() {
 
   return (
     <div className="space-y-3 sm:space-y-4">
-      <section className="page-hero rounded-[20px] px-3 py-3 sm:px-4 sm:py-4">
+      <section>
         <SectionHeading
           level={1}
           eyebrow={t('model.eyebrow')}
@@ -40,7 +40,7 @@ export function Model() {
         />
       </section>
 
-      {error ? <p className="rounded-xl border border-[#C8102E]/25 bg-[#C8102E]/8 px-3 py-2 text-sm text-[#FFFFFF]">{error}</p> : null}
+      {error ? <p className="border-l-[3px] border-[var(--ink)] bg-[var(--panel)] px-4 py-3 text-base font-semibold text-[#FFFFFF]">{error}</p> : null}
 
       {loading || !modelInfo ? (
         <section className="grid gap-3 lg:grid-cols-4">
@@ -52,7 +52,7 @@ export function Model() {
         <>
           <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             <MetricCard label={t('model.modelCard')} value={modelInfo.model_name} />
-            <MetricCard label={`${L(i18n.language, 'Acurácia', 'Accuracy', 'Précision', 'Precisión')} (${shown.caption})`} value={shown.accuracy != null ? `${(shown.accuracy * 100).toFixed(1)}%` : '—'} />
+            <MetricCard label={`${L(i18n.language, 'Taxa de acerto', 'Accuracy', 'Précision', 'Precisión')} (${shown.caption})`} value={shown.accuracy != null ? `${(shown.accuracy * 100).toFixed(1)}%` : '—'} />
             <MetricCard label={t('model.rocAuc')} value={shown.rocAuc != null ? shown.rocAuc.toFixed(3) : '—'} />
             <MetricCard label={L(i18n.language, 'Perda logarítmica', 'Log loss', 'Perte logarithmique', 'Pérdida logarítmica')} value={shown.logLoss != null ? shown.logLoss.toFixed(3) : '—'} />
           </section>
@@ -60,7 +60,7 @@ export function Model() {
           <MetricsNote note={modelInfo.metrics_note} />
 
           <section className="grid gap-3 xl:grid-cols-[1fr_1fr]">
-            <article className="surface-card rounded-[20px] p-3 sm:p-4">
+            <article className="border-t-[3px] border-[var(--ink)] pt-5">
               <SectionHeading
                 eyebrow={L(i18n.language, 'Comparação com referências', 'Baseline comparison', 'Comparaison aux références', 'Comparación con referencias')}
                 title={t('model.baselines')}
@@ -88,7 +88,7 @@ export function Model() {
               </div>
             </article>
 
-            <article className="surface-card rounded-[20px] p-3 sm:p-4">
+            <article className="border-t-[3px] border-[var(--ink)] pt-5">
               <SectionHeading
                 eyebrow={L(i18n.language, 'Engenharia de variáveis', 'Feature design', 'Conception des variables', 'Diseño de variables')}
                 title={t('model.featureImportance')}
@@ -116,7 +116,7 @@ export function Model() {
           </section>
 
           <section className="grid gap-3 xl:grid-cols-[0.95fr_1.05fr]">
-            <article className="surface-card flex flex-col rounded-[20px] p-3 sm:p-4">
+            <article className="flex flex-col border-t-[3px] border-[var(--ink)] pt-5">
               <SectionHeading
                 eyebrow={L(i18n.language, 'Arquitetura do sistema', 'System design', 'Conception du système', 'Diseño del sistema')}
                 title={L(i18n.language, 'Do dado bruto ao site', 'From data to this site', 'Des données à ce site', 'De los datos a este sitio')}
@@ -125,7 +125,7 @@ export function Model() {
               <BulletPanel items={modelInfo.highlights.map((item) => localizeApiText(item, i18n.language))} />
             </article>
 
-            <article className="surface-card flex flex-col rounded-[20px] p-3 sm:p-4">
+            <article className="flex flex-col border-t-[3px] border-[var(--ink)] pt-5">
               <SectionHeading
                 eyebrow={L(i18n.language, 'Limitações', 'Limitations', 'Limites', 'Limitaciones')}
                 title={L(i18n.language, 'O que o modelo não prevê', "What it can't do", 'Ce qu’il ne peut pas faire', 'Lo que no puede hacer')}
@@ -162,15 +162,13 @@ function MetricCard({ label, value, compact = false }: { label: string; value: s
 
 /** Same bulleted panel for every list on this page; "warning" only tints it red. The marker hangs, so wrapped lines stay aligned. */
 function BulletPanel({ items, tone = 'neutral' }: { items: string[]; tone?: 'neutral' | 'warning' }) {
-  const surface =
-    tone === 'warning' ? 'border border-[#C8102E]/18 bg-[#C8102E]/8' : 'border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]'
+  // A limitation gets an ink rule on its left; a highlight stays plain.
+  const surface = tone === 'warning' ? 'border-l-[3px] border-[var(--ink)] bg-[var(--panel)] p-4' : 'pt-1'
   return (
-    <div className={`mt-3 flex-1 rounded-2xl p-3 ${surface}`}>
-      <ul className="space-y-2 text-xs leading-5 text-[#FFFFFF]">
+    <div className={`mt-3 flex-1 ${surface}`}>
+      <ul className="list-disc space-y-2 pl-5 text-base leading-7">
         {items.map((item) => (
-          <li key={item} className="relative pl-4 before:absolute before:left-0.5 before:top-2 before:h-1.5 before:w-1.5 before:rounded-full before:bg-[#C8102E] before:content-['']">
-            {item}
-          </li>
+          <li key={item}>{item}</li>
         ))}
       </ul>
     </div>

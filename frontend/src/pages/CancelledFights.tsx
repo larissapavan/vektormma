@@ -35,7 +35,7 @@ export function CancelledFights() {
 
   return (
     <div className="space-y-5 sm:space-y-6">
-      <header className="surface-card rounded-2xl border border-[var(--border-subtle)] px-4 py-5 sm:px-8 sm:py-7">
+      <header>
         <SectionHeading
           level={1}
           eyebrow={L(lang, 'Palpites', 'Predictions', 'Pronostics', 'Pronósticos')}
@@ -93,7 +93,7 @@ export function CancelledFights() {
         </p>
       </header>
 
-      {error ? <p className="rounded-xl border border-[#C8102E]/25 bg-[#C8102E]/8 px-3 py-2 text-sm font-semibold text-[var(--text-red)]">{error}</p> : null}
+      {error ? <p className="border-l-[3px] border-[var(--ink)] bg-[var(--panel)] px-4 py-3 text-base font-semibold">{error}</p> : null}
 
       {loading ? (
         <div className="grid gap-4">

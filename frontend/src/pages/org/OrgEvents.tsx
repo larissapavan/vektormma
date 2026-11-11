@@ -6,7 +6,8 @@ import { useTranslation } from 'react-i18next'
 import { LoadingSkeleton } from '../../shared/components/LoadingSkeleton'
 import { OrgFightRow } from '../../shared/components/OrgFightRow'
 import { OrgFighterModal } from '../../shared/components/OrgFighterModal'
-import { SectionHeading } from '../../shared/components/SectionHeading'
+import { PageHeader } from '../../shared/components/ui/PageHeader'
+import { Section } from '../../shared/components/ui/Section'
 import { L, localeTag } from '../../i18n/lang'
 import { orgEs, orgPt } from '../../shared/data/orgs'
 import { translateHometown } from '../../shared/data/fightLabels'
@@ -88,13 +89,10 @@ export function OrgEvents() {
   const latestYear = byYear[0]?.[0]
 
   return (
-    <div className="space-y-6 sm:space-y-8">
-      <section className="page-hero rounded-[20px] px-3 py-3 sm:px-4 sm:py-4">
-        <div className="grid gap-3 xl:grid-cols-[1fr_0.8fr] xl:items-end">
-          <SectionHeading
-            level={1}
-            eyebrow={L(i18n.language, 'Histórico de Eventos', 'Event archive', 'Historique des événements', 'Archivo de eventos')}
-            title={L(i18n.language, `Cards e Lutas ${orgPt(org, 'de')}`, `${org.shortName} fight cards`, `Cartes et combats ${org.shortName}`, `Carteleras y peleas de ${orgEs(org)}`)}
+    <div className="space-y-8 sm:space-y-10">
+      <PageHeader
+            eyebrow={L(i18n.language, 'Histórico de eventos', 'Event archive', 'Historique des événements', 'Archivo de eventos')}
+            title={L(i18n.language, `Cards e lutas ${orgPt(org, 'de')}`, `${org.shortName} fight cards`, `Cartes et combats ${org.shortName}`, `Carteleras y peleas de ${orgEs(org)}`)}
             description={L(
               i18n.language,
               'Histórico completo de eventos. Abra o card para ver todos os confrontos, vencedores, método e round.',
@@ -102,29 +100,27 @@ export function OrgEvents() {
               'Historique complet des événements. Ouvrez une carte pour voir chaque combat, le vainqueur, la méthode et le round.',
               'Busca en el historial completo de eventos y abre una cartelera para ver cada pelea, el ganador, el método y el asalto.',
             )}
-          />
-          <div className="grid gap-2 sm:grid-cols-2">
-            <SummaryTile label={L(i18n.language, 'Eventos', 'Events', 'Événements', 'Eventos')} value={`${visibleEvents.length}`} />
-            <SummaryTile label={L(i18n.language, 'Lutas Catalogadas', 'Fights tracked', 'Combats suivis', 'Peleas registradas')} value={totalFights.toLocaleString(localeTag(i18n.language))} />
-          </div>
-        </div>
-
-        <div className="mt-3 grid gap-2.5 lg:grid-cols-[1fr_180px]">
-          <div className="soft-input flex items-center gap-2.5 rounded-xl px-3 py-2.5">
-            <Search className="h-4 w-4 text-[var(--accent-red)]" />
+            stats={[
+              { label: L(i18n.language, 'Eventos', 'Events', 'Événements', 'Eventos'), value: visibleEvents.length.toLocaleString(localeTag(i18n.language)) },
+              { label: L(i18n.language, 'Lutas catalogadas', 'Fights tracked', 'Combats suivis', 'Peleas registradas'), value: totalFights.toLocaleString(localeTag(i18n.language)) },
+            ]}
+      >
+        <div className="grid gap-2.5 sm:grid-cols-[1fr_180px]">
+          <div className="soft-input flex items-center gap-2.5 rounded-control px-3 py-2.5">
+            <Search className="h-4 w-4 shrink-0 text-[var(--text-red)]" />
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={L(i18n.language, 'Buscar por evento, lutador, data ou local...', 'Search event, fighter, date or location', 'Chercher un événement, un combattant, une date ou un lieu...', 'Buscar evento, peleador, fecha o sede...')}
               aria-label={L(i18n.language, 'Buscar eventos', 'Search events', 'Chercher des événements', 'Buscar eventos')}
-              className="theme-text w-full bg-transparent outline-none placeholder:text-[var(--text-muted)]"
+              className="w-full min-w-0 bg-transparent text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)]"
             />
           </div>
           <select
             value={yearFilter}
             onChange={(event) => setYearFilter(event.target.value)}
             aria-label={L(i18n.language, 'Filtrar por ano', 'Filter by year', 'Filtrer par année', 'Filtrar por año')}
-            className="soft-input theme-text rounded-xl px-3 py-2.5 text-sm outline-none"
+            className="soft-input min-w-0 rounded-control px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
           >
             <option value="ALL">{allYearsLabel}</option>
             {years.map((year) => (
@@ -134,19 +130,15 @@ export function OrgEvents() {
             ))}
           </select>
         </div>
-      </section>
+      </PageHeader>
 
       {upcoming.loading ? (
         <LoadingSkeleton className="h-[80px]" />
       ) : visibleUpcoming.length ? (
-        <section className="surface-card rounded-[20px] p-3 sm:p-4" aria-label={L(i18n.language, 'Próximos eventos', 'Upcoming events', 'Prochains événements', 'Próximos eventos')}>
-          <div className="mb-2 flex items-center gap-2">
-            <CalendarClock className="h-4 w-4 text-[var(--accent-red)]" />
-            <h2 className="broadcast-label text-xs text-[var(--text-main)]">
-              {L(i18n.language, 'Próximos Cards & Eventos', 'Upcoming events', 'Prochaines cartes et événements', 'Próximas carteleras y eventos')}
-            </h2>
-            <span className="text-xs text-[var(--text-muted)]">({visibleUpcoming.length})</span>
-          </div>
+        <Section
+          icon={CalendarClock}
+          title={`${L(i18n.language, 'Próximos cards & eventos', 'Upcoming events', 'Prochaines cartes et événements', 'Próximas carteleras y eventos')} (${visibleUpcoming.length})`}
+        >
           <div className="grid gap-3">
             {visibleUpcoming.map((event, index) => {
               const key = eventKey(event)
@@ -163,36 +155,38 @@ export function OrgEvents() {
               )
             })}
           </div>
-        </section>
+        </Section>
       ) : null}
 
-      {error ? <p className="rounded-xl border border-[#C8102E]/25 bg-[#C8102E]/8 px-3 py-2 text-sm text-[var(--text-main)]">{error}</p> : null}
+      {error ? <p className="rounded-card border border-[var(--accent-red)]/30 bg-[var(--accent-red)]/10 px-3 py-2 text-sm font-semibold text-[var(--text-red)]">{error}</p> : null}
 
       {loading ? (
-        <section className="grid gap-2.5 md:grid-cols-2">
+        <section className="grid gap-3 md:grid-cols-2">
           {Array.from({ length: 6 }).map((_, index) => (
             <LoadingSkeleton key={index} className="h-[110px]" />
           ))}
         </section>
       ) : byYear.length ? (
-        <div className="space-y-3 sm:space-y-4">
+        <div className="space-y-8">
           {byYear.map(([year, yearEvents]) => {
             const isOpen = openYears.has(year) !== (isSearching || year === latestYear)
             return (
-              <section key={year} className="surface-card overflow-hidden rounded-[20px]">
-                <button
-                  type="button"
-                  onClick={() => setOpenYears((current) => toggle(current, year))}
-                  className="flex w-full items-center gap-2 px-3 py-2.5 text-left transition duration-150 hover:bg-[var(--bg-surface-subtle)] sm:px-4"
-                  aria-expanded={isOpen}
-                >
-                  <Swords className="h-4 w-4 text-[var(--accent-red)]" />
-                  <h2 className="broadcast-label text-xs text-[var(--text-main)]">{year}</h2>
-                  <span className="text-xs text-[var(--text-muted)]">({yearEvents.length})</span>
-                  <ChevronDown className={`ml-auto h-4 w-4 shrink-0 text-[var(--text-muted)] transition ${isOpen ? 'rotate-180' : ''}`} />
-                </button>
+              <section key={year}>
+                <h2 className="section-title border-b border-[var(--border-subtle)]">
+                  <button
+                    type="button"
+                    onClick={() => setOpenYears((current) => toggle(current, year))}
+                    className="-mx-2 flex min-h-11 w-[calc(100%+1rem)] items-center gap-2 rounded-control px-2 text-left transition-colors hover:bg-[var(--bg-surface-hover)]"
+                    aria-expanded={isOpen}
+                  >
+                    <Swords className="h-4 w-4 shrink-0 text-[var(--text-red)]" />
+                    <span>{year}</span>
+                    <span className="font-sans text-sm font-medium text-[var(--text-muted)]">({yearEvents.length})</span>
+                    <ChevronDown className={`ml-auto h-4 w-4 shrink-0 text-[var(--text-muted)] transition ${isOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                </h2>
                 {isOpen ? (
-                  <div className="grid gap-3 border-t border-[var(--line-soft)] px-3 py-3 sm:px-4">
+                  <div className="mt-3 grid gap-3">
                     {yearEvents.map((event) => {
                       const key = eventKey(event)
                       return (
@@ -213,8 +207,8 @@ export function OrgEvents() {
           })}
         </div>
       ) : (
-        <div className="surface-card rounded-[20px] px-4 py-7 text-center">
-          <p className="type-display text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">
+        <div className="px-4 py-12 text-center">
+          <p className="type-display text-2xl text-[var(--text-primary)]">
             {L(i18n.language, 'Nenhum evento encontrado', 'No events found', 'Aucun événement trouvé', 'No se encontraron eventos')}
           </p>
           <p className="mt-2 text-sm text-[var(--text-muted)]">
@@ -245,32 +239,32 @@ function EventCard({
 }) {
   const { i18n } = useTranslation()
   return (
-    <article className="surface-card overflow-hidden rounded-xl">
+    <article className="surface-card overflow-hidden !rounded-card">
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left transition duration-150 hover:bg-[var(--bg-surface-subtle)]"
+        className="flex min-h-14 w-full items-center justify-between gap-3 px-4 py-2.5 text-left transition-colors hover:bg-[var(--bg-surface-hover)]"
         aria-expanded={isOpen}
       >
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-sm font-bold uppercase tracking-[0.02em] text-[var(--text-main)]">{event.name}</h3>
-          <div className="mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[11px] text-[var(--text-muted)]">
+          <h3 className="truncate text-base leading-tight text-[var(--text-primary)]">{event.name}</h3>
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-[var(--text-muted)]">
             <span className="inline-flex items-center gap-1">
-              <CalendarDays className="h-3 w-3" />
+              <CalendarDays className="h-3.5 w-3.5" />
               {formatDate(event.date, true, i18n.language)}
             </span>
             <span className="inline-flex items-center gap-1">
-              <Swords className="h-3 w-3" />
+              <Swords className="h-3.5 w-3.5" />
               {event.fight_count} {event.fight_count === 1 ? L(i18n.language, 'luta', 'fight', 'combat', 'pelea') : L(i18n.language, 'lutas', 'fights', 'combats', 'peleas')}
             </span>
-            {event.circuit && event.circuit !== 'PFL' ? <span className="selector-chip !px-1.5 !py-0 text-[11px] text-[var(--text-main)]">{event.circuit}</span> : null}
+            {event.circuit && event.circuit !== 'PFL' ? <span className="selector-chip !px-1.5 !py-0 text-label text-[var(--text-primary)]">{event.circuit}</span> : null}
           </div>
         </div>
         <ChevronDown className={`h-4 w-4 shrink-0 text-[var(--text-muted)] transition ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen ? (
-        <div className="border-t border-[var(--line-soft)] px-3 py-3">
+        <div className="border-t border-[var(--border-subtle)] px-4 py-4">
           {event.location ? (
             <p className="mb-2.5 flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
               <MapPin className="h-3.5 w-3.5" />
@@ -291,14 +285,5 @@ function EventCard({
         </div>
       ) : null}
     </article>
-  )
-}
-
-function SummaryTile({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="metric-tile rounded-xl px-3 py-2.5">
-      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{label}</p>
-      <p className="data-value mt-1 text-2xl font-bold text-[var(--text-main)]">{value}</p>
-    </div>
   )
 }

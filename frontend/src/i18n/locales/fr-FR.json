@@ -1,6 +1,7 @@
 {
   "nav": {
     "predict": "Pronostics",
+    "compare": "Comparer",
     "fighters": "Combattants",
     "events": "Événements",
     "results": "Résultats",
@@ -57,9 +58,9 @@
       "Gyms": "Salles"
     },
     "taglines": {
-      "ufc": "Statistiques, classements et prévisions de victoire par IA.",
+      "ufc": "Statistiques, classements et pronostics de victoire du modèle.",
       "pfl": "Profils de combattants, événements officiels et classements de la ligue.",
-      "one": "MMA, Muay Thai en gants 4oz, champions du monde et prévisions par IA.",
+      "one": "MMA, Muay Thai en gants 4oz, champions du monde et pronostics du modèle.",
       "bellator": "Archives historiques 2009–2023 : combattants, événements et champions.",
       "rizin": "Profils des combattants et résultats des événements.",
       "ksw": "Profils des combattants et résultats des événements.",
@@ -71,7 +72,7 @@
     }
   },
   "footer": {
-    "tagline": "Vektor MMA • Télémétrie et prévisions en sports de combat",
+    "tagline": "Statistiques et pronostics de sports de combat.",
     "dataUpTo": "Données jusqu’au {{date}}",
     "disclaimer": "Projet personnel indépendant, sans affiliation avec {{org}}"
   },
@@ -106,15 +107,15 @@
     "poundForPound": "Livre pour livre",
     "winStreak": "série de victoires",
     "finishRate": "taux de victoires avant la limite",
-    "predictedWinner": "Vainqueur prévu"
+    "predictedWinner": "Favori du modèle"
   },
   "predictor": {
     "question": "Combat vedette",
     "whoTakesIt": "Qui l’emporte ?",
-    "heroSubtitle": "Choisissez deux combattants. Le modèle d’IA calcule les probabilités de victoire et les facteurs clés.",
+    "heroSubtitle": "Choisissez deux combattants. Le modèle estime la chance de victoire de chacun et montre les chiffres qui pèsent le plus.",
     "fightsOnFile": "Combats enregistrés",
     "fighters": "Combattants",
-    "modelAccuracy": "Précision du modèle",
+    "modelAccuracy": "Réussite du modèle",
     "backend": "Serveur",
     "onAir": "En direct",
     "active": "actif",
@@ -126,7 +127,7 @@
     "swap": "Inverser les coins",
     "pickTwoPrompt": "Choisissez deux combattants pour simuler le combat.",
     "selectTwoDifferent": "Sélectionnez deux combattants différents",
-    "winningChance": "Probabilité de victoire",
+    "winningChance": "Chance de victoire estimée par le modèle",
     "explanation": "Explicabilité du modèle",
     "predictionError": "Échec de prédiction. Vérifiez la connexion au serveur et réessayez."
   },
@@ -266,15 +267,15 @@
     "sources": "Sources et crédits"
   },
   "dataIntelligence": {
-    "eyebrow": "Ingénierie des données & télémétrie",
-    "title": "Des données brutes à l’intelligence de combat",
-    "description": "Comment les données officielles de l’UFC, de la PFL, d’ONE Championship et des archives historiques sont collectées, nettoyées et transformées en variables prédictives pour le modèle d’apprentissage automatique.",
+    "eyebrow": "Données",
+    "title": "D’où viennent les données",
+    "description": "Comment les chiffres de l’UFC, de la PFL, de ONE Championship et des archives arrivent sur le site, sont vérifiés et deviennent les données du modèle.",
     "lastUpdate": "Dernière mise à jour",
-    "fighters": "Combattants catalogués",
-    "events": "Événements suivis",
-    "fights": "Combats traités",
-    "pipelineTitle": "Architecture de la chaîne de données",
-    "pipelineDesc": "Chaque prévision repose sur des statistiques réelles collectées combat par combat, normalisées entre plusieurs organisations et converties en 46 variables pour le modèle."
+    "fighters": "Combattants",
+    "events": "Événements",
+    "fights": "Combats",
+    "pipelineTitle": "Du site officiel au pronostic",
+    "pipelineDesc": "Chaque pronostic part des statistiques de chaque combat, harmonisées entre les organisations et résumées en 29 chiffres que le modèle compare."
   },
   "model": {
     "eyebrow": "Le modèle",

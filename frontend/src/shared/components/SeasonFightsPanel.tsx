@@ -67,10 +67,10 @@ export function SeasonFightsPanel({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 10, scale: 0.98 }}
           transition={{ duration: 0.22, ease: 'easeOut' }}
-          className="absolute bottom-[150px] sm:bottom-[166px] left-2 right-2 sm:left-6 sm:right-6 lg:left-auto lg:right-8 lg:w-[620px] z-40 rounded-2xl border border-white/15 bg-[#0C0D14]/98 p-3 sm:p-5 shadow-[0_25px_70px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col max-h-[calc(100%_-_170px)] sm:max-h-[min(440px,calc(100%_-_186px))]"
+          className="absolute bottom-[150px] sm:bottom-[166px] left-2 right-2 sm:left-6 sm:right-6 lg:left-auto lg:right-8 lg:w-[620px] z-40 border border-[var(--rule)] bg-[#0C0D14]/98 p-3 sm:p-5 flex flex-col max-h-[calc(100%_-_170px)] sm:max-h-[min(440px,calc(100%_-_186px))]"
         >
           {/* Top Bar: Ano, Balanço, Milestones e Navegação */}
-          <div className="flex items-center justify-between border-b border-white/10 pb-2.5 sm:pb-3 mb-2.5 sm:mb-3 shrink-0 gap-2">
+          <div className="flex items-center justify-between border-b border-[var(--rule)] pb-2.5 sm:pb-3 mb-2.5 sm:mb-3 shrink-0 gap-2">
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
               <div className="flex items-center gap-1 shrink-0">
                 <button
@@ -79,7 +79,7 @@ export function SeasonFightsPanel({
                     if (index > 0) onSelectEra(eras[index - 1])
                   }}
                   disabled={index <= 0}
-                  className="h-7 w-7 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center text-neutral-400 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:pointer-events-none transition cursor-pointer"
+                  className="h-7 w-7 border border-[var(--rule)] bg-[var(--panel)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--panel)] disabled:opacity-20 disabled:pointer-events-none transition cursor-pointer"
                   title={L(lang, 'Ano anterior', 'Previous year', 'Année précédente', 'Año anterior')}
                 >
                   <ChevronLeft className="h-4 w-4" />
@@ -90,7 +90,7 @@ export function SeasonFightsPanel({
                     if (index < eras.length - 1) onSelectEra(eras[index + 1])
                   }}
                   disabled={index >= eras.length - 1}
-                  className="h-7 w-7 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center text-neutral-400 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:pointer-events-none transition cursor-pointer"
+                  className="h-7 w-7 border border-[var(--rule)] bg-[var(--panel)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--panel)] disabled:opacity-20 disabled:pointer-events-none transition cursor-pointer"
                   title={L(lang, 'Próximo ano', 'Next year', 'Année suivante', 'Año siguiente')}
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -99,14 +99,14 @@ export function SeasonFightsPanel({
 
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                  <span className="font-display font-black text-sm sm:text-lg text-white tracking-tight whitespace-nowrap">
-                    {L(lang, 'TEMPORADA', 'SEASON', 'SAISON', 'TEMPORADA')} {era.year}
+                  <span className="font-display font-black text-sm sm:text-lg text-[var(--ink)] whitespace-nowrap">
+                    {L(lang, 'Temporada', 'Season', 'Saison', 'Temporada')} {era.year}
                   </span>
-                  <span className="font-mono text-[10px] sm:text-xs font-bold text-amber-400 bg-amber-400/10 border border-amber-400/30 px-1.5 sm:px-2 py-0.5 rounded-full shrink-0">
+                  <span className="text-label sm:text-xs font-bold text-[var(--gold)] bg-[var(--gold-fill)] border border-[var(--gold)] px-1.5 sm:px-2 py-0.5 rounded-full shrink-0">
                     {era.wins}{L(lang, 'V', 'W', 'V', 'V')} - {era.losses}{L(lang, 'D', 'L', 'D', 'D')}
                   </span>
                 </div>
-                <p className="font-sans text-[10px] sm:text-[11px] text-neutral-400 truncate mt-0.5">
+                <p className="font-sans text-label text-[var(--muted)] truncate mt-0.5">
                   {era.fights.length} {era.fights.length === 1 ? L(lang, 'combate disputado', 'bout fought', 'combat disputé', 'pelea disputada') : L(lang, 'combates disputados', 'bouts fought', 'combats disputés', 'peleas disputadas')}
                 </p>
               </div>
@@ -114,7 +114,7 @@ export function SeasonFightsPanel({
 
             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               {era.milestone && (
-                <div className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 font-mono text-[10px] font-bold text-amber-400 uppercase tracking-wider">
+                <div className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-[var(--gold-fill)] border border-[var(--gold)] px-2.5 py-1 text-label font-bold text-[var(--gold)]">
                   <Trophy className="h-3 w-3" />
                   <span>{era.milestone}</span>
                 </div>
@@ -123,8 +123,8 @@ export function SeasonFightsPanel({
               <button
                 type="button"
                 onClick={() => onSelectEra(null)}
-                className="h-7 w-7 sm:h-8 sm:w-8 rounded-full border border-white/10 bg-white/5 hover:bg-white/15 text-neutral-400 hover:text-white transition flex items-center justify-center cursor-pointer"
-                title={L(lang, 'Fechar (Esc)', 'Close (Esc)', 'Fermer (Échap)', 'Cerrar (Esc)')}
+                className="h-7 w-7 sm:h-8 sm:w-8 rounded-full border border-[var(--rule)] bg-[var(--panel)] hover:bg-[var(--panel)] text-[var(--muted)] hover:text-[var(--ink)] transition flex items-center justify-center cursor-pointer"
+                title={L(lang, 'Fechar (Esc)', 'Close (Esc)', 'Fermer (échap)', 'Cerrar (Esc)')}
               >
                 <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </button>
@@ -137,35 +137,35 @@ export function SeasonFightsPanel({
               const isWin = fight.result === 'win'
               const isLoss = fight.result === 'loss'
               const resultLabel = isWin
-                ? L(lang, 'VITÓRIA', 'WIN', 'VICTOIRE', 'VICTORIA')
+                ? L(lang, 'Vitória', 'Win', 'Victoire', 'Victoria')
                 : isLoss
-                  ? L(lang, 'DERROTA', 'LOSS', 'DÉFAITE', 'DERROTA')
+                  ? L(lang, 'Derrota', 'Loss', 'Défaite', 'Derrota')
                   : (fight.result?.toUpperCase() || 'NC')
 
               return (
                 <div
                   key={idx}
-                  className="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.06] hover:border-white/15 transition-all duration-200"
+                  className="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-3 p-2.5 sm:p-3 bg-[var(--panel)] hover:bg-[var(--panel)] border border-[var(--rule)] hover:border-[var(--rule)] transition-all duration-200"
                 >
                   {/* Left: Organization & Result pill, opponent & event */}
                   <div className="flex flex-col items-start sm:flex-row sm:items-center gap-1.5 sm:gap-3 min-w-0">
                     <div className="flex flex-wrap items-center sm:flex-col sm:flex-nowrap sm:items-stretch gap-1 min-w-0 max-w-full sm:shrink-0">
                       <span
-                        className={`max-w-full truncate px-1.5 py-0.5 rounded font-mono font-bold text-[9px] tracking-wider uppercase ${
+                        className={`max-w-full truncate px-1.5 py-0.5 text-label font-semibold ${
                           fight.is_ufc !== false
-                            ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                            : 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+                            ? 'border border-[var(--ink)] text-[var(--ink)]'
+                            : 'border border-[var(--rule)] text-[var(--muted)]'
                         }`}
                       >
                         {fight.organization || (fight.is_ufc !== false ? defaultOrganization : 'MMA')}
                       </span>
                       <span
-                        className={`px-2 py-0.5 rounded font-mono font-bold text-[9px] tracking-wider uppercase ${
+                        className={`px-2 py-0.5 text-label font-semibold ${
                           isWin
-                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                            ? 'bg-[var(--ink)] text-[var(--on-ink)] border border-[var(--ink)]'
                             : isLoss
-                              ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                              : 'bg-neutral-500/20 text-neutral-300 border border-neutral-500/30'
+                              ? 'border border-[var(--ink)] text-[var(--ink)]'
+                              : 'border border-[var(--rule)] text-[var(--muted)]'
                         }`}
                       >
                         {resultLabel}
@@ -179,23 +179,23 @@ export function SeasonFightsPanel({
                           e.stopPropagation()
                           onSelectFighter(fight.opponent)
                         }}
-                        className="font-display font-bold text-sm sm:text-base text-white hover:text-amber-400 transition truncate text-left cursor-pointer block leading-tight"
+                        className="font-display font-bold text-sm sm:text-base text-[var(--ink)] hover:text-[var(--gold)] transition truncate text-left cursor-pointer block leading-tight"
                         title={L(lang, `Ver perfil de ${fight.opponent}`, `View profile of ${fight.opponent}`, `Voir le profil de ${fight.opponent}`, `Ver el perfil de ${fight.opponent}`)}
                       >
                         vs. {fight.opponent}
                       </button>
-                      <p className="font-sans text-[11px] text-neutral-400 truncate mt-0.5">
+                      <p className="font-sans text-label text-[var(--muted)] truncate mt-0.5">
                         {fight.event_name} {fight.date ? `• ${fight.date}` : ''}
                       </p>
                     </div>
                   </div>
 
                   {/* Right: Method, Round, Time & Badges */}
-                  <div className="flex items-center justify-between sm:flex-col sm:items-end sm:justify-center border-t border-white/[0.06] pt-1.5 sm:border-t-0 sm:pt-0 sm:shrink-0 text-left sm:text-right gap-1 min-w-0">
-                    <p className="min-w-0 font-mono text-[11px] sm:text-xs font-semibold text-neutral-200 truncate">
+                  <div className="flex items-center justify-between sm:flex-col sm:items-end sm:justify-center border-t border-[var(--rule)] pt-1.5 sm:border-t-0 sm:pt-0 sm:shrink-0 text-left sm:text-right gap-1 min-w-0">
+                    <p className="min-w-0 text-label sm:text-xs font-semibold text-[var(--ink)] truncate">
                       {methodLabel(fight) || L(lang, 'Decisão', 'Decision', 'Décision', 'Decisión')}
                     </p>
-                    <p className="font-mono text-[10px] text-neutral-400 shrink-0">
+                    <p className="text-label text-[var(--muted)] shrink-0">
                       {fight.round ? L(lang, `${fight.round}º Round`, `Round ${fight.round}`, `Round ${fight.round}`, `Asalto ${fight.round}`) : ''} {fight.time ? `(${fight.time})` : ''}
                     </p>
                     {(fight.title_fight || fight.bmf_title || fight.interim_title) && (() => {
@@ -207,16 +207,16 @@ export function SeasonFightsPanel({
 
                       if (fight.bmf_title) {
                         return (
-                          <span className="inline-flex items-center gap-1 font-mono text-[9px] font-bold text-amber-400 uppercase mt-0.5 shrink-0">
-                            ✦ {L(lang, 'Cinturão BMF', 'BMF Title Fight', 'Ceinture BMF', 'Pelea por el cinturón BMF')}
+                          <span className="inline-flex items-center gap-1 text-label font-bold text-[var(--gold)] mt-0.5 shrink-0">
+                            {L(lang, 'Cinturão BMF', 'BMF title fight', 'Ceinture BMF', 'Pelea por el cinturón BMF')}
                           </span>
                         )
                       }
 
                       if (fight.interim_title) {
                         return (
-                          <span className="inline-flex items-center gap-1 font-mono text-[9px] font-bold text-sky-400 uppercase mt-0.5 shrink-0">
-                            ✦ {L(
+                          <span className="inline-flex items-center gap-1 text-label font-bold text-[var(--ink)] mt-0.5 shrink-0">
+                            {L(
                               lang,
                               divPt ? `Cinturão Interino (${divPt})` : 'Cinturão Interino',
                               divEn ? `Interim ${divEn} Title` : 'Interim Title Fight',
@@ -228,8 +228,8 @@ export function SeasonFightsPanel({
                       }
 
                       return (
-                        <span className="inline-flex items-center gap-1 font-mono text-[9px] font-bold text-amber-400 uppercase mt-0.5 shrink-0">
-                          ✦ {L(
+                        <span className="inline-flex items-center gap-1 text-label font-bold text-[var(--gold)] mt-0.5 shrink-0">
+                          {L(
                             lang,
                             divPt ? `Disputa de Cinturão (${divPt})` : 'Disputa de Cinturão',
                             divEn ? `${divEn} Title Fight` : 'Title Fight',

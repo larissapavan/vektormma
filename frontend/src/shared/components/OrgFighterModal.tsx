@@ -116,17 +116,17 @@ function OrgOnlyFighterModal({
 
   const signatureLine = useMemo(() => {
     const parts: string[] = []
-    if (profile?.country) parts.push(translateHometown(profile.country, lang).toUpperCase())
+    if (profile?.country) parts.push(translateHometown(profile.country, lang))
     else if (profile?.hometown) {
-      const place = translateHometown(profile.hometown.split(',').pop()?.trim(), lang).toUpperCase()
+      const place = translateHometown(profile.hometown.split(',').pop()?.trim(), lang)
       if (place) parts.push(place)
     } else parts.push(org.shortName.toUpperCase())
 
-    parts.push(profile?.division ? getDivisionName(profile.division, lang).toUpperCase() : L(lang, 'PESO LIVRE', 'OPEN WEIGHT', 'POIDS LIBRE', 'PESO ABIERTO'))
+    parts.push(profile?.division ? getDivisionName(profile.division, lang) : L(lang, 'Peso livre', 'Open weight', 'Poids libre', 'Peso abierto'))
 
     const place = profile?.ranking?.match(/^#(\d+)\s*(.*)$/)
     if (place) {
-      parts.push(place[2] === 'P4P' ? `P4P #${place[1]}` : `${L(lang, 'DESAFIANTE', 'CONTENDER', 'ASPIRANT', 'ASPIRANTE')} #${place[1]}`)
+      parts.push(place[2] === 'P4P' ? `P4P #${place[1]}` : `${L(lang, 'Desafiante', 'Contender', 'Aspirant', 'Aspirante')} #${place[1]}`)
     }
     return parts.join(' • ')
   }, [profile, lang, org.shortName])
@@ -206,9 +206,9 @@ function OrgOnlyFighterModal({
       if (index === 0) {
         milestone = L(lang, `Estreia ${orgPt(org, 'em')}`, `${org.shortName} Debut`, `Début ${org.shortName}`, `Debut en ${orgEs(org)}`)
       } else if (seasonFights.some((fight) => fight.result === 'win' && fight.title_fight)) {
-        milestone = L(lang, 'Cinturão Conquistado', 'Won the Title', 'Titre conquis', 'Título conquistado')
+        milestone = L(lang, 'Cinturão conquistado', 'Won the title', 'Titre conquis', 'Título conquistado')
       } else if (wins >= 3 && losses === 0) {
-        milestone = L(lang, 'Ano Invicto', 'Unbeaten Year', 'Année sans défaite', 'Año invicto')
+        milestone = L(lang, 'Ano invicto', 'Unbeaten year', 'Année sans défaite', 'Año invicto')
       }
       return {
         year,
@@ -228,16 +228,16 @@ function OrgOnlyFighterModal({
     if (known.has(normalizeFighterName(opponent))) onSelectFighter(opponent)
   }
   const statusLabel = archived
-    ? L(lang, 'ARQUIVO HISTÓRICO // VEKTOR MMA', 'HISTORICAL ARCHIVE // VEKTOR MMA', 'ARCHIVES // VEKTOR MMA', 'ARCHIVO HISTÓRICO // VEKTOR MMA')
+    ? L(lang, 'Arquivo histórico', 'Historical archive', 'Archives', 'Archivo histórico')
     : profile?.is_active === false
-      ? L(lang, 'ATLETA INATIVO // VEKTOR MMA', 'INACTIVE ATHLETE // VEKTOR MMA', 'ATHLÈTE INACTIF // VEKTOR MMA', 'ATLETA INACTIVO // VEKTOR MMA')
-      : L(lang, 'ATLETA ATIVO // VEKTOR MMA', 'ACTIVE ATHLETE // VEKTOR MMA', 'ATHLÈTE ACTIF // VEKTOR MMA', 'ATLETA ACTIVO // VEKTOR MMA')
+      ? L(lang, 'Atleta inativo', 'Inactive fighter', 'Combattant inactif', 'Peleador inactivo')
+      : L(lang, 'Atleta ativo', 'Active fighter', 'Combattant actif', 'Peleador activo')
 
-  const label = 'font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-semibold'
+  const label = 'text-label font-semibold text-[var(--muted)]'
 
   return createPortal(
     <motion.div
-      className="fixed inset-0 z-[95] flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/85 backdrop-blur-md"
+      className="fixed inset-0 z-[95] flex items-center justify-center p-2 sm:p-4 md:p-6 bg-[var(--modal-backdrop)]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -248,7 +248,7 @@ function OrgOnlyFighterModal({
       <motion.section
         role="dialog"
         aria-label={L(lang, `${name}, perfil ${orgPt(org, 'em')}`, `${name}, ${org.shortName} fighter profile`, `${name}, profil ${org.shortName}`, `${name}, perfil de peleador de ${orgEs(org)}`)}
-        className="relative flex h-[min(90vh,880px)] w-full max-w-6xl flex-col overflow-hidden rounded-[24px] sm:rounded-[32px] border border-white/[0.08] bg-[#08090C] text-white shadow-[0_0_80px_rgba(0,0,0,0.8)]"
+        className="relative flex h-[min(90vh,880px)] w-full max-w-6xl flex-col overflow-hidden border border-[var(--rule)] bg-[var(--mat)] text-[var(--ink)]"
         initial={{ opacity: 0, y: 16, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.25, ease: 'easeOut' }}
@@ -257,7 +257,7 @@ function OrgOnlyFighterModal({
           <button
             type="button"
             onClick={onClose}
-            className="grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-neutral-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition cursor-pointer"
+            className="grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-full border border-[var(--rule)] bg-[var(--panel)] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--panel)] hover:border-[var(--rule)] transition cursor-pointer"
             aria-label={L(lang, 'Fechar perfil do lutador', 'Close fighter profile', 'Fermer le profil du combattant', 'Cerrar el perfil del peleador')}
           >
             <X className="h-4 w-4" />
@@ -268,7 +268,6 @@ function OrgOnlyFighterModal({
           {/* Photo and titles */}
           <div className="relative min-h-[220px] sm:min-h-[280px] lg:min-h-0 lg:h-full lg:col-span-5 overflow-hidden flex flex-col justify-end p-5 pb-2.5 sm:p-7 sm:pb-4 lg:p-9 select-none">
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              <div className="absolute top-1/4 left-1/3 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-rose-600/[0.08] blur-3xl pointer-events-none" />
               {imageUrl ? (
                 <img
                   src={imageUrl}
@@ -282,36 +281,36 @@ function OrgOnlyFighterModal({
                   }}
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center font-display font-black text-8xl text-white/[0.05]">
+                <div className="w-full h-full flex items-center justify-center font-display font-black text-8xl text-[var(--muted)]">
                   {name.slice(0, 2).toUpperCase()}
                 </div>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#08090C] via-[#08090C]/50 to-transparent" />
-              <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-transparent via-[#08090C]/25 to-[#08090C]" />
+              <div className="absolute inset-0" />
+              <div className="hidden lg:block absolute inset-0" />
             </div>
 
             <PhotoCredit imageUrl={imageUrl} className="left-2 top-4" />
 
             <div className="relative z-10 space-y-2.5 pb-1">
               <div className="inline-flex items-center gap-2">
-                <span className={`h-1.5 w-1.5 rounded-full ${profile?.is_active !== false && !archived ? 'bg-emerald-400 animate-pulse' : 'bg-neutral-500'}`} />
-                <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-semibold">{statusLabel}</span>
+                <span className={`h-1.5 w-1.5 rounded-full ${profile?.is_active !== false && !archived ? 'bg-[var(--positive)]' : 'bg-[var(--muted)]'}`} />
+                <span className="text-label text-[var(--muted)] font-semibold">{statusLabel}</span>
               </div>
 
-              <h1 className="font-display font-black text-3xl sm:text-4xl lg:text-[2.6rem] uppercase tracking-tighter text-white leading-[0.95] drop-shadow-2xl break-words">
+              <h1 className="font-display font-black text-3xl sm:text-4xl lg:text-[2.6rem] text-[var(--ink)] leading-[0.95] break-words">
                 {name}
               </h1>
-              {profile?.nickname ? <p className="font-sans text-sm italic text-neutral-300">“{profile.nickname}”</p> : null}
+              {profile?.nickname ? <p className="font-sans text-sm italic text-[var(--ink)]">“{profile.nickname}”</p> : null}
 
               <div className="flex flex-wrap items-center gap-2 pt-0.5">
                 {isChampion ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/60 bg-gradient-to-r from-amber-500/25 via-amber-400/15 to-amber-500/10 px-3 py-1 font-mono text-xs font-bold uppercase tracking-wider text-amber-300 shadow-[0_0_16px_rgba(251,191,36,0.25)] backdrop-blur-md">
-                    <Trophy className="h-3.5 w-3.5 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--gold)] px-3 py-1 text-xs font-bold text-[var(--gold)]">
+                    <Trophy className="h-3.5 w-3.5 text-[var(--gold)]" />
                     <span>
                       {isInterim
-                        ? L(lang, 'Campeão Interino', 'Interim Champion', 'Champion intérimaire', 'Campeón interino')
+                        ? L(lang, 'Campeão interino', 'Interim champion', 'Champion intérimaire', 'Campeón interino')
                         : archived
-                          ? L(lang, 'Último Campeão', 'Final Champion', 'Dernier champion', 'Último campeón')
+                          ? L(lang, 'Último campeão', 'Final champion', 'Dernier champion', 'Último campeón')
                           : L(lang, 'Campeão', 'Champion', 'Champion', 'Campeón')}
                       {championDivision ? ` ${getDivisionName(championDivision, lang)}` : ''}
                     </span>
@@ -321,12 +320,12 @@ function OrgOnlyFighterModal({
                 {formerTitles.map((title) => (
                   <span
                     key={`former-${title}`}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-neutral-200 backdrop-blur-sm"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-[var(--rule)] bg-[var(--panel)] px-2.5 py-1 text-label font-bold text-[var(--ink)]"
                   >
-                    ✦ {L(
+                    {L(
                       lang,
                       `Ex-Campeão ${getDivisionName(title, 'pt')}`,
-                      `Former ${getDivisionName(title, 'en')} Champion`,
+                      `Former ${getDivisionName(title, 'en')} champion`,
                       `Ancien champion ${getDivisionName(title, 'fr')}`,
                       `Excampeón de ${getDivisionName(title, 'es')}`,
                     )}
@@ -334,12 +333,12 @@ function OrgOnlyFighterModal({
                 ))}
               </div>
 
-              <p className="flex flex-wrap items-center gap-x-2 font-mono text-xs sm:text-[13px] uppercase tracking-wider text-neutral-400 font-medium">
+              <p className="flex flex-wrap items-center gap-x-2 text-xs sm:text-[13px] text-[var(--muted)] font-medium">
                 {profile?.country_code ? <FlagIcon code={profile.country_code} country={profile.country} /> : null}
                 <span>{signatureLine}</span>
               </p>
               {origin ? (
-                <p className="flex items-center gap-1.5 font-sans text-xs text-neutral-400">
+                <p className="flex items-center gap-1.5 font-sans text-xs text-[var(--muted)]">
                   <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                   <span>{origin}</span>
                 </p>
@@ -350,15 +349,15 @@ function OrgOnlyFighterModal({
           {/* Telemetry */}
           <div className="lg:col-span-7 p-5 pt-2 sm:p-7 sm:pt-4 lg:px-10 lg:py-9 flex flex-col justify-start space-y-5 sm:space-y-6 lg:min-h-0 lg:overflow-y-auto no-scrollbar">
             {loading ? (
-              <div className="space-y-6 animate-pulse">
-                <div className="h-16 w-32 bg-white/5 rounded-xl" />
-                <div className="h-4 w-full bg-white/5 rounded" />
-                <div className="h-12 w-full bg-white/5 rounded-xl" />
+              <div className="space-y-6">
+                <div className="h-16 w-32 bg-[var(--panel)]" />
+                <div className="h-4 w-full bg-[var(--panel)] rounded" />
+                <div className="h-12 w-full bg-[var(--panel)]" />
               </div>
             ) : error ? (
               <div className="space-y-2">
-                <p className="font-mono text-xs uppercase tracking-wider text-rose-400 font-semibold">{error}</p>
-                <p className="font-sans text-xs text-neutral-500">
+                <p className="text-xs text-[var(--ink)] font-semibold">{error}</p>
+                <p className="font-sans text-xs text-[var(--muted)]">
                   {L(lang, 'Histórico detalhado indisponível no momento.', 'Detailed history unavailable at this time.', 'Historique détaillé indisponible pour le moment.', 'El historial detallado no está disponible por ahora.')}
                 </p>
               </div>
@@ -368,23 +367,23 @@ function OrgOnlyFighterModal({
                 <div className="space-y-3">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#E11D48] animate-pulse" />
-                      <p className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-neutral-400 font-bold">
-                        {L(lang, `CARTEL NO ${org.shortName}`, `${org.shortName} RECORD`, `PALMARÈS CHEZ ${org.shortName}`, `RÉCORD EN ${orgEs(org).toUpperCase()}`)}
+                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--ink)]" />
+                      <p className="text-label text-[var(--muted)] font-bold">
+                        {L(lang, `Cartel no ${org.shortName}`, `${org.shortName} record`, `Palmarès chez ${org.shortName}`, `Récord en ${orgEs(org)}`)}
                       </p>
                     </div>
                     <div className="flex items-baseline gap-3 sm:gap-5 flex-wrap">
-                      <span className="font-display font-black text-3xl sm:text-4xl lg:text-5xl tracking-tighter text-white tabular-nums leading-none">{orgTotal}</span>
+                      <span className="font-display font-black text-3xl sm:text-4xl lg:text-5xl text-[var(--ink)] tabular-nums leading-none">{orgTotal}</span>
                       <div className="space-y-0.5">
-                        <p className="font-mono text-xs sm:text-sm font-bold uppercase tracking-wider text-white">
-                          {orgRecord.wins} {L(lang, 'VITÓRIAS', 'WINS', 'VICTOIRES', 'VICTORIAS')} • {orgRecord.losses} {L(lang, 'DERROTAS', 'LOSSES', 'DÉFAITES', 'DERROTAS')}
-                          {orgRecord.draws ? ` • ${orgRecord.draws} ${L(lang, 'EMPATES', 'DRAWS', 'NULS', 'EMPATES')}` : ''}
+                        <p className="text-xs sm:text-sm font-bold text-[var(--ink)]">
+                          {orgRecord.wins} {L(lang, 'vitórias', 'wins', 'victoires', 'victorias')} • {orgRecord.losses} {L(lang, 'derrotas', 'losses', 'défaites', 'derrotas')}
+                          {orgRecord.draws ? ` • ${orgRecord.draws} ${L(lang, 'Empates', 'Draws', 'Nuls', 'Empates')}` : ''}
                         </p>
-                        <p className="font-sans text-[11px] text-neutral-400">
+                        <p className="font-sans text-label text-[var(--muted)]">
                           {L(lang, `${orgWinRate}% de aproveitamento ${orgPt(org, 'em')}`, `${orgWinRate}% ${org.shortName} win rate`, `${orgWinRate} % de victoires chez ${org.shortName}`, `${orgWinRate} % de victorias en ${orgEs(org)}`)}
                         </p>
                         {otherSports > 0 ? (
-                          <p className="font-sans text-[11px] text-neutral-400">
+                          <p className="font-sans text-label text-[var(--muted)]">
                             {L(
                               lang,
                               `Inclui ${otherSports} ${otherSports === 1 ? 'luta que não é de MMA' : 'lutas que não são de MMA'}, sinalizadas no histórico.`,
@@ -398,30 +397,30 @@ function OrgOnlyFighterModal({
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 p-3 rounded-xl border border-white/[0.08] bg-white/[0.02]">
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 p-3 border border-[var(--rule)] bg-[var(--panel)]">
                     <div>
-                      <p className={label}>{L(lang, 'ALTURA', 'HEIGHT', 'TAILLE', 'ESTATURA')}</p>
-                      <p className="font-mono text-sm font-bold text-white tabular-nums mt-0.5">{profile?.height_cm ? `${Math.round(profile.height_cm)} cm` : '—'}</p>
-                      <p className="font-mono text-[10px] text-neutral-400">
+                      <p className={label}>{L(lang, 'Altura', 'Height', 'Taille', 'Estatura')}</p>
+                      <p className="text-sm font-bold text-[var(--ink)] tabular-nums mt-0.5">{profile?.height_cm ? `${Math.round(profile.height_cm)} cm` : '—'}</p>
+                      <p className="text-label text-[var(--muted)]">
                         {profile?.height_cm ? `${Math.floor(profile.height_cm / 30.48)}'${Math.round((profile.height_cm % 30.48) / 2.54)}"` : ''}
                       </p>
                     </div>
                     <div>
-                      <p className={label}>{L(lang, 'PESO', 'WEIGHT', 'POIDS', 'PESO')}</p>
-                      <p className="font-mono text-sm font-bold text-white tabular-nums mt-0.5">{profile?.weight_lbs ? `${Math.round(profile.weight_lbs)} lb` : '—'}</p>
-                      <p className="font-mono text-[10px] text-neutral-400">{profile?.weight_lbs ? `${(profile.weight_lbs * 0.45359237).toFixed(1)} kg` : ''}</p>
+                      <p className={label}>{L(lang, 'Peso', 'Weight', 'Poids', 'Peso')}</p>
+                      <p className="text-sm font-bold text-[var(--ink)] tabular-nums mt-0.5">{profile?.weight_lbs ? `${Math.round(profile.weight_lbs)} lb` : '—'}</p>
+                      <p className="text-label text-[var(--muted)]">{profile?.weight_lbs ? `${(profile.weight_lbs * 0.45359237).toFixed(1)} kg` : ''}</p>
                     </div>
                     <div>
-                      <p className={label}>{L(lang, 'ENVERGADURA', 'REACH', 'ALLONGE', 'ALCANCE')}</p>
-                      <p className="font-mono text-sm font-bold text-white tabular-nums mt-0.5">{profile?.reach_cm ? `${Math.round(profile.reach_cm)} cm` : '—'}</p>
-                      <p className="font-mono text-[10px] text-neutral-400">{profile?.reach_cm ? `${Math.round(profile.reach_cm / 2.54)}"` : ''}</p>
+                      <p className={label}>{L(lang, 'Envergadura', 'Reach', 'Allonge', 'Alcance')}</p>
+                      <p className="text-sm font-bold text-[var(--ink)] tabular-nums mt-0.5">{profile?.reach_cm ? `${Math.round(profile.reach_cm)} cm` : '—'}</p>
+                      <p className="text-label text-[var(--muted)]">{profile?.reach_cm ? `${Math.round(profile.reach_cm / 2.54)}"` : ''}</p>
                     </div>
                     <div>
-                      <p className={label}>{L(lang, 'IDADE', 'AGE', 'ÂGE', 'EDAD')}</p>
-                      <p className="font-mono text-sm font-bold text-white tabular-nums mt-0.5">
+                      <p className={label}>{L(lang, 'Idade', 'Age', 'Âge', 'Edad')}</p>
+                      <p className="text-sm font-bold text-[var(--ink)] tabular-nums mt-0.5">
                         {profile?.age ? `${Math.floor(profile.age)} ${L(lang, 'anos', 'yrs', 'ans', 'años')}` : '—'}
                       </p>
-                      <p className="font-mono text-[10px] text-neutral-400">
+                      <p className="text-label text-[var(--muted)]">
                         {archived
                           ? L(lang, `Arquivo ${org.shortName}`, `${org.shortName} archive`, `Archives ${org.shortName}`, `Archivo de ${orgEs(org)}`)
                           : profile?.is_active
@@ -430,21 +429,21 @@ function OrgOnlyFighterModal({
                       </p>
                     </div>
                     <div className="col-span-2 sm:col-span-1">
-                      <p className={label}>{L(lang, 'EQUIPE', 'CAMP', 'ÉQUIPE', 'EQUIPO')}</p>
-                      <p className="font-mono text-sm font-bold text-white truncate mt-0.5">{profile?.camp ?? '—'}</p>
-                      <p className="font-mono text-[10px] text-neutral-400 truncate">{profile?.fighting_out_of ?? ''}</p>
+                      <p className={label}>{L(lang, 'Equipe', 'Camp', 'Équipe', 'Equipo')}</p>
+                      <p className="text-sm font-bold text-[var(--ink)] truncate mt-0.5">{profile?.camp ?? '—'}</p>
+                      <p className="text-label text-[var(--muted)] truncate">{profile?.fighting_out_of ?? ''}</p>
                     </div>
                   </div>
 
                   {hasProRecord ? (
-                    <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-xl border border-white/[0.08] bg-white/[0.02]">
+                    <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 border border-[var(--rule)] bg-[var(--panel)]">
                       <div className="space-y-0.5">
-                        <p className="font-mono text-[10px] uppercase tracking-widest text-amber-400 font-bold">
-                          {L(lang, 'CARTEL PROFISSIONAL COMPLETO', 'COMPLETE PROFESSIONAL RECORD', 'PALMARÈS PROFESSIONNEL COMPLET', 'RÉCORD PROFESIONAL COMPLETO')}
+                        <p className="text-label text-[var(--gold)] font-bold">
+                          {L(lang, 'Cartel profissional completo', 'Complete professional record', 'Palmarès professionnel complet', 'Récord profesional completo')}
                         </p>
-                        <p className="font-mono text-xs sm:text-sm font-bold text-neutral-200 tabular-nums">
-                          {proTotal} {L(lang, 'LUTAS', 'BOUTS', 'COMBATS', 'PELEAS')} • {proWins}V - {proLosses}D{profile?.draws ? ` - ${profile.draws}E` : ''}{profile?.no_contests ? ` - ${profile.no_contests}NC` : ''}
-                          <span className="text-neutral-400 font-normal text-xs ml-1.5 font-sans">({proWinRate}% {L(lang, 'geral', 'overall', 'global', 'general')})</span>
+                        <p className="text-xs sm:text-sm font-bold text-[var(--ink)] tabular-nums">
+                          {proTotal} {L(lang, 'Lutas', 'Bouts', 'Combats', 'Peleas')} • {proWins}V - {proLosses}D{profile?.draws ? ` - ${profile.draws}E` : ''}{profile?.no_contests ? ` - ${profile.no_contests}NC` : ''}
+                          <span className="text-[var(--muted)] font-normal text-xs ml-1.5 font-sans">({proWinRate}% {L(lang, 'geral', 'overall', 'global', 'general')})</span>
                         </p>
                       </div>
                     </div>
@@ -461,64 +460,64 @@ function OrgOnlyFighterModal({
                       const opponentTbd = isTbd(nextBout.opponent)
                       return (
                         <>
-                          <div className="flex items-center justify-between gap-3 font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-semibold">
-                            <span className="min-w-0 truncate">{L(lang, 'PRÓXIMO COMBATE', 'NEXT BOUT', 'PROCHAIN COMBAT', 'PRÓXIMA PELEA')} // {nextBout.event}</span>
-                            <span className="shrink-0 text-amber-400 font-bold">
+                          <div className="flex items-center justify-between gap-3 text-label text-[var(--muted)] font-semibold">
+                            <span className="min-w-0 truncate">{L(lang, 'Próximo combate', 'Next bout', 'Prochain combat', 'Próxima pelea')} // {nextBout.event}</span>
+                            <span className="shrink-0 text-[var(--gold)] font-bold">
                               {opponentTbd
-                                ? L(lang, 'BUSCA POR OPONENTE', 'SEEKING OPPONENT', 'RECHERCHE D’ADVERSAIRE', 'BUSCA RIVAL')
+                                ? L(lang, 'Busca por oponente', 'Seeking opponent', 'Recherche d’adversaire', 'Busca rival')
                                 : nextPrediction
-                                  ? L(lang, 'PROGNÓSTICO POR IA', 'AI WIN FORECAST', 'PRONOSTIC IA', 'PRONÓSTICO DE LA IA')
-                                  : formatDate(nextBout.date, true, lang).toUpperCase()}
+                                  ? L(lang, 'Chance estimada pelo modelo', 'Model’s estimated chance', 'Chance estimée par le modèle', 'Probabilidad estimada por el modelo')
+                                  : formatDate(nextBout.date, true, lang)}
                             </span>
                           </div>
 
-                          <div className="flex items-baseline justify-between font-display font-bold text-base sm:text-lg text-white">
+                          <div className="flex items-baseline justify-between font-display font-bold text-base sm:text-lg text-[var(--ink)]">
                             <span className="truncate">
                               {name}{' '}
-                              {nextPrediction ? <span className="font-mono text-xs text-amber-400 tabular-nums">({nextPrediction.fighterProb}%)</span> : null}
+                              {nextPrediction ? <span className="text-xs text-[var(--gold)] tabular-nums">({nextPrediction.fighterProb}%)</span> : null}
                             </span>
-                            <span className="px-3 text-neutral-400 font-mono text-xs font-normal">VS</span>
+                            <span className="px-3 text-[var(--muted)] text-xs font-normal">VS</span>
                             {opponentTbd ? (
-                              <span className="truncate text-right font-mono text-xs sm:text-sm font-bold text-amber-400 uppercase tracking-wider">
-                                ✦ {L(lang, 'Aguardando Adversário (a definir)', 'Awaiting Opponent (TBD)', 'Adversaire à déterminer', 'Esperando rival (por definir)')}
+                              <span className="truncate text-right text-xs sm:text-sm font-bold text-[var(--gold)]">
+                                {L(lang, 'Aguardando adversário (a definir)', 'Awaiting opponent (TBD)', 'Adversaire à déterminer', 'Esperando rival (por definir)')}
                               </span>
                             ) : known.has(normalizeFighterName(nextBout.opponent)) ? (
                               <button
                                 type="button"
                                 onClick={() => onSelectFighter(nextBout.opponent)}
-                                className="truncate text-right hover:text-sky-400 transition cursor-pointer font-bold"
+                                className="truncate text-right hover:text-[var(--ink)] transition cursor-pointer font-bold"
                                 title={L(lang, `Ver perfil de ${nextBout.opponent}`, `View profile of ${nextBout.opponent}`, `Voir le profil de ${nextBout.opponent}`, `Ver el perfil de ${nextBout.opponent}`)}
                               >
                                 {nextBout.opponent}{' '}
-                                {nextPrediction ? <span className="font-mono text-xs text-sky-400 tabular-nums">({nextPrediction.oppProb}%)</span> : null}
+                                {nextPrediction ? <span className="text-xs text-[var(--ink)] tabular-nums">({nextPrediction.oppProb}%)</span> : null}
                               </button>
                             ) : (
                               <span className="truncate text-right font-bold">
                                 {nextBout.opponent}{' '}
-                                {nextPrediction ? <span className="font-mono text-xs text-sky-400 tabular-nums">({nextPrediction.oppProb}%)</span> : null}
+                                {nextPrediction ? <span className="text-xs text-[var(--ink)] tabular-nums">({nextPrediction.oppProb}%)</span> : null}
                               </span>
                             )}
                           </div>
 
                           {opponentTbd ? (
-                            <div className="h-[3px] w-full rounded-full bg-amber-400/20 overflow-hidden">
-                              <div className="h-full w-full bg-gradient-to-r from-amber-500/30 via-amber-400 to-amber-500/30 animate-pulse" />
+                            <div className="h-[3px] w-full rounded-full bg-[var(--gold-fill)] overflow-hidden">
+                              <div className="h-full w-full" />
                             </div>
                           ) : nextPrediction ? (
-                            <div className="h-[3px] w-full rounded-full bg-white/10 flex overflow-hidden">
-                              <div style={{ width: `${nextPrediction.fighterProb}%` }} className="bg-amber-400 transition-all duration-700" />
-                              <div style={{ width: `${nextPrediction.oppProb}%` }} className="bg-sky-400 transition-all duration-700" />
+                            <div className="flex h-2 w-full gap-[2px] overflow-hidden">
+                              <div style={{ width: `${nextPrediction.fighterProb}%` }} className="bg-[var(--ink)]" />
+                              <div style={{ width: `${nextPrediction.oppProb}%` }} className="bg-[var(--track)]" />
                             </div>
                           ) : null}
 
-                          <div className="flex items-center justify-between font-sans text-[11px] text-neutral-400">
-                            <span className="inline-flex flex-wrap items-center gap-1.5">{nextDetails?.weight_class ? getDivisionName(nextDetails.weight_class, lang) : L(lang, 'Card Principal', 'Main Card', 'Carte principale', 'Cartelera principal')}<OrgSportTag discipline={nextDetails?.discipline} /></span>
-                            <span className="font-mono text-[10px] uppercase text-neutral-400">
+                          <div className="flex items-center justify-between font-sans text-label text-[var(--muted)]">
+                            <span className="inline-flex flex-wrap items-center gap-1.5">{nextDetails?.weight_class ? getDivisionName(nextDetails.weight_class, lang) : L(lang, 'Card principal', 'Main card', 'Carte principale', 'Cartelera principal')}<OrgSportTag discipline={nextDetails?.discipline} /></span>
+                            <span className="text-label text-[var(--muted)]">
                               {opponentTbd
-                                ? L(lang, '✦ Luta Mantida • Buscando Substituto', '✦ Bout Booked • Seeking Opponent', '✦ Combat confirmé • En recherche d’adversaire', '✦ Pelea confirmada • Busca rival')
+                                ? L(lang, 'Luta mantida • Buscando substituto', 'Bout booked • Seeking opponent', 'Combat confirmé • En recherche d’adversaire', 'Pelea confirmada • Busca rival')
                                 : nextDetails?.title_fight
-                                  ? L(lang, '✦ Disputa de Cinturão', '✦ Title Fight', '✦ Combat pour le titre', '✦ Pelea por el título')
-                                  : L(lang, 'Combate Confirmado', 'Confirmed Bout', 'Combat confirmé', 'Pelea confirmada')}
+                                  ? L(lang, 'Disputa de cinturão', 'Title fight', 'Combat pour le titre', 'Pelea por el título')
+                                  : L(lang, 'Combate confirmado', 'Confirmed bout', 'Combat confirmé', 'Pelea confirmada')}
                             </span>
                           </div>
                         </>
@@ -527,8 +526,8 @@ function OrgOnlyFighterModal({
                   </div>
                 ) : archived ? null : (
                   <div className="space-y-1.5 pt-1">
-                    <p className="font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-semibold">
-                      {L(lang, 'PRÓXIMO COMBATE // AGUARDANDO CASAMENTO DE LUTA', 'NEXT BOUT // AWAITING FIGHT SCHEDULING', 'PROCHAIN COMBAT // EN ATTENTE D’ANNONCE', 'PRÓXIMA PELEA // A LA ESPERA DE PROGRAMACIÓN')}
+                    <p className="text-label text-[var(--muted)] font-semibold">
+                      {L(lang, 'Próxima luta: ainda não marcada', 'Next fight: not booked yet', 'Prochain combat : pas encore programmé', 'Próxima pelea: aún no programada')}
                     </p>
                   </div>
                 )}
@@ -537,14 +536,14 @@ function OrgOnlyFighterModal({
                 {org.hasSeasonStats && profile?.season_stats?.length ? (
                   <SeasonStatsTable org={org} seasons={profile.season_stats} lang={lang} />
                 ) : (
-                  <div className="space-y-2 pt-3 border-t border-white/[0.06]">
+                  <div className="space-y-2 pt-3 border-t border-[var(--rule)]">
                     <div className="grid grid-cols-3 gap-6">
                       <Metric value={profile?.sig_strikes_landed_per_min != null ? profile.sig_strikes_landed_per_min.toFixed(2) : '—'} label={L(lang, 'Golpes / Min (SLpM)', 'Strikes / Min (SLpM)', 'Coups / min (SLpM)', 'Golpes / min (SLpM)')} />
-                      <Metric value={profile?.striking_defense != null ? `${Math.round(profile.striking_defense * 100)}%` : '—'} label={L(lang, 'Defesa de Golpes', 'Striking Defense', 'Défense Frappes', 'Defensa de golpes')} />
-                      <Metric value={profile?.takedown_defense != null ? `${Math.round(profile.takedown_defense * 100)}%` : '—'} label={L(lang, 'Defesa de Quedas', 'Takedown Defense', 'Défense au sol', 'Defensa de derribos')} />
+                      <Metric value={profile?.striking_defense != null ? `${Math.round(profile.striking_defense * 100)}%` : '—'} label={L(lang, 'Defesa de golpes', 'Striking defense', 'Défense frappes', 'Defensa de golpes')} />
+                      <Metric value={profile?.takedown_defense != null ? `${Math.round(profile.takedown_defense * 100)}%` : '—'} label={L(lang, 'Defesa de quedas', 'Takedown defense', 'Défense au sol', 'Defensa de derribos')} />
                     </div>
                     {profile?.sig_strikes_landed_per_min == null && profile?.striking_defense == null && profile?.takedown_defense == null ? (
-                      <p className="font-sans text-[11px] text-neutral-400">
+                      <p className="font-sans text-label text-[var(--muted)]">
                         {org.hasSeasonStats
                           ? L(
                               lang,
@@ -570,7 +569,7 @@ function OrgOnlyFighterModal({
                     href={profile.profile_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex w-fit items-center gap-1.5 font-mono text-[11px] font-semibold uppercase tracking-widest text-neutral-300 underline decoration-white/30 underline-offset-4 hover:text-white"
+                    className="inline-flex w-fit items-center gap-1.5 text-label font-semibold text-[var(--ink)] underline decoration-[var(--rule)] underline-offset-4 hover:text-[var(--ink)]"
                   >
                     {org.partialCoverage
                       ? L(lang, `Perfil no ${profileLabel}`, `Profile on ${profileLabel}`, `Profil sur ${profileLabel}`, `Perfil en ${profileLabel}`)
@@ -594,18 +593,18 @@ function OrgOnlyFighterModal({
         />
 
         {/* Season timeline */}
-        <div className="relative border-t border-white/[0.08] bg-black/60 backdrop-blur-md px-4 sm:px-8 py-2.5 sm:py-3.5 shrink-0 flex flex-col justify-between">
-          <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-2 font-semibold">
-            <span>{L(lang, 'RÉGUA CRONOLÓGICA // HISTÓRICO DE TEMPORADAS', 'TIMELINE // SEASONAL CAREER HISTORY', 'CHRONOLOGIE // HISTORIQUE DE CARRIÈRE', 'LÍNEA DE TIEMPO // HISTORIAL DE TEMPORADAS')}</span>
-            <span className="hidden sm:inline text-amber-400/90 font-medium">
+        <div className="relative border-t border-[var(--rule)] bg-[var(--mat)] px-4 sm:px-8 py-2.5 sm:py-3.5 shrink-0 flex flex-col justify-between">
+          <div className="flex items-center justify-between text-label text-[var(--muted)] mb-2 font-semibold">
+            <span>{L(lang, 'Carreira ano a ano', 'Career year by year', 'Carrière année par année', 'Carrera año por año')}</span>
+            <span className="hidden sm:inline text-[var(--muted)] font-medium">
               {selectedEra
-                ? `✦ ${L(lang, 'TEMPORADA', 'SEASON', 'SAISON', 'TEMPORADA')} ${selectedEra.year} ${L(lang, 'SELECIONADA • CLIQUE PARA ALTERNAR OU FECHAR', 'SELECTED • CLICK TO TOGGLE OR CLOSE', 'SÉLECTIONNÉE • CLIQUER POUR FERMER', 'SELECCIONADA • CLIC PARA ALTERNAR O CERRAR')}`
-                : L(lang, 'CLIQUE NO ANO PARA EXIBIR AS LUTAS ⇄', 'CLICK A YEAR TO VIEW BOUTS ⇄', 'CLIQUEZ SUR UNE ANNÉE POUR VOIR LES COMBATS ⇄', 'HAZ CLIC EN UN AÑO PARA VER LAS PELEAS ⇄')}
+                ? `${L(lang, 'Temporada', 'Season', 'Saison', 'Temporada')} ${selectedEra.year} ${L(lang, 'aberta. Clique de novo para fechar', 'open. Click again to close', 'ouverte. Cliquez à nouveau pour fermer', 'abierta. Haz clic de nuevo para cerrar')}`
+                : L(lang, 'Escolha um ano para ver as lutas', 'Pick a year to see the fights', 'Choisissez une année pour voir les combats', 'Elige un año para ver las peleas')}
             </span>
           </div>
 
           {timelineEras.length === 0 ? (
-            <p className="font-sans text-xs text-neutral-400 py-2">
+            <p className="font-sans text-xs text-[var(--muted)] py-2">
               {loading
                 ? L(lang, 'Carregando histórico…', 'Loading history…', 'Chargement de l’historique…', 'Cargando historial…')
                 : L(lang, `Nenhuma luta ${orgPt(org, 'em')} registrada ainda.`, `No ${org.shortName} fights recorded yet.`, `Aucun combat ${org.shortName} enregistré pour l’instant.`, `Aún no hay peleas registradas en ${orgEs(org)}.`)}
@@ -637,14 +636,14 @@ function SeasonStatsTable({ org, seasons, lang }: { org: OrgConfig; seasons: Org
     { label: L(lang, 'Vel. do soco', 'Punch speed', 'Vitesse du coup', 'Velocidad del golpe'), value: (season) => (season.max_punch_speed_mph ? `${season.max_punch_speed_mph} mph` : '—') },
   ]
   return (
-    <div className="space-y-2 pt-3 border-t border-white/[0.06]">
-      <p className="font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-semibold">
-        {L(lang, `ESTATÍSTICAS POR TEMPORADA // ${org.shortName}`, `SEASON STATS // ${org.shortName}`, `STATS PAR SAISON // ${org.shortName}`, `ESTADÍSTICAS POR TEMPORADA // ${org.shortName}`)}
+    <div className="space-y-2 pt-3 border-t border-[var(--rule)]">
+      <p className="text-label text-[var(--muted)] font-semibold">
+        {L(lang, `Estatísticas por temporada // ${org.shortName}`, `Season stats // ${org.shortName}`, `Stats par saison // ${org.shortName}`, `Estadísticas por temporada // ${org.shortName}`)}
       </p>
       <div className="overflow-x-auto no-scrollbar">
-        <table className="w-full min-w-[460px] whitespace-nowrap text-left font-mono text-xs tabular-nums">
+        <table className="w-full min-w-[460px] whitespace-nowrap text-left text-xs tabular-nums">
           <thead>
-            <tr className="text-[10px] uppercase tracking-wider text-neutral-400">
+            <tr className="text-label text-[var(--muted)]">
               <th scope="col" className="py-1 pr-3 font-medium">{L(lang, 'Temporada', 'Season', 'Saison', 'Temporada')}</th>
               {columns.map((column) => (
                 <th key={column.label} scope="col" className="py-1 pr-3 font-medium">{column.label}</th>
@@ -653,7 +652,7 @@ function SeasonStatsTable({ org, seasons, lang }: { org: OrgConfig; seasons: Org
           </thead>
           <tbody>
             {seasons.map((season) => (
-              <tr key={season.season} className="border-t border-white/[0.06] text-white">
+              <tr key={season.season} className="border-t border-[var(--rule)] text-[var(--ink)]">
                 <th scope="row" className="py-1.5 pr-3 font-bold">{season.season}</th>
                 {columns.map((column) => (
                   <td key={column.label} className="py-1.5 pr-3">{column.value(season)}</td>
@@ -663,7 +662,7 @@ function SeasonStatsTable({ org, seasons, lang }: { org: OrgConfig; seasons: Org
           </tbody>
         </table>
       </div>
-      <p className="font-sans text-[11px] text-neutral-400">
+      <p className="font-sans text-label text-[var(--muted)]">
         {L(
           lang,
           `Números como ${orgPt(org, 'o')} os publica (acertos / tentativas), por temporada. É a contagem ${orgPt(org, 'de')}, não comparável às estatísticas do UFC.`,
@@ -679,8 +678,8 @@ function SeasonStatsTable({ org, seasons, lang }: { org: OrgConfig; seasons: Org
 function Metric({ value, label }: { value: string; label: string }) {
   return (
     <div>
-      <p className="font-display font-bold text-xl sm:text-2xl text-white tabular-nums">{value}</p>
-      <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-medium">{label}</p>
+      <p className="font-display font-bold text-xl sm:text-2xl text-[var(--ink)] tabular-nums">{value}</p>
+      <p className="text-label text-[var(--muted)] font-medium">{label}</p>
     </div>
   )
 }

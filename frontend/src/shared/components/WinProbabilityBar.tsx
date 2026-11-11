@@ -3,7 +3,9 @@ import { L } from '../../i18n/lang'
 import { formatProbability } from '../data/probability'
 
 interface WinProbabilityBarProps {
+  /** The red corner. */
   nameA: string
+  /** The blue corner. */
   nameB: string
   probabilityA: number
   probabilityB: number
@@ -12,6 +14,10 @@ interface WinProbabilityBarProps {
   showNames?: boolean
 }
 
+/**
+ * The model's estimate for a fight: both percentages in the display face over a band that runs edge to edge, red then
+ * blue, split exactly where the probability falls.
+ */
 export function WinProbabilityBar({
   nameA,
   nameB,
@@ -22,57 +28,52 @@ export function WinProbabilityBar({
   showNames = true,
 }: WinProbabilityBarProps) {
   const { i18n } = useTranslation()
+  const lang = i18n.language
 
   const pctA = Math.round(probabilityA * 100)
   const pctB = Math.round(probabilityB * 100)
-  const winnerIsA = predictedWinner ? predictedWinner === nameA : pctA >= pctB
+  // The band splits at the probability itself, not at the rounded label.
+  const split = Math.min(100, Math.max(0, probabilityA * 100))
+  const winnerChance = formatProbability(Math.max(probabilityA, probabilityB))
+  const number = `font-display font-black leading-[0.9] tabular-nums ${compact ? 'text-[32px]' : 'text-[44px] sm:text-[64px]'}`
 
   return (
     <div>
-      <div className="flex items-end justify-between gap-3">
-        <div className="min-w-0">
-          {showNames ? (
-            <p className={`truncate font-bold text-[var(--text-main)] ${compact ? 'text-sm' : 'text-base sm:text-lg'}`}>
-              {nameA}
-            </p>
-          ) : null}
-          <p className={`data-value font-bold leading-none ${winnerIsA ? 'text-[var(--accent-red)]' : 'text-[var(--text-main)]'} ${compact ? 'text-2xl' : 'text-3xl sm:text-4xl'}`}>
-            {formatProbability(probabilityA)}
-          </p>
-        </div>
-        {showNames ? <p className="mb-1 shrink-0 text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">vs</p> : null}
-        <div className="min-w-0 text-right">
-          {showNames ? (
-            <p className={`truncate font-bold text-[var(--text-main)] ${compact ? 'text-sm' : 'text-base sm:text-lg'}`}>
-              {nameB}
-            </p>
-          ) : null}
-          <p className={`data-value font-bold leading-none ${!winnerIsA ? 'text-[var(--accent-red)]' : 'text-[var(--text-main)]'} ${compact ? 'text-2xl' : 'text-3xl sm:text-4xl'}`}>
-            {formatProbability(probabilityB)}
-          </p>
-        </div>
-      </div>
-
       <div
-        className={`mt-3 flex overflow-hidden rounded-full bg-[var(--border-subtle)] ${compact ? 'h-3' : 'h-4'}`}
         role="img"
         aria-label={L(
-          i18n.language,
-          `Probabilidade de vitória: ${pctA}% ${nameA}, ${pctB}% ${nameB}`,
-          `Win probability ${pctA} percent ${nameA}, ${pctB} percent ${nameB}`,
-          `Probabilité de victoire : ${pctA} % ${nameA}, ${pctB} % ${nameB}`,
-          `Probabilidad de victoria: ${pctA} % ${nameA}, ${pctB} % ${nameB}`,
+          lang,
+          `Chance de vitória estimada pelo modelo: ${nameA} ${pctA} por cento, ${nameB} ${pctB} por cento`,
+          `Win chance estimated by the model: ${nameA} ${pctA} percent, ${nameB} ${pctB} percent`,
+          `Chance de victoire estimée par le modèle : ${nameA} ${pctA} pour cent, ${nameB} ${pctB} pour cent`,
+          `Probabilidad de victoria estimada por el modelo: ${nameA} ${pctA} por ciento, ${nameB} ${pctB} por ciento`,
         )}
       >
-        <div className={`h-full ${winnerIsA ? 'bg-[var(--accent-red)]' : 'bg-[var(--text-muted)]'}`} style={{ width: `${pctA}%` }} />
-        <div className={`h-full ${winnerIsA ? 'bg-[var(--text-muted)]' : 'bg-[var(--accent-red)]'}`} style={{ width: `${pctB}%` }} />
+        <div className="flex items-end justify-between gap-3" aria-hidden="true">
+          <div className="min-w-0">
+            {showNames ? <p className={`truncate font-bold text-[var(--ink)] ${compact ? 'text-sm' : 'text-base sm:text-lg'}`}>{nameA}</p> : null}
+            <p className={`${number} text-[var(--red-text)]`}>{formatProbability(probabilityA)}</p>
+          </div>
+          <div className="min-w-0 text-right">
+            {showNames ? <p className={`truncate font-bold text-[var(--ink)] ${compact ? 'text-sm' : 'text-base sm:text-lg'}`}>{nameB}</p> : null}
+            <p className={`${number} text-[var(--blue-text)]`}>{formatProbability(probabilityB)}</p>
+          </div>
+        </div>
+        <div className={`mt-2 flex ${compact ? 'h-3' : 'h-5'}`} aria-hidden="true">
+          <div className="bg-[var(--red-deep)]" style={{ flex: `0 0 ${split}%` }} />
+          <div className="flex-1 bg-[var(--blue-deep)]" />
+        </div>
       </div>
 
       {predictedWinner ? (
-        <p className={`mt-2 text-center text-[var(--text-muted)] ${compact ? 'text-xs' : 'text-sm'}`}>
-          {L(i18n.language, 'Modelo favorece ', 'Model favors ', 'Le modèle favorise ', 'El modelo favorece a ')}
-          <span className="font-semibold text-[var(--text-main)]">{predictedWinner}</span>
-          <span> ({formatProbability(Math.max(probabilityA, probabilityB))})</span>
+        <p className={`mt-3 text-[var(--ink)] ${compact ? 'text-sm' : 'text-base'}`}>
+          {L(
+            lang,
+            `O modelo dá ${winnerChance} de chance de vitória a ${predictedWinner}.`,
+            `The model gives ${predictedWinner} a ${winnerChance} chance of winning.`,
+            `Le modèle donne à ${predictedWinner} ${winnerChance} de chances de gagner.`,
+            `El modelo da a ${predictedWinner} un ${winnerChance} de probabilidad de ganar.`,
+          )}
         </p>
       ) : null}
     </div>

@@ -10,7 +10,7 @@ import { FighterAvatar } from '../../shared/components/FighterAvatar'
 import { FlagIcon } from '../../shared/components/FlagIcon'
 import { LoadingSkeleton } from '../../shared/components/LoadingSkeleton'
 import { OrgFighterModal } from '../../shared/components/OrgFighterModal'
-import { SectionHeading } from '../../shared/components/SectionHeading'
+import { PageHeader } from '../../shared/components/ui/PageHeader'
 import { divisionLimit, getDivisionName } from '../../shared/data/divisions'
 import {
   buildDivisionReigns,
@@ -116,20 +116,20 @@ export function OrgChampions() {
     {
       key: 'current',
       label: isArchived
-        ? L(i18n.language, 'Últimos Campeões (2023)', 'Final Champions (2023)', 'Derniers champions (2023)', 'Últimos campeones (2023)')
-        : L(i18n.language, 'Campeões Atuais', 'Current Champions', 'Champions actuels', 'Campeones actuales'),
+        ? L(i18n.language, 'Últimos campeões (2023)', 'Final champions (2023)', 'Derniers champions (2023)', 'Últimos campeones (2023)')
+        : L(i18n.language, 'Campeões atuais', 'Current champions', 'Champions actuels', 'Campeones actuales'),
       short: isArchived
         ? L(i18n.language, 'Últimos (2023)', 'Final (2023)', 'Derniers', 'Últimos (2023)')
         : L(i18n.language, 'Atuais', 'Current', 'Actuels', 'Actuales'),
     },
     {
       key: 'history',
-      label: L(i18n.language, 'Histórico por Categoria', 'History by Division', 'Historique par catégorie', 'Historial por división'),
-      short: L(i18n.language, 'Por Categoria', 'By Division', 'Par catégorie', 'Por división'),
+      label: L(i18n.language, 'Histórico por categoria', 'History by division', 'Historique par catégorie', 'Historial por división'),
+      short: L(i18n.language, 'Por categoria', 'By division', 'Par catégorie', 'Por división'),
     },
     {
       key: 'greatest',
-      label: L(i18n.language, 'Maiores Campeões', 'Greatest Champions', 'Plus grands champions', 'Mejores campeones'),
+      label: L(i18n.language, 'Maiores campeões', 'Greatest champions', 'Plus grands champions', 'Mejores campeones'),
       short: L(i18n.language, 'Maiores', 'Greatest', 'Plus grands', 'Mejores'),
     },
   ]
@@ -137,16 +137,12 @@ export function OrgChampions() {
   const isLoading = rankingsLoading || past.loading
 
   return (
-    <div className="space-y-5 sm:space-y-6">
-      <section className="page-hero rounded-[20px] px-3 py-4 sm:px-5 sm:py-5">
-        <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr] xl:items-end">
-          <div>
-            <SectionHeading
-              level={1}
+    <div className="space-y-6 sm:space-y-8">
+      <PageHeader
               eyebrow={
                 isArchived
-                  ? L(i18n.language, `${org.shortName} • Galeria de Cinturões (2009–2023)`, `${org.shortName} • Title Gallery (2009–2023)`, `${org.shortName} • Galerie des Titres (2009–2023)`, `${org.shortName} • Galería de cinturones (2009–2023)`)
-                  : L(i18n.language, `${org.shortName} • Galeria de Cinturões`, `${org.shortName} • Champions & Lineage`, `${org.shortName} • Champions et Lignée`, `${org.shortName} • Campeones y linaje`)
+                  ? L(i18n.language, `${org.shortName} • Galeria de cinturões (2009–2023)`, `${org.shortName} • Title gallery (2009–2023)`, `${org.shortName} • Galerie des titres (2009–2023)`, `${org.shortName} • Galería de cinturones (2009–2023)`)
+                  : L(i18n.language, `${org.shortName} • Galeria de cinturões`, `${org.shortName} • Champions & lineage`, `${org.shortName} • Champions et lignée`, `${org.shortName} • Campeones y linaje`)
               }
               title={
                 L(i18n.language, `Campeões ${orgPt(org, 'de')}`, `${org.shortName} champions`, `Champions ${orgFr(org, 'de')}`, `Campeones de ${orgEs(org)}`)
@@ -168,12 +164,33 @@ export function OrgChampions() {
                       'Los poseedores actuales de cinturón de la PFL, el linaje completo de campeonatos por división y los ganadores de más peleas por el título en la historia de la liga.',
                     )
               }
-            />
-
+              stats={[
+                {
+                  label: L(i18n.language, 'Divisões', 'Divisions', 'Catégories', 'Divisiones'),
+                  value: allDivisions.length.toLocaleString(localeTag(i18n.language)),
+                  note: isArchived ? '2009–2023' : L(i18n.language, 'categorias', 'weight classes', 'catégories', 'divisiones'),
+                },
+                {
+                  label: L(i18n.language, 'Reinados', 'Title reigns', 'Règnes', 'Reinados'),
+                  value: totalReignsCount.toLocaleString(localeTag(i18n.language)),
+                  note: L(i18n.language, 'conquistas', 'belts won', 'titres gagnés', 'cinturones ganados'),
+                },
+                {
+                  label: L(i18n.language, 'Campeões', 'Champions', 'Champions', 'Campeones'),
+                  value: greatestChampions.length.toLocaleString(localeTag(i18n.language)),
+                  note: L(i18n.language, 'atletas distintos', 'unique fighters', 'combattants', 'peleadores distintos'),
+                },
+                {
+                  label: L(i18n.language, 'Defesas', 'Defenses', 'Défenses', 'Defensas'),
+                  value: totalDefensesCount.toLocaleString(localeTag(i18n.language)),
+                  note: L(i18n.language, 'bem-sucedidas', 'successful', 'réussies', 'exitosas'),
+                },
+              ]}
+      >
             <div
               role="tablist"
               aria-label={L(i18n.language, 'Escolha a visualização de campeões', 'Choose champions view', 'Choisir la vue des champions', 'Elige la vista de campeones')}
-              className="mt-4 inline-flex max-w-full overflow-x-auto border-2 border-[var(--rule)] bg-[var(--card-bg)] chip-scroll"
+              className="chip-scroll inline-flex max-w-full overflow-x-auto rounded-control border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-0.5"
             >
               {views.map((item) => (
                 <button
@@ -185,10 +202,10 @@ export function OrgChampions() {
                   aria-selected={view === item.key}
                   aria-controls="org-champions-panel"
                   onClick={() => chooseView(item.key)}
-                  className={`shrink-0 px-3.5 py-2 text-xs font-black uppercase tracking-[0.14em] transition sm:px-5 ${
+                  className={`inline-flex min-h-10 shrink-0 cursor-pointer items-center whitespace-nowrap rounded-md px-4 text-sm font-semibold transition-colors ${
                     view === item.key
-                      ? 'bg-[#0E0E0E] text-white dark:bg-white dark:text-[#0E0E0E] shadow-sm'
-                      : 'text-[var(--text-main)] hover:bg-[#F2C230] hover:text-[#0E0E0E]'
+                      ? 'bg-[var(--text-primary)] text-[var(--bg-surface)]'
+                      : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]'
                   }`}
                 >
                   <span className="sm:hidden">{item.short}</span>
@@ -196,32 +213,7 @@ export function OrgChampions() {
                 </button>
               ))}
             </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <StatTile
-              label={L(i18n.language, 'Divisões', 'Divisions', 'Catégories', 'Divisiones')}
-              value={allDivisions.length.toLocaleString(localeTag(i18n.language))}
-              note={isArchived ? '2009–2023' : L(i18n.language, 'categorias', 'weight classes', 'catégories', 'divisiones')}
-            />
-            <StatTile
-              label={L(i18n.language, 'Reinados', 'Title Reigns', 'Règnes', 'Reinados')}
-              value={totalReignsCount.toLocaleString(localeTag(i18n.language))}
-              note={L(i18n.language, 'conquistas', 'belts won', 'titres gagnés', 'cinturones ganados')}
-            />
-            <StatTile
-              label={L(i18n.language, 'Campeões', 'Champions', 'Champions', 'Campeones')}
-              value={greatestChampions.length.toLocaleString(localeTag(i18n.language))}
-              note={L(i18n.language, 'atletas distintos', 'unique fighters', 'combattants', 'peleadores distintos')}
-            />
-            <StatTile
-              label={L(i18n.language, 'Defesas', 'Defenses', 'Défenses', 'Defensas')}
-              value={totalDefensesCount.toLocaleString(localeTag(i18n.language))}
-              note={L(i18n.language, 'bem-sucedidas', 'successful', 'réussies', 'exitosas')}
-            />
-          </div>
-        </div>
-      </section>
+      </PageHeader>
 
       {isLoading ? (
         <section className="grid gap-3 md:grid-cols-2">
@@ -234,7 +226,7 @@ export function OrgChampions() {
           id="org-champions-panel"
           role="tabpanel"
           aria-labelledby={`org-champions-tab-${view}`}
-          className="space-y-5"
+          className="space-y-6"
         >
           {allDivisions.length > 1 && (view === 'current' || view === 'history') ? (
             <div
@@ -251,10 +243,10 @@ export function OrgChampions() {
                     type="button"
                     aria-pressed={isSelected}
                     onClick={() => setSelectedDivision(div)}
-                    className={`shrink-0 rounded-lg px-3.5 py-2 text-xs font-black uppercase tracking-[0.08em] transition-all duration-150 ${
+                    className={`inline-flex min-h-10 shrink-0 cursor-pointer items-center whitespace-nowrap rounded-control border px-3 text-xs font-semibold transition-colors ${
                       isSelected
-                        ? 'bg-[#F2C230] text-[#0E0E0E] shadow-md shadow-[#F2C230]/25 ring-2 ring-[#F2C230] scale-[1.02]'
-                        : 'border border-[var(--border-subtle)] bg-[var(--surface-3)] text-[var(--text-secondary)] hover:border-[var(--text-main)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-main)]'
+                        ? 'border-[var(--text-primary)] bg-[var(--text-primary)] text-[var(--bg-surface)]'
+                        : 'border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:border-[var(--border-default)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]'
                     }`}
                   >
                     {getDivisionName(div, i18n.language)} {count > 0 ? `(${count})` : ''}
@@ -278,7 +270,7 @@ export function OrgChampions() {
                 />
               </div>
             ) : (
-              <p className="surface-card rounded-[20px] px-4 py-6 text-sm text-[var(--text-muted)]">
+              <p className="px-4 py-12 text-center text-sm text-[var(--text-muted)]">
                 {L(i18n.language, 'Nenhum campeão cadastrado.', 'No champions available.', 'Aucun champion disponible.', 'No hay campeones disponibles.')}
               </p>
             )
@@ -327,17 +319,6 @@ export function OrgChampions() {
   )
 }
 
-function StatTile({ label, value, note }: { label: string; value: string; note?: string }) {
-  return (
-    <div className="metric-tile rounded-xl px-3 py-2.5">
-      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{label}</p>
-      <p className="data-value mt-1 text-2xl font-bold text-[var(--text-main)]">{value}</p>
-      {note ? <p className="text-[11px] text-[var(--text-muted)]">{note}</p> : null}
-    </div>
-  )
-}
-
-
 function CurrentChampionDivisionCard({
   division,
   holders,
@@ -370,7 +351,7 @@ function CurrentChampionDivisionCard({
   const defensesCount = activeReign ? activeReign.defenses.filter((d) => d.outcome === 'win').length : 0
 
   return (
-    <article className="surface-card w-full overflow-hidden rounded-[20px] p-4 sm:p-6 shadow-xl border border-[var(--border-subtle)]">
+    <article className="surface-card w-full overflow-hidden !rounded-card p-4 sm:p-6">
       <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr] lg:items-start">
         {/* Left Side: Champion Identity & Details */}
         <div className="flex flex-col justify-between">
@@ -386,8 +367,8 @@ function CurrentChampionDivisionCard({
                 </div>
                 <p className="mt-0.5 text-xs text-[var(--text-muted)]">
                   {isArchived
-                    ? L(i18n.language, 'Último Detentor Linear (Encerramento 2023)', 'Final Title Holder (2023 Closure)', 'Dernier détenteur (fin 2023)', 'Último poseedor del título (cierre de 2023)')
-                    : L(i18n.language, 'Campeão Mundial da Divisão', 'Divisional World Champion', 'Champion du monde de la catégorie', 'Campeón mundial de la división')}
+                    ? L(i18n.language, 'Último detentor linear (encerramento 2023)', 'Final title holder (2023 closure)', 'Dernier détenteur (fin 2023)', 'Último poseedor del título (cierre de 2023)')
+                    : L(i18n.language, 'Campeão mundial da divisão', 'Divisional world champion', 'Champion du monde de la catégorie', 'Campeón mundial de la división')}
                 </p>
               </div>
               <ChampionBelt className="h-8 w-auto shrink-0" />
@@ -404,19 +385,19 @@ function CurrentChampionDivisionCard({
                 />
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="inline-flex items-center gap-1 border border-transparent bg-[#F2C230] px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.08em] text-[#0E0E0E]">
+                    <span className="inline-flex items-center gap-1 border border-transparent bg-[#F2C230] px-2 py-0.5 text-label font-black uppercase tracking-[0.08em] text-[#0E0E0E]">
                       <Crown className="h-3 w-3" aria-hidden="true" />
                       {isArchived
-                        ? L(i18n.language, 'Último Campeão', 'Final Champion', 'Dernier champion', 'Último campeón')
-                        : L(i18n.language, 'Campeão Atual', 'Current Champion', 'Champion actuel', 'Campeón actual')}
+                        ? L(i18n.language, 'Último campeão', 'Final champion', 'Dernier champion', 'Último campeón')
+                        : L(i18n.language, 'Campeão atual', 'Current champion', 'Champion actuel', 'Campeón actual')}
                     </span>
                     {record ? (
-                      <span className="border border-[var(--line-soft)] bg-[var(--surface-3)] px-2 py-0.5 font-mono text-[11px] font-bold text-[var(--text-main)]">
+                      <span className="border border-[var(--line-soft)] bg-[var(--surface-3)] px-2 py-0.5 font-mono text-label font-bold text-[var(--text-main)]">
                         {record}
                       </span>
                     ) : null}
                     {defensesCount > 0 ? (
-                      <span className="inline-flex items-center gap-1 border border-[var(--line-soft)] bg-[var(--surface-3)] px-2 py-0.5 font-mono text-[11px] font-bold text-[var(--text-main)]">
+                      <span className="inline-flex items-center gap-1 border border-[var(--line-soft)] bg-[var(--surface-3)] px-2 py-0.5 font-mono text-label font-bold text-[var(--text-main)]">
                         <Shield className="h-3 w-3 text-[var(--accent-red)]" aria-hidden="true" />
                         {defensesCount} {defensesCount === 1 ? L(i18n.language, 'defesa', 'defense', 'défense', 'defensa') : L(i18n.language, 'defesas', 'defenses', 'défenses', 'defensas')}
                       </span>
@@ -451,8 +432,8 @@ function CurrentChampionDivisionCard({
               <div className="mt-4 rounded-xl border border-dashed border-[var(--line-soft)] bg-[var(--surface-3)] px-4 py-6 text-center">
                 <p className="text-sm font-bold uppercase tracking-[0.08em] text-[var(--text-muted)]">
                   {isArchived
-                    ? L(i18n.language, 'Cinturão Desativado / Vago', 'Title Deactivated / Vacant', 'Titre désactivé / vacant', 'Título desactivado / vacante')
-                    : L(i18n.language, 'Cinturão Vago', 'Vacant Title', 'Ceinture vacante', 'Título vacante')}
+                    ? L(i18n.language, 'Cinturão desativado / vago', 'Title deactivated / vacant', 'Titre désactivé / vacant', 'Título desactivado / vacante')
+                    : L(i18n.language, 'Cinturão vago', 'Vacant title', 'Ceinture vacante', 'Título vacante')}
                 </p>
               </div>
             )}
@@ -461,7 +442,7 @@ function CurrentChampionDivisionCard({
             {interimEntry?.fighter ? (
               <div className="mt-3 flex items-center justify-between gap-2 rounded-xl border border-[var(--line-soft)] bg-[var(--surface-3)] px-3 py-2">
                 <span className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--text-muted)]">
-                  {L(i18n.language, 'Campeão Interino', 'Interim Champion', 'Champion intérimaire', 'Campeón interino')}
+                  {L(i18n.language, 'Campeão interino', 'Interim champion', 'Champion intérimaire', 'Campeón interino')}
                 </span>
                 <button
                   type="button"
@@ -483,13 +464,13 @@ function CurrentChampionDivisionCard({
                 <History className="h-3.5 w-3.5 text-[var(--accent-red)]" aria-hidden="true" />
                 {L(
                   i18n.language,
-                  `Linhagem da Categoria (${reigns.length} ${reigns.length === 1 ? 'reinado' : 'reinados'})`,
-                  `Division Lineage (${reigns.length} ${reigns.length === 1 ? 'reign' : 'reigns'})`,
+                  `Linhagem da categoria (${reigns.length} ${reigns.length === 1 ? 'reinado' : 'reinados'})`,
+                  `Division lineage (${reigns.length} ${reigns.length === 1 ? 'reign' : 'reigns'})`,
                   `Lignée (${reigns.length} ${reigns.length === 1 ? 'règne' : 'règnes'})`,
                   `Linaje de la división (${reigns.length} ${reigns.length === 1 ? 'reinado' : 'reinados'})`,
                 )}
               </span>
-              <span className="font-mono text-[11px] text-[var(--text-muted)]">
+              <span className="font-mono text-label text-[var(--text-muted)]">
                 {reigns[0]?.date?.slice(0, 4)}–{reigns[reigns.length - 1]?.date?.slice(0, 4) ?? '2023'}
               </span>
             </div>
@@ -516,7 +497,7 @@ function CurrentChampionDivisionCard({
                       </span>
                     </div>
                     {winDefs > 0 ? (
-                      <span className="shrink-0 font-mono text-[11px] font-bold text-[var(--text-main)]">
+                      <span className="shrink-0 font-mono text-label font-bold text-[var(--text-main)]">
                         {winDefs} {winDefs === 1 ? 'def.' : 'defs.'}
                       </span>
                     ) : null}
@@ -554,7 +535,7 @@ export function DivisionHistoryCard({
   const lastYear = reigns[reigns.length - 1]?.date?.slice(0, 4)
 
   return (
-    <article className="surface-card flex flex-col overflow-hidden rounded-[20px]">
+    <article className="surface-card flex flex-col overflow-hidden !rounded-card">
       <header className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--line-soft)] bg-[var(--surface-3)] px-4 py-3">
         <div>
           <div className="flex flex-wrap items-center gap-2">
@@ -573,7 +554,7 @@ export function DivisionHistoryCard({
           <button
             type="button"
             onClick={() => onOpenFighter(finalChampion)}
-            className="inline-flex items-center gap-1.5 border-2 border-[var(--rule)] bg-[#F2C230] px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.08em] text-[#0E0E0E] transition hover:brightness-95"
+            className="inline-flex items-center gap-1.5 border-2 border-[var(--rule)] bg-[#F2C230] px-2.5 py-1 text-label font-bold uppercase tracking-[0.08em] text-[#0E0E0E] transition hover:brightness-95"
           >
             <Crown className="h-3 w-3 shrink-0" aria-hidden="true" />
             <span>
@@ -582,7 +563,7 @@ export function DivisionHistoryCard({
             </span>
           </button>
         ) : (
-          <span className="border border-[var(--line-soft)] bg-[var(--card-bg)] px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.08em] text-[var(--text-muted)]">
+          <span className="border border-[var(--line-soft)] bg-[var(--card-bg)] px-2.5 py-1 text-label font-bold uppercase tracking-[0.08em] text-[var(--text-muted)]">
             {isArchived
               ? L(i18n.language, 'Título desativado', 'Title deactivated', 'Titre désactivé', 'Título desactivado')
               : L(i18n.language, 'Cinturão vago', 'Vacant', 'Vacant', 'Vacante')}
@@ -606,7 +587,7 @@ export function DivisionHistoryCard({
               >
                 <div className="pt-0.5 text-center">
                   <span
-                    className={`inline-flex min-w-[2rem] items-center justify-center border border-[var(--rule)] px-1 py-0.5 font-mono text-[11px] font-bold uppercase leading-none ${
+                    className={`inline-flex min-w-[2rem] items-center justify-center border border-[var(--rule)] px-1 py-0.5 font-mono text-label font-bold uppercase leading-none ${
                       reign.isFinal
                         ? 'bg-[#F2C230] text-[#0E0E0E]'
                         : reign.interim
@@ -616,7 +597,7 @@ export function DivisionHistoryCard({
                   >
                     {reign.interim ? 'INT' : `#${reign.reignOrder}`}
                   </span>
-                  <p className="mt-1 font-mono text-[10px] font-bold text-[var(--text-muted)]">{year}</p>
+                  <p className="mt-1 font-mono text-label font-bold text-[var(--text-muted)]">{year}</p>
                 </div>
 
                 <FighterAvatar
@@ -637,20 +618,20 @@ export function DivisionHistoryCard({
                       {reign.champion}
                     </button>
                     {reign.fighterReignIndex > 1 && !reign.interim ? (
-                      <span className="border border-[var(--line-soft)] bg-[var(--surface-3)] px-1.5 py-px font-mono text-[10px] font-bold uppercase text-[var(--text-main)]">
+                      <span className="border border-[var(--line-soft)] bg-[var(--surface-3)] px-1.5 py-px font-mono text-label font-bold uppercase text-[var(--text-main)]">
                         {reign.fighterReignIndex}x
                       </span>
                     ) : null}
                     {reign.interim ? (
-                      <span className="border border-[var(--rule)] bg-[#1F4E9C] px-1.5 py-px text-[10px] font-bold uppercase text-white">
+                      <span className="border border-[var(--rule)] bg-[#1F4E9C] px-1.5 py-px text-label font-bold uppercase text-white">
                         {L(i18n.language, 'Interino', 'Interim', 'Intérimaire', 'Interino')}
                       </span>
                     ) : null}
                     {reign.isFinal ? (
-                      <span className="border border-[var(--rule)] bg-[#F2C230] px-1.5 py-px text-[10px] font-bold uppercase text-[#0E0E0E]">
+                      <span className="border border-[var(--rule)] bg-[#F2C230] px-1.5 py-px text-label font-bold uppercase text-[#0E0E0E]">
                         {isArchived
-                          ? L(i18n.language, 'Último Campeão', 'Final Champion', 'Dernier champion', 'Último campeón')
-                          : L(i18n.language, 'Campeão Atual', 'Current Champion', 'Champion actuel', 'Campeón actual')}
+                          ? L(i18n.language, 'Último campeão', 'Final champion', 'Dernier champion', 'Último campeón')
+                          : L(i18n.language, 'Campeão atual', 'Current champion', 'Champion actuel', 'Campeón actual')}
                       </span>
                     ) : null}
                   </div>
@@ -665,7 +646,7 @@ export function DivisionHistoryCard({
                   </p>
 
                   {reign.defenses.length > 0 ? (
-                    <p className="mt-0.5 text-[11px] leading-4 text-[var(--text-muted)]">
+                    <p className="mt-0.5 text-label leading-4 text-[var(--text-muted)]">
                       <Shield className="mr-1 inline h-3 w-3 text-[var(--accent-red)]" aria-hidden="true" />
                       <span className="font-semibold text-[var(--text-main)]">
                         {defCount} {defCount === 1 ? L(i18n.language, 'defesa', 'defense', 'défense', 'defensa') : L(i18n.language, 'defesas', 'defenses', 'défenses', 'defensas')}
@@ -677,7 +658,7 @@ export function DivisionHistoryCard({
                 </div>
 
                 <div className="hidden text-right sm:block">
-                  <span className="inline-flex items-center gap-1 border border-[var(--line-soft)] bg-[var(--surface-3)] px-2 py-0.5 font-mono text-[11px] font-bold text-[var(--text-main)]">
+                  <span className="inline-flex items-center gap-1 border border-[var(--line-soft)] bg-[var(--surface-3)] px-2 py-0.5 font-mono text-label font-bold text-[var(--text-main)]">
                     <Swords className="h-3 w-3 text-[var(--accent-red)]" aria-hidden="true" />
                     {defCount} {defCount === 1 ? L(i18n.language, 'def.', 'def.', 'déf.', 'venc.') : L(i18n.language, 'defs.', 'defs.', 'défs.', 'def.')}
                   </span>
@@ -722,10 +703,10 @@ function GreatestChampionsView({
       {/* Record Highlights Row */}
       <div className="grid gap-3 md:grid-cols-3">
         {mostTitleWins ? (
-          <div className="surface-card rounded-[20px] border-l-4 border-l-[#F2C230] p-4">
+          <div className="surface-card !rounded-card border-l-4 border-l-[#F2C230] p-4">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-muted)]">
               <Trophy className="h-4 w-4 text-[#F2C230]" aria-hidden="true" />
-              {L(i18n.language, 'Mais Vitórias em Disputas de Cinturão', 'Most Title-Fight Wins', 'Plus de victoires en combat de titre', 'Más victorias en peleas por el título')}
+              {L(i18n.language, 'Mais vitórias em disputas de cinturão', 'Most title-fight wins', 'Plus de victoires en combat de titre', 'Más victorias en peleas por el título')}
             </div>
             <button
               type="button"
@@ -744,10 +725,10 @@ function GreatestChampionsView({
         ) : null}
 
         {mostDefenses ? (
-          <div className="surface-card rounded-[20px] border-l-4 border-l-[var(--accent-red)] p-4">
+          <div className="surface-card !rounded-card border-l-4 border-l-[var(--accent-red)] p-4">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-muted)]">
               <Flame className="h-4 w-4 text-[var(--accent-red)]" aria-hidden="true" />
-              {L(i18n.language, 'Recordista de Defesas de Cinturão', 'Most Title Defenses', 'Record de défenses de titre', 'Más defensas del título')}
+              {L(i18n.language, 'Recordista de defesas de cinturão', 'Most title defenses', 'Record de défenses de titre', 'Más defensas del título')}
             </div>
             <button
               type="button"
@@ -763,10 +744,10 @@ function GreatestChampionsView({
           </div>
         ) : null}
 
-        <div className="surface-card rounded-[20px] border-l-4 border-l-[#1F4E9C] p-4">
+        <div className="surface-card !rounded-card border-l-4 border-l-[#1F4E9C] p-4">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-muted)]">
             <Layers className="h-4 w-4 text-[#1F4E9C]" aria-hidden="true" />
-            {L(i18n.language, 'Campeões em Múltiplas Categorias', 'Multi-Division Champions', 'Champions multi-catégories', 'Campeones en varias divisiones')}
+            {L(i18n.language, 'Campeões em múltiplas categorias', 'Multi-division champions', 'Champions multi-catégories', 'Campeones en varias divisiones')}
           </div>
           {multiDivision.length > 0 ? (
             <div className="mt-2 flex flex-wrap gap-1.5">
@@ -796,13 +777,13 @@ function GreatestChampionsView({
       </div>
 
       {/* Greatest Champions Leaderboard */}
-      <section className="surface-card overflow-hidden rounded-[20px]">
+      <section className="surface-card overflow-hidden !rounded-card">
         <header className="border-b border-[var(--line-soft)] bg-[var(--surface-3)] px-4 py-3">
           <h2 className="text-base font-extrabold uppercase tracking-[0.04em] text-[var(--text-main)]">
             {L(
               i18n.language,
-              'Ranking Histórico dos Maiores Campeões',
-              'All-Time Greatest Champions Leaderboard',
+              'Ranking histórico dos maiores campeões',
+              'All-time greatest champions leaderboard',
               'Classement historique des plus grands champions',
               'Tabla histórica de los mejores campeones',
             )}
@@ -832,9 +813,9 @@ function GreatestChampionsView({
                   <span
                     className={`inline-flex min-w-[2.25rem] items-center justify-center border border-[var(--rule)] px-1.5 py-0.5 font-mono text-xs font-extrabold ${
                       index === 0
-                        ? 'bg-[#F2C230] text-[#0E0E0E]'
+                        ? 'bg-[var(--gold-fill)] text-[#10151d]'
                         : index < 3
-                          ? 'bg-[#0E0E0E] text-white dark:bg-white dark:text-[#0E0E0E]'
+                          ? 'bg-[var(--ink)] text-[var(--on-ink)]'
                           : 'bg-[var(--surface-3)] text-[var(--text-main)]'
                     }`}
                   >
@@ -861,16 +842,16 @@ function GreatestChampionsView({
                     </button>
                     {record ? <span className="font-mono text-xs text-[var(--text-muted)]">({record})</span> : null}
                     {entry.divisions.length > 1 ? (
-                      <span className="inline-flex items-center gap-1 border border-[var(--rule)] bg-[#1F4E9C] px-1.5 py-px text-[10px] font-bold uppercase text-white">
+                      <span className="inline-flex items-center gap-1 border border-[var(--rule)] bg-[#1F4E9C] px-1.5 py-px text-label font-bold uppercase text-white">
                         <Award className="h-3 w-3" aria-hidden="true" />
-                        {L(i18n.language, 'Duplo Campeão', 'Double Champ', 'Double champion', 'Doble campeón')}
+                        {L(i18n.language, 'Duplo campeão', 'Double champ', 'Double champion', 'Doble campeón')}
                       </span>
                     ) : null}
                     {entry.isCurrentOrFinal ? (
-                      <span className="border border-[var(--rule)] bg-[#F2C230] px-1.5 py-px text-[10px] font-bold uppercase text-[#0E0E0E]">
+                      <span className="border border-[var(--rule)] bg-[#F2C230] px-1.5 py-px text-label font-bold uppercase text-[#0E0E0E]">
                         {isArchived
-                          ? L(i18n.language, 'Último Campeão', 'Final Champ', 'Dernier champion', 'Último campeón')
-                          : L(i18n.language, 'Campeão Atual', 'Current Champ', 'Champion actuel', 'Campeón actual')}
+                          ? L(i18n.language, 'Último campeão', 'Final champ', 'Dernier champion', 'Último campeón')
+                          : L(i18n.language, 'Campeão atual', 'Current champ', 'Champion actuel', 'Campeón actual')}
                       </span>
                     ) : null}
                   </div>

@@ -1,24 +1,25 @@
 {
   "nav": {
     "predict": "Predict",
+    "compare": "Compare",
     "fighters": "Fighters",
     "events": "Events",
     "results": "Results",
     "rankings": "Rankings",
     "gyms": "Gyms",
     "champions": "Champions",
-    "recordBook": "Record Book",
+    "recordBook": "Record book",
     "about": "About",
     "data": "Data",
     "system": "System",
-    "trackRecord": "Track Record",
+    "trackRecord": "Track record",
     "headToHead": "Head-to-Head",
     "matchup": "Matchup",
     "cancelled": "Never happened",
     "career": "Game"
   },
   "header": {
-    "matchupAnalytics": "Matchup Analytics",
+    "matchupAnalytics": "Matchup analytics",
     "apiLive": "Live",
     "apiOffline": "Offline",
     "apiWaking": "Starting",
@@ -44,7 +45,7 @@
   },
   "landing": {
     "eyebrow": "Vektor MMA",
-    "title": "Pick an Organization",
+    "title": "Pick an organization",
     "description": "Stats, rankings and fight results. Win predictions powered by machine learning.",
     "archive": "Archive",
     "enter": "Enter {{name}}",
@@ -57,9 +58,9 @@
       "Gyms": "Gyms"
     },
     "taglines": {
-      "ufc": "Fight stats, rankings and AI win predictions.",
+      "ufc": "Fight stats, rankings and the model’s win predictions.",
       "pfl": "Fighter profiles, official events and league rankings.",
-      "one": "MMA, 4oz open-finger Muay Thai, world champions and AI win predictions.",
+      "one": "MMA, 4oz open-finger Muay Thai, world champions and the model’s win predictions.",
       "bellator": "Historical archive 2009–2023: fighters, events and champions.",
       "rizin": "Fighter profiles and event results.",
       "ksw": "Fighter profiles and event results.",
@@ -71,7 +72,7 @@
     }
   },
   "footer": {
-    "tagline": "Vektor MMA • Combat sports analytics & AI predictions",
+    "tagline": "Combat sports stats and predictions.",
     "dataUpTo": "Data up to {{date}}",
     "disclaimer": "Independent personal project, not affiliated with {{org}}"
   },
@@ -93,41 +94,41 @@
     "method": "Method",
     "referee": "Referee",
     "winner": "Winner",
-    "viewProfile": "View Profile",
+    "viewProfile": "View profile",
     "noResults": "No results found."
   },
   "home": {
-    "nextCard": "Next UFC Card",
-    "mainEvent": "Main Event",
-    "analyzeMatchup": "Analyze Matchup",
-    "restOfCard": "Rest of the Card • {{count}} fights",
-    "restOfCard_one": "Rest of the Card • 1 fight",
+    "nextCard": "Next UFC card",
+    "mainEvent": "Main event",
+    "analyzeMatchup": "Analyze matchup",
+    "restOfCard": "Rest of the card • {{count}} fights",
+    "restOfCard_one": "Rest of the card • 1 fight",
     "trending": "Trending",
     "poundForPound": "Pound-for-Pound",
     "winStreak": "win streak",
     "finishRate": "finish rate",
-    "predictedWinner": "Predicted Winner"
+    "predictedWinner": "Model’s favourite"
   },
   "predictor": {
-    "question": "Featured Bout",
+    "question": "Featured bout",
     "whoTakesIt": "Who takes it?",
-    "heroSubtitle": "Pick any two fighters. The AI model calculates win probabilities and reveals deciding factors.",
-    "fightsOnFile": "Fights on File",
+    "heroSubtitle": "Pick any two fighters. The model estimates each one’s win chance and shows the numbers that weigh most.",
+    "fightsOnFile": "Fights on file",
     "fighters": "Fighters",
-    "modelAccuracy": "Model Accuracy",
+    "modelAccuracy": "Model hit rate",
     "backend": "Backend",
     "onAir": "Live",
     "active": "active",
-    "redCorner": "Red Corner",
-    "blueCorner": "Blue Corner",
+    "redCorner": "Red corner",
+    "blueCorner": "Blue corner",
     "searchPlaceholder": "Search fighter by name...",
-    "predictMatchup": "Predict Matchup",
+    "predictMatchup": "Predict matchup",
     "predicting": "Predicting...",
     "swap": "Swap corners",
     "pickTwoPrompt": "Pick two fighters to predict the fight.",
     "selectTwoDifferent": "Select two different fighters",
-    "winningChance": "Win Probability",
-    "explanation": "Model Explainability",
+    "winningChance": "Win chance estimated by the model",
+    "explanation": "Model explainability",
     "predictionError": "Prediction failed. Check backend connection and try again."
   },
   "fighters": {
@@ -135,18 +136,18 @@
     "subtitle": "Browse fighters by weight division, records and career stats.",
     "search": "Search fighter or nickname...",
     "all": "All",
-    "activeOnly": "Active Roster",
+    "activeOnly": "Active roster",
     "former": "Former",
     "status": "Status",
     "record": "Record",
     "division": "Weight classes",
-    "viewProfile": "View Profile",
+    "viewProfile": "View profile",
     "stats": "Stats",
     "strikes": "Sig. Str. / Min",
     "takedowns": "Takedowns / 15 min"
   },
   "events": {
-    "eyebrow": "Events Archive",
+    "eyebrow": "Events archive",
     "title": "UFC fight cards",
     "description": "Search the full event history and open a card to see every fight, the winner, method and round.",
     "eventsCount": "Events",
@@ -154,24 +155,24 @@
     "searchPlaceholder": "Search event, date or location...",
     "allYears": "All years",
     "allMonths": "All months",
-    "numberedEvents": "Numbered Events",
+    "numberedEvents": "Numbered events",
     "fightNight": "Fight Night",
-    "upcomingSection": "Upcoming Cards",
+    "upcomingSection": "Upcoming cards",
     "noEventsFound": "No events found.",
     "noEventsSub": "Adjust your search filters.",
     "pick": "Pick",
     "fights": "fights",
-    "agreement": "Model Agreement Rate"
+    "agreement": "Model agreement rate"
   },
   "rankings": {
     "eyebrow": "Official UFC rankings",
     "title": "Divisional & pound-for-pound rankings",
     "description": "Official UFC rankings with win rates and recent records.",
     "categoryRanking": "Divisions",
-    "p4p": "P4P (Pound-for-Pound)",
-    "activeOnly": "Active Roster",
-    "elo": "Elo Rating",
-    "allDivisions": "All Divisions",
+    "p4p": "P4P (pound-for-pound)",
+    "activeOnly": "Active roster",
+    "elo": "Elo rating",
+    "allDivisions": "All divisions",
     "division": "Division",
     "champion": "Champion",
     "rankingsUnavailable": "Rankings currently unavailable."
@@ -181,17 +182,17 @@
     "title": "Champions & records",
     "description": "Every title reign, defense and title record compiled from official history.",
     "current": "Current champions",
-    "greatest": "Greatest Champions",
-    "records": "Title Fight Records",
-    "positive": "Positive Records",
-    "negative": "Negative Records",
-    "multi": "Multi-Division Champions",
+    "greatest": "Greatest champions",
+    "records": "Title fight records",
+    "positive": "Positive records",
+    "negative": "Negative records",
+    "multi": "Multi-division champions",
     "daysHeld": "days held",
     "defenses": "defenses"
   },
   "recordBook": {
     "eyebrow": "Career leaders",
-    "title": "Record Book",
+    "title": "Record book",
     "description": "All-time career leaders across 32 official statistics.",
     "blurbs": {
       "Fights": "Wins, finishes, streaks and title wins across a whole career.",
@@ -201,7 +202,7 @@
     }
   },
   "gyms": {
-    "eyebrow": "Training Camps",
+    "eyebrow": "Training camps",
     "title": "gyms and teams",
     "description": "Open a gym to see training partners, champions and roster presence.",
     "totalGyms": "Gyms",
@@ -217,7 +218,7 @@
   },
   "trackRecord": {
     "eyebrow": "Model report card",
-    "title": "Track Record",
+    "title": "Track record",
     "description": "Every pick is logged before the fight and verified with official results. No back-fills.",
     "picksLogged": "Picks logged",
     "settled": "Settled",
@@ -226,11 +227,11 @@
     "recentFights": "Recent fights",
     "reported": "Reported test",
     "waitingTitle": "Waiting for the first results",
-    "howMeasured": "How It Works",
-    "recentResults": "Recent Results",
-    "biggestMisses": "Biggest Misses",
+    "howMeasured": "How it works",
+    "recentResults": "Recent results",
+    "biggestMisses": "Biggest misses",
     "biggestMissesNote": "Highest confidence predictions that were wrong.",
-    "syncButton": "Sync Results",
+    "syncButton": "Sync results",
     "syncing": "Syncing..."
   },
   "headToHead": {
@@ -241,14 +242,14 @@
     "fighterB": "Fighter B",
     "selectFirst": "Select first fighter",
     "selectSecond": "Select second fighter",
-    "findHistory": "Find History",
+    "findHistory": "Find history",
     "searching": "Searching...",
     "neverFought": "Never fought directly",
     "neverFoughtDesc": "{{fighterA}} and {{fighterB}} have no recorded meetings."
   },
   "about": {
     "eyebrow": "About",
-    "title": "An Independent Personal Project",
+    "title": "An independent personal project",
     "description": "Who builds this, where the data comes from, and what its limits are.",
     "who": "Who makes this",
     "whoText1": "This project is built and maintained entirely independently by Larissa Pavan.",
@@ -257,7 +258,7 @@
     "name": "Why Vektor?",
     "nameText1": "The name comes from vector, the mathematics and data science term for a list of numbers. That is how the model sees every fight: two fighters become two lists of numbers (age, reach, record, striking accuracy), and what drives the prediction is the difference between them.",
     "nameText2": "The arrow in the logo, inside the octagon, is a vector too. “Vektor” is simply “vector” spelled with a K.",
-    "dataAndSystem": "Data & System",
+    "dataAndSystem": "Data & system",
     "disclaimer": "Important disclaimer",
     "disclaimerText1": "Predictions are statistical estimates, made as a hobby and for study. They are not a guarantee of any outcome and they are not betting advice.",
     "disclaimerText2": "This site is not an official product of the UFC, the PFL, Bellator, RIZIN, KSW, the LFA, Cage Warriors, OKTAGON, Jungle Fight or Invicta FC.",
@@ -266,40 +267,40 @@
     "sources": "Sources and credits"
   },
   "dataIntelligence": {
-    "eyebrow": "Data Engineering & Telemetry",
-    "title": "From Raw Data to Fight Intelligence",
-    "description": "How official fight data across the UFC, PFL, ONE Championship and historical archives is ingested, cleansed, and transformed into predictive features for machine learning.",
-    "lastUpdate": "Last database update",
-    "fighters": "Cataloged Fighters",
-    "events": "Tracked Events",
-    "fights": "Processed Bouts",
-    "pipelineTitle": "Data Pipeline Architecture",
-    "pipelineDesc": "Every prediction begins with fight-by-fight historical metrics, normalized across multiple organizations and engineered into 46 ML features."
+    "eyebrow": "Data",
+    "title": "Where the data comes from",
+    "description": "How the numbers from the UFC, the PFL, ONE Championship and the historical archives reach the site, get checked and become the data the model uses.",
+    "lastUpdate": "Last update",
+    "fighters": "Fighters",
+    "events": "Events",
+    "fights": "Fights",
+    "pipelineTitle": "From the official site to the prediction",
+    "pipelineDesc": "Every prediction starts from fight-by-fight stats, made consistent across organizations and boiled down to 29 numbers the model compares."
   },
   "model": {
     "eyebrow": "The model",
     "title": "How the model works",
     "description": "The model, how it compares with simpler ones, and what goes into each prediction.",
     "modelCard": "Model",
-    "testAccuracy": "Test Accuracy",
+    "testAccuracy": "Test accuracy",
     "rocAuc": "ROC AUC",
-    "baselines": "Baselines Comparison",
-    "featureImportance": "Feature Importance"
+    "baselines": "Baselines comparison",
+    "featureImportance": "Feature importance"
   },
   "matchup": {
     "eyebrow": "Matchup",
     "title": "Why this matchup is interesting",
     "description": "Striking, grappling and physical numbers for both fighters, plus model deciding factors.",
-    "analyze": "Analyze Matchup",
+    "analyze": "Analyze matchup",
     "analyzing": "Analyzing...",
-    "radar": "Radar Profile",
-    "recentFights": "Recent Fights"
+    "radar": "Radar profile",
+    "recentFights": "Recent fights"
   },
   "fighterProfile": {
     "fights": "Fights",
     "wins": "Wins",
     "losses": "Losses",
     "close": "Close performance profile",
-    "p4pRank": "P4P Elo Rank"
+    "p4pRank": "P4P Elo rank"
   }
 }

@@ -9,20 +9,20 @@ function ResultChip({ result }: { result: FightRecord['result'] }) {
 
   if (result === 'win') {
     return (
-      <span className="type-tech rounded-full border border-[#C8102E]/25 bg-[#C8102E]/10 px-2 py-0.5 text-[11px] font-bold uppercase text-[#C8102E]">
+      <span className="type-tech rounded-full border border-[var(--ink)] bg-[var(--panel)] px-2 py-0.5 text-label font-bold text-[var(--ink)]">
         {L(i18n.language, 'Vitória', 'Win', 'Victoire', 'Victoria')}
       </span>
     )
   }
   if (result === 'loss') {
     return (
-      <span className="type-tech rounded-full border border-[var(--border-subtle)] px-2 py-0.5 text-[11px] font-bold uppercase text-[var(--text-muted)]">
+      <span className="type-tech rounded-full border border-[var(--border-subtle)] px-2 py-0.5 text-label font-bold text-[var(--text-muted)]">
         {L(i18n.language, 'Derrota', 'Loss', 'Défaite', 'Derrota')}
       </span>
     )
   }
   return (
-    <span className="type-tech rounded-full border border-[var(--border-subtle)] px-2 py-0.5 text-[11px] font-bold uppercase text-[var(--text-muted)]">
+    <span className="type-tech rounded-full border border-[var(--border-subtle)] px-2 py-0.5 text-label font-bold text-[var(--text-muted)]">
       N/C
     </span>
   )
@@ -45,10 +45,10 @@ function FightRow({ fight }: { fight: FightRecord }) {
   const { i18n } = useTranslation()
   const date = formatDate(fight.date, i18n.language)
   return (
-    <li className="flex items-start justify-between gap-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3 py-2">
+    <li className="flex items-start justify-between gap-2 border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3 py-2">
       <div className="min-w-0">
         <p className="truncate text-sm font-semibold text-[var(--text-main)]">vs {fight.opponent}</p>
-        <p className="mt-0.5 truncate text-[11px] text-[var(--text-muted)]">
+        <p className="mt-0.5 truncate text-label text-[var(--text-muted)]">
           {formatMethod(fight, i18n.language)}
           {date ? ` · ${date}` : ''}
         </p>
@@ -70,12 +70,12 @@ function Column({
   tone: 'red' | 'blue'
 }) {
   const { i18n } = useTranslation()
-  const dotColor = tone === 'red' ? 'bg-[#C8102E]' : 'bg-[var(--accent-blue)]'
+  const dotColor = tone === 'red' ? 'bg-[var(--red)]' : 'bg-[var(--blue)]'
   return (
     <div>
       <div className="flex items-center gap-2">
         <span className={`h-2.5 w-2.5 rounded-full ${dotColor}`} />
-        <h3 className="type-tech truncate text-xs font-bold uppercase tracking-[0.1em] text-[var(--text-main)]">{name}</h3>
+        <h3 className="type-tech truncate text-xs font-bold text-[var(--text-main)]">{name}</h3>
       </div>
       {loading ? (
         <div className="mt-2 space-y-1.5">
@@ -111,9 +111,9 @@ export function RecentFightsPanel({
 }) {
   const { i18n } = useTranslation()
   return (
-    <article className="surface-card rounded-[20px] p-3 sm:p-4">
-      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Últimos 5 combates', 'Last five', 'Cinq derniers combats', 'Últimas cinco')}</p>
-      <h2 className="mt-0.5 text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{L(i18n.language, 'Histórico Recente', 'Recent fights', 'Combats récents', 'Peleas recientes')}</h2>
+    <article className="surface-card p-3 sm:p-4">
+      <p className="broadcast-label text-label text-[var(--text-muted)]">{L(i18n.language, 'Últimos 5 combates', 'Last five', 'Cinq derniers combats', 'Últimas cinco')}</p>
+      <h2 className="mt-0.5 text-lg font-bold text-[var(--text-main)]">{L(i18n.language, 'Histórico recente', 'Recent fights', 'Combats récents', 'Peleas recientes')}</h2>
       <div className="mt-3 grid gap-4 sm:grid-cols-2">
         <Column name={nameA} fights={performanceA?.last_performances ?? []} loading={loading} tone="red" />
         <Column name={nameB} fights={performanceB?.last_performances ?? []} loading={loading} tone="blue" />

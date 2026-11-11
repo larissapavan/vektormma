@@ -29,7 +29,7 @@ export function Emblem({ name, className = 'h-16 w-16 text-xl' }: { name: string
   return (
     <span
       aria-hidden="true"
-      className={`grid shrink-0 place-items-center rounded-lg border-2 border-[var(--rule)] bg-gradient-to-br from-[var(--accent-red-solid)] to-[var(--accent-gold)] font-display font-extrabold text-white ${className}`}
+      className={`grid shrink-0 place-items-center bg-[var(--ink)] font-display font-extrabold text-[var(--on-ink)] ${className}`}
     >
       {initials || '?'}
     </span>
@@ -39,7 +39,8 @@ export function Emblem({ name, className = 'h-16 w-16 text-xl' }: { name: string
 /** A skill bar whose fill glides to its value. */
 export function SkillMeter({ label, value, max = 100, tone = 'red' }: { label: string; value: number; max?: number; tone?: 'red' | 'gold' | 'blue' }) {
   const reduce = useReducedMotion()
-  const fill = { red: 'from-[var(--accent-red-solid)] to-[var(--accent-red)]', gold: 'from-[var(--accent-gold)] to-[var(--text-gold)]', blue: 'from-[var(--accent-blue-solid)] to-[var(--accent-blue)]' }[tone]
+  // The bars are skills, not corners: ink for the skills, gold for the one that stands out.
+  const fill = { red: 'bg-[var(--ink)]', gold: 'bg-[var(--gold)]', blue: 'bg-[var(--ink)]' }[tone]
   return (
     <div>
       <div className="flex items-baseline justify-between text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--text-secondary)]">
@@ -47,7 +48,7 @@ export function SkillMeter({ label, value, max = 100, tone = 'red' }: { label: s
         <span className="data-value text-sm text-[var(--text-main)]">{Math.round(value)}</span>
       </div>
       <div className="mt-1.5 h-2.5 overflow-hidden rounded-full bg-[var(--border-subtle)]" role="img" aria-label={`${label}: ${Math.round(value)}/${max}`}>
-        <motion.div className={`h-full rounded-full bg-gradient-to-r ${fill}`} initial={false} animate={{ width: `${Math.min((value / max) * 100, 100)}%` }} transition={{ duration: reduce ? 0 : 0.6, ease: 'easeOut' }} />
+        <motion.div className={`h-full ${fill}`} initial={false} animate={{ width: `${Math.min((value / max) * 100, 100)}%` }} transition={{ duration: reduce ? 0 : 0.6, ease: 'easeOut' }} />
       </div>
     </div>
   )

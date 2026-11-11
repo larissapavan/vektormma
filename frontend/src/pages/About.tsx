@@ -183,18 +183,18 @@ export function About() {
 
   return (
     <div className="space-y-3 sm:space-y-4">
-      <section className="page-hero rounded-[20px] px-3 py-3 sm:px-4 sm:py-4" aria-labelledby="about-title">
+      <section className="" aria-labelledby="about-title">
         <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{t('about.eyebrow')}</p>
         <h1 id="about-title" className="mt-1.5 text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)] min-[390px]:text-3xl md:text-4xl">
           {t('about.title')}
         </h1>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--text-secondary)]">
+        <p className="mt-2 max-w-3xl text-base leading-7">
           {t('about.description')}
         </p>
       </section>
 
       <AboutSection id="who" icon={Users} title={t('about.who')}>
-        <ul className="list-disc space-y-2 pl-5 marker:text-[#C8102E]">
+        <ul className="list-disc space-y-2 pl-5 ">
           <li>{t('about.whoText1')}</li>
           <li>{t('about.whoText2')}</li>
           <li>{t('about.whoText3')}</li>
@@ -202,7 +202,7 @@ export function About() {
       </AboutSection>
 
       <AboutSection id="name" icon={Compass} title={t('about.name')}>
-        <ul className="list-disc space-y-2 pl-5 marker:text-[#C8102E]">
+        <ul className="list-disc space-y-2 pl-5 ">
           <li>{t('about.nameText1')}</li>
           <li>{t('about.nameText2')}</li>
         </ul>
@@ -221,7 +221,7 @@ export function About() {
       </AboutSection>
 
       <AboutSection id="disclaimer" icon={AlertTriangle} title={t('about.disclaimer')}>
-        <ul className="list-disc space-y-2 pl-5 marker:text-[#C8102E]">
+        <ul className="list-disc space-y-2 pl-5 ">
           <li>{t('about.disclaimerText1')}</li>
           <li>{t('about.disclaimerText2')}</li>
         </ul>
@@ -237,7 +237,7 @@ export function About() {
 
         <div className="mt-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-3.5">
           <p className="font-mono text-xs uppercase tracking-wider text-[var(--text-main)] font-bold mb-2.5">
-            {L(i18n.language, 'Canais Oficiais // Vektor MMA', 'Official Channels // Vektor MMA', 'Canaux officiels // Vektor MMA', 'Canales oficiales // Vektor MMA')}
+            {L(i18n.language, 'Canais oficiais', 'Official channels', 'Canaux officiels', 'Canales oficiales')}
           </p>
           <div className="flex flex-wrap gap-4 text-xs font-medium">
             <a
@@ -270,7 +270,7 @@ export function About() {
           </div>
         </div>
 
-        <h3 className="broadcast-label mt-5 text-xs text-[var(--text-main)]">{t('about.sources')}</h3>
+        <h3 className="mt-5 font-display text-2xl font-extrabold">{t('about.sources')}</h3>
         <ul className="mt-2 grid gap-2 sm:grid-cols-2">
           {sources.map((source) => (
             <li key={source.name} className="metric-tile rounded-xl px-3 py-2.5">
@@ -308,16 +308,16 @@ function AboutSection({
   children: ReactNode
 }) {
   return (
-    <section className="surface-card rounded-[20px] p-3 sm:p-4" aria-labelledby={`about-${id}`}>
+    <section className="border-t-[3px] border-[var(--ink)] pt-5" aria-labelledby={`about-${id}`}>
       <div className="flex items-center gap-2.5">
         <div className="rounded-xl bg-[#C8102E]/12 p-2 text-[#C8102E]">
           <Icon className="h-4 w-4" aria-hidden />
         </div>
-        <h2 id={`about-${id}`} className="text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">
+        <h2 id={`about-${id}`} className="section-title ">
           {title}
         </h2>
       </div>
-      <div className="mt-3 max-w-3xl space-y-3 text-sm leading-6 text-[var(--text-secondary)]">{children}</div>
+      <div className="mt-3 max-w-3xl space-y-3 text-base leading-7">{children}</div>
     </section>
   )
 }

@@ -38,7 +38,7 @@ export function GymDetail() {
   const back = (
     <Link
       to={orgPath(org, 'gyms')}
-      className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-main)] underline decoration-2 underline-offset-4 hover:bg-[#F2C230] hover:text-[#0E0E0E]"
+      className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--text-main)] underline decoration-2 underline-offset-4 hover:bg-[var(--gold-fill)] hover:text-[#0E0E0E]"
     >
       <ArrowLeft className="h-3.5 w-3.5" />
       {L(i18n.language, `Todas as academias ${orgPt(org, 'de')}`, `All ${org.shortName} gyms`, `Toutes les salles ${org.shortName}`, `Todos los gimnasios de ${org.shortName}`)}
@@ -59,8 +59,8 @@ export function GymDetail() {
     return (
       <div className="space-y-4">
         {back}
-        <div className="surface-card rounded-[20px] px-4 py-7 text-center">
-          <h1 className="type-display text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">
+        <div className="surface-card px-4 py-7 text-center">
+          <h1 className="type-display text-2xl font-bold text-[var(--text-main)]">
             {L(i18n.language, 'Academia não encontrada', 'Gym not found', 'Salle introuvable', 'Gimnasio no encontrado')}
           </h1>
           <p className="mt-2 text-sm text-[var(--text-muted)]">
@@ -75,7 +75,7 @@ export function GymDetail() {
     <div className="space-y-4 sm:space-y-5">
       {back}
 
-      <section className="page-hero rounded-[20px] px-3 py-3 sm:px-4 sm:py-4">
+      <section>
         <div className="grid gap-3 xl:grid-cols-[1fr_0.8fr] xl:items-end">
           <SectionHeading
             level={1}
@@ -86,20 +86,20 @@ export function GymDetail() {
           <div className="grid gap-2 sm:grid-cols-3">
             <Tile label={L(i18n.language, 'Total de atletas', 'Fighters listed', 'Combattants inscrits', 'Peleadores registrados')} value={gym.fighters_count.toLocaleString(localeTag(i18n.language))} />
             <Tile label={`${org.shortName} (${L(i18n.language, 'atletas', 'fighters', 'combattants', 'peleadores')})`} value={(gym.orgs[org.id] ?? 0).toLocaleString(localeTag(i18n.language))} />
-            <Tile label={L(i18n.language, 'Cinturões / Campeões', 'Champions', 'Champions', 'Campeones')} value={gym.champions.toLocaleString(localeTag(i18n.language))} />
+            <Tile label={L(i18n.language, 'Cinturões / campeões', 'Champions', 'Champions', 'Campeones')} value={gym.champions.toLocaleString(localeTag(i18n.language))} />
           </div>
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <div role="group" aria-label={L(i18n.language, 'Filtrar atletas', 'Which fighters', 'Quels combattants', 'Qué peleadores')} className="inline-flex border-2 border-[var(--rule)] bg-[var(--card-bg)]">
+          <div role="group" aria-label={L(i18n.language, 'Filtrar atletas', 'Which fighters', 'Quels combattants', 'Qué peleadores')} className="inline-flex border-[1.5px] border-[var(--ink)] bg-[var(--panel)]">
             {(['org', 'all'] as const).map((value) => (
               <button
                 key={value}
                 type="button"
                 aria-pressed={activeScope === value}
                 onClick={() => setScope(value)}
-                className={`px-3.5 py-2 text-xs font-bold uppercase tracking-[0.12em] transition ${
-                  activeScope === value ? 'bg-[var(--rule)] text-[var(--card-bg)]' : 'text-[var(--text-main)] hover:bg-[var(--tape)] hover:text-[#0E0E0E]'
+                className={`min-h-11 px-3.5 text-sm font-semibold transition-colors ${
+                  activeScope === value ? 'bg-[var(--ink)] text-[var(--on-ink)]' : 'text-[var(--ink)] hover:bg-[var(--mat)]'
                 }`}
               >
                 {value === 'org' ? `${org.shortName} (${inOrg.length})` : `${L(i18n.language, 'Todos', 'Everyone', 'Tout le monde', 'Todos')} (${gym.fighters.length})`}
@@ -123,7 +123,7 @@ export function GymDetail() {
           ))}
         </ul>
       ) : (
-        <div className="surface-card rounded-[20px] px-4 py-7 text-center text-sm text-[var(--text-muted)]">
+        <div className="surface-card px-4 py-7 text-center text-sm text-[var(--text-muted)]">
           {L(i18n.language, 'Nenhum atleta encontrado para esta academia.', 'No fighters listed for this gym.', 'Aucun combattant n’est inscrit dans cette salle.', 'No hay peleadores registrados en este gimnasio.')}
         </div>
       )}
@@ -146,8 +146,8 @@ export function GymDetail() {
 
 function Tile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="metric-tile rounded-xl px-3 py-2.5">
-      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{label}</p>
+    <div className="metric-tile px-3 py-2.5">
+      <p className="broadcast-label text-label text-[var(--text-muted)]">{label}</p>
       <p className="data-value mt-1 text-2xl font-bold text-[var(--text-main)]">{value}</p>
     </div>
   )
@@ -170,13 +170,13 @@ function FighterCard({ fighter, onOpen }: { fighter: GymFighter; onOpen: (fighte
         </span>
         <span className="mt-1.5 flex flex-wrap items-center gap-1">
           {fighter.belt ? (
-            <span className="inline-flex items-center gap-1 border-2 border-[var(--rule)] bg-[#F2C230] px-1.5 py-px text-[11px] font-bold uppercase leading-4 tracking-[0.08em] text-[#0E0E0E]">
+            <span className="inline-flex items-center gap-1 border-2 border-[var(--rule)] bg-[var(--gold-fill)] px-1.5 py-px text-label font-bold leading-4 text-[#0E0E0E]">
               <Crown className="h-3 w-3" aria-hidden="true" />
               {L(i18n.language, 'Campeão', 'Champion', 'Champion', 'Campeón')}
             </span>
           ) : null}
           {fighter.orgs.map((orgId) => (
-            <span key={orgId} className="border-2 border-[var(--rule)] bg-[var(--surface-3)] px-1.5 py-px text-[11px] font-bold uppercase leading-4 tracking-[0.08em] text-[var(--text-main)]">
+            <span key={orgId} className="border-2 border-[var(--rule)] bg-[var(--surface-3)] px-1.5 py-px text-label font-bold leading-4 text-[var(--text-main)]">
               {ORGS[orgId as OrgId]?.shortName ?? orgId.toUpperCase()}
             </span>
           ))}

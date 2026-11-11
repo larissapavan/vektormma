@@ -159,7 +159,7 @@ export function Career() {
 
   return (
     <div className="space-y-5 sm:space-y-6">
-      <header className="surface-card rounded-2xl border border-[var(--border-subtle)] px-4 py-5 sm:px-8 sm:py-7">
+      <header>
         <SectionHeading
           level={1}
           eyebrow={L(lang, 'Jogo', 'Game', 'Jeu', 'Juego')}

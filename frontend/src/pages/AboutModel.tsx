@@ -83,11 +83,11 @@ export function AboutModel() {
 
   return (
     <div className="space-y-3 sm:space-y-4">
-      <section className="page-hero rounded-[20px] px-3 py-3 sm:px-4 sm:py-4">
+      <section>
         <SectionHeading
           level={1}
-          eyebrow={L(i18n.language, 'Sobre o Projeto', 'About', 'À propos', 'Acerca del proyecto')}
-          title={L(i18n.language, 'Ciência de Dados aplicada ao MMA', 'A UFC analytics project built to learn', 'Un projet d’analyse UFC conçu pour apprendre', 'Ciencia de datos aplicada al MMA')}
+          eyebrow={L(i18n.language, 'Sobre o projeto', 'About', 'À propos', 'Acerca del proyecto')}
+          title={L(i18n.language, 'Ciência de dados aplicada ao MMA', 'A UFC analytics project built to learn', 'Un projet d’analyse UFC conçu pour apprendre', 'Ciencia de datos aplicada al MMA')}
           description={L(
             i18n.language,
             'Desenvolvido para aplicar aprendizado de máquina do dado bruto ao produto interativo na web.',
@@ -98,12 +98,12 @@ export function AboutModel() {
         />
       </section>
 
-      {error ? <p className="rounded-xl border border-[#C8102E]/25 bg-[#C8102E]/8 px-3 py-2 text-sm font-semibold text-[var(--text-red)]">{error}</p> : null}
+      {error ? <p className="border-l-[3px] border-[var(--ink)] bg-[var(--panel)] px-4 py-3 text-base font-semibold">{error}</p> : null}
 
       <section className="grid gap-3 lg:grid-cols-4">
         <InfoCard
           icon={Trophy}
-          title={L(i18n.language, 'Projeto Completo', 'Built to learn', 'Construit pour apprendre', 'Hecho para aprender')}
+          title={L(i18n.language, 'Projeto completo', 'Built to learn', 'Construit pour apprendre', 'Hecho para aprender')}
           description={L(
             i18n.language,
             'Muito além de um caderno de código: fluxo de dados, treinamento do modelo, API REST e interface reativa.',
@@ -114,7 +114,7 @@ export function AboutModel() {
         />
         <InfoCard
           icon={Binary}
-          title={L(i18n.language, 'Como a Previsão Funciona', 'How a pick is made', 'Comment un choix est fait', 'Cómo se hace un pronóstico')}
+          title={L(i18n.language, 'Como a previsão funciona', 'How a pick is made', 'Comment un choix est fait', 'Cómo se hace un pronóstico')}
           description={L(
             i18n.language,
             'O modelo calcula o diferencial estatístico entre os atletas e a API retorna as probabilidades com os fatores SHAP.',
@@ -125,7 +125,7 @@ export function AboutModel() {
         />
         <InfoCard
           icon={ChartNoAxesCombined}
-          title={L(i18n.language, 'Base Histórica', 'The data', 'Les données', 'Los datos')}
+          title={L(i18n.language, 'Base histórica', 'The data', 'Les données', 'Los datos')}
           description={L(
             i18n.language,
             'Milhares de lutas oficiais do UFC, cartéis completos e métricas detalhadas de trocação e luta no chão.',
@@ -136,7 +136,7 @@ export function AboutModel() {
         />
         <InfoCard
           icon={ShieldAlert}
-          title={L(i18n.language, 'Uso Responsável', 'Responsible use', 'Usage responsable', 'Uso responsable')}
+          title={L(i18n.language, 'Uso responsável', 'Responsible use', 'Usage responsable', 'Uso responsable')}
           description={L(
             i18n.language,
             'Probabilidades estatísticas não são conselho financeiro ou de apostas. MMA é dinâmico e imprevisível.',
@@ -148,21 +148,21 @@ export function AboutModel() {
       </section>
 
       <section className="grid gap-3 xl:grid-cols-[1fr_1fr]">
-        <article className="surface-card rounded-[20px] p-3 sm:p-4">
-          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Tecnologias Principais', 'Core stack', 'Socle technique', 'Tecnologías principales')}</p>
-          <h2 className="mt-1 text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">
-            {L(i18n.language, 'Tecnologias Utilizadas', 'What it is built with', 'Avec quoi c’est construit', 'Con qué está hecho')}
+        <article className="border-t-[3px] border-[var(--ink)] pt-5">
+          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Tecnologias principais', 'Core stack', 'Socle technique', 'Tecnologías principales')}</p>
+          <h2 className="section-title mt-1 ">
+            {L(i18n.language, 'Tecnologias utilizadas', 'What it is built with', 'Avec quoi c’est construit', 'Con qué está hecho')}
           </h2>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             {[
               'FastAPI (Python)',
               'React + Vite + TypeScript',
               'Gradient Boosting (LightGBM/XGBoost)',
-              L(i18n.language, 'Engenharia de Variáveis', 'Feature Engineering', 'Ingénierie des variables', 'Ingeniería de variables'),
-              L(i18n.language, 'Explicabilidade com SHAP', 'SHAP Explainability', 'Explicabilité SHAP', 'Explicabilidad con SHAP'),
+              L(i18n.language, 'Engenharia de variáveis', 'Feature engineering', 'Ingénierie des variables', 'Ingeniería de variables'),
+              L(i18n.language, 'Por que o modelo decide assim', 'Why the model decides as it does', 'Pourquoi le modèle décide ainsi', 'Por qué el modelo decide así'),
               'Tailwind CSS & Framer Motion',
-              L(i18n.language, 'Recharts (visualização de dados)', 'Recharts (Data Viz)', 'Recharts (visualisation de données)', 'Recharts (visualización de datos)'),
-              L(i18n.language, 'Testes Automatizados (Pytest & Vitest)', 'Automated Tests (Pytest & Vitest)', 'Tests automatisés (Pytest & Vitest)', 'Pruebas automatizadas (Pytest y Vitest)'),
+              L(i18n.language, 'Recharts (visualização de dados)', 'Recharts (data viz)', 'Recharts (visualisation de données)', 'Recharts (visualización de datos)'),
+              L(i18n.language, 'Testes automatizados (Pytest & Vitest)', 'Automated tests (Pytest & Vitest)', 'Tests automatisés (Pytest & Vitest)', 'Pruebas automatizadas (Pytest y Vitest)'),
             ].map((item) => (
               <div key={item} className="metric-tile rounded-xl px-3 py-2.5 text-xs font-medium text-[var(--text-main)]">
                 {item}
@@ -171,10 +171,10 @@ export function AboutModel() {
           </div>
         </article>
 
-        <article className="surface-card rounded-[20px] p-3 sm:p-4">
-          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Links e Contato', 'Links & contact', 'Liens et contact', 'Enlaces y contacto')}</p>
-          <h2 className="mt-1 text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">
-            {L(i18n.language, 'Código & Redes', 'Find the project', 'Retrouver le projet', 'Encuentra el proyecto')}
+        <article className="border-t-[3px] border-[var(--ink)] pt-5">
+          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Links e contato', 'Links & contact', 'Liens et contact', 'Enlaces y contacto')}</p>
+          <h2 className="section-title mt-1 ">
+            {L(i18n.language, 'Código & redes', 'Find the project', 'Retrouver le projet', 'Encuentra el proyecto')}
           </h2>
           <div className="mt-3 grid gap-2">
             {contactLinks.map(({ label, labelPt, labelFr, labelEs, href, icon: Icon }) => {
@@ -220,7 +220,7 @@ export function AboutModel() {
                         onClick={() => void handleCopyLink(href)}
                         className="ghost-action inline-flex items-center justify-center rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#C8102E]"
                       >
-                        {copiedLink === href ? L(i18n.language, 'Copiado!', 'Copied', 'Copié', '¡Copiado!') : L(i18n.language, 'Copiar URL', 'Copy URL', 'Copier l’URL', 'Copiar URL')}
+                        {copiedLink === href ? L(i18n.language, 'Copiado', 'Copied', 'Copié', 'Copiado') : L(i18n.language, 'Copiar URL', 'Copy URL', 'Copier l’URL', 'Copiar URL')}
                       </button>
                     </div>
                   ) : null}
@@ -238,25 +238,25 @@ export function AboutModel() {
         </section>
       ) : modelInfo ? (
         <section className="grid gap-3 xl:grid-cols-[0.95fr_1.05fr]">
-          <article className="surface-card rounded-[20px] p-3 sm:p-4">
-            <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Ficha Técnica do Modelo', 'Technical snapshot', 'Fiche technique', 'Ficha técnica')}</p>
-            <h2 className="mt-1 break-words text-xl sm:text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{modelInfo.model_name}</h2>
+          <article className="border-t-[3px] border-[var(--ink)] pt-5">
+            <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Ficha técnica do modelo', 'Technical snapshot', 'Fiche technique', 'Ficha técnica')}</p>
+            <h2 className="section-title mt-1 break-words ">{modelInfo.model_name}</h2>
             <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
               <Metric label={L(i18n.language, 'Variáveis', 'Features', 'Variables', 'Variables')} value={`${modelInfo.feature_count}`} />
-              <Metric label={`${L(i18n.language, 'Acurácia', 'Accuracy', 'Précision', 'Precisión')} (${shownMetrics(modelInfo, i18n.language).caption})`} value={`${((shownMetrics(modelInfo, i18n.language).accuracy ?? 0) * 100).toFixed(1)}%`} />
+              <Metric label={`${L(i18n.language, 'Taxa de acerto', 'Accuracy', 'Précision', 'Precisión')} (${shownMetrics(modelInfo, i18n.language).caption})`} value={`${((shownMetrics(modelInfo, i18n.language).accuracy ?? 0) * 100).toFixed(1)}%`} />
               <Metric label="ROC AUC" value={(shownMetrics(modelInfo, i18n.language).rocAuc ?? 0).toFixed(3)} />
               <Metric label={L(i18n.language, 'Perda logarítmica', 'Log loss', 'Perte logarithmique', 'Pérdida logarítmica')} value={(shownMetrics(modelInfo, i18n.language).logLoss ?? 0).toFixed(3)} />
             </div>
             {modelInfo.metrics_note ? <p className="mt-3 text-xs leading-5 text-[var(--text-secondary)]">{localizeApiText(modelInfo.metrics_note, i18n.language)}</p> : null}
           </article>
 
-          <article className="surface-card rounded-[20px] p-3 sm:p-4">
-            <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Aviso Importante', 'Important note', 'Note importante', 'Nota importante')}</p>
+          <article className="border-t-[3px] border-[var(--ink)] pt-5">
+            <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Aviso importante', 'Important note', 'Note importante', 'Nota importante')}</p>
             <div className="mt-3 rounded-2xl border border-[#C8102E]/20 bg-[#C8102E]/8 p-3">
               <div className="mb-2 flex items-center gap-2 text-[#C8102E]">
                 <AlertTriangle className="h-4 w-4" />
                 <span className="type-tech text-xs font-semibold uppercase tracking-[0.18em]">
-                  {L(i18n.language, 'Aviso Legal', 'Use disclaimer', 'Avertissement', 'Aviso legal')}
+                  {L(i18n.language, 'Aviso legal', 'Use disclaimer', 'Avertissement', 'Aviso legal')}
                 </span>
               </div>
               <p className="text-xs leading-5 text-[var(--text-main)]">
@@ -303,7 +303,7 @@ function InfoCard({
       <div className="inline-flex rounded-xl bg-[#C8102E]/10 p-2.5 text-[var(--accent-red)]">
         <Icon className="h-4 w-4" />
       </div>
-      <h2 className="mt-3 text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{title}</h2>
+      <h2 className="section-title mt-3 ">{title}</h2>
       <p className="mt-1.5 text-xs leading-5 text-[var(--text-muted)]">{description}</p>
     </article>
   )

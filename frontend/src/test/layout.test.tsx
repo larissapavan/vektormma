@@ -83,7 +83,7 @@ describe('searching fighters by name', () => {
 
 describe('one h1 per page', () => {
   const pages: [string, string, string | RegExp][] = [
-    ['Landing', '/', /pick an organization/i],
+    ['Landing', '/', /choose an organization/i],
     ['UFC home', '/home', 'Alpha One'],
     ['Fighters', '/fighters', /weight classes/i],
     ['Events', '/events', 'UFC fight cards'],
@@ -93,11 +93,11 @@ describe('one h1 per page', () => {
     ['Never happened', '/cancelled-fights', /the fights that never happened/i],
     ['Career game', '/career', /simulate your ufc career/i],
     ['Track record', '/track-record', /waiting for the first results/i],
-    ['Head-to-head', '/head-to-head', /head-to-head history/i],
+    ['Head-to-head', '/head-to-head', /^head-to-head$/i],
     ['Predict', '/predictor', /fighter/i],
     ['Matchup', '/matchup-intelligence', /why this matchup is interesting/i],
     ['About', '/about', /sources and credits/i],
-    ['Data', '/data', /data pipeline/i],
+    ['Data', '/data', /from the official site to the prediction/i],
     ['System', '/model', /how the model works/i],
   ]
 
