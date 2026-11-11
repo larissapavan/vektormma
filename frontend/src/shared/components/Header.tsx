@@ -163,17 +163,17 @@ export function Header() {
       <div className="relative w-full text-[var(--text-primary)]">
         {/* Main Navbar Row */}
         <div className="flex h-14 sm:h-16 w-full items-center justify-between gap-1 xs:gap-2 sm:gap-6">
-          {/* Left: Native Brand Identity. Under 480px the toolbar on the right drops its globe icon and divider and the
-              gaps tighten, so the whole wordmark fits next to it on a 320px phone instead of ending under the org button. */}
+          {/* Left: the mark and the full wordmark. Under 480px the org switcher on the right shrinks to an icon and the
+              wordmark and gaps get smaller, so "Vektor MMA" fits next to the toolbar on a 320px phone. */}
           <div className="flex min-w-0 flex-1 items-center gap-3 xl:gap-8">
             <Link
               to={LANDING_PATH}
               aria-label={L(i18n.language, 'Vektor MMA • Início', 'Vektor MMA home', 'Vektor MMA • Accueil', 'Vektor MMA • Inicio')}
-              className="flex min-h-11 min-w-0 shrink-0 items-center gap-2 sm:gap-2.5"
+              className="flex min-h-11 min-w-0 shrink-0 items-center gap-1.5 xs:gap-2 sm:gap-2.5"
             >
-              <BrandMark className="h-[26px] w-[26px] sm:h-[30px] sm:w-[30px]" />
-              <span className="whitespace-nowrap font-display text-[26px] leading-none tracking-[0.01em] text-[var(--ink)] sm:text-[30px]">
-                <span className="font-black">Vektor</span> <span className="font-medium max-xs:hidden">MMA</span>
+              <BrandMark className="h-[22px] w-[22px] min-[360px]:h-6 min-[360px]:w-6 xs:h-[26px] xs:w-[26px] sm:h-[30px] sm:w-[30px]" />
+              <span className="whitespace-nowrap font-display text-[20px] leading-none text-[var(--ink)] min-[360px]:text-[22px] xs:text-[26px] sm:text-[30px]">
+                <span className="font-black">Vektor</span> <span className="font-medium">MMA</span>
               </span>
             </Link>
 
@@ -231,7 +231,7 @@ export function Header() {
           </div>
 
           {/* Right: Modern SaaS Utility Toolbar */}
-          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
+          <div className="flex shrink-0 items-center gap-0.5 min-[360px]:gap-1 xs:gap-1.5 sm:gap-2.5">
             {!landing && !bare && <OrgSwitcher className="shrink-0" />}
 
             {!landing && !bare && <FighterSearch />}
