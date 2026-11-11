@@ -40,7 +40,7 @@ export function Model() {
         />
       </section>
 
-      {error ? <p className="border-l-[3px] border-[var(--ink)] bg-[var(--panel)] px-4 py-3 text-base font-semibold text-[#FFFFFF]">{error}</p> : null}
+      {error ? <p role="alert" className="error-note">{error}</p> : null}
 
       {loading || !modelInfo ? (
         <section className="grid gap-3 lg:grid-cols-4">

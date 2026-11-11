@@ -103,11 +103,11 @@ export function DataConfidenceNote({ confidence }: { confidence: DataConfidence 
   return (
     <aside
       aria-label={L(lang, 'Dados por trás desta previsão', 'Data behind this prediction', 'Données derrière ce pronostic', 'Datos detrás de este pronóstico')}
-      className="flex items-start gap-3 border-l-[3px] border-[var(--ink)] bg-[var(--panel)] px-4 py-3"
+      className="flex items-start gap-3 border-l-4 border-[var(--error)] bg-[var(--panel)] px-4 py-3"
     >
-      <Info aria-hidden className="mt-0.5 h-5 w-5 shrink-0" />
+      <Info aria-hidden className="mt-0.5 h-5 w-5 shrink-0 text-[var(--error)]" />
       <div>
-        <p className="text-base font-bold">{levelLabel(confidence.level, confidence.label, lang)}</p>
+        <p className="text-base font-bold text-[var(--error)]">{levelLabel(confidence.level, confidence.label, lang)}</p>
         <ul className="mt-1 space-y-1 text-[15px] leading-6">
           {confidence.reasons.map((reason) => (
             <li key={reason}>{translateReason(reason, lang)}</li>

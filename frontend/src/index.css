@@ -102,6 +102,7 @@
   --border-mid: #8a94a3;
   --modal-backdrop: rgba(16, 21, 29, 0.55);
   --positive: #1b6b3a;   /* a win, "active": 5.3:1 on mat */
+  --error: #a64b00;      /* errors and warnings, never a corner colour: 4.6:1 on mat, 5.3:1 on panel */
   --gold: #8a5a00;       /* a title: 4.9:1 on mat */
   --gold-fill: #f2c230;
 }
@@ -131,6 +132,7 @@
   --border-mid: #6b7686;
   --modal-backdrop: rgba(0, 0, 0, 0.72);
   --positive: #6fd39a;
+  --error: #f08a3c;      /* 7.3:1 on the dark page */
   --gold: #f2c230;
   --gold-fill: #f2c230;
 }
@@ -717,4 +719,15 @@ select.soft-input option {
 
 @media (prefers-reduced-motion: reduce) {
   .game-pop { animation: none; }
+}
+
+/* An error or warning message: a burnt-orange rule and text, so it never reads as a fight corner. */
+.error-note {
+  border-left: 4px solid var(--error);
+  background: var(--panel);
+  color: var(--error);
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
 }

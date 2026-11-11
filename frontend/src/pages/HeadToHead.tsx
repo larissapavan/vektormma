@@ -247,7 +247,7 @@ export function HeadToHead() {
         </button>
 
         {error ? (
-          <p className="mt-3 rounded-sm border-[1.5px] border-[var(--ink)] bg-[var(--panel)] px-3 py-2 text-sm font-semibold">
+          <p role="alert" className="mt-3 error-note">
             {error}
           </p>
         ) : null}

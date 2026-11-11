@@ -397,7 +397,7 @@ function RankingsCard({
           ))}
         </div>
       ) : error ? (
-        <p className="text-sm text-[var(--text-muted)]">{error}</p>
+        <p role="alert" className="error-note">{error}</p>
       ) : category ? (
         <ol className="divide-y divide-[var(--border-subtle)]">
           {category.entries.slice(0, 3).map((entry) => {

@@ -86,7 +86,7 @@ export function Results() {
         </div>
       </PageHeader>
 
-      {error ? <p className="border-l-[3px] border-[var(--ink)] bg-[var(--panel)] px-4 py-3 text-base font-semibold">{error}</p> : null}
+      {error ? <p role="alert" className="error-note">{error}</p> : null}
 
       {loading && !data ? (
         <LoadingSkeleton className="h-[220px]" />

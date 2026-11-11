@@ -158,7 +158,7 @@ export function OrgEvents() {
         </Section>
       ) : null}
 
-      {error ? <p className="rounded-card border border-[var(--accent-red)]/30 bg-[var(--accent-red)]/10 px-3 py-2 text-sm font-semibold text-[var(--text-red)]">{error}</p> : null}
+      {error ? <p role="alert" className="error-note">{error}</p> : null}
 
       {loading ? (
         <section className="grid gap-3 md:grid-cols-2">

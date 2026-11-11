@@ -356,7 +356,7 @@ function OrgOnlyFighterModal({
               </div>
             ) : error ? (
               <div className="space-y-2">
-                <p className="text-xs text-[var(--ink)] font-semibold">{error}</p>
+                <p role="alert" className="error-note">{error}</p>
                 <p className="font-sans text-xs text-[var(--muted)]">
                   {L(lang, 'Histórico detalhado indisponível no momento.', 'Detailed history unavailable at this time.', 'Historique détaillé indisponible pour le moment.', 'El historial detallado no está disponible por ahora.')}
                 </p>
