@@ -70,18 +70,19 @@ Contraste (WCAG AA, 4,5:1) e estouro horizontal medidos nos dois temas, em 390 p
 
 ## Onde eu discordo do briefing ou dos mockups
 
-- **Vermelho só para cantos.** Isso deixou erros e avisos em ink com régua lateral, em vez de vermelho. Funciona, mas um erro perde destaque. Vale ver se você quer um tom próprio para erro.
+- **Vermelho só para cantos.** Erros e avisos ficavam em ink e perdiam destaque. Resolvido com um laranja próprio (item 7 abaixo).
 - **Cabeçalho com tudo à vista.** No desktop cabem 4 itens + "Mais" a partir de 1280 px. Com 5 ou mais, o francês sobrepunha os botões.
 - **Barra inferior no celular.** "Combattants" e "Événements" ficam apertados abaixo de 360 px. Hoje quebram a palavra; a alternativa seria só ícones.
 
-## Ainda em aberto (precisa de decisão sua)
+## Decisões tomadas depois do relatório
 
-1. ~~Imagem de compartilhamento~~: feito, veja abaixo.
-2. Commits: uma branch com um commit por etapa (como pede o briefing) ou os seus commits manuais de sempre.
-3. Cabeçalho no celular abaixo de 480 px mostra só "Vektor", sem "MMA". Fica assim?
-4. Selo "BMF ★" e o emoji no texto de compartilhamento do simulador: tirar também?
-5. Chaves de tradução que nenhum código lê mais (por exemplo `predictor.winningChance`): apagar dos 4 arquivos?
-6. Testes que às vezes estouram o tempo de 10 s quando a suíte inteira roda (passam sozinhos): aumentar o limite?
+1. **Imagem de compartilhamento:** refeita (veja abaixo).
+2. **Commits:** um por etapa na branch `redesign`, feitos por mim, sem push nem merge.
+3. **Cabeçalho no celular:** sempre "Vektor MMA". Abaixo de 480 px o seletor de organização vira só um ícone (o nome continua para leitores de tela), e a marca e os espaços diminuem um pouco. Cabe sem sobrepor até 320 px.
+4. **Emoji:** o selo "BMF ★" virou "BMF". O texto que o simulador copia para compartilhar fora do site mantém o emoji.
+5. **Chaves de tradução:** as 54 que nenhum código lia saíram dos 4 idiomas, que agora têm as mesmas 202 chaves.
+6. **Testes lentos:** nada a mudar. O projeto já roda com limite de 20 s e no máximo 4 processos (commit `0484662`), e as últimas rodadas completas passaram 516/516.
+7. **Cor de erro:** novo token `--error`, um laranja queimado diferente do vermelho de canto: `#a64b00` no tema claro (5,3:1 sobre o painel) e `#f08a3c` no escuro (6,4:1). Um só estilo de aviso (`.error-note`, com `role="alert"`) cobre os erros de todas as páginas e fichas, e o aviso de poucos dados usa a mesma cor.
 
 ## Imagens de compartilhamento (feito depois, com o seu ok)
 
