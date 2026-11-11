@@ -25,28 +25,41 @@ def test_the_record_needs_both_wins_and_losses():
 
 
 def test_a_short_name_stays_on_one_line_and_a_long_one_is_split_in_two():
-    lines, _ = og.wrap_name("Jon Jones", 640)
+    lines, _ = og.wrap_name("Jon Jones", 640, 300)
     assert lines == ["Jon Jones"]
     long_name = "Maurício Rua Alexandre Pereira dos Santos Filho"
-    lines, font = og.wrap_name(long_name, 640)
+    lines, font = og.wrap_name(long_name, 640, 300)
     assert len(lines) == 2 and " ".join(lines) == long_name
     assert og.ImageDraw.Draw(og.Image.new("RGB", (1, 1))).textlength(max(lines, key=len), font=font) <= 640 or font.size == 40
 
 
+def test_the_name_never_grows_taller_than_its_space():
+    _, font = og.wrap_name("Jon Jones", 640, 70)
+    assert font.size <= 70
+
+
 def test_a_single_word_name_is_never_split():
-    lines, _ = og.wrap_name("Supercalifragilisticexpialidocious" * 2, 300)
+    lines, _ = og.wrap_name("Supercalifragilisticexpialidocious" * 2, 300, 300)
     assert len(lines) == 1
 
 
 def test_initials_use_the_first_two_words():
-    badge = og.initials_badge("Charles Do Bronx Oliveira", 120)
-    assert badge.size == (120, 120) and badge.mode == "RGBA"
+    badge = og.initials("Charles Do Bronx Oliveira", 120, 100, og.PANEL, og.MUTED)
+    assert badge.size == (120, 100) and badge.mode == "RGBA"
 
 
 def test_a_missing_photo_gives_no_cutout(tmp_path, monkeypatch):
     monkeypatch.setattr(og, "PHOTOS", tmp_path)
-    assert og.cutout(None, 100) is None
-    assert og.cutout("nobody.webp", 100) is None
+    assert og.cutout(None, 100, 100) is None
+    assert og.cutout("nobody.webp", 100, 100) is None
+
+
+def test_the_photo_is_found_without_its_cache_busting_query(tmp_path, monkeypatch):
+    """athletes.json writes `name.webp?v=hash`; the card must still find name.webp."""
+    monkeypatch.setattr(og, "PHOTOS", tmp_path)
+    og.Image.new("RGBA", (200, 100), (10, 20, 30, 255)).save(tmp_path / "jon-jones.webp")
+    sprite = og.cutout("jon-jones.webp?v=abc123", 80, 60)
+    assert sprite is not None and sprite.size == (80, 60)
 
 
 def test_the_digest_changes_with_the_content_and_with_the_design(monkeypatch, tmp_path):
