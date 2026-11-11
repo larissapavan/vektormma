@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Layers } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
@@ -48,13 +48,18 @@ export function OrgSwitcher({ className = '', onNavigate }: { className?: string
         <button
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
-          className="inline-flex h-7.5 sm:h-8 items-center gap-1 sm:gap-1.5 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-2 sm:px-2.5 text-[11px] sm:text-xs font-semibold transition cursor-pointer text-[var(--text-primary)] hover:border-[var(--border-default)] hover:bg-[var(--bg-surface-hover)]"
+          className="inline-flex h-11 items-center justify-center gap-1 rounded-sm border-[1.5px] border-[var(--ink)] bg-transparent text-[15px] font-bold text-[var(--ink)] transition-colors cursor-pointer hover:bg-[var(--panel)] max-xs:w-11 xs:px-3 sm:gap-1.5"
           aria-expanded={isOpen}
           aria-haspopup="true"
         >
-          <span className="font-bold tracking-wide">{current.shortName}</span>
+          {/* Under 480px there is room only for an icon next to the full wordmark; the name stays for screen readers. */}
+          <Layers className="h-5 w-5 xs:hidden" aria-hidden="true" />
+          <span className="font-bold max-xs:sr-only">
+            <span className="xs:sr-only">{L(i18n.language, 'Organização: ', 'Organization: ', 'Organisation : ', 'Organización: ')}</span>
+            {current.shortName}
+          </span>
           <ChevronDown
-            className={`h-3 w-3 sm:h-3.5 sm:w-3.5 text-[var(--text-muted)] transition-transform duration-200 ${isOpen && !isJSDOM ? 'rotate-180' : ''}`}
+            className={`h-3.5 w-3.5 text-[var(--muted)] max-xs:hidden transition-transform duration-200 ${isOpen && !isJSDOM ? 'rotate-180' : ''}`}
           />
         </button>
 
@@ -64,7 +69,7 @@ export function OrgSwitcher({ className = '', onNavigate }: { className?: string
             className="surface-card-elevated absolute! left-0 max-sm:left-auto max-sm:right-0 top-full z-50 mt-1.5 w-44 sm:w-48 p-1 backdrop-blur-xl animate-in fade-in-0 zoom-in-95"
           >
             <div className="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
-              {L(i18n.language, 'Selecionar Liga', 'Select League', 'Choisir la ligue', 'Seleccionar liga')}
+              {L(i18n.language, 'Selecionar liga', 'Select league', 'Choisir la ligue', 'Seleccionar liga')}
             </div>
             <div className="space-y-0.5">
               {ORG_LIST.map((org) => {

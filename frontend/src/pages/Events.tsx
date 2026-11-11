@@ -11,7 +11,8 @@ import { CardSimulatorModal } from '../shared/components/CardSimulatorModal'
 import { LatestNewsCard } from '../shared/components/LatestNewsCard'
 import { FightMatchupCard } from '../shared/components/FightMatchupCard'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
-import { SectionHeading } from '../shared/components/SectionHeading'
+import { PageHeader } from '../shared/components/ui/PageHeader'
+import { Section } from '../shared/components/ui/Section'
 import { useEvents } from '../shared/hooks/useEvents'
 import { useUpcomingEvents } from '../shared/hooks/useUpcomingEvents'
 import { useUpcomingPicks } from '../shared/hooks/useUpcomingPicks'
@@ -111,17 +112,17 @@ export function Events() {
   const results = (
     <>
       {error ? (
-        <p className="rounded-xl border border-[#C8102E]/25 bg-[#C8102E]/8 px-3 py-2 text-sm font-semibold text-[var(--text-red)]">{error}</p>
+        <p role="alert" className="error-note">{error}</p>
       ) : null}
 
       {loading ? (
-        <section className="grid gap-2.5 md:grid-cols-2">
+        <section className="grid gap-3 md:grid-cols-2">
           {Array.from({ length: 6 }).map((_, index) => (
             <LoadingSkeleton key={index} className="h-[110px]" />
           ))}
         </section>
       ) : visibleEvents.length ? (
-        <div className="space-y-3 sm:space-y-4">
+        <div className="space-y-8">
           {isSearching && numberedEvents.length === 0 ? null : (
             <EventGroup
               groupKey="numbered"
@@ -148,8 +149,8 @@ export function Events() {
           )}
         </div>
       ) : (
-        <div className="surface-card rounded-[20px] px-4 py-7 text-center">
-          <p className="type-display text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">
+        <div className="px-4 py-12 text-center">
+          <p className="type-display text-2xl text-[var(--text-primary)]">
             {t('events.noEventsFound')}
           </p>
           <p className="mt-2 text-sm text-[var(--text-muted)]">{t('events.noEventsSub')}</p>
@@ -165,37 +166,32 @@ export function Events() {
 
   return (
     <OpenProfileContext.Provider value={setProfileName}>
-      <div className="space-y-6 sm:space-y-8">
-        <section className="page-hero rounded-[20px] px-3 py-3 sm:px-4 sm:py-4">
-          <div className="grid gap-3 xl:grid-cols-[1fr_0.8fr] xl:items-end">
-            <SectionHeading
-              level={1}
-              eyebrow={t('events.eyebrow')}
-              title={t('events.title')}
-              description={t('events.description')}
-            />
-
-            <div className="grid gap-2 sm:grid-cols-2">
-              <SummaryTile label={t('events.eventsCount')} value={`${visibleEvents.length}`} />
-              <SummaryTile label={t('events.fightsTracked')} value={totalFights.toLocaleString(localeTag(i18n.language))} />
-            </div>
-          </div>
-
-          <div className="mt-3 grid gap-2.5 lg:grid-cols-[1fr_180px_180px]">
-            <div className="soft-input flex items-center gap-2.5 rounded-xl px-3 py-2.5">
-              <Search className="h-4 w-4 text-[#C8102E]" />
+      <div className="space-y-8 sm:space-y-10">
+        <PageHeader
+          eyebrow={t('events.eyebrow')}
+          title={t('events.title')}
+          description={t('events.description')}
+          stats={[
+            { label: t('events.eventsCount'), value: visibleEvents.length.toLocaleString(localeTag(i18n.language)) },
+            { label: t('events.fightsTracked'), value: totalFights.toLocaleString(localeTag(i18n.language)) },
+          ]}
+        >
+          <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-[1fr_180px_180px]">
+            <div className="soft-input col-span-2 flex items-center gap-2.5 rounded-control px-3 py-2.5 lg:col-span-1">
+              <Search className="h-4 w-4 shrink-0 text-[var(--text-red)]" />
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder={t('events.searchPlaceholder')}
-                className="theme-text w-full bg-transparent outline-none placeholder:text-[var(--text-muted)]"
+                aria-label={t('events.searchPlaceholder')}
+                className="w-full min-w-0 bg-transparent text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)]"
               />
             </div>
             <select
               value={yearFilter}
               onChange={(event) => setYearFilter(event.target.value)}
               aria-label={L(i18n.language, 'Filtrar por ano', 'Filter by year', 'Filtrer par année', 'Filtrar por año')}
-              className="soft-input theme-text rounded-xl px-3 py-2.5 text-sm outline-none"
+              className="soft-input min-w-0 rounded-control px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
             >
               <option value="ALL">{t('events.allYears')}</option>
               {years.map((year) => (
@@ -208,7 +204,7 @@ export function Events() {
               value={monthFilter}
               onChange={(event) => setMonthFilter(event.target.value)}
               aria-label={L(i18n.language, 'Filtrar por mês', 'Filter by month', 'Filtrer par mois', 'Filtrar por mes')}
-              className="soft-input theme-text rounded-xl px-3 py-2.5 text-sm outline-none"
+              className="soft-input min-w-0 rounded-control px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
             >
               <option value="ALL">{t('events.allMonths')}</option>
               {MONTH_KEYS.map((month) => (
@@ -218,9 +214,9 @@ export function Events() {
               ))}
             </select>
           </div>
-        </section>
+        </PageHeader>
 
-        {isSearching ? <div className="space-y-6">{results}</div> : null}
+        {isSearching ? <div className="space-y-8">{results}</div> : null}
 
         <UpcomingEventsSection
           events={visibleUpcoming}
@@ -284,13 +280,8 @@ function UpcomingEventsSection({
   }
 
   return (
-    <section className="surface-card rounded-[20px] p-3 sm:p-4">
-      <div className="mb-2 flex items-center gap-2">
-        <CalendarClock className="h-4 w-4 text-[#C8102E]" />
-        <h2 className="broadcast-label text-xs text-[var(--text-main)]">{t('events.upcomingSection')}</h2>
-        <span className="theme-muted text-xs">({events.length})</span>
-      </div>
-      <div className="grid gap-3">
+    <Section rows icon={CalendarClock} title={`${t('events.upcomingSection')} (${events.length})`}>
+      <ul>
         {events.map((event) => {
           const key = event.event_url ?? event.name
           return (
@@ -304,8 +295,8 @@ function UpcomingEventsSection({
             />
           )
         })}
-      </div>
-    </section>
+      </ul>
+    </Section>
   )
 }
 
@@ -330,34 +321,36 @@ function EventGroup({
 }) {
   const { i18n } = useTranslation()
   return (
-    <section className="surface-card overflow-hidden rounded-[20px]">
-      <button
-        type="button"
-        onClick={() => onToggleGroup(groupKey)}
-        className="flex w-full items-center gap-2 px-3 py-2.5 text-left transition duration-150 hover:bg-[var(--bg-surface-subtle)] sm:px-4"
-        aria-expanded={isOpen}
-      >
-        <Icon className="h-4 w-4 text-[#C8102E]" />
-        <h2 className="broadcast-label text-xs text-[var(--text-main)]">{title}</h2>
-        <span className="theme-muted text-xs">({events.length})</span>
-        <ChevronDown className={`theme-muted ml-auto h-4 w-4 shrink-0 transition ${isOpen ? 'rotate-180' : ''}`} />
-      </button>
+    <section>
+      <h2 className="section-title pb-1">
+        <button
+          type="button"
+          onClick={() => onToggleGroup(groupKey)}
+          className="-mx-2 flex min-h-11 w-[calc(100%+1rem)] items-center gap-2 rounded-control px-2 text-left transition-colors hover:bg-[var(--bg-surface-hover)]"
+          aria-expanded={isOpen}
+        >
+          <Icon className="h-4 w-4 shrink-0 text-[var(--text-red)]" />
+          <span className="min-w-0">{title}</span>
+          <span className="font-sans text-sm font-medium text-[var(--text-muted)]">({events.length})</span>
+          <ChevronDown className={`ml-auto h-4 w-4 shrink-0 text-[var(--text-muted)] transition ${isOpen ? 'rotate-180' : ''}`} />
+        </button>
+      </h2>
 
       {isOpen ? (
-        <div className="border-t border-[var(--line-soft)] px-3 py-3 sm:px-4">
+        <div>
           {events.length ? (
-            <div className="grid gap-3">
+            <ul className="border-t-[3px] border-[var(--ink)]">
               {events.map((event) => {
                 const key = event.event_url ?? event.name
                 return (
                   <EventCard key={key} event={event} isOpen={openEvents.has(key)} onToggle={() => onToggle(key)} />
                 )
               })}
-            </div>
+            </ul>
           ) : (
-            <div className="rounded-[16px] px-4 py-4 text-center text-sm text-[var(--text-muted)]">
+            <p className="px-4 py-6 text-center text-sm text-[var(--text-muted)]">
               {L(i18n.language, 'Nenhum resultado nesta seção.', 'No matches in this section.', 'Aucun résultat dans cette section.', 'No hay resultados en esta sección.')}
-            </div>
+            </p>
           )}
         </div>
       ) : null}
@@ -381,35 +374,35 @@ function EventCard({
   const { t, i18n } = useTranslation()
 
   return (
-    <article className="surface-card overflow-hidden rounded-xl">
+    <li className="border-b border-[var(--rule)]">
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left transition duration-150 hover:bg-[var(--bg-surface-subtle)]"
+        className="row-link flex w-full cursor-pointer flex-wrap items-center gap-x-8 gap-y-2 px-3 py-5 text-left hover:bg-[var(--panel)]"
         aria-expanded={isOpen}
       >
-        <div className="min-w-0 flex-1">
-          <h2 className="truncate text-sm font-bold uppercase tracking-[0.02em] text-[var(--text-main)]">{event.name}</h2>
-          <div className="theme-muted mt-0.5 flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-[11px]">
+        <h3 className="min-w-0 flex-[1.4_1_320px] font-display text-[30px] font-black leading-none sm:text-[40px]">{event.name}</h3>
+        <div className="contents">
+          <div className="flex flex-[1_1_240px] flex-wrap gap-x-4 gap-y-1 text-base text-[var(--muted)]">
             <span className="inline-flex items-center gap-1">
-              <CalendarDays className="h-3 w-3" />
+              <CalendarDays className="h-3.5 w-3.5" />
               {formatEventDate(event.date, i18n.language)}
             </span>
             <span className="inline-flex items-center gap-1">
-              <Swords className="h-3 w-3" />
+              <Swords className="h-3.5 w-3.5" />
               {event.fight_count} {t('events.fights')}
             </span>
           </div>
         </div>
-        <ChevronDown className={`theme-muted h-4 w-4 shrink-0 transition ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`h-7 w-7 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
       </button>
 
       {isOpen ? (
-        <div className="border-t border-[var(--line-soft)] px-3 py-3">
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div className="px-3 pb-6">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             {event.location ? (
-              <p className="theme-muted flex items-center gap-1.5 text-xs">
-                <MapPin className="h-3.5 w-3.5" />
+              <p className="flex items-center gap-1.5 text-base text-[var(--muted)]">
+                <MapPin className="h-4 w-4" aria-hidden="true" />
                 {translateHometown(event.location, i18n.language)}
               </p>
             ) : <span />}
@@ -418,10 +411,10 @@ function EventCard({
               <button
                 type="button"
                 onClick={() => onSimulate(event)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[#C8102E]/40 bg-[#C8102E]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-[#C8102E]"
+                className="ghost-action inline-flex cursor-pointer items-center gap-2 px-4"
               >
-                <Gamepad2 className="h-3.5 w-3.5 text-[#F2C230]" />
-                {L(i18n.language, 'Simular Card (Você vs. IA)', 'Simulate Card (You vs AI)', 'Simuler la carte (vous contre l’IA)', 'Simular cartelera (tú vs. la IA)')}
+                <Gamepad2 className="h-4 w-4" aria-hidden="true" />
+                {L(i18n.language, 'Dar seus palpites para o card', 'Make your picks for the card', 'Faire vos pronostics sur la carte', 'Haz tus pronósticos de la cartelera')}
               </button>
             ) : null}
           </div>
@@ -437,7 +430,7 @@ function EventCard({
           )}
         </div>
       ) : null}
-    </article>
+    </li>
   )
 }
 
@@ -453,15 +446,6 @@ function FightRow({ eventName, fight, pick }: { eventName: string; fight: FightR
   ].filter((line): line is string => Boolean(line))
 
   return <FightMatchupCard fight={fight} pick={pick} eventName={eventName} onOpenFighter={openProfile} details={details} />
-}
-
-function SummaryTile({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="metric-tile rounded-xl px-3 py-2.5">
-      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{label}</p>
-      <p className="data-value mt-1 text-2xl font-bold text-[var(--text-main)]">{value}</p>
-    </div>
-  )
 }
 
 function formatEventDate(date: string | null, lang: string = 'en-US'): string {

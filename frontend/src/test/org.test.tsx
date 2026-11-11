@@ -107,16 +107,16 @@ describe('one history for a fighter who fought in several organizations', () => 
 })
 
 describe('the page that chooses an organization', () => {
-  const chooser = () => screen.getByRole('heading', { name: /pick an organization/i }).closest('section')!
+  const chooser = () => screen.getByRole('heading', { name: /choose an organization/i }).closest('section')!
 
   it('lists every organization with a way in, and says which one has predictions', async () => {
     renderAt('/')
-    await screen.findByRole('heading', { name: /pick an organization/i }, WAIT)
+    await screen.findByRole('heading', { name: /choose an organization/i }, WAIT)
     const section = chooser()
     const links = within(section).getAllByRole('link')
     expect(links.map((link) => link.getAttribute('href'))).toEqual(['/home', '/pfl', '/one', '/bellator', '/rizin', '/ksw', '/lfa', '/cage-warriors', '/oktagon', '/jungle-fight', '/invicta'])
-    expect(within(section).getAllByText('AI Predictions')).toHaveLength(3)  // the UFC, the PFL and ONE
-    expect(within(section).getByText('Historical Archive')).toBeInTheDocument()  // Bellator
+    expect(within(section).getAllByText('Predictions')).toHaveLength(3)  // the UFC, the PFL and ONE
+    expect(within(section).getByText('Historical archive')).toBeInTheDocument()  // Bellator
     // The other seven (fighters and events only) are one line each under a single caption, not a badge apiece.
     expect(within(section).getByText('Events, results and fighters of each league.')).toBeInTheDocument()
     expect(within(section).queryByText('Events & Results')).not.toBeInTheDocument()
@@ -124,14 +124,14 @@ describe('the page that chooses an organization', () => {
 
   it('has no switcher, section menu or fighter search until an organization is chosen', async () => {
     renderAt('/')
-    await screen.findByRole('heading', { name: /pick an organization/i }, WAIT)
+    await screen.findByRole('heading', { name: /choose an organization/i }, WAIT)
     expect(screen.queryByRole('group', { name: 'Organization' })).not.toBeInTheDocument()
     expect(screen.queryByRole('link', { name: 'Fighters' })).not.toBeInTheDocument()
   })
 
   it('opens at once, without waiting for the API', async () => {
     renderAt('/')
-    expect(screen.getByRole('heading', { name: /pick an organization/i })).toBeInTheDocument()  // synchronously: no loading screen first
+    expect(screen.getByRole('heading', { name: /choose an organization/i })).toBeInTheDocument()  // synchronously: no loading screen first
     expect(within(chooser()).getAllByRole('link')).toHaveLength(11)
   })
 
@@ -236,8 +236,8 @@ describe('the PFL pages', () => {
     expect(within(dialog).getByText(/15V - 3D/)).toBeInTheDocument()  // the whole career record
     expect(within(dialog).getByText('175 cm')).toBeInTheDocument()
     expect(within(dialog).getByText('5\'9"')).toBeInTheDocument()
-    expect(within(dialog).getByText(/CONTENDER #1/)).toBeInTheDocument()
-    expect(within(dialog).getByText(/NEXT BOUT/)).toBeInTheDocument()
+    expect(within(dialog).getByText(/Contender #1/)).toBeInTheDocument()
+    expect(within(dialog).getByText(/next bout/i)).toBeInTheDocument()
     // The PFL prints season tallies on its pages: they are shown as printed, newest season first, with what they are.
     const seasonRows = within(within(dialog).getByRole('table')).getAllByRole('row')
     expect(seasonRows.map((row) => row.textContent)).toEqual([
@@ -517,7 +517,7 @@ describe('the organization switcher', () => {
     expect(await screen.findByRole('heading', { name: 'PFL champions' }, WAIT)).toBeInTheDocument()
     expect(await screen.findByRole('button', { name: /Riko Stone/ }, WAIT)).toBeInTheDocument()
 
-    await userEvent.click(screen.getByRole('tab', { name: 'Greatest Champions' }))
+    await userEvent.click(screen.getByRole('tab', { name: 'Greatest champions' }))
     expect(await screen.findByText(/All-Time Greatest Champions Leaderboard/i, undefined, WAIT)).toBeInTheDocument()
   })
 

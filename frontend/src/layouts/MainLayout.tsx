@@ -5,11 +5,13 @@ import { useTranslation } from 'react-i18next'
 
 import { L } from '../i18n/lang'
 import { Header } from '../shared/components/Header'
+import { MobileTabBar } from '../shared/components/MobileTabBar'
 import { ScrollToTop } from '../shared/components/ScrollToTop'
 import { PageMeta } from '../shared/components/PageMeta'
 import { SocialLinks } from '../shared/components/SocialLinks'
 import { isLandingPath, orgEs } from '../shared/data/orgs'
 import { isStaticPath } from '../shared/data/staticPages'
+import { hasSectionNav } from '../shared/data/navItems'
 import { SiteLinks } from '../shared/components/SiteLinks'
 import { useOrg } from '../shared/hooks/useOrg'
 import { ServerLoadingState } from '../shared/components/ServerLoadingState'
@@ -69,7 +71,10 @@ export function MainLayout({ children }: { children: ReactNode }) {
 
   return (
     <div
-      className="dashboard-shell w-full max-w-full min-h-screen transition-colors duration-200 bg-[var(--bg-app)] text-[var(--text-primary)] flex flex-col overflow-x-hidden"
+      className={`dashboard-shell w-full max-w-full min-h-screen transition-colors duration-200 bg-[var(--bg-app)] text-[var(--text-primary)] flex flex-col overflow-x-hidden ${
+        // Room for the bottom bar a phone shows on section pages.
+        hasSectionNav(pathname) ? 'max-md:pb-[calc(4rem+env(safe-area-inset-bottom))]' : ''
+      }`}
     >
       <a
         href="#main-content"
@@ -78,8 +83,8 @@ export function MainLayout({ children }: { children: ReactNode }) {
         {t('common.skipToContent', 'Skip to content')}
       </a>
       {/* Pinned Sticky Header: Seamless Glassmorphism Navigation Bar */}
-      <div className="sticky top-0 z-50 w-full bg-[var(--bg-surface)]/80 dark:bg-[#0B0C10]/85 backdrop-blur-xl border-b border-[var(--border-subtle)] dark:border-white/[0.08] transition-colors duration-200">
-        <div className="mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8">
+      <div className="sticky top-0 z-50 w-full border-b border-[var(--rule)] bg-[var(--mat)]">
+        <div className="mx-auto w-full max-w-[1376px] px-4 sm:px-6 lg:px-12">
           <Header />
         </div>
       </div>
@@ -87,7 +92,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
       {/* Inner pages share the header's width and side padding so the content lines up with the logo. The landing runs edge to
           edge so its hero background has no visible box; its sections pad themselves to the same content column as the header. */}
       <div
-        className={`mx-auto flex w-full flex-1 flex-col ${landing ? 'max-w-none px-0' : 'max-w-7xl px-3 sm:px-6 lg:px-8'}`}
+        className={`mx-auto flex w-full flex-1 flex-col ${landing ? 'max-w-none px-0' : 'max-w-[1376px] px-4 sm:px-6 lg:px-12'}`}
       >
         <ScrollToTop />
         <PageMeta />
@@ -111,37 +116,37 @@ export function MainLayout({ children }: { children: ReactNode }) {
           {showLoading ? <ServerLoadingState /> : children}
         </motion.main>
         {landing ? null : (
-          <footer className="mt-6 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-3.5 text-sm font-medium text-[var(--text-primary)] shadow-xs">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <footer className="mt-16 border-t-[3px] border-[var(--ink)] pb-10 pt-8 sm:mt-24">
+            <div className="flex flex-wrap items-start justify-between gap-x-10 gap-y-5">
               <div>
-                <p className="type-tech text-xs uppercase tracking-[0.14em]">
-                  {t('footer.tagline', 'Vektor MMA • Combat sports analytics & AI predictions')}
+                <p className="font-display text-[28px] leading-none text-[var(--ink)]">
+                  <span className="font-black">Vektor</span> <span className="font-medium">MMA</span>
                 </p>
+                <p className="mt-1.5 text-[15px] text-[var(--muted)]">{t('footer.tagline', 'Combat sports analytics and predictions.')}</p>
                 {footerDate ? (
-                  <p className="mt-1.5">{t('footer.dataUpTo', { date: footerDate, defaultValue: `Data up to ${footerDate}` })}</p>
+                  <p className="mt-1.5 text-[15px] text-[var(--muted)]">{t('footer.dataUpTo', { date: footerDate, defaultValue: `Data up to ${footerDate}` })}</p>
                 ) : null}
-                <p className="mt-1.5">
-                  <Link
-                    to="/about"
-                    className="underline decoration-[var(--rule)] decoration-1 underline-offset-4 transition hover:text-[#C8102E] focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C8102E]"
-                  >
-                    {t('footer.disclaimer', {
-                      org: L(
-                        i18n.language,
-                        org.id === 'pfl' ? `a ${org.shortName}` : `o ${org.shortName}`,
-                        `the ${org.shortName}`,
-                        org.id === 'ufc' ? `l’${org.shortName}` : org.id === 'pfl' ? `la ${org.shortName}` : `le ${org.shortName}`,
-                        orgEs(org),
-                      ),
-                      defaultValue: `Independent personal project, not affiliated with the ${org.shortName}`,
-                    })}
-                  </Link>
-                </p>
-                <SiteLinks className="mt-2.5 text-xs" />
               </div>
+              <SiteLinks className="text-[15px] font-semibold" />
+            </div>
 
-              <div className="flex items-center gap-1 sm:gap-2 self-start sm:self-center border-t border-[var(--border-subtle)]/40 pt-2 sm:border-t-0 sm:pt-0">
-                <span className="font-mono text-[11px] text-[var(--text-muted)] uppercase tracking-wider hidden md:inline mr-1">
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-x-10 gap-y-3">
+              <p className="max-w-[84ch] text-sm leading-6 text-[var(--muted)]">
+                <Link to="/about" className="underline decoration-1 underline-offset-4 hover:decoration-2">
+                  {t('footer.disclaimer', {
+                    org: L(
+                      i18n.language,
+                      org.id === 'pfl' ? `a ${org.shortName}` : `o ${org.shortName}`,
+                      `the ${org.shortName}`,
+                      org.id === 'ufc' ? `l’${org.shortName}` : org.id === 'pfl' ? `la ${org.shortName}` : `le ${org.shortName}`,
+                      orgEs(org),
+                    ),
+                    defaultValue: `Independent personal project, not affiliated with the ${org.shortName}`,
+                  })}
+                </Link>
+              </p>
+              <div className="flex items-center gap-2">
+                <span className="hidden text-sm text-[var(--muted)] md:inline">
                   {L(i18n.language, 'Canais oficiais:', 'Official channels:', 'Canaux officiels :', 'Canales oficiales:')}
                 </span>
                 <SocialLinks />
@@ -150,6 +155,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
           </footer>
         )}
       </div>
+      <MobileTabBar />
     </div>
   )
 }

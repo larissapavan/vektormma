@@ -5,8 +5,8 @@ import { L } from '../../i18n/lang'
 import type { FighterPerformance, FighterProfile } from '../types/api'
 import { LoadingSkeleton } from './LoadingSkeleton'
 
-const RED = '#C8102E'
-const BLUE = '#2F5FA8'
+const RED = '#d62f2f'
+const BLUE = '#2b59d9'
 
 const AXES = [
   { key: 'strikingOutput', label: 'Striking Output', labelPt: 'Volume de Golpes', labelFr: 'Volume de frappes', labelEs: 'Volumen de golpes' },
@@ -99,8 +99,8 @@ export function MatchupRadarChart({
 
   return (
     <article className="surface-card rounded-[20px] p-3 sm:p-4">
-      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Comparativo de Estilos', 'Style comparison', 'Comparaison de styles', 'Comparación de estilos')}</p>
-      <h2 className="mt-0.5 text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{L(i18n.language, 'Radar de Habilidades', 'Radar', 'Radar', 'Radar')}</h2>
+      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Comparativo de estilos', 'Style comparison', 'Comparaison de styles', 'Comparación de estilos')}</p>
+      <h2 className="mt-0.5 text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{L(i18n.language, 'Radar de habilidades', 'Radar', 'Radar', 'Radar')}</h2>
       {loading ? (
         <LoadingSkeleton className="mt-3 h-[280px] rounded-2xl sm:h-[320px]" label={L(i18n.language, 'Carregando comparativo...', 'Loading style comparison', 'Chargement de la comparaison...', 'Cargando la comparación de estilos')} />
       ) : (
@@ -115,7 +115,7 @@ export function MatchupRadarChart({
               <Radar name={fighterB.name} dataKey="blue" stroke={BLUE} fill={BLUE} fillOpacity={0.22} />
               <Legend wrapperStyle={{ fontSize: 12, color: 'var(--text-main)' }} />
               <Tooltip
-                contentStyle={{ background: '#141414', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12, color: '#FFFFFF' }}
+                contentStyle={{ background: 'var(--panel)', border: '1.5px solid var(--ink)', borderRadius: 4, color: 'var(--ink)' }}
                 formatter={(value, name) => [`${value ?? 0}`, String(name)]}
               />
             </RadarChart>

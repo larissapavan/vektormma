@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ChevronDown, Crown, Flame, Layers, Shield, ThumbsDown, Trophy } from 'lucide-react'
+import { ChevronDown, Flame, Layers, Shield, ThumbsDown, Trophy } from 'lucide-react'
 
 import { L, localeTag, pick, uiLang, type ByLang, type UiLang } from '../i18n/lang'
 import { FighterAvatar } from '../shared/components/FighterAvatar'
@@ -10,7 +10,7 @@ import { badgesForRankings } from '../shared/data/badges'
 import { FighterProfileModal } from '../shared/components/FighterProfileModal'
 import { ChampionBelt } from '../shared/components/ChampionBelt'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
-import { SectionHeading } from '../shared/components/SectionHeading'
+import { PageHeader } from '../shared/components/ui/PageHeader'
 import { divisionLimit, divisionOrder, getDivisionName } from '../shared/data/divisions'
 import { METHOD_WORDS, translateTechnique } from '../shared/data/fightLabels'
 import { useChampions } from '../shared/hooks/useChampions'
@@ -47,19 +47,13 @@ export function Champions() {
 
   return (
     <OpenProfileContext.Provider value={setProfileName}>
-      <div className="space-y-3 sm:space-y-4">
-        <section className="page-hero rounded-[20px] px-3 py-3 sm:px-4 sm:py-4">
-          <SectionHeading
-            level={1}
-            eyebrow={t('champions.eyebrow')}
-            title={t('champions.title')}
-            description={t('champions.description')}
-          />
+      <div className="space-y-8">
+        <PageHeader eyebrow={t('champions.eyebrow')} title={t('champions.title')} description={t('champions.description')}>
 
           <div
             role="tablist"
             aria-label={L(i18n.language, 'Escolha a visualização', 'Choose what to see', 'Choisir la vue', 'Elige qué ver')}
-            className="mt-4 inline-flex max-w-full overflow-x-auto border-2 border-[var(--rule)] bg-[var(--card-bg)] chip-scroll"
+            className="chip-scroll inline-flex max-w-full overflow-x-auto rounded-sm border-[1.5px] border-[var(--ink)]"
           >
             {views.map((item) => (
               <button
@@ -70,21 +64,17 @@ export function Champions() {
                 aria-selected={view === item.key}
                 aria-controls="champions-panel"
                 onClick={() => chooseView(item.key)}
-                className={`shrink-0 px-3.5 py-2 text-xs font-black uppercase tracking-[0.14em] transition sm:px-5 ${
-                  view === item.key
-                    ? 'bg-[#0E0E0E] text-white dark:bg-white dark:text-[#0E0E0E] shadow-sm'
-                    : 'text-[var(--text-main)] hover:bg-[#F2C230] hover:text-[#0E0E0E]'
-                }`}
+                className={`min-h-11 shrink-0 cursor-pointer whitespace-nowrap px-5 text-[15px] font-bold ${view === item.key ? 'bg-[var(--ink)] text-[var(--on-ink)]' : 'hover:bg-[var(--panel-hover)]'}`}
               >
                 <span className="sm:hidden">{item.short}</span>
                 <span className="hidden sm:inline">{item.label}</span>
               </button>
             ))}
           </div>
-        </section>
+        </PageHeader>
 
         {error ? (
-          <p className="rounded-xl border border-[#C8102E]/25 bg-[#C8102E]/8 px-3 py-2 text-sm font-semibold text-[var(--text-red)]">{error}</p>
+          <p role="alert" className="error-note">{error}</p>
         ) : null}
 
         {loading || !data ? (
@@ -94,12 +84,12 @@ export function Champions() {
             ))}
           </section>
         ) : (
-          <div id="champions-panel" role="tabpanel" aria-labelledby={`champions-tab-${view}`} className="space-y-3 sm:space-y-4">
+          <div id="champions-panel" role="tabpanel" aria-labelledby={`champions-tab-${view}`} className="space-y-8">
             {view === 'current' ? <CurrentChampionsSection reigns={data.current_champions} history={data.reigns ?? []} /> : null}
             {view === 'greatest' ? <GreatestChampionsSection champions={data.greatest_champions} /> : null}
             {view === 'records' ? (
               <section>
-                <div className="mb-3 inline-flex max-w-full overflow-x-auto rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] p-0.5 chip-scroll">
+                <div className="chip-scroll mb-6 inline-flex max-w-full overflow-x-auto rounded-sm border-[1.5px] border-[var(--ink)]">
                   <TabButton active={tab === 'positive'} onClick={() => setTab('positive')}>
                     {t('champions.positive')}
                   </TabButton>
@@ -145,9 +135,8 @@ function TabButton({ active, onClick, children }: { active: boolean; onClick: ()
     <button
       type="button"
       onClick={onClick}
-      className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] transition ${
-        active ? 'bg-[#FFFFFF] text-[#050505]' : 'text-[var(--text-muted)] hover:text-white'
-      }`}
+      aria-pressed={active}
+      className={`min-h-11 shrink-0 cursor-pointer whitespace-nowrap px-5 text-[15px] font-bold ${active ? 'bg-[var(--ink)] text-[var(--on-ink)]' : 'hover:bg-[var(--panel-hover)]'}`}
     >
       {children}
     </button>
@@ -214,7 +203,7 @@ function CompactChampionCard({
       aria-label={ariaLabel}
       aria-expanded={expanded}
       aria-controls={controls}
-      className="surface-card flex w-full min-w-0 cursor-pointer text-left items-center gap-3 rounded-2xl px-3 py-2.5 transition-colors hover:bg-neutral-800/60 focus-visible:bg-neutral-800/60 focus-visible:outline-none"
+      className="flex w-full min-w-0 cursor-pointer items-center gap-4 border-b border-[var(--rule)] px-3 py-3.5 text-left hover:bg-[var(--panel)]"
     >
       <div className="relative shrink-0">
         <FighterAvatar name={name} className="h-12 w-12" imageUrl={imageUrl} />
@@ -223,20 +212,20 @@ function CompactChampionCard({
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2 min-w-0">
-          <p className="truncate text-sm sm:text-base font-bold text-[var(--text-main)]" title={name}>
+          <p className="min-w-0 break-words font-display text-2xl font-extrabold leading-none" title={name}>
             {name}
           </p>
           {current ? (
-            <span className="type-tech shrink-0 rounded-full border border-[var(--rule)] bg-[#F2C230] px-1.5 py-0.5 text-[10px] font-bold uppercase text-[#0E0E0E]">
+            <span className="shrink-0 rounded-sm border-[1.5px] border-[var(--ink)] px-2 py-0.5 text-[13px] font-bold">
               {t('rankings.champion')}
             </span>
           ) : null}
         </div>
-        <p className="theme-muted mt-0.5 truncate text-xs" title={subtitle}>{subtitle}</p>
-        <p className="theme-muted mt-0.5 truncate text-[11px] sm:hidden">{stats.map((stat) => `${stat.value} ${stat.label.toLowerCase()}`).join(' · ')}</p>
+        <p className="mt-1 text-[15px] text-[var(--muted)]">{subtitle}</p>
+        <p className="mt-0.5 text-sm text-[var(--muted)] sm:hidden">{stats.map((stat) => `${stat.value} ${stat.label.toLowerCase()}`).join(' · ')}</p>
       </div>
 
-      <div className="theme-muted hidden shrink-0 items-center gap-2.5 sm:gap-4 text-right text-[11px] sm:flex">
+      <div className="hidden shrink-0 items-center gap-6 text-right sm:flex">
         {stats.map((stat) => (
           <Stat key={stat.label} label={stat.label} value={stat.value} />
         ))}
@@ -259,7 +248,7 @@ function RankBadge({ rank, goat = false }: { rank: number; goat?: boolean }) {
   return (
     <span
       className={`type-num absolute -bottom-1 -left-1 grid h-5 min-w-5 place-items-center rounded-md border px-1 text-[11px] leading-none ${
-        rank === 1 ? 'border-[var(--rule)] bg-[#C8102E] text-white' : 'border-[var(--rule)] bg-[var(--rule)] text-[var(--card-bg)]'
+        rank === 1 ? 'border-[var(--gold-fill)] bg-[var(--gold-fill)] text-[#10151d]' : 'border-[var(--ink)] bg-[var(--ink)] text-[var(--on-ink)]'
       }`}
     >
       {rank === 1 ? <Trophy className="h-3 w-3" /> : rank}
@@ -277,13 +266,14 @@ function CurrentChampionsSection({ reigns, history }: { reigns: TitleReign[]; hi
 
   return (
     <section>
-      <div className="mb-2 flex items-center gap-2 px-1">
-        <Crown className="h-4 w-4 text-[#C8102E]" />
-        <h2 className="broadcast-label text-xs text-[var(--text-main)]">{t('champions.current')}</h2>
-        <span className="theme-muted text-xs">({reigns.length})</span>
+      <div className="flex flex-wrap items-end justify-between gap-x-6 pb-3">
+        <h2 className="section-title">{t('champions.current')}</h2>
+        <p className="text-base text-[var(--muted)]">
+          {reigns.length} {L(i18n.language, 'categorias', 'divisions', 'catégories', 'divisiones')}
+        </p>
       </div>
 
-      <div className="grid gap-2.5">
+      <ul className="grid border-l border-t-[3px] border-[var(--ink)] border-l-[var(--rule)] sm:grid-cols-2 xl:grid-cols-3">
         {ordered.map((reign) => {
           const profile = profileByName.get(normalizeFighterName(reign.champion))
           const record = profile ? `${profile.wins ?? 0}-${profile.losses ?? 0}-${profile.draws ?? 0}` : null
@@ -292,60 +282,57 @@ function CurrentChampionsSection({ reigns, history }: { reigns: TitleReign[]; hi
           const divisionLabel = getDivisionName(reign.division, i18n.language)
 
           return (
-            <div key={reign.division}>
+            <li key={reign.division} className="flex flex-col border-b border-r border-[var(--rule)]">
               <button
                 type="button"
                 onClick={() => openProfile(reign.champion)}
                 aria-label={L(i18n.language, `${reign.champion}, campeão peso ${divisionLabel}. Ver perfil`, `${reign.champion}, ${reign.division} champion. View profile`, `${reign.champion}, champion ${reign.division}. Voir le profil`, `${reign.champion}, campeón de ${divisionLabel}. Ver perfil`)}
-                className="metric-tile group grid w-full min-w-0 cursor-pointer text-left grid-cols-[auto_1fr] items-center gap-x-4 gap-y-2 px-3 py-3 sm:px-4 md:grid-cols-[170px_auto_1fr_auto] md:gap-x-6"
+                className="row-link flex flex-1 cursor-pointer flex-col gap-4 p-5 text-left hover:bg-[var(--panel)]"
               >
-                <div className="col-span-2 min-w-0 md:col-span-1">
-                  <p className="text-base font-bold uppercase leading-tight tracking-wide text-[var(--text-main)]">{divisionLabel}</p>
-                  {limit ? <p className="theme-muted mt-0.5 text-xs font-semibold">{limit}</p> : null}
-                </div>
-
-                <FighterAvatar
-                  name={reign.champion}
-                  imageUrl={getFighterImageUrl(reign.champion, imageByName, profile?.image_url)}
-                  highlight
-                  className="h-28 w-24 sm:h-32 sm:w-28"
-                />
-
-                <div className="min-w-0">
-                  {profile?.nickname ? (
-                    <p className="broadcast-label truncate text-[11px] text-[var(--text-muted)]">&ldquo;{profile.nickname}&rdquo;</p>
-                  ) : null}
-                  <p className="type-display mt-0.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-2xl font-bold uppercase leading-none text-[var(--text-main)] sm:text-3xl">
-                    {profile ? <FlagList fighter={profile} className="h-4 w-6" /> : null}
-                    <span className="min-w-0 break-words">{reign.champion}</span>
-                  </p>
-                  <FighterBadges badges={badgesForRankings(profile?.badges)} className="mt-1.5" />
-                  {record ? (
-                    <p className="mt-1.5 text-sm text-[var(--text-main)]">
-                      <span className="font-bold">{record}</span> <span className="theme-muted">(W-L-D)</span>
-                    </p>
-                  ) : null}
-                  {last ? (
-                    <p className="mt-1 text-[13px] leading-5 text-[var(--text-main)]">
-                      <span className="font-bold">{L(i18n.language, 'Última luta', 'Last fight', 'Dernier combat', 'Última pelea')}:</span> {reign.champion} vs. {last.opponent}
-                      <span className="theme-muted block text-xs sm:inline sm:before:content-['_·_']">{describeLastFight(last, i18n.language)}</span>
-                    </p>
-                  ) : null}
-                  <p className="theme-muted mt-1 text-xs">
-                    {reign.days_held ?? '—'} {t('champions.daysHeld')} · {reign.defenses_count}{' '}
-                    {t('champions.defenses')}
-                  </p>
-                </div>
-
-                <span className="ghost-action col-span-2 inline-flex items-center justify-center px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-main)] transition group-hover:!bg-[#F2C230] group-hover:text-[#0E0E0E] md:col-span-1">
-                  {t('common.viewProfile')}
+                <span className="flex items-baseline justify-between gap-3">
+                  <span className="text-[17px] font-bold">{divisionLabel}</span>
+                  {limit ? <span className="text-[15px] text-[var(--muted)]">{limit}</span> : null}
                 </span>
+                <span className="flex items-end gap-4">
+                  <FighterAvatar
+                    name={reign.champion}
+                    imageUrl={getFighterImageUrl(reign.champion, imageByName, profile?.image_url)}
+                    className="h-28 w-24 shrink-0 !rounded-none"
+                  />
+                  <span className="min-w-0">
+                    {profile?.nickname ? <span className="block text-[15px] text-[var(--muted)]">“{profile.nickname}”</span> : null}
+                    <span className="mt-0.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 font-display text-[32px] font-black leading-[0.95]">
+                      {profile ? <FlagList fighter={profile} className="h-4 w-6" /> : null}
+                      <span className="min-w-0 break-words">{reign.champion}</span>
+                    </span>
+                    {record ? <span className="mt-1 block text-base">{L(i18n.language, `Cartel ${record}`, `Record ${record}`, `Palmarès ${record}`, `Récord ${record}`)}</span> : null}
+                  </span>
+                </span>
+                <FighterBadges badges={badgesForRankings(profile?.badges)} />
+                <span className="flex gap-7">
+                  <span>
+                    <span className="block font-display text-[28px] font-extrabold leading-none tabular-nums">{reign.days_held ?? '—'}</span>
+                    <span className="text-[15px] text-[var(--muted)]">{t('champions.daysHeld')}</span>
+                  </span>
+                  <span>
+                    <span className="block font-display text-[28px] font-extrabold leading-none tabular-nums">{reign.defenses_count}</span>
+                    <span className="text-[15px] text-[var(--muted)]">{t('champions.defenses')}</span>
+                  </span>
+                </span>
+                {last ? (
+                  <span className="block text-[15px] leading-6">
+                    <span className="font-bold">{L(i18n.language, 'Última luta', 'Last fight', 'Dernier combat', 'Última pelea')}:</span> vs. {last.opponent}
+                    <span className="block text-[var(--muted)]">{describeLastFight(last, i18n.language)}</span>
+                  </span>
+                ) : null}
               </button>
-              <DivisionHistory division={reign.division} reigns={history} />
-            </div>
+              <div className="px-5 pb-4">
+                <DivisionHistory division={reign.division} reigns={history} />
+              </div>
+            </li>
           )
         })}
-      </div>
+      </ul>
     </section>
   )
 }
@@ -470,12 +457,13 @@ function DivisionHistory({ division, reigns }: { division: string; reigns: Title
         type="button"
         aria-expanded={open}
         aria-controls={panelId}
+        aria-label={`${divisionLabel} ${L(i18n.language, 'histórico de campeões', 'title history', 'historique des titres', 'historial de campeones')}`}
         onClick={() => setOpen((value) => !value)}
-        className="ghost-action inline-flex w-full items-center justify-between gap-2 px-3 py-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-main)] transition hover:!bg-[#F2C230] hover:text-[#0E0E0E]"
+        className="ghost-action inline-flex w-full cursor-pointer items-center justify-between gap-2 px-3 text-left !text-[15px]"
       >
         <span>
-          {divisionLabel} {L(i18n.language, '• Histórico de campeões', 'title history', 'historique des titres', '• Historial de campeones')}
-          <span className="theme-muted ml-2 font-semibold normal-case tracking-normal">
+          {L(i18n.language, 'Histórico de campeões', 'Title history', 'Historique des titres', 'Historial de campeones')}
+          <span className="block text-sm font-semibold opacity-80">
             {history.length} {history.length === 1 ? L(i18n.language, 'reinado', 'reign', 'règne', 'reinado') : L(i18n.language, 'reinados', 'reigns', 'règnes', 'reinados')} · {holders} {holders === 1 ? L(i18n.language, 'campeão', 'champion', 'champion', 'campeón') : L(i18n.language, 'campeões', 'champions', 'champions', 'campeones')}
           </span>
         </span>
@@ -483,7 +471,7 @@ function DivisionHistory({ division, reigns }: { division: string; reigns: Title
       </button>
 
       {open ? (
-        <section id={panelId} aria-label={L(i18n.language, `${divisionLabel}: todos os campeões`, `${divisionLabel}: every champion`, `${divisionLabel} : tous les champions`, `${divisionLabel}: todos los campeones`)} className="fade-up mt-1.5 min-w-0 border-2 border-[var(--rule)] bg-[var(--surface-3)] p-3 sm:p-4">
+        <section id={panelId} aria-label={L(i18n.language, `${divisionLabel}: todos os campeões`, `${divisionLabel}: every champion`, `${divisionLabel} : tous les champions`, `${divisionLabel}: todos los campeones`)} className="fade-up mt-2 min-w-0 border-t-[3px] border-[var(--ink)]">
           <ol>
             {history.map((reign) => (
               <ReignRow key={`${reign.date_won}-${reign.champion}-${reign.title_type}`} reign={reign} onOpen={openProfile} />
@@ -804,28 +792,28 @@ const ROLE_STYLES: Record<TitleFight['role'], string> = {
 }
 
 const RESULT_STYLES: Record<TitleFight['result'], { letter: string; className: string; name: string }> = {
-  win: { letter: 'W', className: 'bg-[var(--rule)] text-[var(--card-bg)]', name: 'Win' },
+  win: { letter: 'W', className: 'bg-[var(--ink)] text-[var(--on-ink)]', name: 'Win' },
   loss: { letter: 'L', className: 'bg-[#C8102E] text-white', name: 'Loss' },
   draw: { letter: 'D', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Draw' },
   no_contest: { letter: 'NC', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'No contest' },
 }
 
 const RESULT_STYLES_PT: Record<TitleFight['result'], { letter: string; className: string; name: string }> = {
-  win: { letter: 'V', className: 'bg-[var(--rule)] text-[var(--card-bg)]', name: 'Vitória' },
+  win: { letter: 'V', className: 'bg-[var(--ink)] text-[var(--on-ink)]', name: 'Vitória' },
   loss: { letter: 'D', className: 'bg-[#C8102E] text-white', name: 'Derrota' },
   draw: { letter: 'E', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Empate' },
   no_contest: { letter: 'SR', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Sem resultado' },
 }
 
 const RESULT_STYLES_FR: Record<TitleFight['result'], { letter: string; className: string; name: string }> = {
-  win: { letter: 'V', className: 'bg-[var(--rule)] text-[var(--card-bg)]', name: 'Victoire' },
+  win: { letter: 'V', className: 'bg-[var(--ink)] text-[var(--on-ink)]', name: 'Victoire' },
   loss: { letter: 'D', className: 'bg-[#C8102E] text-white', name: 'Défaite' },
   draw: { letter: 'N', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Nul' },
   no_contest: { letter: 'NC', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Sans décision' },
 }
 
 const RESULT_STYLES_ES: Record<TitleFight['result'], { letter: string; className: string; name: string }> = {
-  win: { letter: 'V', className: 'bg-[var(--rule)] text-[var(--card-bg)]', name: 'Victoria' },
+  win: { letter: 'V', className: 'bg-[var(--ink)] text-[var(--on-ink)]', name: 'Victoria' },
   loss: { letter: 'D', className: 'bg-[#C8102E] text-white', name: 'Derrota' },
   draw: { letter: 'E', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Empate' },
   no_contest: { letter: 'SR', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Sin resultado' },

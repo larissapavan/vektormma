@@ -1,18 +1,17 @@
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeftRight, ArrowRight, CalendarDays, LoaderCircle, Share2, Sparkles, Swords, Trophy, Users } from 'lucide-react'
+import { ArrowLeftRight, ArrowRight, CalendarDays, LoaderCircle, Share2, Swords, Trophy, Users } from 'lucide-react'
 
 import { L, localeTag } from '../i18n/lang'
 import { formatMethod as formatMethodLabel } from '../shared/data/orgFormat'
 import { getDivisionName } from '../shared/data/divisions'
 import { FighterProfileModal } from '../shared/components/FighterProfileModal'
 import { FighterSelect } from '../shared/components/FighterSelect'
-import { SectionHeading } from '../shared/components/SectionHeading'
 import { EditorialHeadToHeadSimulator } from '../shared/components/editorial/EditorialHeadToHeadSimulator'
 import { useFighters } from '../shared/hooks/useFighters'
-import { getHeadToHead, getOpponents } from '../shared/services/api'
-import type { FightRecord, HeadToHeadResponse, Opponent } from '../shared/types/api'
+import { getHeadToHead, getOpponents, getUpcomingPicks } from '../shared/services/api'
+import type { FightRecord, HeadToHeadResponse, Opponent, UpcomingPick } from '../shared/types/api'
 
 function useOpponents(fighterName: string): Opponent[] {
   const [loaded, setLoaded] = useState<{ name: string; opponents: Opponent[] } | null>(null)
@@ -111,68 +110,91 @@ export function HeadToHead() {
     }
   }
 
+  // The fights already on a card: the first one opens the page when no fighters are in the address, and the list is
+  // offered as a shortcut while a corner is empty.
+  const [scheduled, setScheduled] = useState<UpcomingPick[]>([])
   useEffect(() => {
-    if (!presetA || !presetB || presetA === presetB) return
-    void handleCompare(presetA, presetB)
+    let cancelled = false
+    getUpcomingPicks()
+      .then((picks) => {
+        if (cancelled) return
+        setScheduled(picks)
+        const first = picks[0]
+        if (first && !presetA && !presetB) {
+          setFighterAName(first.fighter_1)
+          setFighterBName(first.fighter_2)
+        }
+      })
+      .catch(() => {
+        // Without the list the page simply starts empty.
+      })
+    return () => {
+      cancelled = true
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // The pair's shared history follows the two corners.
+  useEffect(() => {
+    if (!fighterAName || !fighterBName || fighterAName === fighterBName) return
+    void handleCompare(fighterAName, fighterBName)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fighterAName, fighterBName])
+
+  const modeButton = (mode: 'editorial' | 'classic', label: string) => (
+    <button
+      type="button"
+      aria-pressed={viewMode === mode}
+      onClick={() => setViewMode(mode)}
+      className={`min-h-11 flex-1 cursor-pointer px-5 text-[15px] font-bold sm:flex-none ${viewMode === mode ? 'bg-[var(--ink)] text-[var(--on-ink)]' : 'text-[var(--ink)] hover:bg-[var(--panel-hover)]'}`}
+    >
+      {label}
+    </button>
+  )
+
   return (
-    <div className="space-y-4">
-      {/* Editorial vs Classic Mode Switcher */}
-      <div className="surface-card flex items-center justify-between rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] dark:border-white/10 dark:bg-[#0c0d12]/90 px-4 py-3 shadow-sm text-[var(--text-primary)] dark:text-zinc-300">
-        <span className="font-['Anton','Barlow_Condensed',Impact,sans-serif] text-sm uppercase tracking-widest text-[var(--text-secondary)] dark:text-zinc-300">
-          {L(i18n.language, 'Modo de Confronto', 'Matchup Mode', 'Mode de confrontation', 'Modo de enfrentamiento')}
-        </span>
-        <div className="inline-flex rounded-xl bg-[var(--bg-surface-subtle)] dark:bg-black/40 p-1 border border-[var(--border-subtle)] dark:border-white/10">
-          <button
-            type="button"
-            onClick={() => setViewMode('editorial')}
-            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition ${
-              viewMode === 'editorial'
-                ? 'bg-[#E11D48] text-white shadow-md'
-                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] dark:text-zinc-400 dark:hover:text-white'
-            }`}
-          >
-            <Sparkles className="h-3.5 w-3.5" />
-            {L(i18n.language, 'Raio-X ✨', 'Tale of the Tape ✨', 'Fiche comparative ✨', 'Comparativa ✨')}
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode('classic')}
-            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition ${
-              viewMode === 'classic'
-                ? 'bg-zinc-700 text-white shadow-md'
-                : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] dark:text-zinc-400 dark:hover:text-white'
-            }`}
-          >
-            {L(i18n.language, 'Histórico Completo', 'Full History', 'Historique complet', 'Historial completo')}
+    <div className="space-y-7">
+      <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-4">
+        <div className="min-w-0">
+          <h1 className="text-[40px] leading-none sm:text-[52px]">{L(i18n.language, 'Confronto direto', 'Head-to-head', 'Face-à-face', 'Cara a cara')}</h1>
+          <p className="mt-2 max-w-[60ch] text-base sm:text-lg">
+            {L(
+              i18n.language,
+              'Escolha dois lutadores para ver a chance de vitória estimada pelo modelo, os números lado a lado e o histórico entre eles.',
+              'Choose two fighters to see the model’s estimated win chance, their numbers side by side and their history.',
+              'Choisissez deux combattants pour voir la chance de victoire estimée par le modèle, leurs chiffres côte à côte et leur historique.',
+              'Elige dos peleadores para ver la probabilidad de victoria estimada por el modelo, sus números lado a lado y su historial.',
+            )}
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-3 max-sm:w-full">
+          <div role="group" aria-label={L(i18n.language, 'Modo de confronto', 'Comparison view', 'Mode de comparaison', 'Modo de comparación')} className="flex overflow-hidden rounded-sm border-[1.5px] border-[var(--ink)] max-sm:w-full">
+            {modeButton('editorial', L(i18n.language, 'Raio-X', 'Tale of the tape', 'Fiche comparative', 'Comparativa'))}
+            {modeButton('classic', L(i18n.language, 'Histórico completo', 'Full history', 'Historique complet', 'Historial completo'))}
+          </div>
+          <button type="button" onClick={swapCorners} disabled={!fighterAName && !fighterBName} className="ghost-action inline-flex cursor-pointer items-center gap-2.5 px-[18px] disabled:cursor-not-allowed disabled:opacity-40">
+            <ArrowLeftRight className="h-[18px] w-[18px]" aria-hidden="true" />
+            {L(i18n.language, 'Inverter cantos', 'Swap corners', 'Inverser les coins', 'Intercambiar esquinas')}
           </button>
         </div>
       </div>
 
       {viewMode === 'editorial' ? (
-        <>
-          <h1 className="sr-only">{t('headToHead.title')}</h1>
-          <p className="sr-only">{t('headToHead.description')}</p>
-          <EditorialHeadToHeadSimulator
-          initialFighterA={fighterAName}
-          initialFighterB={fighterBName}
+        <EditorialHeadToHeadSimulator
+          fighterA={fighterAName}
+          fighterB={fighterBName}
           onSelectFighterA={(name) => chooseFighter('a', name)}
           onSelectFighterB={(name) => chooseFighter('b', name)}
+          scheduled={scheduled}
+          history={result}
         />
-        </>
       ) : (
         <>
-      <section className="page-hero rounded-[20px] px-3 py-3 sm:px-4 sm:py-4">
-        <SectionHeading
-          level={1}
-          eyebrow={t('headToHead.eyebrow')}
-          title={t('headToHead.title')}
-          description={t('headToHead.description')}
-        />
+      <section>
+        <h2 className="section-title">{t('headToHead.title')}</h2>
+        <p className="mt-1.5 text-base text-[var(--muted)]">{t('headToHead.description')}</p>
 
-        <div className="mt-3 grid gap-2.5 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-end">
+        <div className="mt-4 grid gap-2.5 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-end">
           <FighterSelect
             label={t('headToHead.fighterA')}
             corner="red"
@@ -218,14 +240,14 @@ export function HeadToHead() {
           type="button"
           onClick={() => void handleCompare()}
           disabled={!canCompare || loading}
-          className="primary-action mt-3 inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-white disabled:cursor-not-allowed disabled:opacity-50"
+          className="primary-action mt-4 inline-flex items-center justify-center gap-2 px-6"
         >
           {loading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Swords className="h-4 w-4" />}
           {loading ? t('headToHead.searching') : t('headToHead.findHistory')}
         </button>
 
         {error ? (
-          <p className="mt-3 rounded-xl border border-[#C8102E]/25 bg-[#C8102E]/8 px-3 py-2 text-sm text-[var(--text-main)]">
+          <p role="alert" className="mt-3 error-note">
             {error}
           </p>
         ) : null}
@@ -351,7 +373,7 @@ function CommonOpponentsCard({ result }: { result: HeadToHeadResponse }) {
       <div className="mt-2.5 grid grid-cols-[1fr_auto_auto] items-center gap-x-2.5 gap-y-1.5">
         <span />
         <span className="type-tech text-right text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--accent-red)]">{lastWord(result.fighter_a)}</span>
-        <span className="type-tech text-right text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--accent-blue)]">{lastWord(result.fighter_b)}</span>
+        <span className="type-tech text-right text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--blue-text)]">{lastWord(result.fighter_b)}</span>
         {result.common_opponents.map((common) => (
           <Fragment key={common.opponent}>
             <span className="min-w-0 truncate rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3 py-2 text-sm font-semibold text-[var(--text-main)]">

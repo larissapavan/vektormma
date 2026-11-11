@@ -9,6 +9,8 @@ import { LoadingSkeleton } from '../../shared/components/LoadingSkeleton'
 import { OrgFightRow } from '../../shared/components/OrgFightRow'
 import { OrgFighterModal } from '../../shared/components/OrgFighterModal'
 import { SectionHeading } from '../../shared/components/SectionHeading'
+import { sectionActionClass } from '../../shared/components/ui/Section'
+import { Stat } from '../../shared/components/ui/Stat'
 import { L, localeTag } from '../../i18n/lang'
 import { getDivisionName } from '../../shared/data/divisions'
 import { buildDivisionReigns } from '../../shared/data/orgChampions'
@@ -23,7 +25,7 @@ import type { UpcomingPick } from '../../shared/types/api'
 import { useOrgFighterLookup } from '../../shared/hooks/useOrgFighterLookup'
 import type { OrgEvent, OrgFighter } from '../../shared/types/api'
 import { DivisionHistoryCard } from './OrgChampions'
-import { CatalogStrip, FeaturedHero, MainEventCard, PoundForPoundCard, RestOfCardSection, TrendingCard } from './OrgFeaturedSections'
+import { CatalogStrip, FeaturedHero, PoundForPoundCard, RestOfCardSection, TrendingCard } from './OrgFeaturedSections'
 
 const LATEST_RESULTS = 4
 
@@ -104,18 +106,12 @@ export function OrgHome() {
   }, [reignsByDivision])
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-8 sm:space-y-10">
       {featured ? (
-        <FeaturedHero
-          org={org}
-          fightersCount={fighters.length}
-          nextEvent={nextEvent}
-          nextEventLoading={upcoming.loading}
-          lastUpdated={dataInfo?.last_updated ?? null}
-        />
+        <FeaturedHero org={org} loading={upcoming.loading} event={nextEvent} pickFor={pickFor} onOpenFighter={setProfileName} />
       ) : (
-      <section className="surface-card relative overflow-hidden rounded-[24px] border border-[var(--border-subtle)] p-5 sm:p-7 shadow-xl">
-        <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr] xl:items-end">
+      <header>
+        <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between xl:gap-10">
           <div>
             <SectionHeading
               level={1}
@@ -127,21 +123,21 @@ export function OrgHome() {
               {org.hasPredictions ? (
                 <Link
                   to={orgPath(org, 'predictor')}
-                  className="primary-action inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-white"
+                  className="primary-action inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-xs uppercase"
                 >
-                  {L(i18n.language, 'Simular Combate', 'Predict a fight', 'Prédire un combat', 'Pronosticar una pelea')}
+                  {L(i18n.language, 'Simular combate', 'Predict a fight', 'Prédire un combat', 'Pronosticar una pelea')}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               ) : null}
               <Link
                 to={orgPath(org, 'events')}
-                className="ghost-action theme-text inline-flex items-center justify-center rounded-full px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.14em]"
+                className="ghost-action inline-flex min-h-11 items-center justify-center rounded-full px-5 text-xs uppercase"
               >
-                {L(i18n.language, 'Ver Eventos', 'See fight cards', 'Voir les événements', 'Ver carteleras')}
+                {L(i18n.language, 'Ver eventos', 'See fight cards', 'Voir les événements', 'Ver carteleras')}
               </Link>
             </div>
           </div>
-          <div className={`grid gap-2 ${isArchived ? 'sm:grid-cols-4' : 'sm:grid-cols-3'}`}>
+          <div className="flex shrink-0 flex-wrap gap-x-8 gap-y-5 sm:gap-x-10">
             <Tile
               label={L(i18n.language, 'Lutadores', 'Fighters', 'Combattants', 'Peleadores')}
               value={fighters.length.toLocaleString(localeTag(i18n.language))}
@@ -174,14 +170,20 @@ export function OrgHome() {
             />
           </div>
         </div>
-      </section>
+      </header>
       )}
 
       {featured ? (
         <>
-          <CatalogStrip org={org} fights={fightCount} events={past.events.length} active={activeCount} />
-          <MainEventCard org={org} loading={upcoming.loading} event={nextEvent} pickFor={pickFor} onOpenFighter={setProfileName} />
-          <section className="grid gap-4 lg:grid-cols-2">
+          <CatalogStrip
+            org={org}
+            fights={fightCount}
+            events={past.events.length}
+            fighters={fighters.length}
+            active={activeCount}
+            lastUpdated={dataInfo?.last_updated ?? null}
+          />
+          <section className="grid gap-8 lg:grid-cols-2 lg:gap-10">
             <TrendingCard org={org} event={nextEvent} onOpenFighter={setProfileName} />
             <PoundForPoundCard org={org} category={p4p} loading={rankingsLoading} onOpenFighter={setProfileName} />
           </section>
@@ -190,7 +192,7 @@ export function OrgHome() {
       ) : null}
 
       {isArchived ? (
-        <p role="note" className="surface-card rounded-[20px] px-4 py-4 text-sm leading-6 text-[var(--text-main)]">
+        <p role="note" className="rounded-card border border-[var(--border-subtle)] border-l-4 border-l-[var(--accent-gold)] bg-[var(--bg-surface)] px-4 py-3 text-sm leading-6 text-[var(--text-primary)]">
           {L(
             i18n.language,
             'O Bellator realizou seu último evento em 2023 e foi absorvido pela PFL, portanto este é um arquivo histórico: os dados aqui não são mais atualizados.',
@@ -204,18 +206,18 @@ export function OrgHome() {
       {isArchived ? (
         <section aria-label={L(i18n.language, 'Seções do arquivo', 'Archive sections', 'Sections d’archive', 'Secciones del archivo')} className="space-y-3">
           <SectionHeading
-            eyebrow={L(i18n.language, 'Seções do Arquivo', 'Archive sections', "Sections d’archive", 'Secciones del archivo')}
-            title={L(i18n.language, 'Navegue pelo Arquivo Histórico', 'Explore the archive', "Explorer l’archive", 'Explora el archivo histórico')}
+            eyebrow={L(i18n.language, 'Seções do arquivo', 'Archive sections', "Sections d’archive", 'Secciones del archivo')}
+            title={L(i18n.language, 'Navegue pelo arquivo histórico', 'Explore the archive', "Explorer l’archive", 'Explora el archivo histórico')}
           />
           <div className="grid gap-3 sm:grid-cols-3">
-            <Link to={orgPath(org, 'events')} className="surface-card rounded-2xl p-4 transition hover:bg-[var(--bg-surface-hover)]">
+            <Link to={orgPath(org, 'events')} className="surface-card !rounded-card p-4 hover:bg-[var(--bg-surface-hover)]">
               <span className="text-sm font-bold">{L(i18n.language, 'Eventos', 'Events', 'Événements', 'Eventos')}</span>
             </Link>
-            <Link to={orgPath(org, 'fighters')} className="surface-card rounded-2xl p-4 transition hover:bg-[var(--bg-surface-hover)]">
+            <Link to={orgPath(org, 'fighters')} className="surface-card !rounded-card p-4 hover:bg-[var(--bg-surface-hover)]">
               <span className="text-sm font-bold">{L(i18n.language, 'Lutadores', 'Fighters', 'Combattants', 'Peleadores')}</span>
             </Link>
             {org.hasChampions ? (
-              <Link to={orgPath(org, 'champions')} className="surface-card rounded-2xl p-4 transition hover:bg-[var(--bg-surface-hover)]">
+              <Link to={orgPath(org, 'champions')} className="surface-card !rounded-card p-4 hover:bg-[var(--bg-surface-hover)]">
                 <span className="text-sm font-bold">{L(i18n.language, 'Campeões', 'Champions', 'Champions', 'Campeones')}</span>
               </Link>
             ) : null}
@@ -226,7 +228,7 @@ export function OrgHome() {
       {!isArchived && !featured && nextEvent ? (
         <section aria-label={L(i18n.language, 'Próximo evento', 'Next event', 'Prochain événement', 'Próximo evento')} className="space-y-3">
           <SectionHeading
-            eyebrow={L(i18n.language, 'Próximo Evento', 'Next card', 'Prochain événement', 'Próxima cartelera')}
+            eyebrow={L(i18n.language, 'Próximo evento', 'Next card', 'Prochain événement', 'Próxima cartelera')}
             title={nextEvent.name}
           />
           {upcoming.loading ? (
@@ -266,7 +268,7 @@ export function OrgHome() {
                 to={orgPath(org, 'champions')}
                 className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-main)] underline decoration-2 underline-offset-4 hover:bg-[#F2C230] hover:text-[#0E0E0E]"
               >
-                {L(i18n.language, 'Seção completa de Campeões', 'Full champions section', 'Section complète des champions', 'Sección completa de campeones')}
+                {L(i18n.language, 'Seção completa de campeões', 'Full champions section', 'Section complète des champions', 'Sección completa de campeones')}
                 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             ) : null}
@@ -299,10 +301,10 @@ export function OrgHome() {
         <section aria-label={L(i18n.language, 'Histórico de títulos', 'Title history', 'Historique des titres', 'Historial de títulos')} className="space-y-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <SectionHeading
-              eyebrow={L(i18n.language, 'Linhagem Completa (2009–2023)', 'Complete Lineage (2009–2023)', 'Lignée complète (2009–2023)', 'Linaje completo (2009–2023)')}
+              eyebrow={L(i18n.language, 'Linhagem completa (2009–2023)', 'Complete lineage (2009–2023)', 'Lignée complète (2009–2023)', 'Linaje completo (2009–2023)')}
               title={L(
                 i18n.language,
-                'Histórico de Campeões por Categoria',
+                'Histórico de campeões por categoria',
                 'Championship history by division',
                 'Historique des champions par catégorie',
                 'Historial de campeonatos por división',
@@ -371,7 +373,7 @@ export function OrgHome() {
 
       {!isArchived && latestEvent ? (
         <section aria-label={L(i18n.language, 'Últimos resultados', 'Latest results', 'Derniers résultats', 'Últimos resultados')} className="space-y-3">
-          <SectionHeading eyebrow={L(i18n.language, 'Últimos Resultados', 'Latest results', 'Derniers résultats', 'Últimos resultados')} title={latestEvent.name} />
+          <SectionHeading eyebrow={L(i18n.language, 'Últimos resultados', 'Latest results', 'Derniers résultats', 'Últimos resultados')} title={latestEvent.name} />
           <EventPanel org={org} event={latestEvent} limit={LATEST_RESULTS} onOpenFighter={setProfileName} />
         </section>
       ) : null}
@@ -404,15 +406,15 @@ export function OrgHome() {
             )
           : L(
               i18n.language,
-              'As previsões da IA e o histórico detalhado estão focados no UFC atualmente, onde o modelo preditivo foi validado.',
+              'Previsões, confronto direto e histórico de acertos valem só para o UFC por enquanto: o modelo é treinado com lutas do UFC.',
               'Predictions, head-to-head and the track record are UFC-only for now: the model is trained on UFC fights.',
               'Les prévisions, le face-à-face et le bilan des pronostics restent pour l’instant limités à l’UFC : le modèle est entraîné sur des combats UFC.',
               'Los pronósticos, el cara a cara y el historial de aciertos son solo de la UFC por ahora: el modelo se entrena con peleas de la UFC.',
             )}{' '}
         <Link to={org.hasPredictions ? orgPath(org, 'predictor') : '/predictor'} className="font-semibold underline decoration-2 underline-offset-2 hover:bg-[#F2C230] hover:text-[#0E0E0E]">
           {org.hasPredictions
-            ? L(i18n.language, `Simular lutas ${orgPt(org, 'em')} →`, `Try the ${org.shortName} predictor`, `Simuler des combats ${org.shortName} →`, `Probar el pronosticador de ${orgEs(org)} →`)
-            : L(i18n.language, 'Simular lutas no UFC →', 'Try the UFC predictor', 'Simuler des combats UFC →', 'Probar el pronosticador de la UFC →')}
+            ? L(i18n.language, `Simular lutas ${orgPt(org, 'em')}`, `Try the ${org.shortName} predictor`, `Simuler des combats ${org.shortName}`, `Probar el pronosticador de ${orgEs(org)}`)
+            : L(i18n.language, 'Simular lutas no UFC', 'Try the UFC predictor', 'Simuler des combats UFC', 'Probar el pronosticador de la UFC')}
         </Link>
       </p>
 
@@ -424,13 +426,7 @@ export function OrgHome() {
 
 
 function Tile({ label, value, note }: { label: string; value: string; note?: string }) {
-  return (
-    <div className="surface-card rounded-2xl border border-[var(--border-subtle)] p-3.5 sm:p-4 transition hover:border-[var(--border-strong)]">
-      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{label}</p>
-      <p className="data-value mt-1 text-2xl font-black text-[var(--text-main)] sm:text-3xl">{value}</p>
-      {note ? <p className="mt-0.5 text-[11px] font-medium text-[var(--text-muted)]">{note}</p> : null}
-    </div>
-  )
+  return <Stat label={label} value={value} note={note} />
 }
 
 function EventPanel({
@@ -451,8 +447,8 @@ function EventPanel({
   const { i18n } = useTranslation()
   const fights = event.fights.slice(0, limit)
   return (
-    <div className="surface-card rounded-[20px] p-3 sm:p-4">
-      <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[var(--text-muted)]">
+    <div>
+      <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[var(--text-muted)]">
         <span className="inline-flex items-center gap-1.5">
           <CalendarDays className="h-3.5 w-3.5" />
           {formatDate(event.date, true, i18n.language)}
@@ -471,7 +467,7 @@ function EventPanel({
       </div>
       <Link
         to={`${orgPath(org, 'events')}?q=${encodeURIComponent(event.name)}`}
-        className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-main)] underline decoration-2 underline-offset-4 hover:bg-[#F2C230] hover:text-[#0E0E0E]"
+        className={`${sectionActionClass} mt-2`}
       >
         {event.fight_count > fights.length
           ? L(i18n.language, `Card completo (${event.fight_count} lutas)`, `Full card (${event.fight_count} fights)`, `Carte complète (${event.fight_count} combats)`, `Cartelera completa (${event.fight_count} peleas)`)
@@ -502,18 +498,18 @@ function ChampionTile({
   const record = profile ? formatRecord(profile) : null
 
   return (
-    <div className="surface-card flex h-full items-center gap-3.5 rounded-2xl border border-[var(--border-subtle)] p-3.5 transition duration-200 hover:-translate-y-0.5 hover:border-[var(--border-strong)] hover:shadow-lg">
+    <div className="surface-card flex h-full items-center gap-3.5 !rounded-card p-3.5 hover:border-[var(--border-default)]">
       <FighterAvatar name={champion?.fighter ?? division} imageUrl={profile?.image_url ?? null} highlight={Boolean(champion)} className="h-14 w-12" />
       <div className="min-w-0 flex-1">
-        <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{getDivisionName(division, i18n.language)}</p>
+        <p className="font-mono text-label font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]">{getDivisionName(division, i18n.language)}</p>
         {champion ? (
           <>
             <button type="button" onClick={() => onOpen(champion.fighter)} className="mt-0.5 flex max-w-full items-center gap-1.5 text-left text-base font-bold text-[var(--text-main)] hover:underline">
-              <Crown className="h-3.5 w-3.5 shrink-0 text-[var(--accent-red)]" aria-hidden="true" />
+              <Crown className="h-3.5 w-3.5 shrink-0 text-[var(--text-red)]" aria-hidden="true" />
               {profile?.country_code ? <FlagIcon code={profile.country_code} country={profile.country} /> : null}
               <span className="truncate">{champion.fighter}</span>
             </button>
-            <p className="mt-0.5 text-[11px] text-[var(--text-muted)]">
+            <p className="mt-0.5 text-label text-[var(--text-muted)]">
               {record ? <span className="font-semibold text-[var(--text-main)]">{record}</span> : null}
               {record && archived ? ' · ' : ''}
               {archived ? L(i18n.language, 'Último campeão', 'Final champion', 'Dernier champion', 'Último campeón') : null}
@@ -522,8 +518,8 @@ function ChampionTile({
         ) : (
           <p className="mt-0.5 text-sm font-bold text-[var(--text-muted)]">
             {archived
-              ? L(i18n.language, 'Desativado / Vago', 'Inactive / Vacant', 'Inactif / vacant', 'Desactivado / vacante')
-              : L(i18n.language, 'Cinturão Vago', 'Vacant', 'Ceinture vacante', 'Cinturón vacante')}
+              ? L(i18n.language, 'Desativado / vago', 'Inactive / vacant', 'Inactif / vacant', 'Desactivado / vacante')
+              : L(i18n.language, 'Cinturão vago', 'Vacant', 'Ceinture vacante', 'Cinturón vacante')}
           </p>
         )}
         {interim ? (

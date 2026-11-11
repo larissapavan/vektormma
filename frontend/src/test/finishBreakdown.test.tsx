@@ -8,16 +8,16 @@ const dna = { subs: 4, kos: 6, decs: 10, subPct: 20, koPct: 30, decPct: 50 }
 describe('FinishBreakdown', () => {
   it('shows each way of winning with its count and share, and the finish rate', () => {
     render(<FinishBreakdown dna={dna} finishRate={50} language="en" />)
-    expect(screen.getByText(/FINISH BREAKDOWN/)).toBeInTheDocument()
-    expect(screen.getByText(/50% FINISHER/)).toBeInTheDocument()
-    expect(screen.getByText(/SUBMISSIONS/)).toHaveTextContent('4 SUBMISSIONS (20%)')
-    expect(screen.getByText(/KNOCKOUTS/)).toHaveTextContent('6 KNOCKOUTS (30%)')
-    expect(screen.getByText(/DECISIONS/)).toHaveTextContent('10 DECISIONS (50%)')
+    expect(screen.getByText(/how the wins came/i)).toBeInTheDocument()
+    expect(screen.getByText(/50% before the judges/)).toBeInTheDocument()
+    expect(screen.getByText(/^submissions/).parentElement).toHaveTextContent('4 submissions (20%)')
+    expect(screen.getByText(/knockouts/)).toHaveTextContent('6 knockouts (30%)')
+    expect(screen.getByText(/decisions/)).toHaveTextContent('10 decisions (50%)')
   })
 
   it('is written in the language it is given', () => {
     render(<FinishBreakdown dna={dna} finishRate={50} language="pt" />)
-    expect(screen.getByText(/FINALIZADOR/)).toBeInTheDocument()
-    expect(screen.getByText(/NOCAUTES/)).toHaveTextContent('6 NOCAUTES (30%)')
+    expect(screen.getByText(/antes da decisão dos juízes/)).toBeInTheDocument()
+    expect(screen.getByText(/nocautes/)).toHaveTextContent('6 nocautes (30%)')
   })
 })

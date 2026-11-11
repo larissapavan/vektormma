@@ -1,6 +1,7 @@
 {
   "nav": {
     "predict": "Pronostics",
+    "compare": "Comparer",
     "fighters": "Combattants",
     "events": "Événements",
     "results": "Résultats",
@@ -18,48 +19,28 @@
     "career": "Jeu"
   },
   "header": {
-    "matchupAnalytics": "Analyse des combats",
     "apiLive": "En direct",
     "apiOffline": "Hors ligne",
     "apiWaking": "Démarrage",
     "apiLiveTitle": "API en ligne et modèle chargé",
     "apiOfflineTitle": "API hors ligne",
     "apiWakingTitle": "Démarrage du serveur API...",
-    "searchPlaceholder": "Rechercher un combattant...",
     "themeLight": "clair",
     "themeDark": "sombre",
-    "switchTheme": "Passer en mode {{theme}}",
-    "github": "GitHub"
+    "switchTheme": "Passer en mode {{theme}}"
   },
   "language": {
     "switch": "Changer de langue",
-    "pt": "PT",
-    "en": "EN",
-    "fr": "FR",
-    "es": "ES",
     "ptLong": "Portugais",
     "enLong": "Anglais",
     "frLong": "Français",
     "esLong": "Espagnol"
   },
   "landing": {
-    "eyebrow": "Vektor MMA",
-    "title": "Choisir une organisation",
-    "description": "Statistiques, classements et résultats officiels. Prévisions de victoire par apprentissage automatique.",
-    "archive": "Archives historiques",
-    "enter": "Entrer dans {{name}}",
-    "open": "Accéder à {{name}}",
-    "sections": {
-      "Rankings": "Classements",
-      "Champions": "Champions",
-      "Fighters": "Combattants",
-      "Events": "Événements",
-      "Gyms": "Salles"
-    },
     "taglines": {
-      "ufc": "Statistiques, classements et prévisions de victoire par IA.",
+      "ufc": "Statistiques, classements et pronostics de victoire du modèle.",
       "pfl": "Profils de combattants, événements officiels et classements de la ligue.",
-      "one": "MMA, Muay Thai en gants 4oz, champions du monde et prévisions par IA.",
+      "one": "MMA, Muay Thai en gants 4oz, champions du monde et pronostics du modèle.",
       "bellator": "Archives historiques 2009–2023 : combattants, événements et champions.",
       "rizin": "Profils des combattants et résultats des événements.",
       "ksw": "Profils des combattants et résultats des événements.",
@@ -71,50 +52,37 @@
     }
   },
   "footer": {
-    "tagline": "Vektor MMA • Télémétrie et prévisions en sports de combat",
+    "tagline": "Statistiques et pronostics de sports de combat.",
     "dataUpTo": "Données jusqu’au {{date}}",
     "disclaimer": "Projet personnel indépendant, sans affiliation avec {{org}}"
   },
   "common": {
-    "loading": "Chargement...",
     "pageLoading": "Chargement des données...",
     "pageLoadingLabel": "Chargement des données",
     "serverFast": "Le serveur est désormais dédié, cela ne devrait pas durer.",
     "serverSlow": "Cela prend plus de temps que d’habitude. Le serveur est peut-être hors service ; essayez de recharger la page dans un instant.",
-    "error": "Une erreur est survenue",
     "serverDown": "Le serveur est hors service pour le moment. Il devrait revenir bientôt, rechargez la page dans un instant.",
     "skipToContent": "Aller au contenu",
-    "all": "Tous",
-    "search": "Rechercher...",
     "vs": "VS",
-    "round": "Round",
-    "rounds": "rounds",
-    "time": "Temps",
-    "method": "Méthode",
-    "referee": "Arbitre",
-    "winner": "Vainqueur",
-    "viewProfile": "Voir le profil",
     "noResults": "Aucun résultat trouvé."
   },
   "home": {
     "nextCard": "Prochaine carte UFC",
     "mainEvent": "Combat principal",
-    "analyzeMatchup": "Analyser le combat",
     "restOfCard": "Reste de la carte • {{count}} combats",
     "restOfCard_one": "Reste de la carte • 1 combat",
     "trending": "Tendances",
     "poundForPound": "Livre pour livre",
     "winStreak": "série de victoires",
-    "finishRate": "taux de victoires avant la limite",
-    "predictedWinner": "Vainqueur prévu"
+    "finishRate": "taux de victoires avant la limite"
   },
   "predictor": {
     "question": "Combat vedette",
     "whoTakesIt": "Qui l’emporte ?",
-    "heroSubtitle": "Choisissez deux combattants. Le modèle d’IA calcule les probabilités de victoire et les facteurs clés.",
+    "heroSubtitle": "Choisissez deux combattants. Le modèle estime la chance de victoire de chacun et montre les chiffres qui pèsent le plus.",
     "fightsOnFile": "Combats enregistrés",
     "fighters": "Combattants",
-    "modelAccuracy": "Précision du modèle",
+    "modelAccuracy": "Réussite du modèle",
     "backend": "Serveur",
     "onAir": "En direct",
     "active": "actif",
@@ -123,12 +91,9 @@
     "searchPlaceholder": "Rechercher un combattant...",
     "predictMatchup": "Prédire le combat",
     "predicting": "Prédiction en cours...",
-    "swap": "Inverser les coins",
     "pickTwoPrompt": "Choisissez deux combattants pour simuler le combat.",
     "selectTwoDifferent": "Sélectionnez deux combattants différents",
-    "winningChance": "Probabilité de victoire",
-    "explanation": "Explicabilité du modèle",
-    "predictionError": "Échec de prédiction. Vérifiez la connexion au serveur et réessayez."
+    "winningChance": "Chance de victoire estimée par le modèle"
   },
   "fighters": {
     "title": "Combattants",
@@ -137,13 +102,7 @@
     "all": "Tous",
     "activeOnly": "Effectif actif",
     "former": "Historique",
-    "status": "Statut",
-    "record": "Palmarès",
-    "division": "Divisions",
-    "viewProfile": "Voir le profil",
-    "stats": "Statistiques",
-    "strikes": "Coups Sig. / Min",
-    "takedowns": "Amenées au sol / 15 min"
+    "division": "Divisions"
   },
   "events": {
     "eyebrow": "Archives des événements",
@@ -159,9 +118,7 @@
     "upcomingSection": "Cartes confirmées",
     "noEventsFound": "Aucun événement trouvé.",
     "noEventsSub": "Ajustez vos filtres de recherche.",
-    "pick": "Pronostic",
-    "fights": "combats",
-    "agreement": "Taux de concordance"
+    "fights": "combats"
   },
   "rankings": {
     "eyebrow": "Classements officiels",
@@ -169,9 +126,6 @@
     "description": "Classements officiels avec taux de victoire et historique récent.",
     "categoryRanking": "Divisions",
     "p4p": "Livre pour livre (P4P)",
-    "activeOnly": "Effectif actif",
-    "elo": "Classement Elo",
-    "allDivisions": "Toutes les divisions",
     "division": "Division",
     "champion": "Champion",
     "rankingsUnavailable": "Classements indisponibles actuellement."
@@ -234,7 +188,6 @@
     "syncing": "Synchronisation..."
   },
   "headToHead": {
-    "eyebrow": "Face-à-Face",
     "title": "Historique des face-à-face",
     "description": "Choisissez deux combattants pour voir les duels précédents, vainqueurs, méthode et round.",
     "fighterA": "Combattant A",
@@ -266,22 +219,21 @@
     "sources": "Sources et crédits"
   },
   "dataIntelligence": {
-    "eyebrow": "Ingénierie des données & télémétrie",
-    "title": "Des données brutes à l’intelligence de combat",
-    "description": "Comment les données officielles de l’UFC, de la PFL, d’ONE Championship et des archives historiques sont collectées, nettoyées et transformées en variables prédictives pour le modèle d’apprentissage automatique.",
+    "eyebrow": "Données",
+    "title": "D’où viennent les données",
+    "description": "Comment les chiffres de l’UFC, de la PFL, de ONE Championship et des archives arrivent sur le site, sont vérifiés et deviennent les données du modèle.",
     "lastUpdate": "Dernière mise à jour",
-    "fighters": "Combattants catalogués",
-    "events": "Événements suivis",
-    "fights": "Combats traités",
-    "pipelineTitle": "Architecture de la chaîne de données",
-    "pipelineDesc": "Chaque prévision repose sur des statistiques réelles collectées combat par combat, normalisées entre plusieurs organisations et converties en 46 variables pour le modèle."
+    "fighters": "Combattants",
+    "events": "Événements",
+    "fights": "Combats",
+    "pipelineTitle": "Du site officiel au pronostic",
+    "pipelineDesc": "Chaque pronostic part des statistiques de chaque combat, harmonisées entre les organisations et résumées en 29 chiffres que le modèle compare."
   },
   "model": {
     "eyebrow": "Le modèle",
     "title": "Comment le modèle fonctionne",
     "description": "Le modèle, sa comparaison avec des approches plus simples, et ce qui entre dans chaque pronostic.",
     "modelCard": "Modèle",
-    "testAccuracy": "Précision au test",
     "rocAuc": "ROC AUC",
     "baselines": "Comparaison des références",
     "featureImportance": "Importance des variables"
@@ -291,15 +243,6 @@
     "title": "Analyse du combat",
     "description": "Frappe, lutte au sol et biométrie des deux combattants, plus les facteurs décisifs du modèle.",
     "analyze": "Analyser le combat",
-    "analyzing": "Analyse en cours...",
-    "radar": "Profil radar",
-    "recentFights": "Combats récents"
-  },
-  "fighterProfile": {
-    "fights": "Combats",
-    "wins": "Victoires",
-    "losses": "Défaites",
-    "close": "Fermer le profil de performance",
-    "p4pRank": "Rang Elo livre pour livre"
+    "analyzing": "Analyse en cours..."
   }
 }

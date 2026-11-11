@@ -52,14 +52,14 @@ export function FightMatchupCard({
   const isTbdMatchup = fight.fighter_1?.toUpperCase() === 'TBD' || fight.fighter_2?.toUpperCase() === 'TBD'
 
   return (
-    <article className="metric-tile relative rounded-2xl px-3 py-3 sm:px-4 sm:py-3.5">
+    <article className="relative border-l-4 border-r-4 border-l-[var(--red)] border-r-[var(--blue)] bg-[var(--panel)] px-3 py-3.5 hover:bg-[var(--panel-hover)] sm:px-4">
       {!isTbdMatchup && (
-        <Link to={to} aria-label={`${fight.fighter_1} vs ${fight.fighter_2}`} className="absolute inset-0 z-0 rounded-2xl" />
+        <Link to={to} aria-label={`${fight.fighter_1} vs ${fight.fighter_2}`} className="absolute inset-0 z-0" />
       )}
       <div className="relative z-10 grid grid-cols-[auto_minmax(0,1fr)_auto_minmax(0,1fr)_auto] items-center gap-x-1.5 xs:gap-x-2 gap-y-1 pointer-events-none">
         <CornerPhoto name={fight.fighter_1} />
         <CornerName name={fight.fighter_1} align="right" won={fighter1Won} onOpenFighter={onOpenFighter} />
-        <span className="broadcast-label px-0.5 text-[11px] text-[var(--text-muted)]">vs</span>
+        <span className="px-0.5 font-display text-lg font-black text-[var(--muted)]">vs</span>
         <CornerName name={fight.fighter_2} align="left" won={fighter2Won} onOpenFighter={onOpenFighter} />
         <CornerPhoto name={fight.fighter_2} />
       </div>
@@ -67,19 +67,19 @@ export function FightMatchupCard({
       <div className="relative z-10 mt-2.5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5 pointer-events-none">
         <TitleFightBadge fight={titleFightInfo} />
         {isTbdMatchup ? (
-          <span className="selector-chip border-amber-400/40 bg-amber-400/10 text-amber-500 dark:text-amber-300 font-mono text-[11px] font-bold uppercase tracking-wider">
-            {L(i18n.language, '✦ Buscando Substituto', '✦ Seeking Replacement', '✦ En recherche d’adversaire', '✦ Busca reemplazo')}
+          <span className="rounded-sm border-[1.5px] border-[var(--ink)] px-2.5 py-1 text-[13px] font-bold">
+            {L(i18n.language, 'Adversário a definir', 'Opponent to be named', 'Adversaire à déterminer', 'Rival por definir')}
           </span>
         ) : (
           <span className="pointer-events-auto">
             <PickChip pick={pick} />
           </span>
         )}
-        {weightClassDisplay ? <span className="selector-chip text-[11px] text-[var(--text-main)]">{weightClassDisplay}</span> : null}
+        {weightClassDisplay ? <span className="text-sm text-[var(--muted)]">{weightClassDisplay}</span> : null}
       </div>
 
       {details?.length ? (
-        <div className="relative z-10 mt-2 space-y-0.5 text-center text-[11px] leading-4 text-[var(--text-muted)] pointer-events-none sm:text-xs">
+        <div className="relative z-10 mt-2 space-y-0.5 text-center text-sm leading-5 text-[var(--muted)] pointer-events-none">
           {details.map((line) => (
             <p key={line}>{line}</p>
           ))}
@@ -97,7 +97,7 @@ function CornerPhoto({ name }: { name: string }) {
 
   if (isTbd) {
     return (
-      <span className="relative grid h-10 w-9 sm:h-12 sm:w-10 shrink-0 place-items-center overflow-hidden rounded-lg border-2 border-dashed border-amber-400/50 bg-amber-400/10 text-amber-500 dark:text-amber-400 font-mono font-bold text-base select-none">
+      <span className="relative grid h-10 w-9 shrink-0 select-none place-items-center border-[1.5px] border-dashed border-[var(--muted)] font-display text-lg font-bold text-[var(--muted)] sm:h-12 sm:w-10">
         ?
       </span>
     )
@@ -131,8 +131,8 @@ function CornerName({
   if (isTbd) {
     return (
       <span className={`flex min-w-0 items-center gap-1.5 px-1 py-1 ${side}`}>
-        <span className="min-w-0 truncate font-mono text-xs xs:text-sm font-bold uppercase tracking-wider text-amber-500 dark:text-amber-400">
-          {L(i18n.language, 'Aguardando Oponente (a definir)', 'Awaiting Opponent (TBD)', 'Adversaire à déterminer', 'Esperando rival (por definir)')}
+        <span className="min-w-0 text-sm font-bold text-[var(--muted)]">
+          {L(i18n.language, 'A definir', 'To be named', 'À déterminer', 'Por definir')}
         </span>
       </span>
     )
@@ -140,9 +140,9 @@ function CornerName({
 
   const label = (
     <>
-      {align === 'right' && won ? <Trophy className="h-3.5 w-3.5 shrink-0 text-[var(--accent-red)]" /> : null}
-      <span className={`min-w-0 truncate text-xs xs:text-sm font-bold leading-tight text-[var(--text-main)] sm:text-base ${won ? '' : 'font-semibold'}`}>{name}</span>
-      {align === 'left' && won ? <Trophy className="h-3.5 w-3.5 shrink-0 text-[var(--accent-red)]" /> : null}
+      {align === 'right' && won ? <Trophy className="h-4 w-4 shrink-0 text-[var(--gold)]" aria-label={L(i18n.language, 'Venceu', 'Won', 'A gagné', 'Ganó')} /> : null}
+      <span className={`min-w-0 break-words text-sm leading-tight text-[var(--ink)] [hyphens:auto] sm:text-base ${won ? 'font-bold' : 'font-semibold'}`}>{name}</span>
+      {align === 'left' && won ? <Trophy className="h-4 w-4 shrink-0 text-[var(--gold)]" aria-label={L(i18n.language, 'Venceu', 'Won', 'A gagné', 'Ganó')} /> : null}
     </>
   )
 

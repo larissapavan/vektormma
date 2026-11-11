@@ -28,7 +28,7 @@ export function FighterBadges({ badges, variant = 'short', className = '' }: Fig
           <li
             key={key}
             title={label}
-            className={`border-2 border-[var(--rule)] px-1.5 py-px text-[11px] font-bold uppercase leading-4 tracking-[0.08em] ${
+            className={`border-2 border-[var(--rule)] px-1.5 py-px text-label font-bold ${
               CHAMPION_SEALS.has(key)
                 ? 'bg-[#C9CDD3] text-[#0E0E0E]'
                 : info.honor
@@ -93,7 +93,7 @@ export function TitleFightBadge({ fight, className = '' }: TitleFightBadgeProps)
   const divPt = division ? getDivisionName(division, 'pt') : ''
   const divFr = division ? getDivisionName(division, 'fr') : ''
   const divEs = division ? getDivisionName(division, 'es') : ''
-  const base = `border-2 border-[var(--rule)] px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.12em] ${className}`
+  const base = `border-2 border-[var(--rule)] px-2 py-0.5 text-label font-bold ${className}`
 
   if (fight.interim_title) {
     const label = L(
@@ -109,7 +109,7 @@ export function TitleFightBadge({ fight, className = '' }: TitleFightBadgeProps)
     )
 
     return (
-      <span className={`${base} bg-[#1F4E9C] text-white`}>
+      <span className={`${base} bg-[#1F4E9C] text-[var(--ink)]`}>
         {label}
       </span>
     )
@@ -117,7 +117,7 @@ export function TitleFightBadge({ fight, className = '' }: TitleFightBadgeProps)
   if (fight.bmf_title) {
     return (
       <span className={`${base} bg-[#C9CDD3] text-[#0E0E0E]`}>
-        {L(i18n.language, 'Disputa de Cinturão BMF', 'BMF title fight', 'Combat de titre BMF', 'Pelea por el cinturón BMF')}
+        {L(i18n.language, 'Disputa de cinturão BMF', 'BMF title fight', 'Combat de titre BMF', 'Pelea por el cinturón BMF')}
       </span>
     )
   }
@@ -131,5 +131,5 @@ export function TitleFightBadge({ fight, className = '' }: TitleFightBadgeProps)
     divEs ? `Pelea por el título • ${divEs}` : 'Pelea por el título',
   )
 
-  return <span className={`${base} bg-[#F2C230] text-[#0E0E0E]`}>{label}</span>
+  return <span className={`${base} bg-[var(--gold-fill)] text-[#0E0E0E]`}>{label}</span>
 }

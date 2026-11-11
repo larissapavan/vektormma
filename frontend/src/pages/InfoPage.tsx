@@ -39,30 +39,30 @@ export function InfoPage({ id }: { id: InfoPageId }) {
   const page = infoPage(id, lang, EMAIL)
 
   return (
-    <div className="space-y-3 sm:space-y-4">
-      <section className="page-hero rounded-[20px] px-3 py-3 sm:px-4 sm:py-4" aria-labelledby={`${id}-title`}>
-        <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{page.eyebrow}</p>
-        <h1 id={`${id}-title`} className="mt-1.5 text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)] min-[390px]:text-3xl md:text-4xl">
+    <div className="max-w-[70ch] space-y-10">
+      <header aria-labelledby={`${id}-title`}>
+        <p className="text-[15px] font-bold text-[var(--muted)]">{page.eyebrow}</p>
+        <h1 id={`${id}-title`} className="mt-1 text-[40px] leading-none sm:text-[52px]">
           {page.title}
         </h1>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-[var(--text-secondary)]">{page.intro}</p>
-        {id === 'privacy' || id === 'terms' ? <p className="mt-2 font-mono text-xs text-[var(--text-muted)]">{updatedLabel(lang)}</p> : null}
-      </section>
+        <p className="mt-3 text-lg leading-relaxed">{page.intro}</p>
+        {id === 'privacy' || id === 'terms' ? <p className="mt-2 text-[15px] text-[var(--muted)]">{updatedLabel(lang)}</p> : null}
+      </header>
 
       {page.sections.map((section, index) => (
-        <section key={section.heading} className="surface-card rounded-[20px] p-3 sm:p-4" aria-labelledby={`${id}-s${index}`}>
-          <h2 id={`${id}-s${index}`} className="text-xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)] sm:text-2xl">
+        <section key={section.heading} className="border-t-[3px] border-[var(--ink)] pt-5" aria-labelledby={`${id}-s${index}`}>
+          <h2 id={`${id}-s${index}`} className="section-title">
             {section.heading}
           </h2>
-          <div className="mt-3 max-w-3xl space-y-3 text-sm leading-6 text-[var(--text-secondary)]">
+          <div className="mt-3 space-y-4 text-base leading-7 sm:text-[17px]">
             {section.paragraphs?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
             {section.bullets ? (
-              <ul className="list-disc space-y-2 pl-5 marker:text-[#C8102E]">
+              <ul className="list-disc space-y-2 pl-5">
                 {section.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}
               </ul>
             ) : null}
             {section.links ? (
-              <ul className="space-y-1.5">
+              <ul className="space-y-1">
                 {section.links.map((link) => (
                   <li key={link.href}>
                     <LinkItem link={link} />

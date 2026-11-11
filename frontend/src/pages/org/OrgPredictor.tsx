@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ArrowLeftRight, Info, LoaderCircle, Sparkles, Swords, Zap } from 'lucide-react'
+import { ArrowLeftRight, Dumbbell, Info, LoaderCircle, MapPin, Swords } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { L } from '../../i18n/lang'
+import { L, localeTag } from '../../i18n/lang'
 import { orgEs, orgFr, orgPt, type OrgConfig } from '../../shared/data/orgs'
 import { translateHometown } from '../../shared/data/fightLabels'
 import { getDivisionName } from '../../shared/data/divisions'
@@ -16,6 +16,8 @@ import { formatProbability, localizePredictionMessage } from '../../shared/data/
 import { DataConfidenceNote } from '../../shared/components/DataConfidenceNote'
 import { localizeFeature } from '../../shared/utils/localizeFeature'
 import { usePrediction } from '../../shared/hooks/usePrediction'
+import { Eyebrow } from '../../shared/components/ui/Eyebrow'
+import { PageHeader } from '../../shared/components/ui/PageHeader'
 import type { FighterProfile, MainFactor, OrgFighter, PredictionResponse } from '../../shared/types/api'
 
 export function OrgPredictor() {
@@ -98,38 +100,28 @@ export function OrgPredictor() {
     return []
   }, [org.id])
 
+  const lang = i18n.language
+
   return (
-    <div className="surface-card rounded-2xl border border-[var(--rule)] overflow-hidden shadow-sm">
-      <header className="border-b border-[var(--rule)] px-4 py-5 sm:px-6 sm:py-6 bg-[var(--surface-2)]">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full border border-[#F2C230]/40 bg-[#F2C230]/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#F2C230]">
-            <Sparkles className="h-3.5 w-3.5" />
-            {org.shortName} Fight Predictor
-          </span>
-          <span className="inline-flex items-center gap-1 rounded-full border border-[var(--rule)] bg-[var(--surface-3)] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[var(--text-main)]">
-            <Zap className="h-3 w-3 text-[#C8102E]" />
-            {L(i18n.language, 'Motor de IA', 'AI Engine', 'Moteur d’IA', 'Motor de IA')}
-          </span>
-        </div>
-
-        <h1 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-extrabold uppercase tracking-tight text-[var(--text-main)]">
-          {L(i18n.language, 'Quem Vence?', 'Who takes it?', 'Qui gagne ?', '¿Quién gana?')}
-        </h1>
-        <p className="mt-2 max-w-xl text-sm font-medium leading-relaxed text-[var(--text-muted)]">
-          {L(
-            i18n.language,
-            `Selecione dois atletas ${orgPt(org, 'de')}. O modelo de IA calcula as chances de vitória e os fatores determinantes.`,
-            `Pick any two ${org.shortName} fighters. The machine learning model projects the odds and shows the numbers driving the prediction.`,
-            `Sélectionnez deux combattants ${orgFr(org, 'de')}. Le modèle d’IA calcule les cotes et détaille les facteurs décisifs.`,
-            `Elige a dos peleadores de ${orgEs(org)}. El modelo de aprendizaje automático proyecta las probabilidades y muestra los números que impulsan el pronóstico.`,
-          )}
-        </p>
-
+    <div className="space-y-6 sm:space-y-8">
+      <PageHeader
+        eyebrow={L(lang, `Simulador ${orgPt(org, 'de')}`, `${org.shortName} fight predictor`, `Simulateur ${org.shortName}`, `Simulador de ${orgEs(org)}`)}
+        title={L(lang, 'Quem vence?', 'Who takes it?', 'Qui gagne ?', '¿Quién gana?')}
+        description={L(
+          lang,
+          `Selecione dois atletas ${orgPt(org, 'de')}. O modelo estima a chance de vitória de cada um e mostra os números que mais pesam.`,
+          `Pick any two ${org.shortName} fighters. The model estimates each one’s win chance and shows the numbers that weigh most.`,
+          `Sélectionnez deux combattants ${orgFr(org, 'de')}. Le modèle estime la chance de victoire de chacun et montre les chiffres qui pèsent le plus.`,
+          `Elige a dos peleadores de ${orgEs(org)}. El modelo estima la probabilidad de victoria de cada uno y muestra los números que más pesan.`,
+        )}
+        stats={[
+          { label: L(lang, 'Lutadores', 'Fighters', 'Combattants', 'Peleadores'), value: fighters.length.toLocaleString(localeTag(lang)) },
+          { label: L(lang, 'Em atividade', 'Active', 'En activité', 'En actividad'), value: activeFighters.toLocaleString(localeTag(lang)) },
+        ]}
+      >
         {quickBouts.length > 0 ? (
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#C8102E]">
-              Featured Matchups:
-            </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <Eyebrow as="span">{L(lang, 'Lutas em destaque', 'Featured matchups', 'Combats à l’affiche', 'Peleas destacadas')}</Eyebrow>
             {quickBouts.map(([a, b]) => (
               <button
                 key={`${a}-${b}`}
@@ -139,121 +131,74 @@ export function OrgPredictor() {
                   chooseCorner('b', b)
                   void runPrediction(a, b)
                 }}
-                className="cursor-pointer rounded-lg border border-[var(--rule)] bg-[var(--card-bg)] px-2.5 py-1 text-xs font-bold transition hover:bg-[var(--surface-3)]"
+                className="inline-flex min-h-9 cursor-pointer items-center rounded-control border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 text-sm font-semibold text-[var(--text-secondary)] transition-colors hover:border-[var(--border-default)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]"
               >
                 {a} vs {b}
               </button>
             ))}
           </div>
         ) : null}
-      </header>
-
-      {/* Roster & Model Stats Bar */}
-      <div className="grid grid-cols-2 border-b border-[var(--rule)] lg:grid-cols-4 bg-[var(--card-bg)]">
-        <div className="border-b border-r border-[var(--rule)] p-3 sm:px-5 sm:py-3.5 lg:border-b-0">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
-            Fighters
-          </p>
-          <p className="mt-0.5 text-2xl sm:text-3xl font-extrabold text-[var(--text-main)]">{fighters.length}</p>
-          <p className="text-xs font-semibold text-[var(--text-muted)]">
-            {activeFighters} {L(i18n.language, 'ativos', 'active', 'actifs', 'activos')}
-          </p>
-        </div>
-
-        <div className="border-b border-r border-[var(--rule)] p-3 sm:px-5 sm:py-3.5 lg:border-b-0">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
-            Organization
-          </p>
-          <p className="mt-0.5 text-2xl sm:text-3xl font-extrabold text-[var(--text-main)]">{org.shortName}</p>
-          <p className="text-xs font-semibold text-[var(--text-muted)] truncate">{org.name}</p>
-        </div>
-
-        <div className="border-b border-r border-[var(--rule)] p-3 sm:px-5 sm:py-3.5 lg:border-b-0">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
-            {L(i18n.language, 'Motor de IA', 'AI Engine', 'Moteur d’IA', 'Motor de IA')}
-          </p>
-          <p className="mt-0.5 text-2xl sm:text-3xl font-extrabold text-[var(--text-main)]">{L(i18n.language, 'IA Pro', 'ML Pro', 'IA Pro', 'IA Pro')}</p>
-          <p className="text-xs font-semibold text-[var(--text-muted)]">XGBoost / LightGBM</p>
-        </div>
-
-        <div className="p-3 sm:px-5 sm:py-3.5">
-          <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
-            {L(i18n.language, 'Fatores SHAP', 'SHAP Factors', 'Facteurs SHAP', 'Factores SHAP')}
-          </p>
-          <p className="mt-0.5 text-2xl sm:text-3xl font-extrabold text-[#22c55e]">{L(i18n.language, 'Ativo', 'Active', 'Actif', 'Activo')}</p>
-          <p className="text-xs font-semibold text-[var(--text-muted)]">
-            {L(i18n.language, 'Biometria e trocação', 'Biometrics & Striking', 'Biométrie et frappe', 'Biometría y golpeo')}
-          </p>
-        </div>
-      </div>
+      </PageHeader>
 
       {problem ? (
-        <div className="border-b border-[var(--rule)] bg-[#C8102E] px-4 py-3 text-sm font-bold text-white sm:px-6">
-          {problem}
-        </div>
+        <p role="alert" className="error-note">{problem}</p>
       ) : null}
 
-      {/* Main Predictor Matchup Arena */}
-      <div className="p-4 sm:p-6">
-        <OutsideUfcNotice org={org} />
-        <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
-          {/* Corner Red (A) */}
-          <CornerCard
-            side="red"
-            fighter={fighterA}
-            fighters={fighters}
-            disabledName={nameB}
-            loading={fightersLoading}
-            selectedName={nameA}
-            onSelect={(name) => chooseCorner('a', name)}
-            onOpenProfile={(name) => setProfileName(name)}
-          />
+      <OutsideUfcNotice org={org} />
 
-          {/* Corner Blue (B) */}
-          <CornerCard
-            side="blue"
-            fighter={fighterB}
-            fighters={fighters}
-            disabledName={nameA}
-            loading={fightersLoading}
-            selectedName={nameB}
-            onSelect={(name) => chooseCorner('b', name)}
-            onOpenProfile={(name) => setProfileName(name)}
-          />
-        </div>
-
-        {/* Action Controls: Swap & Simulate */}
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={swapCorners}
-            disabled={!nameA && !nameB}
-            className="flex items-center gap-2 rounded-xl border border-[var(--rule)] bg-[var(--card-bg)] px-4 py-2.5 text-sm font-bold uppercase transition hover:bg-[var(--surface-3)] disabled:opacity-40 cursor-pointer"
-          >
-            <ArrowLeftRight className="h-4 w-4" />
-            Swap Corners
-          </button>
-
-          <button
-            type="button"
-            onClick={score}
-            disabled={!canScore || predicting}
-            className="flex items-center gap-2 rounded-xl border border-transparent bg-[#C8102E] px-6 py-2.5 text-base font-bold uppercase text-white shadow-md transition hover:bg-[#b00d28] disabled:opacity-50 cursor-pointer"
-          >
-            {predicting ? <LoaderCircle className="h-5 w-5 animate-spin" /> : <Swords className="h-5 w-5" />}
-            Predict Fight
-          </button>
-        </div>
-
-        {/* Prediction Results Display */}
-        {prediction ? (
-          <div className="mt-8 space-y-6">
-            <OrgScorecard prediction={prediction} />
-            <OrgTaleOfTheTape fighterA={prediction.fighter_a_profile} fighterB={prediction.fighter_b_profile} />
-            {prediction.main_factors?.length ? <OrgDrivers factors={prediction.main_factors} /> : null}
-          </div>
-        ) : null}
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+        <CornerCard
+          side="red"
+          fighter={fighterA}
+          fighters={fighters}
+          disabledName={nameB}
+          loading={fightersLoading}
+          selectedName={nameA}
+          onSelect={(name) => chooseCorner('a', name)}
+          onOpenProfile={(name) => setProfileName(name)}
+        />
+        <CornerCard
+          side="blue"
+          fighter={fighterB}
+          fighters={fighters}
+          disabledName={nameA}
+          loading={fightersLoading}
+          selectedName={nameB}
+          onSelect={(name) => chooseCorner('b', name)}
+          onOpenProfile={(name) => setProfileName(name)}
+        />
       </div>
+
+      <div className="flex flex-wrap items-stretch gap-3">
+        <button
+          type="button"
+          onClick={swapCorners}
+          disabled={!nameA && !nameB}
+          className="ghost-action inline-flex min-h-14 cursor-pointer items-center justify-center gap-2 rounded-full px-5 text-xs uppercase disabled:cursor-not-allowed disabled:opacity-40 max-sm:w-full"
+        >
+          <ArrowLeftRight className="h-4 w-4" />
+          {L(lang, 'Inverter cantos', 'Swap corners', 'Inverser les coins', 'Intercambiar esquinas')}
+        </button>
+        <button
+          type="button"
+          onClick={score}
+          disabled={!canScore || predicting}
+          className="primary-action inline-flex min-h-14 flex-1 cursor-pointer items-center justify-center gap-3 rounded-full px-6 text-base uppercase"
+        >
+          {predicting ? <LoaderCircle className="h-5 w-5 animate-spin" /> : <Swords className="h-5 w-5" />}
+          {L(lang, 'Simular combate', 'Predict a fight', 'Prédire un combat', 'Pronosticar una pelea')}
+        </button>
+      </div>
+
+      {prediction ? (
+        <div className="space-y-6">
+          <div className="grid gap-6 xl:grid-cols-2">
+            <OrgScorecard prediction={prediction} />
+            {prediction.main_factors?.length ? <OrgDrivers factors={prediction.main_factors} redName={prediction.fighter_a_profile.name} /> : null}
+          </div>
+          <OrgTaleOfTheTape fighterA={prediction.fighter_a_profile} fighterB={prediction.fighter_b_profile} />
+        </div>
+      ) : null}
 
       {profileName ? (
         <OrgFighterModal
@@ -275,31 +220,34 @@ function OutsideUfcNotice({ org }: { org: OrgConfig }) {
   return (
     <aside
       aria-label={L(lang, 'Aviso sobre as previsões', 'About these predictions', 'À propos de ces prévisions', 'Sobre estos pronósticos')}
-      className="metric-tile mb-4 flex items-start gap-2.5 px-3 py-2.5 sm:mb-6"
+      className="flex items-start gap-2.5 rounded-card border border-[var(--border-subtle)] border-l-4 border-l-[var(--accent-gold)] bg-[var(--bg-surface)] px-4 py-3"
     >
-      <Info aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-[#C8102E]" />
-      <p className="text-xs leading-5">
+      <Info aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-[var(--text-gold)]" />
+      <p className="text-sm leading-6 text-[var(--text-secondary)]">
         {L(
           lang,
           `O modelo foi treinado com lutas do UFC e só foi validado nelas. Os dados ${orgPt(org, 'de')} trazem cartel, idade e medidas, mas não a precisão de golpes nem de quedas: nesses pontos o modelo usa médias.`,
           `The model is trained on UFC fights and has only been validated on them. The ${org.shortName} data has record, age and measurements, but no striking or takedown accuracy, so the model uses averages for those.`,
           `Le modèle est entraîné sur des combats UFC et n’a été validé que sur eux. Les données ${org.shortName} donnent le bilan, l’âge et les mensurations, mais pas la précision en frappe ni aux takedowns : le modèle utilise des moyennes.`,
           `El modelo se entrena con peleas de la UFC y solo se validó con ellas. Los datos de ${orgEs(org)} traen récord, edad y medidas, pero no la precisión de golpes ni de derribos: en esos puntos el modelo usa promedios.`,
-        )}{' '}
+        )}
         {org.probabilitiesEased
-          ? L(
+          ? ` ${L(
               lang,
               'Por cautela, as chances mostradas ficam na metade do caminho entre o resultado do modelo e 50%.',
               "To be safe, the chances shown sit halfway between the model's output and 50%.",
               'Par prudence, les chances affichées se situent à mi-chemin entre le résultat du modèle et 50 %.',
               'Por precaución, las probabilidades mostradas quedan a medio camino entre el resultado del modelo y 50 %.',
-            )
-          : null}{' '}
-
+            )}`
+          : null}
       </p>
     </aside>
   )
 }
+
+const PANEL = 'overflow-hidden rounded-card border border-[var(--border-subtle)] bg-[var(--bg-surface)]'
+const PANEL_HEAD = 'flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-4 py-3'
+const PANEL_NOTE = 'text-label font-bold uppercase tracking-[0.12em] text-[var(--text-muted)]'
 
 function CornerCard({
   side,
@@ -321,43 +269,55 @@ function CornerCard({
   onOpenProfile: (name: string) => void
 }) {
   const { i18n } = useTranslation()
-  const block = side === 'red' ? 'bg-[#C8102E]' : 'bg-[#1F4E9C]'
+  const lang = i18n.language
+  const block = side === 'red' ? 'bg-[var(--red)]' : 'bg-[var(--blue)]'
+  const selectId = `corner-${side}`
 
   const sortedFighters = useMemo(() => {
     return [...fighters].sort((a, b) => a.name.localeCompare(b.name))
   }, [fighters])
 
+  const place = fighter?.country
+    ? `${fighter.hometown ? `${translateHometown(fighter.hometown, lang)}, ` : ''}${translateHometown(fighter.country, lang)}`
+    : null
+  const facts: [string, string][] = fighter
+    ? [
+        [L(lang, 'Idade', 'Age', 'Âge', 'Edad'), fighter.age ? `${Math.round(fighter.age)}` : '—'],
+        [L(lang, 'Altura', 'Height', 'Taille', 'Estatura'), fighter.height_cm ? `${Math.round(fighter.height_cm)} cm` : '—'],
+        [L(lang, 'Envergadura', 'Reach', 'Allonge', 'Alcance'), fighter.reach_cm ? `${Math.round(fighter.reach_cm)} cm` : '—'],
+        [L(lang, 'Prec. golpes', 'Str. Acc', 'Préc. coups', 'Prec. golpes'), fighter.sig_str_acc ? `${Math.round(fighter.sig_str_acc * 100)}%` : '—'],
+        [L(lang, 'Quedas / 15 min', 'TD / 15 min', 'Amenées / 15 min', 'Derribos / 15 min'), fighter.takedown_avg_per_15min != null ? fighter.takedown_avg_per_15min.toFixed(2) : '—'],
+        [L(lang, 'Taxa de finalização', 'Finish rate', 'Avant la limite', 'Tasa de finalización'), fighter.finish_rate != null ? `${Math.round(fighter.finish_rate * 100)}%` : '—'],
+      ]
+    : []
+
   return (
-    <section className="flex min-w-0 flex-col rounded-2xl border border-[var(--rule)] bg-[var(--card-bg)] overflow-hidden shadow-xs">
+    <section className={`flex min-w-0 flex-col ${PANEL}`}>
       <div className={`${block} flex items-center justify-between gap-3 px-4 py-2.5 text-white`}>
-        <span className="font-extrabold uppercase text-lg sm:text-xl">
-          {side === 'red' ? 'Red Corner' : 'Blue Corner'}
+        <span className="poster-display text-lg sm:text-xl">
+          {side === 'red' ? L(lang, 'Canto vermelho', 'Red corner', 'Coin rouge', 'Esquina roja') : L(lang, 'Canto azul', 'Blue corner', 'Coin bleu', 'Esquina azul')}
         </span>
-        {fighter?.division ? (
-          <span className="truncate text-xs font-bold uppercase tracking-wider">
-            {getDivisionName(fighter.division, i18n.language)}
-          </span>
-        ) : null}
+        {fighter?.division ? <span className="truncate text-xs font-bold uppercase tracking-widest">{getDivisionName(fighter.division, lang)}</span> : null}
       </div>
 
-      <div className="flex flex-1 flex-col gap-4 p-4">
-        {/* Fighter Dropdown / Selection */}
+      <div className="flex flex-1 flex-col gap-4 p-4 sm:p-5">
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
-            Select Fighter
+          <label htmlFor={selectId} className="mb-1.5 block font-mono text-label font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]">
+            {L(lang, 'Lutador', 'Fighter', 'Combattant', 'Peleador')}
           </label>
           <select
+            id={selectId}
             value={selectedName}
             onChange={(e) => onSelect(e.target.value)}
             disabled={loading}
-            className="w-full rounded-xl border border-[var(--rule)] bg-[var(--surface-1)] px-3 py-2 text-sm font-bold text-[var(--text-main)] outline-none"
+            className={`${side === 'blue' ? 'soft-input-blue ' : ''}soft-input w-full rounded-control px-3 py-2.5 text-sm font-semibold text-[var(--text-primary)] outline-none`}
           >
             <option value="">
-              {loading ? L(i18n.language, 'Carregando...', 'Loading...', 'Chargement...', 'Cargando...') : L(i18n.language, 'Escolha um lutador...', 'Choose a fighter...', 'Choisissez un combattant...', 'Elige un peleador...')}
+              {loading ? L(lang, 'Carregando...', 'Loading...', 'Chargement...', 'Cargando...') : L(lang, 'Escolha um lutador...', 'Choose a fighter...', 'Choisissez un combattant...', 'Elige un peleador...')}
             </option>
             {sortedFighters.map((f) => (
               <option key={f.name} value={f.name} disabled={f.name === disabledName}>
-                {f.name} {f.division ? `(${getDivisionName(f.division, i18n.language)})` : ''} {f.belt ? '👑' : ''}
+                {f.name} {f.division ? `(${getDivisionName(f.division, lang)})` : ''} {f.belt ? `· ${L(lang, 'campeão', 'champion', 'champion', 'campeón')}` : ''}
               </option>
             ))}
           </select>
@@ -370,77 +330,49 @@ function CornerCard({
                 type="button"
                 onClick={() => onOpenProfile(fighter.name)}
                 className="shrink-0 cursor-pointer transition hover:scale-105"
-                title={`View profile of ${fighter.name}`}
+                title={L(lang, `Abrir perfil completo de ${fighter.name}`, `Open ${fighter.name}'s full profile`, `Ouvrir le profil complet de ${fighter.name}`, `Abrir el perfil completo de ${fighter.name}`)}
               >
-                <FighterAvatar name={fighter.name} imageUrl={fighter.image_url} className="h-24 w-24 sm:h-28 sm:w-28 rounded-xl" />
+                <FighterAvatar name={fighter.name} imageUrl={fighter.image_url} className="h-24 w-24 sm:h-28 sm:w-28" />
               </button>
               <div className="min-w-0">
-                <h3 className="flex flex-wrap items-center gap-1.5 text-xl sm:text-2xl font-bold leading-tight text-[var(--text-main)]">
-                  <button
-                    type="button"
-                    onClick={() => onOpenProfile(fighter.name)}
-                    className="cursor-pointer text-left hover:text-[#C8102E] hover:underline"
-                  >
+                <h3 className="poster-display flex flex-wrap items-center gap-2 text-2xl leading-none text-[var(--text-primary)] sm:text-3xl">
+                  <button type="button" onClick={() => onOpenProfile(fighter.name)} className="cursor-pointer text-left transition hover:text-[var(--text-red)]">
                     {fighter.name}
                   </button>
+                  <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
+                    ({fighter.wins ?? 0}-{fighter.losses ?? 0}{fighter.draws ? `-${fighter.draws}` : ''})
+                  </span>
                   {fighter.belt ? <ChampionBelt /> : null}
                 </h3>
-                {fighter.nickname ? (
-                  <p className="mt-1 text-xs font-medium italic text-[var(--text-muted)]">"{fighter.nickname}"</p>
-                ) : null}
-                {fighter.country ? (
-                  <p className="mt-1 text-xs font-medium text-[var(--text-muted)]">
-                    📍 {fighter.hometown ? `${translateHometown(fighter.hometown, i18n.language)}, ` : ''}{translateHometown(fighter.country, i18n.language)}
+                {fighter.nickname ? <p className="mt-1 truncate text-xs font-semibold uppercase tracking-wider text-[var(--text-red)]">“{fighter.nickname}”</p> : null}
+                {place ? (
+                  <p className="mt-1 flex items-center gap-1.5 text-xs text-[var(--text-secondary)]">
+                    <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                    <span className="min-w-0 truncate">{place}</span>
                   </p>
                 ) : null}
                 {fighter.camp ? (
-                  <p className="mt-0.5 text-xs font-medium text-[var(--text-muted)]">
-                    🥋 {fighter.camp}
+                  <p className="mt-1 flex items-center gap-1.5 text-xs text-[var(--text-secondary)]">
+                    <Dumbbell className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                    <span className="min-w-0 truncate">{fighter.camp}</span>
                   </p>
                 ) : null}
               </div>
             </div>
 
-            <div className="flex items-end justify-between border-y border-[var(--rule)] py-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">{L(i18n.language, 'Cartel', 'Record', 'Palmarès', 'Récord')}</span>
-              <span className="text-2xl sm:text-3xl font-extrabold text-[var(--text-main)]">
-                {fighter.wins ?? 0}-{fighter.losses ?? 0}{fighter.draws ? `-${fighter.draws}` : ''}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 text-xs font-bold sm:grid-cols-3">
-              <div className="rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] p-2">
-                <span className="block text-[10px] text-[var(--text-muted)] uppercase">{L(i18n.language, 'Idade', 'Age', 'Âge', 'Edad')}</span>
-                <span className="text-sm font-bold text-[var(--text-main)]">{fighter.age ? `${Math.round(fighter.age)}` : '—'}</span>
-              </div>
-              <div className="rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] p-2">
-                <span className="block text-[10px] text-[var(--text-muted)] uppercase">{L(i18n.language, 'Altura', 'Height', 'Taille', 'Estatura')}</span>
-                <span className="text-sm font-bold text-[var(--text-main)]">{fighter.height_cm ? `${Math.round(fighter.height_cm)} cm` : '—'}</span>
-              </div>
-              <div className="rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] p-2">
-                <span className="block text-[10px] text-[var(--text-muted)] uppercase">{L(i18n.language, 'Envergadura', 'Reach', 'Allonge', 'Alcance')}</span>
-                <span className="text-sm font-bold text-[var(--text-main)]">{fighter.reach_cm ? `${Math.round(fighter.reach_cm)} cm` : '—'}</span>
-              </div>
-              <div className="rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] p-2">
-                <span className="block text-[10px] text-[var(--text-muted)] uppercase">{L(i18n.language, 'Prec. golpes', 'Str. Acc', 'Préc. coups', 'Prec. golpes')}</span>
-                <span className="text-sm font-bold text-[var(--text-main)]">{fighter.sig_str_acc ? `${Math.round(fighter.sig_str_acc * 100)}%` : '—'}</span>
-              </div>
-              <div className="rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] p-2">
-                <span className="block text-[10px] text-[var(--text-muted)] uppercase">{L(i18n.language, 'Quedas / 15 min', 'TD / 15 min', 'Amenées / 15 min', 'Derribos / 15 min')}</span>
-                <span className="text-sm font-bold text-[var(--text-main)]">{fighter.takedown_avg_per_15min != null ? fighter.takedown_avg_per_15min.toFixed(2) : '—'}</span>
-              </div>
-              <div className="rounded-lg border border-[var(--rule)] bg-[var(--surface-2)] p-2">
-                <span className="block text-[10px] text-[var(--text-muted)] uppercase">{L(i18n.language, 'Taxa de finalização', 'Finish Rate', 'Avant la limite', 'Tasa de finalización')}</span>
-                <span className="text-sm font-bold text-[var(--text-main)]">{fighter.finish_rate != null ? `${Math.round(fighter.finish_rate * 100)}%` : '—'}</span>
-              </div>
-            </div>
+            <dl className="grid grid-cols-2 gap-x-4 gap-y-3 border-t border-[var(--border-subtle)] pt-3 sm:grid-cols-3">
+              {facts.map(([label, value]) => (
+                <div key={label} className="min-w-0">
+                  <dt className="truncate text-label text-[var(--text-muted)]">{label}</dt>
+                  <dd className="poster-display mt-1 truncate text-lg text-[var(--text-primary)]">{value}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         ) : (
-          <div className="flex flex-1 flex-col items-center justify-center border-2 border-dashed border-[var(--rule)] rounded-xl py-12 text-center">
-            <Swords className="h-10 w-10 text-[var(--text-muted)]/40" />
-            <p className="mt-2 text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
-              Choose a fighter
-            </p>
+          <div className="flex flex-1 flex-col items-center justify-center rounded-control border border-dashed border-[var(--border-default)] px-4 py-10 text-center">
+            <p className="poster-display text-3xl text-[var(--text-muted)] sm:text-4xl">{loading ? '...' : L(lang, 'A definir', 'TBA', 'À définir', 'Por definir')}</p>
+            <p className="mt-1 text-xs font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">{L(lang, 'Aguardando lutador', 'To be announced', 'En attente d’un combattant', 'Peleador por anunciar')}</p>
           </div>
         )}
       </div>
@@ -448,64 +380,47 @@ function CornerCard({
   )
 }
 
-function OrgScorecard({
-  prediction,
-}: {
-  prediction: PredictionResponse
-}) {
+function OrgScorecard({ prediction }: { prediction: PredictionResponse }) {
   const { i18n } = useTranslation()
+  const lang = i18n.language
   const rows = [
-    { name: prediction.fighter_a_profile.name, value: prediction.fighter_a_probability, color: 'bg-[#C8102E]' },
-    { name: prediction.fighter_b_profile.name, value: prediction.fighter_b_probability, color: 'bg-[#1F4E9C]' },
+    { name: prediction.fighter_a_profile.name, value: prediction.fighter_a_probability, color: 'bg-[var(--red-deep)]' },
+    { name: prediction.fighter_b_profile.name, value: prediction.fighter_b_probability, color: 'bg-[var(--blue-deep)]' },
   ]
 
   return (
-    <section className="rounded-2xl border border-[var(--rule)] bg-[var(--card-bg)] overflow-hidden shadow-xs">
-      <div className="flex flex-wrap items-center justify-between gap-2 bg-[var(--surface-2)] border-b border-[var(--rule)] px-4 py-2.5">
-        <span className="text-base font-bold uppercase tracking-wide text-[var(--text-main)]">
-          AI Scorecard
-        </span>
-        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">
-          Win Probability
-        </span>
+    <section className={PANEL}>
+      <div className={PANEL_HEAD}>
+        <span className="poster-display text-lg text-[var(--text-primary)]">{L(lang, 'Placar de probabilidades', 'Official scorecard', 'Carte des probabilités', 'Tarjeta oficial')}</span>
+        <span className={PANEL_NOTE}>{L(lang, 'Chance estimada pelo modelo', 'Model’s estimated chance', 'Chance estimée par le modèle', 'Probabilidad estimada por el modelo')}</span>
       </div>
 
-      <div className="space-y-4 p-5">
-        <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[var(--rule)] pb-4">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-[#C8102E]">
-              Projected Winner
-            </p>
-            <p className="mt-1 text-2xl sm:text-3xl font-extrabold text-[var(--text-main)]">
-              {prediction.predicted_winner}
-            </p>
+      <div className="space-y-4 p-4 sm:p-5">
+        <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">
+          <div className="min-w-0">
+            <p className="text-label font-bold uppercase tracking-[0.12em] text-[var(--text-red)]">{L(lang, 'Favorito previsto', 'Projected winner', 'Vainqueur prévu', 'Ganador proyectado')}</p>
+            <p className="poster-display mt-1 break-words text-2xl leading-none text-[var(--text-primary)] sm:text-3xl">{prediction.predicted_winner}</p>
           </div>
-          <p className="text-4xl sm:text-5xl font-black text-[#C8102E]">
-            {formatProbability(prediction.probability)}
-          </p>
+          <p className="poster-display text-4xl leading-none text-[var(--text-red)] sm:text-5xl">{formatProbability(prediction.probability)}</p>
         </div>
 
         <div className="space-y-3">
           {rows.map((row) => (
             <div key={row.name}>
-              <div className="flex items-end justify-between">
-                <span className="text-xs font-bold uppercase tracking-wide text-[var(--text-main)]">{row.name}</span>
-                <span className="text-sm font-extrabold text-[var(--text-main)]">{formatProbability(row.value)}</span>
+              <div className="flex items-end justify-between gap-3">
+                <span className="min-w-0 truncate text-sm font-bold uppercase tracking-wide text-[var(--text-primary)]">{row.name}</span>
+                <span className="poster-display text-xl text-[var(--text-primary)]">{formatProbability(row.value)}</span>
               </div>
-              <div className="mt-1 h-3 rounded-full overflow-hidden bg-[var(--surface-3)]">
+              <div className="mt-1 h-3.5 overflow-hidden rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]">
                 <div className={`h-full ${row.color}`} style={{ width: `${row.value * 100}%` }} />
               </div>
             </div>
           ))}
         </div>
 
-        <p className="text-xs font-medium leading-relaxed text-[var(--text-muted)]">
-          {localizePredictionMessage(prediction.message, prediction.predicted_winner, i18n.language)}
-        </p>
+        <p className="text-sm font-medium leading-6 text-[var(--text-secondary)]">{localizePredictionMessage(prediction.message, prediction.predicted_winner, lang)}</p>
 
-        {prediction.data_confidence ? (
-          <DataConfidenceNote confidence={prediction.data_confidence} />
-        ) : null}
+        {prediction.data_confidence ? <DataConfidenceNote confidence={prediction.data_confidence} /> : null}
       </div>
     </section>
   )
@@ -514,30 +429,38 @@ function OrgScorecard({
 type TapeFighter = FighterProfile | OrgFighter | null | undefined
 
 function OrgTaleOfTheTape({ fighterA, fighterB }: { fighterA: TapeFighter; fighterB: TapeFighter }) {
+  const { i18n } = useTranslation()
+  const lang = i18n.language
+  const cm = (value: number | null | undefined) => (value ? `${Math.round(value)} cm` : '—')
+  const pct = (value: number | null | undefined) => (value ? `${Math.round(value * 100)}%` : '—')
   const rows = [
-    { label: 'Age', a: fighterA?.age ? `${Math.round(fighterA.age)}` : '—', b: fighterB?.age ? `${Math.round(fighterB.age)}` : '—' },
-    { label: 'Height', a: fighterA?.height_cm ? `${Math.round(fighterA.height_cm)} cm` : '—', b: fighterB?.height_cm ? `${Math.round(fighterB.height_cm)} cm` : '—' },
-    { label: 'Reach', a: fighterA?.reach_cm ? `${Math.round(fighterA.reach_cm)} cm` : '—', b: fighterB?.reach_cm ? `${Math.round(fighterB.reach_cm)} cm` : '—' },
-    { label: 'Record', a: `${fighterA?.wins ?? 0}-${fighterA?.losses ?? 0}`, b: `${fighterB?.wins ?? 0}-${fighterB?.losses ?? 0}` },
-    { label: 'Striking Accuracy', a: fighterA?.sig_str_acc ? `${Math.round(fighterA.sig_str_acc * 100)}%` : '—', b: fighterB?.sig_str_acc ? `${Math.round(fighterB.sig_str_acc * 100)}%` : '—' },
-    { label: 'Takedown Accuracy', a: fighterA?.takedown_acc ? `${Math.round(fighterA.takedown_acc * 100)}%` : '—', b: fighterB?.takedown_acc ? `${Math.round(fighterB.takedown_acc * 100)}%` : '—' },
-    { label: 'Win Rate', a: fighterA?.win_rate ? `${Math.round(fighterA.win_rate * 100)}%` : '—', b: fighterB?.win_rate ? `${Math.round(fighterB.win_rate * 100)}%` : '—' },
+    { label: L(lang, 'Idade', 'Age', 'Âge', 'Edad'), a: fighterA?.age ? `${Math.round(fighterA.age)}` : '—', b: fighterB?.age ? `${Math.round(fighterB.age)}` : '—' },
+    { label: L(lang, 'Altura', 'Height', 'Taille', 'Estatura'), a: cm(fighterA?.height_cm), b: cm(fighterB?.height_cm) },
+    { label: L(lang, 'Envergadura', 'Reach', 'Allonge', 'Alcance'), a: cm(fighterA?.reach_cm), b: cm(fighterB?.reach_cm) },
+    { label: L(lang, 'Cartel', 'Record', 'Palmarès', 'Récord'), a: `${fighterA?.wins ?? 0}-${fighterA?.losses ?? 0}`, b: `${fighterB?.wins ?? 0}-${fighterB?.losses ?? 0}` },
+    { label: L(lang, 'Precisão de golpes', 'Striking accuracy', 'Précision des coups', 'Precisión de golpes'), a: pct(fighterA?.sig_str_acc), b: pct(fighterB?.sig_str_acc) },
+    { label: L(lang, 'Precisão de quedas', 'Takedown accuracy', 'Précision des amenées', 'Precisión de derribos'), a: pct(fighterA?.takedown_acc), b: pct(fighterB?.takedown_acc) },
+    { label: L(lang, 'Taxa de vitória', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias'), a: pct(fighterA?.win_rate), b: pct(fighterB?.win_rate) },
   ]
 
   return (
-    <section className="rounded-2xl border border-[var(--rule)] bg-[var(--card-bg)] overflow-hidden shadow-xs">
-      <div className="flex items-center justify-between bg-[var(--surface-2)] border-b border-[var(--rule)] px-4 py-2.5">
-        <span className="text-base font-bold uppercase tracking-wide text-[var(--text-main)]">
-          Tale of the Tape
-        </span>
+    <section className={PANEL}>
+      <div className={PANEL_HEAD}>
+        <span className="poster-display text-lg text-[var(--text-primary)]">{L(lang, 'Raio-x dos lutadores', 'Tale of the tape', 'La fiche comparative', 'Comparativa de peleadores')}</span>
       </div>
 
-      <div className="divide-y divide-[var(--rule)] p-4">
+      <div className="grid grid-cols-[1fr_auto_1fr] border-b border-[var(--border-subtle)] text-center">
+        <span className="poster-display truncate bg-[var(--red)] px-3 py-2 text-base text-white sm:text-lg">{fighterA?.name ?? L(lang, 'Canto vermelho', 'Red corner', 'Coin rouge', 'Esquina roja')}</span>
+        <span className="w-24 shrink-0 sm:w-40" />
+        <span className="poster-display truncate bg-[var(--blue)] px-3 py-2 text-base text-white sm:text-lg">{fighterB?.name ?? L(lang, 'Canto azul', 'Blue corner', 'Coin bleu', 'Esquina azul')}</span>
+      </div>
+
+      <div>
         {rows.map((row) => (
-          <div key={row.label} className="grid grid-cols-3 py-2 text-center text-xs font-bold">
-            <span className="text-left font-mono font-extrabold text-[#C8102E] sm:text-sm">{row.a}</span>
-            <span className="text-[11px] uppercase tracking-wider text-[var(--text-muted)]">{row.label}</span>
-            <span className="text-right font-mono font-extrabold text-[#1F4E9C] sm:text-sm">{row.b}</span>
+          <div key={row.label} className="grid grid-cols-[1fr_auto_1fr] items-center border-b border-[var(--border-subtle)] py-2.5 text-center last:border-b-0">
+            <span className="poster-display px-2 text-xl text-[var(--text-primary)] sm:text-2xl">{row.a}</span>
+            <span className="w-24 shrink-0 px-1 text-label font-semibold leading-tight text-[var(--text-secondary)] sm:w-40">{row.label}</span>
+            <span className="poster-display px-2 text-xl text-[var(--text-primary)] sm:text-2xl">{row.b}</span>
           </div>
         ))}
       </div>
@@ -545,35 +468,33 @@ function OrgTaleOfTheTape({ fighterA, fighterB }: { fighterA: TapeFighter; fight
   )
 }
 
-function OrgDrivers({ factors }: { factors: MainFactor[] }) {
+/** The factors behind the estimate; each bar takes the colour of the corner it favours. */
+function OrgDrivers({ factors, redName }: { factors: MainFactor[]; redName: string }) {
   const { i18n } = useTranslation()
+  const lang = i18n.language
   const rows = factors.slice(0, 6)
 
   return (
-    <section className="rounded-2xl border border-[var(--rule)] bg-[var(--card-bg)] overflow-hidden shadow-xs">
-      <div className="flex items-center justify-between bg-[var(--surface-2)] border-b border-[var(--rule)] px-4 py-2.5">
-        <span className="text-base font-bold uppercase tracking-wide text-[var(--text-main)]">
-          {L(i18n.language, 'Fatores-chave (SHAP)', 'Key Factors (SHAP)', 'Facteurs clés (SHAP)', 'Factores clave (SHAP)')}
-        </span>
-        <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">{L(i18n.language, 'Explicabilidade do modelo', 'Model Explainability', 'Explicabilité du modèle', 'Explicabilidad del modelo')}</span>
+    <section className={PANEL}>
+      <div className={PANEL_HEAD}>
+        <span className="poster-display text-lg text-[var(--text-primary)]">{L(lang, 'Fatores determinantes', 'Why the model leans', 'Pourquoi le modèle penche', 'Por qué se inclina el modelo')}</span>
+        
       </div>
 
-      <div className="space-y-3 p-5">
+      <div className="space-y-3 p-4 sm:p-5">
         {rows.map((factor, index) => (
-          <div key={factor.feature} className="space-y-1">
-            <div className="flex items-center justify-between text-xs font-bold">
-              <span className="text-[var(--text-main)] uppercase tracking-wide">
-                #{index + 1} {localizeFeature(factor.feature, i18n.language)}
+          <div key={factor.feature}>
+            <div className="flex items-end justify-between gap-3">
+              <span className="flex min-w-0 items-end gap-2">
+                <span className="poster-display w-5 shrink-0 text-lg text-[var(--text-red)]">{index + 1}</span>
+                <span className="min-w-0 truncate text-xs font-bold uppercase tracking-wide text-[var(--text-primary)] sm:text-sm">{localizeFeature(factor.feature, lang)}</span>
               </span>
-              <span className="rounded bg-[var(--surface-3)] px-2 py-0.5 text-[10px] font-extrabold text-[var(--text-main)]">
-                Favors {factor.impact}
+              <span className="shrink-0 text-xs font-semibold text-[var(--text-secondary)]">
+                {L(lang, `A favor de ${factor.impact}`, `Favors ${factor.impact}`, `En faveur de ${factor.impact}`, `A favor de ${factor.impact}`)}
               </span>
             </div>
-            <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--surface-3)]">
-              <div
-                className="h-full bg-[#C8102E]"
-                style={{ width: `${Math.min(100, Math.max(15, factor.magnitude * 250))}%` }}
-              />
+            <div className="mt-1 h-2 overflow-hidden rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]">
+              <div className={`h-full ${factor.impact === redName ? 'bg-[var(--red)]' : 'bg-[var(--blue)]'}`} style={{ width: `${Math.min(100, Math.max(15, factor.magnitude * 250))}%` }} />
             </div>
           </div>
         ))}

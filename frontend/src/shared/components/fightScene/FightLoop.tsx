@@ -68,7 +68,7 @@ export function FightLoop({ className = '' }: { className?: string }) {
   )
 
   return (
-    <div ref={panel} className={`relative overflow-hidden rounded-2xl border border-white/10 bg-[#0a0b0f] shadow-[0_24px_60px_-20px_rgba(225,29,72,0.45)] ${className}`}>
+    <div ref={panel} className={`relative overflow-hidden bg-[#10151d] ${className}`}>
       <div role="img" aria-label={describe} className="h-full w-full">
         <FightScene time={time} />
       </div>
@@ -76,7 +76,7 @@ export function FightLoop({ className = '' }: { className?: string }) {
         type="button"
         onClick={() => setPaused((value) => !value)}
         aria-label={paused ? L(lang, 'Retomar a animação', 'Play the animation', 'Reprendre l’animation', 'Reanudar la animación') : L(lang, 'Pausar a animação', 'Pause the animation', 'Mettre l’animation en pause', 'Pausar la animación')}
-        className="absolute bottom-2 right-2 grid h-10 w-10 place-items-center rounded-full border border-white/25 bg-black/60 text-white transition hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className="absolute bottom-2 right-2 grid h-11 w-11 place-items-center rounded-sm border-[1.5px] border-white bg-transparent text-white hover:bg-white hover:text-[#10151d]"
       >
         {paused ? <Play className="h-4 w-4" aria-hidden="true" /> : <Pause className="h-4 w-4" aria-hidden="true" />}
       </button>

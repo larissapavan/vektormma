@@ -67,7 +67,7 @@ export function StatusCard({ career }: { career: Career }) {
             <span className="data-value">{Math.min(career.points, TITLE_SHOT_POINTS)}/{TITLE_SHOT_POINTS}</span>
           </div>
           <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[var(--border-subtle)]" role="img" aria-label={`${Math.min(career.points, TITLE_SHOT_POINTS)}/${TITLE_SHOT_POINTS}`}>
-            <div className="h-full rounded-full bg-gradient-to-r from-[var(--accent-gold)] to-[var(--accent-red)] transition-all duration-700" style={{ width: `${progress}%` }} />
+            <div className="h-full rounded-full bg-[var(--accent-gold)] transition-all duration-700" style={{ width: `${progress}%` }} />
           </div>
         </div>
       ) : null}

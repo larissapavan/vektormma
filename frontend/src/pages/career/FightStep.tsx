@@ -128,7 +128,7 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
 
         <div className="mt-5 space-y-2" role="img" aria-label={`${L(lang, 'Momento da luta', 'Fight momentum', 'Momentum du combat', 'Impulso de la pelea')}: ${pick(lang, BAND_LABELS[band])}`}>
           <div className="relative h-3 overflow-hidden rounded-full bg-[var(--accent-red)]/40">
-            <motion.div className="h-full rounded-full bg-gradient-to-r from-[var(--accent-green)] to-[var(--text-green)]" initial={false} animate={{ width: `${Math.min(Math.max(chance * 100, 4), 100)}%` }} transition={{ type: 'spring', stiffness: 90, damping: 16 }} />
+            <motion.div className="h-full rounded-full bg-[var(--accent-green)]" initial={false} animate={{ width: `${Math.min(Math.max(chance * 100, 4), 100)}%` }} transition={{ type: 'spring', stiffness: 90, damping: 16 }} />
             <span className="absolute inset-y-0 left-1/2 w-px bg-[var(--bg-app)]/60" aria-hidden="true" />
           </div>
           {!finished ? <p className="text-center text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-secondary)]" data-testid="live-band">{pick(lang, BAND_LABELS[band])}</p> : null}

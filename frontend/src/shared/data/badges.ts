@@ -6,7 +6,7 @@ type BadgeInfo = { short: string; label: string; honor: boolean }
 
 /** Origin and honor badges from roster.watch. Honors (belt, hall of fame) are highlighted; origins are outlined. */
 export const BADGES: Record<string, BadgeInfo> = {
-  bmf_current: { short: 'BMF ★', label: 'Current BMF Champion', honor: true },
+  bmf_current: { short: 'BMF', label: 'Current BMF Champion', honor: true },
   goat: { short: 'GOAT', label: 'Greatest of all time', honor: true },
   bmf: { short: 'BMF', label: 'Former BMF Champion', honor: true },
   hof: { short: 'HoF', label: 'UFC Hall of Fame', honor: true },

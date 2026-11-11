@@ -13,12 +13,14 @@ import { FighterSelect } from '../shared/components/FighterSelect'
 import { FighterBadges, FlagList, TitleFightBadge } from '../shared/components/FighterBadges'
 import { getFighterImageUrl, useFighterImages } from '../shared/hooks/useFighterImages'
 import { useFighters } from '../shared/hooks/useFighters'
-import { formatProbability, localizePredictionMessage } from '../shared/data/probability'
+import { localizePredictionMessage } from '../shared/data/probability'
 import { DataConfidenceNote } from '../shared/components/DataConfidenceNote'
 import { localizeFeature } from '../shared/utils/localizeFeature'
 import { shownMetrics } from '../shared/data/modelAccuracy'
 import { useModelInfo } from '../shared/hooks/useModelInfo'
 import { usePrediction } from '../shared/hooks/usePrediction'
+import { PageHeader } from '../shared/components/ui/PageHeader'
+import { predictionSentence, ProbabilityBand } from '../shared/components/ui/ProbabilityBand'
 import { getMatchupTitleFight } from '../shared/data/titleFights'
 import type { FighterProfile, MainFactor, PredictionResponse } from '../shared/types/api'
 
@@ -93,22 +95,20 @@ export function Predictor() {
   const problem = error ?? predictionError ?? fightersError
 
   return (
-    <div className="surface-card rounded-2xl border border-[var(--border-subtle)] overflow-hidden shadow-sm">
-      <Masthead dataThrough={health?.latest_fight_date ?? null} />
-
-      <header className="border-b border-[var(--border-subtle)] px-4 py-5 sm:px-8 sm:py-7 bg-[var(--bg-surface-subtle)]">
-        <p className="text-xs font-bold uppercase tracking-[0.25em] text-[var(--accent-red)]">{t('predictor.question', "Tonight's question")}</p>
-        <h1 className="poster-display mt-2 text-2xl sm:text-3xl md:text-4xl text-[var(--text-primary)]">
-          {t('predictor.whoTakesIt', 'Who takes it?')}
-        </h1>
-        <p className="mt-2 max-w-xl text-sm font-medium leading-6 sm:text-base text-[var(--text-secondary)]">
-          {t('predictor.heroSubtitle', 'Pick any two fighters. The model gives you the odds and shows which numbers moved them.')}
-        </p>
-      </header>
+    <div className="space-y-6 sm:space-y-8">
+      <PageHeader
+        eyebrow={t('predictor.question', "Tonight's question")}
+        title={t('predictor.whoTakesIt', 'Who takes it?')}
+        description={t('predictor.heroSubtitle', 'Pick any two fighters. The model gives you the odds and shows which numbers moved them.')}
+      />
 
       <Scoreboard
         cells={[
-          { label: t('predictor.fightsOnFile', 'Fights on file'), value: health?.fights_tracked ? health.fights_tracked.toLocaleString(localeTag(i18n.language)) : '—' },
+          {
+            label: t('predictor.fightsOnFile', 'Fights on file'),
+            value: health?.fights_tracked ? health.fights_tracked.toLocaleString(localeTag(i18n.language)) : '—',
+            note: resultsThrough(health?.latest_fight_date ?? null, i18n.language),
+          },
           {
             label: t('predictor.fighters', 'Fighters'),
             value: (health?.fighters_loaded ?? fighters.length).toLocaleString(localeTag(i18n.language)),
@@ -130,10 +130,10 @@ export function Predictor() {
       />
 
       {problem ? (
-        <p className="border-b border-[var(--border-subtle)] bg-[var(--accent-gold)]/15 text-[var(--text-gold)] px-4 py-2 text-sm font-bold sm:px-8">{problem}</p>
+        <p className="rounded-card border border-[var(--accent-gold)]/40 bg-[var(--accent-gold)]/15 px-3 py-2 text-sm font-semibold text-[var(--text-gold)]">{problem}</p>
       ) : null}
 
-      <div className="space-y-6 px-4 py-6 sm:px-8 sm:py-8">
+      <div className="space-y-6">
         <div className="grid items-stretch gap-4 lg:grid-cols-[minmax(0,1fr)_72px_minmax(0,1fr)]">
           <Corner side="red" fighter={fighterA} loading={loading} onOpenProfile={setProfileName}>
             <FighterSelect
@@ -152,7 +152,7 @@ export function Predictor() {
               type="button"
               onClick={swapCorners}
               disabled={!nameA && !nameB}
-              title={L(i18n.language, 'Inverter cantos (Vermelho ⇄ Azul)', 'Swap corners (Red ⇄ Blue)', 'Inverser les coins (rouge ⇄ bleu)', 'Intercambiar esquinas (roja ⇄ azul)')}
+              title={L(i18n.language, 'Inverter cantos (vermelho ⇄ azul)', 'Swap corners (red ⇄ blue)', 'Inverser les coins (rouge ⇄ bleu)', 'Intercambiar esquinas (roja ⇄ azul)')}
               aria-label={L(i18n.language, 'Inverter cantos', 'Swap corners', 'Inverser les coins', 'Intercambiar esquinas')}
               className={`poster-display group relative grid h-14 w-14 -rotate-6 place-items-center rounded-full border border-[var(--border-default)] bg-[var(--bg-surface-elevated)] text-2xl shadow-sm transition ${
                 nameA || nameB ? 'cursor-pointer hover:rotate-0 hover:scale-105 active:scale-95 text-[var(--text-primary)]' : 'cursor-default text-[var(--text-muted)]'
@@ -182,16 +182,16 @@ export function Predictor() {
           type="button"
           onClick={score}
           disabled={!canScore || predicting || loading}
-          className="primary-action flex w-full items-center justify-center gap-3 rounded-xl py-3.5 px-6 text-xl uppercase tracking-wider transition cursor-pointer"
+          className="primary-action flex min-h-14 w-full cursor-pointer items-center justify-center gap-3 rounded-full px-6 text-base uppercase"
         >
-          {predicting ? <LoaderCircle className="h-6 w-6 animate-spin" /> : null}
+          {predicting ? <LoaderCircle className="h-5 w-5 animate-spin" /> : null}
           {predicting ? t('predictor.predicting', 'Judges are scoring...') : canScore ? t('predictor.predictMatchup', 'Score the fight') : t('predictor.pickTwoPrompt', 'Pick both corners first')}
-          {canScore && !predicting ? <ArrowRight className="h-6 w-6" /> : null}
+          {canScore && !predicting ? <ArrowRight className="h-5 w-5" /> : null}
         </button>
 
         <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
           <Scorecard prediction={prediction} fighterA={fighterA} fighterB={fighterB} />
-          <Drivers factors={prediction?.main_factors ?? []} />
+          <Drivers factors={prediction?.main_factors ?? []} redName={prediction?.fighter_a_profile.name ?? null} />
         </div>
 
         <TaleOfTape fighterA={fighterA} fighterB={fighterB} />
@@ -209,39 +209,27 @@ export function Predictor() {
   )
 }
 
-function Masthead({ dataThrough }: { dataThrough: string | null }) {
-  const { i18n } = useTranslation()
+function resultsThrough(dataThrough: string | null, lang: string): string | undefined {
   const date = dataThrough ? new Date(`${dataThrough}T00:00:00`) : null
-  const label = date && !Number.isNaN(date.getTime())
-    ? date.toLocaleDateString(localeTag(i18n.language), { month: 'short', day: 'numeric', year: 'numeric' })
-    : null
-  return (
-    <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] px-4 py-2 text-[var(--text-secondary)] sm:px-8">
-      <span className="text-xs font-bold uppercase tracking-[0.25em]">
-        {L(i18n.language, 'Inteligência de Combate · Mesa de Análise', 'Vektor MMA · Matchup desk', 'Vektor MMA · Table d’analyse', 'Vektor MMA · Mesa de análisis')}
-      </span>
-      {label ? (
-        <span className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">
-          {L(i18n.language, `Resultados até ${label}`, `Results through ${label}`, `Résultats jusqu’au ${label}`, `Resultados hasta ${label}`)}
-        </span>
-      ) : null}
-    </div>
-  )
+  if (!date || Number.isNaN(date.getTime())) return undefined
+  const label = date.toLocaleDateString(localeTag(lang), { month: 'short', day: 'numeric', year: 'numeric' })
+  return L(lang, `Resultados até ${label}`, `Results through ${label}`, `Résultats jusqu’au ${label}`, `Resultados hasta ${label}`)
 }
 
+/** The numbers behind the model, in one open row: no boxes, a rule between columns on wide screens. */
 function Scoreboard({ cells }: { cells: { label: string; value: string; note?: string; alert?: boolean; onlineDot?: boolean }[] }) {
   return (
-    <div className="grid grid-cols-2 border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-x-6 gap-y-6 lg:grid-cols-4">
       {cells.map((cell) => (
-        <div key={cell.label} className="min-w-0 border-r border-[var(--border-subtle)] px-4 py-3 sm:px-6 last:border-r-0 [&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r">
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">{cell.label}</p>
-          <p className={`poster-display mt-1 flex items-center gap-2 text-2xl sm:text-3xl ${cell.alert ? 'text-[var(--text-red)]' : 'text-[var(--text-primary)]'}`}>
+        <div key={cell.label} className="min-w-0 lg:border-l lg:border-[var(--border-subtle)] lg:pl-6 lg:first:border-l-0 lg:first:pl-0">
+          <p className="font-mono text-label font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]">{cell.label}</p>
+          <p className={`mt-1 flex items-center gap-2 font-display text-2xl font-bold leading-none tabular-nums sm:text-3xl ${cell.alert ? 'text-[var(--text-red)]' : 'text-[var(--text-primary)]'}`}>
             {cell.onlineDot ? (
-              <span className="h-2.5 w-2.5 rounded-full bg-[var(--accent-green)] animate-pulse" aria-hidden="true" />
+              <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--accent-green)] animate-pulse" aria-hidden="true" />
             ) : null}
             <span className="min-w-0 truncate">{cell.value}</span>
           </p>
-          {cell.note ? <p className="mt-1 truncate text-xs font-semibold text-[var(--text-secondary)]">{cell.note}</p> : null}
+          {cell.note ? <p className="mt-1 text-xs text-[var(--text-muted)]">{cell.note}</p> : null}
         </div>
       ))}
     </div>
@@ -263,13 +251,13 @@ function Corner({
 }) {
   const { i18n } = useTranslation()
   const { imageByName } = useFighterImages()
-  const block = side === 'red' ? 'bg-[var(--accent-red-solid)] text-white' : 'bg-[var(--accent-blue-solid)] text-white'
+  const block = side === 'red' ? 'bg-[var(--red)] text-white' : 'bg-[var(--blue)] text-white'
 
   return (
-    <section className="flex min-w-0 flex-col rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] overflow-hidden shadow-xs">
+    <section className="flex min-w-0 flex-col overflow-hidden rounded-card border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
       <div className={`${block} flex items-center justify-between gap-3 px-4 py-2.5`}>
-        <span className="poster-display text-xl sm:text-2xl">
-          {side === 'red' ? L(i18n.language, 'Canto Vermelho', 'Red corner', 'Coin rouge', 'Esquina roja') : L(i18n.language, 'Canto Azul', 'Blue corner', 'Coin bleu', 'Esquina azul')}
+        <span className="poster-display text-lg sm:text-xl">
+          {side === 'red' ? L(i18n.language, 'Canto vermelho', 'Red corner', 'Coin rouge', 'Esquina roja') : L(i18n.language, 'Canto azul', 'Blue corner', 'Coin bleu', 'Esquina azul')}
         </span>
         {fighter ? <span className="truncate text-xs font-bold uppercase tracking-widest">{fighter.division ? getDivisionName(fighter.division, i18n.language) : fighter.stance}</span> : null}
       </div>
@@ -280,7 +268,7 @@ function Corner({
         {fighter ? (
           <FighterSheet fighter={fighter} imageUrl={getFighterImageUrl(fighter.name, imageByName, fighter.image_url)} onOpenProfile={() => onOpenProfile(fighter.name)} />
         ) : (
-          <div className="flex flex-1 flex-col items-center justify-center rounded-xl border border-dashed border-[var(--border-default)] bg-[var(--bg-surface-subtle)] px-4 py-10 text-center">
+          <div className="flex flex-1 flex-col items-center justify-center rounded-control border border-dashed border-[var(--border-default)] px-4 py-10 text-center">
             <p className="poster-display text-3xl sm:text-4xl text-[var(--text-muted)]">{loading ? '...' : L(i18n.language, 'A definir', 'TBA', 'À définir', 'Por definir')}</p>
             <p className="mt-1 text-xs font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">{L(i18n.language, 'Aguardando lutador', 'To be announced', 'En attente d’un combattant', 'Peleador por anunciar')}</p>
           </div>
@@ -339,11 +327,11 @@ function FighterSheet({ fighter, imageUrl, onOpenProfile }: { fighter: FighterPr
         </div>
       </div>
 
-      <dl className="grid grid-cols-2 gap-2 border-t border-[var(--border-subtle)] pt-3 text-xs sm:grid-cols-3">
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-3 border-t border-[var(--border-subtle)] pt-3 sm:grid-cols-3">
         {rows.map(([label, value]) => (
-          <div key={label} className="min-w-0 rounded-lg bg-[var(--bg-surface-subtle)] p-2 border border-[var(--border-subtle)]">
-            <dt className="truncate text-[10px] font-bold uppercase tracking-wider text-[var(--text-muted)]">{label}</dt>
-            <dd className="poster-display mt-0.5 truncate text-lg text-[var(--text-primary)]">{value}</dd>
+          <div key={label} className="min-w-0">
+            <dt className="truncate text-label text-[var(--text-muted)]">{label}</dt>
+            <dd className="poster-display mt-1 truncate text-lg text-[var(--text-primary)]">{value}</dd>
           </div>
         ))}
       </dl>
@@ -366,77 +354,46 @@ function Scorecard({
     prediction?.fighter_b_profile ?? fighterB,
   )
 
-  const rows = prediction
-    ? [
-        { name: prediction.fighter_a_profile.name, value: prediction.fighter_a_probability, color: 'bg-[var(--accent-red)]' },
-        { name: prediction.fighter_b_profile.name, value: prediction.fighter_b_probability, color: 'bg-[var(--accent-blue)]' },
-      ]
-    : [
-        { name: fighterA?.name ?? L(i18n.language, 'Canto Vermelho', 'Red corner', 'Coin rouge', 'Esquina roja'), value: null, color: 'bg-[var(--accent-red)]' },
-        { name: fighterB?.name ?? L(i18n.language, 'Canto Azul', 'Blue corner', 'Coin bleu', 'Esquina azul'), value: null, color: 'bg-[var(--accent-blue)]' },
-      ]
-
   return (
-    <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] overflow-hidden shadow-xs">
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-4 py-3">
+    <section className="overflow-hidden rounded-card border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-subtle)] px-4 py-3">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="poster-display text-lg text-[var(--text-primary)]">{L(i18n.language, 'Placar de Probabilidades', 'Official scorecard', 'Carte des probabilités', 'Tarjeta oficial')}</span>
+          <h2 className="text-2xl leading-none">{L(i18n.language, 'Chance de vitória', 'Chance of winning', 'Chances de victoire', 'Probabilidad de victoria')}</h2>
           {titleFightInfo?.title_fight ? <TitleFightBadge fight={titleFightInfo} /> : null}
         </div>
-        <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">{L(i18n.language, 'Chances da IA', 'Model odds', 'Cotes du modèle', 'Probabilidades del modelo')}</span>
       </div>
 
-      <div className="relative space-y-4 p-4 sm:p-5">
-        {prediction ? (
-          <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">
-            <div className="min-w-0">
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--accent-red)]">{L(i18n.language, 'Favorito Previsto', 'Projected winner', 'Vainqueur prévu', 'Ganador proyectado')}</p>
-              <p className="poster-display mt-1 break-words text-2xl leading-none sm:text-3xl text-[var(--text-primary)]">{prediction.predicted_winner}</p>
-            </div>
-            <p className="poster-display text-4xl leading-none text-[var(--accent-red)] sm:text-5xl">{formatProbability(prediction.probability)}</p>
-          </div>
-        ) : null}
-
-        <div className="space-y-3">
-          {rows.map((row) => (
-            <div key={row.name}>
-              <div className="flex items-end">
-                <span className="min-w-0 truncate text-sm font-bold uppercase tracking-wide text-[var(--text-primary)]">{row.name}</span>
-                <span className="poster-leader border-dotted border-[var(--border-default)]" aria-hidden="true" />
-                <span className="poster-display text-xl text-[var(--text-primary)]">{row.value != null ? formatProbability(row.value) : '--'}</span>
-              </div>
-              <div className="mt-1 h-3.5 rounded-full overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]">
-                {row.value != null ? <div className={`h-full ${row.color}`} style={{ width: `${row.value * 100}%` }} /> : null}
-              </div>
-            </div>
-          ))}
-        </div>
-
+      <div className="space-y-4 p-4 sm:p-5">
         {prediction ? (
           <>
-            <p className="text-sm font-medium leading-6 text-[var(--text-secondary)]">{localizePredictionMessage(prediction.message, prediction.predicted_winner, i18n.language)}</p>
+            <ProbabilityBand nameA={prediction.fighter_a_profile.name} nameB={prediction.fighter_b_profile.name} probabilityA={prediction.fighter_a_probability} />
+            <p className="text-base font-semibold">{predictionSentence(i18n.language, prediction.predicted_winner, prediction.probability)}</p>
+            <p className="text-[15px] leading-6 text-[var(--muted)]">{localizePredictionMessage(prediction.message, prediction.predicted_winner, i18n.language)}</p>
             <DataConfidenceNote confidence={prediction.data_confidence} />
           </>
         ) : (
-          <div className="flex justify-end pt-2 text-[var(--accent-red)]">
-            <span className="poster-display poster-stamp text-2xl border-[var(--border-default)]">{L(i18n.language, 'Aguardando combate', 'Awaiting bout', 'En attente du combat', 'Esperando la pelea')}</span>
-          </div>
+          <p className="py-6 text-base text-[var(--muted)]">
+            {fighterA && fighterB
+              ? L(i18n.language, 'Clique em “Simular combate” para ver a chance de vitória estimada pelo modelo.', 'Press “Predict matchup” to see the model’s estimated chance of winning.', 'Appuyez sur « Prédire le combat » pour voir la probabilité de victoire estimée par le modèle.', 'Pulsa “Pronosticar la pelea” para ver la probabilidad de victoria estimada por el modelo.')
+              : L(i18n.language, 'Escolha os dois lutadores para ver a chance de vitória estimada pelo modelo.', 'Choose both fighters to see the model’s estimated chance of winning.', 'Choisissez les deux combattants pour voir la probabilité de victoire estimée par le modèle.', 'Elige a los dos peleadores para ver la probabilidad de victoria estimada por el modelo.')}
+          </p>
         )}
       </div>
     </section>
   )
 }
 
-function Drivers({ factors }: { factors: MainFactor[] }) {
+/** The factors behind the estimate; each bar takes the colour of the corner it favours. */
+function Drivers({ factors, redName }: { factors: MainFactor[]; redName: string | null }) {
   const { i18n } = useTranslation()
   const max = Math.max(...factors.map((factor) => factor.magnitude), 0.01)
   const rows = factors.slice(0, 6)
 
   return (
-    <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] overflow-hidden shadow-xs">
+    <section className="overflow-hidden rounded-card border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
       <div className="flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-4 py-3">
-        <span className="poster-display text-lg text-[var(--text-primary)]">{L(i18n.language, 'Fatores Determinantes', 'Why the model leans', 'Pourquoi le modèle penche', 'Por qué se inclina el modelo')}</span>
-        <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">SHAP</span>
+        <span className="poster-display text-lg text-[var(--text-primary)]">{L(i18n.language, 'Fatores determinantes', 'Why the model leans', 'Pourquoi le modèle penche', 'Por qué se inclina el modelo')}</span>
+        
       </div>
 
       <div className="space-y-3 p-4 sm:p-5">
@@ -452,7 +409,7 @@ function Drivers({ factors }: { factors: MainFactor[] }) {
                 <span className="poster-display text-sm text-[var(--text-secondary)]">{factor.impact}</span>
               </div>
               <div className="mt-1 h-2 rounded-full overflow-hidden bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-                <div className="h-full bg-[var(--accent-red)]" style={{ width: `${Math.min(100, (factor.magnitude / max) * 100)}%` }} />
+                <div className={`h-full ${factor.impact === redName ? 'bg-[var(--red)]' : 'bg-[var(--blue)]'}`} style={{ width: `${Math.min(100, (factor.magnitude / max) * 100)}%` }} />
               </div>
               <p className="mt-1 text-xs text-[var(--text-muted)]">
                 {L(
@@ -502,16 +459,16 @@ function TaleOfTape({ fighterA, fighterB }: { fighterA: FighterProfile | null; f
   const ready = Boolean(fighterA && fighterB)
 
   return (
-    <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] overflow-hidden shadow-xs">
+    <section className="overflow-hidden rounded-card border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
       <div className="flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-4 py-3">
-        <span className="poster-display text-lg text-[var(--text-primary)]">{L(i18n.language, 'Raio-X dos Lutadores', 'Tale of the tape', 'La fiche comparative', 'Comparativa de peleadores')}</span>
-        <span className="hidden text-[11px] font-bold uppercase tracking-[0.2em] sm:inline text-[var(--text-muted)]">{L(i18n.language, 'Destaque = vantagem', 'Highlight = edge', 'Surligné = avantage', 'Resaltado = ventaja')}</span>
+        <span className="poster-display text-lg text-[var(--text-primary)]">{L(i18n.language, 'Raio-x dos lutadores', 'Tale of the tape', 'La fiche comparative', 'Comparativa de peleadores')}</span>
+        <span className="hidden text-label font-bold uppercase tracking-[0.12em] sm:inline text-[var(--text-muted)]">{L(i18n.language, 'Destaque = vantagem', 'Highlight = edge', 'Surligné = avantage', 'Resaltado = ventaja')}</span>
       </div>
 
       <div className="grid grid-cols-[1fr_auto_1fr] border-b border-[var(--border-subtle)] text-center">
-        <span className="poster-display truncate bg-[var(--accent-red-solid)] px-3 py-2 text-base text-white sm:text-lg">{fighterA?.name ?? L(i18n.language, 'Canto Vermelho', 'Red corner', 'Coin rouge', 'Esquina roja')}</span>
+        <span className="poster-display truncate bg-[var(--red)] px-3 py-2 text-base text-white sm:text-lg">{fighterA?.name ?? L(i18n.language, 'Canto vermelho', 'Red corner', 'Coin rouge', 'Esquina roja')}</span>
         <span className="w-24 shrink-0 sm:w-40" />
-        <span className="poster-display truncate bg-[var(--accent-blue-solid)] px-3 py-2 text-base text-white sm:text-lg">{fighterB?.name ?? L(i18n.language, 'Canto Azul', 'Blue corner', 'Coin bleu', 'Esquina azul')}</span>
+        <span className="poster-display truncate bg-[var(--blue)] px-3 py-2 text-base text-white sm:text-lg">{fighterB?.name ?? L(i18n.language, 'Canto azul', 'Blue corner', 'Coin bleu', 'Esquina azul')}</span>
       </div>
 
       <div>
@@ -520,7 +477,7 @@ function TaleOfTape({ fighterA, fighterB }: { fighterA: FighterProfile | null; f
           return (
             <div key={row.label} className="grid grid-cols-[1fr_auto_1fr] items-center border-b border-[var(--border-subtle)] last:border-b-0 py-1">
               <Cell value={row.a} row={row} winning={edge === 'a'} ready={ready} />
-              <span className="w-24 shrink-0 px-1 text-center text-[11px] font-bold uppercase leading-tight tracking-wider text-[var(--text-secondary)] sm:w-40 sm:text-xs">{row.label}</span>
+              <span className="w-24 shrink-0 px-1 text-center text-label font-semibold leading-tight text-[var(--text-secondary)] sm:w-40">{row.label}</span>
               <Cell value={row.b} row={row} winning={edge === 'b'} ready={ready} />
             </div>
           )
@@ -534,7 +491,7 @@ function Cell({ value, row, winning, ready }: { value: number | null; row: TapeR
   const text = !ready || value == null ? '--' : row.pct ? `${(value * 100).toFixed(1)}%` : Number.isInteger(value) ? `${value}` : value.toFixed(1)
   return (
     <span className="px-2 py-1.5 text-center">
-      <span className={`poster-display inline-block px-2 text-xl sm:text-2xl ${winning ? 'bg-[var(--accent-gold)] text-black rounded font-black' : ready ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}>{text}</span>
+      <span className={`poster-display inline-block px-2 text-xl sm:text-2xl ${winning ? 'rounded bg-[var(--tape)] text-[var(--on-tape)]' : ready ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}>{text}</span>
     </span>
   )
 }

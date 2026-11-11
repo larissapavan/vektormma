@@ -37,7 +37,7 @@ export function GoalsCard({ career }: { career: Career }) {
               )}
             </div>
             <div className="h-1.5 overflow-hidden rounded-full bg-[var(--border-subtle)]" role="img" aria-label={`${value}/${def.target}`}>
-              <div className={`h-full rounded-full transition-all duration-700 ${done ? 'bg-[var(--accent-green)]' : 'bg-gradient-to-r from-[var(--accent-gold)] to-[var(--accent-red)]'}`} style={{ width: `${(value / def.target) * 100}%` }} />
+              <div className={`h-full rounded-full transition-all duration-700 ${done ? 'bg-[var(--accent-green)]' : 'bg-[var(--accent-gold)]'}`} style={{ width: `${(value / def.target) * 100}%` }} />
             </div>
           </li>
         ))}

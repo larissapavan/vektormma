@@ -136,6 +136,12 @@ const FEATURE_NAMES: Record<UiLang, Record<string, string> | null> = {
   en: null,
 }
 
+/** Model features the API names from the raw column ("reach_diff" -> "Reach Diff"), mapped to the label they mean. */
+const RAW_NAMES: Record<string, string> = {
+  'Reach Diff': 'Reach difference',
+}
+
 export function localizeFeature(name: string, language: string | boolean = false): string {
-  return FEATURE_NAMES[uiLang(language)]?.[name] ?? name
+  const canonical = RAW_NAMES[name] ?? name
+  return FEATURE_NAMES[uiLang(language)]?.[canonical] ?? canonical
 }

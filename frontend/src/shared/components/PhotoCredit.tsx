@@ -15,7 +15,7 @@ export function PhotoCredit({ imageUrl, className = 'left-1.5 top-3' }: { imageU
     <span
       title={photoRightsText(credit, i18n.language)}
       style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
-      className={`absolute z-20 rounded-sm bg-black/60 px-[3px] py-1.5 font-mono text-[9px] font-semibold uppercase leading-none tracking-[0.14em] text-white/85 ${className}`}
+      className={`absolute z-20 bg-black/70 px-[3px] py-1.5 text-label font-semibold leading-none text-white ${className}`}
     >
       {photoCreditText(credit, i18n.language)}
     </span>

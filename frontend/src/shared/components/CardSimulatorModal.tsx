@@ -76,9 +76,9 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
   const handleShare = () => {
     let text = L(
       i18n.language,
-      `🥊 MEUS PALPITES VS IA • ${event.name}\n`,
+      `🥊 MEUS palpites VS IA • ${event.name}\n`,
       `🥊 MY PICKS VS AI • ${event.name}\n`,
-      `🥊 MES PRONOSTICS CONTRE L’IA • ${event.name}\n`,
+      `🥊 MES pronostics contre L’IA • ${event.name}\n`,
       `🥊 MIS PRONÓSTICOS VS. LA IA • ${event.name}\n`,
     )
     
@@ -98,7 +98,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
         const aiInfo = aiPick ? `🤖 IA: ${aiPick.predicted_winner} (${Math.round(aiPick.probability * 100)}%)` : ''
         const verdict = matchesAi
           ? L(i18n.language, '🤝 [CONCORDO]', '🤝 [AGREE]', '🤝 [D’ACCORD]', '🤝 [COINCIDO]')
-          : L(i18n.language, '⚡ [ZEBRA/DIVERGÊNCIA]', '⚡ [UPSET/DISAGREE]', '⚡ [SURPRISE/DÉSACCORD]', '⚡ [SORPRESA/DESACUERDO]')
+          : L(i18n.language, '[Zebra/divergência]', '[Upset/disagree]', '[Surprise/désaccord]', '[Sorpresa/desacuerdo]')
         text += `• ${fight.fighter_1} vs ${fight.fighter_2}\n  👉 ${L(i18n.language, 'Meu palpite', 'My pick', 'Mon pronostic', 'Mi pronóstico')}: ${userChoice} | ${aiInfo} ${verdict}\n\n`
       }
     })
@@ -154,7 +154,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
             </div>
             <div>
               <h2 className="text-base font-bold uppercase tracking-wide text-[var(--text-main)] sm:text-lg">
-                {L(i18n.language, 'Simulador de Card: Você vs. IA', 'Card Simulator: You vs. AI', 'Simulateur de carte : vous contre l’IA', 'Simulador de cartelera: tú vs. la IA')}
+                {L(i18n.language, 'Seus palpites contra os do modelo', 'Your picks against the model’s', 'Vos pronostics face à ceux du modèle', 'Tus pronósticos contra los del modelo')}
               </h2>
               <p className="theme-muted truncate text-xs">{event.name}</p>
             </div>
@@ -178,7 +178,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
               </div>
               <div className="h-3 w-px bg-[var(--line-soft)]" />
               <div>
-                <span className="text-xs text-[var(--text-muted)]">{L(i18n.language, 'Concordância c/ IA', 'AI Agreement', 'Accord avec l’IA', 'Coincidencia con la IA')}: </span>
+                <span className="text-xs text-[var(--text-muted)]">{L(i18n.language, 'Iguais aos do modelo', 'Same as the model', 'Comme le modèle', 'Iguales al modelo')}: </span>
                 <span className="font-bold text-[#F2C230]">{stats.agreementPct}%</span>
                 <span className="text-xs text-[var(--text-muted)]"> ({stats.agreedWithAi}/{stats.totalWithAi})</span>
               </div>
@@ -202,7 +202,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
                 className="inline-flex items-center gap-1.5 rounded-full bg-[#C8102E] px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg transition hover:bg-[#a50d26] disabled:opacity-40"
               >
                 {copied ? <Check className="h-3.5 w-3.5" /> : <Share2 className="h-3.5 w-3.5" />}
-                {copied ? L(i18n.language, 'Copiado!', 'Copied!', 'Copié !', '¡Copiado!') : L(i18n.language, 'Compartilhar', 'Share', 'Partager', 'Compartir')}
+                {copied ? L(i18n.language, 'Copiado', 'Copied', 'Copié', 'Copiado') : L(i18n.language, 'Compartilhar', 'Share', 'Partager', 'Compartir')}
               </button>
             </div>
           </div>
@@ -263,7 +263,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
                     </div>
                     {isF1Ai ? (
                       <span className="mt-1 text-[10px] text-[#F2C230] font-medium">
-                        ★ {L(i18n.language, 'Palpite da IA', 'AI Pick', 'Pronostic de l’IA', 'Pronóstico de la IA')}
+                        {L(i18n.language, 'Palpite do modelo', 'Model’s pick', 'Pronostic du modèle', 'Pronóstico del modelo')}
                       </span>
                     ) : null}
                   </button>
@@ -279,12 +279,12 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
                     }`}
                   >
                     <div className="flex items-center gap-1.5">
-                      {isF2User ? <User className="h-3.5 w-3.5 text-[var(--accent-blue)]" /> : null}
+                      {isF2User ? <User className="h-3.5 w-3.5 text-[var(--blue-text)]" /> : null}
                       <span className="text-sm font-bold uppercase">{fight.fighter_2}</span>
                     </div>
                     {isF2Ai ? (
                       <span className="mt-1 text-[10px] text-[#F2C230] font-medium">
-                        ★ {L(i18n.language, 'Palpite da IA', 'AI Pick', 'Pronostic de l’IA', 'Pronóstico de la IA')}
+                        {L(i18n.language, 'Palpite do modelo', 'Model’s pick', 'Pronostic du modèle', 'Pronóstico del modelo')}
                       </span>
                     ) : null}
                   </button>
@@ -295,11 +295,11 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
                   <div className="mt-2 text-center text-[11px]">
                     {userChoice.toLowerCase() === aiPick.predicted_winner.toLowerCase() ? (
                       <span className="inline-flex items-center gap-1 text-emerald-400 font-medium">
-                        <Check className="h-3 w-3" /> {L(i18n.language, 'Você e a IA concordam no vencedor', 'You agree with AI', 'Vous et l’IA êtes d’accord sur le vainqueur', 'Coincides con la IA en el ganador')}
+                        <Check className="h-3 w-3" /> {L(i18n.language, 'Você e o modelo escolheram o mesmo vencedor', 'You and the model picked the same winner', 'Vous et le modèle avez choisi le même vainqueur', 'Tú y el modelo eligieron al mismo ganador')}
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 text-amber-400 font-medium">
-                        ⚡ {L(i18n.language, 'Seu palpite vai contra a IA (aposta na zebra)', 'Upset pick against AI', 'Votre pronostic va à l’encontre de l’IA (pari sur la surprise)', 'Pronóstico sorpresa contra la IA')}
+                        {L(i18n.language, 'Você foi contra o modelo e apostou na zebra', 'You went against the model and picked the underdog', 'Vous avez contredit le modèle en misant sur l’outsider', 'Fuiste contra el modelo y elegiste al no favorito')}
                       </span>
                     )}
                   </div>

@@ -15,15 +15,15 @@ const ROOM = { width: 480, height: 520 }
 const HORIZON = 196
 const VANISH_X = ROOM.width / 2
 
-const SKIN = { rim: '#ff2e54', dark: '#262930', mid: '#454953', light: '#7b808c' }
+const SKIN = { rim: '#8a94a3', dark: '#262930', mid: '#454953', light: '#7b808c' }
 
 interface Colours {
   shorts: string
   glove: string
 }
 
-const RED: Colours = { shorts: '#d4162f', glove: '#ef2b45' }
-const BLUE: Colours = { shorts: '#1d4ed8', glove: '#3b82f6' }
+const RED: Colours = { shorts: '#b01f25', glove: '#d62f2f' }
+const BLUE: Colours = { shorts: '#1f46b5', glove: '#2b59d9' }
 
 function Limb({ from, to, width, back = false }: { from: Point; to: Point; width: number; back?: boolean }) {
   const base = back ? SKIN.dark : SKIN.mid
@@ -94,7 +94,7 @@ function Floor({ shift }: { shift: number }) {
           <rect x="0" y={HORIZON} width={ROOM.width} height={ROOM.height - HORIZON} fill={`url(#${id}-fade)`} />
         </mask>
       </defs>
-      <g mask={`url(#${id}-mask)`} stroke="#ff2e54" strokeWidth={1.4} fill="none" style={{ filter: 'drop-shadow(0 0 3px rgba(255,46,84,0.75))' }}>
+      <g mask={`url(#${id}-mask)`} stroke="#4a5463" strokeWidth={1.4} fill="none">
         {rows.map((y) => (
           <line key={y} x1={0} y1={y} x2={ROOM.width} y2={y} strokeOpacity={0.85} />
         ))}
@@ -111,7 +111,7 @@ function Burst({ at, progress }: { at: Point; progress: number }) {
   return (
     <g pointerEvents="none">
       <circle cx={at.x} cy={at.y} r={6 + 26 * eased} fill="none" stroke="#fff" strokeOpacity={0.9 * (1 - progress)} strokeWidth={2.2 * (1 - progress) + 0.4} />
-      <circle cx={at.x} cy={at.y} r={4 + 14 * eased} fill="#ff2e54" fillOpacity={0.5 * (1 - progress)} />
+      <circle cx={at.x} cy={at.y} r={4 + 14 * eased} fill="#ffffff" fillOpacity={0.5 * (1 - progress)} />
     </g>
   )
 }
@@ -136,9 +136,9 @@ export const FightScene = memo(function FightScene({ time }: { time: number }) {
     <svg viewBox={`${VIEW.x} ${VIEW.y} ${VIEW.size} ${VIEW.size}`} className="block h-full w-full" aria-hidden="true" focusable="false">
       <defs>
         <radialGradient id={`${id}-room`} cx="50%" cy="38%" r="75%">
-          <stop offset="0" stopColor="#3a1c27" />
-          <stop offset="0.55" stopColor="#15161b" />
-          <stop offset="1" stopColor="#0a0b0f" />
+          <stop offset="0" stopColor="#1b222d" />
+          <stop offset="0.55" stopColor="#10151d" />
+          <stop offset="1" stopColor="#10151d" />
         </radialGradient>
       </defs>
       <rect width={ROOM.width} height={ROOM.height} fill={`url(#${id}-room)`} />

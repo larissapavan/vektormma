@@ -1,502 +1,467 @@
-import { useState, useMemo, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import {
-  ArrowLeftRight,
-  ChevronDown,
-  Search,
-  Sparkles,
-  Trophy,
-} from 'lucide-react'
+import { useEffect, useId, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { ChevronDown, Search, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { L } from '../../../i18n/lang'
-import { AnimatedCounter } from './AnimatedCounter'
+import { L, localeTag } from '../../../i18n/lang'
 import { getDivisionName } from '../../data/divisions'
+import { localizeFeature } from '../../utils/localizeFeature'
 import { getFighterImageUrl, useFighterImages } from '../../hooks/useFighterImages'
 import { useFighters } from '../../hooks/useFighters'
 import { usePrediction } from '../../hooks/usePrediction'
-import { PhotoCredit } from '../PhotoCredit'
+import { DataConfidenceNote } from '../DataConfidenceNote'
+import { FighterAvatar } from '../FighterAvatar'
+import { CornerSplit, cornerPhotoClass } from '../ui/CornerSplit'
+import { predictionSentence, ProbabilityBand } from '../ui/ProbabilityBand'
+import { sectionActionClass } from '../ui/Section'
+import type { FighterProfile, HeadToHeadResponse, UpcomingPick } from '../../types/api'
 
 interface EditorialHeadToHeadSimulatorProps {
-  initialFighterA?: string
-  initialFighterB?: string
-  onSelectFighterA?: (name: string) => void
-  onSelectFighterB?: (name: string) => void
+  /** The red corner. */
+  fighterA: string
+  /** The blue corner. */
+  fighterB: string
+  onSelectFighterA: (name: string) => void
+  onSelectFighterB: (name: string) => void
+  /** Fights already on a card, offered as a starting point while a corner is empty. */
+  scheduled?: UpcomingPick[]
+  /** The two fighters' shared history, when it has been loaded. */
+  history?: HeadToHeadResponse | null
 }
 
+type Side = 'a' | 'b'
+
+/**
+ * The tale of the tape: the two corners side by side, the model's estimate in a band, the fighters' numbers side by side,
+ * the factors behind the estimate and the opponents they share. With a corner empty it asks for two names instead.
+ */
 export function EditorialHeadToHeadSimulator({
-  initialFighterA = '',
-  initialFighterB = '',
+  fighterA,
+  fighterB,
   onSelectFighterA,
   onSelectFighterB,
+  scheduled = [],
+  history = null,
 }: EditorialHeadToHeadSimulatorProps) {
   const { i18n } = useTranslation()
+  const lang = i18n.language
   const { fighters } = useFighters()
   const { imageByName } = useFighterImages()
+  const { prediction, runPrediction } = usePrediction()
+  const [selecting, setSelecting] = useState<Side | null>(null)
 
-  const [nameA, setNameA] = useState(initialFighterA)
-  const [nameB, setNameB] = useState(initialFighterB)
-  const [selectingCorner, setSelectingCorner] = useState<'a' | 'b' | null>(null)
-  const [searchQuery, setSearchQuery] = useState('')
+  const profileOf = (name: string) => fighters.find((f) => f.name.toLowerCase() === name.toLowerCase()) ?? null
+  const profileA = useMemo(() => profileOf(fighterA), [fighters, fighterA]) // eslint-disable-line react-hooks/exhaustive-deps
+  const profileB = useMemo(() => profileOf(fighterB), [fighters, fighterB]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const { prediction, loading: predicting, runPrediction } = usePrediction()
+  const matchupReady = Boolean(fighterA && fighterB && fighterA.toLowerCase() !== fighterB.toLowerCase())
 
-  // Profiles
-  const profileA = useMemo(
-    () => fighters.find((f) => f.name.toLowerCase() === nameA.toLowerCase()) ?? null,
-    [fighters, nameA],
-  )
-  const profileB = useMemo(
-    () => fighters.find((f) => f.name.toLowerCase() === nameB.toLowerCase()) ?? null,
-    [fighters, nameB],
-  )
-
-  // Images
-  const imgA = useMemo(
-    () => getFighterImageUrl(nameA, imageByName, profileA?.image_url),
-    [nameA, imageByName, profileA],
-  )
-  const imgB = useMemo(
-    () => getFighterImageUrl(nameB, imageByName, profileB?.image_url),
-    [nameB, imageByName, profileB],
-  )
-
-  const matchupReady = Boolean(nameA && nameB && nameA.toLowerCase() !== nameB.toLowerCase())
-
-  // Auto-run prediction when matchup changes
   useEffect(() => {
-    if (matchupReady) void runPrediction(nameA, nameB)
-  }, [matchupReady, nameA, nameB, runPrediction])
+    if (matchupReady) void runPrediction(fighterA, fighterB)
+  }, [matchupReady, fighterA, fighterB, runPrediction])
 
-  const swapCorners = () => {
-    const tempA = nameA
-    setNameA(nameB)
-    setNameB(tempA)
-    if (onSelectFighterA) onSelectFighterA(nameB)
-    if (onSelectFighterB) onSelectFighterB(tempA)
+  const choose = (side: Side, name: string) => (side === 'a' ? onSelectFighterA(name) : onSelectFighterB(name))
+  const redLabel = L(lang, 'Canto vermelho', 'Red corner', 'Coin rouge', 'Esquina roja')
+  const blueLabel = L(lang, 'Canto azul', 'Blue corner', 'Coin bleu', 'Esquina azul')
+
+  if (!matchupReady) {
+    return <EmptyMatchup fighterA={fighterA} fighterB={fighterB} onChoose={choose} scheduled={scheduled} />
   }
 
-  // Filtered fighters for corner selector
-  const filteredFighters = useMemo(() => {
-    if (!searchQuery.trim()) return fighters.slice(0, 15)
-    const q = searchQuery.toLowerCase().trim()
-    return fighters
-      .filter((f) => f.name.toLowerCase().includes(q) || (f.nickname && f.nickname.toLowerCase().includes(q)))
-      .slice(0, 15)
-  }, [fighters, searchQuery])
-
-  const selectFighter = (name: string) => {
-    if (selectingCorner === 'a') {
-      setNameA(name)
-      if (onSelectFighterA) onSelectFighterA(name)
-    } else if (selectingCorner === 'b') {
-      setNameB(name)
-      if (onSelectFighterB) onSelectFighterB(name)
-    }
-    setSelectingCorner(null)
-    setSearchQuery('')
-  }
-
-  // Comparison stats
-  const showPrediction = matchupReady && prediction
-  const probA = showPrediction ? Math.round(prediction.fighter_a_probability * 100) : 50
-  const probB = showPrediction ? Math.round(prediction.fighter_b_probability * 100) : 50
-  const pickFighterLabel = L(i18n.language, 'Escolher lutador', 'Choose a fighter', 'Choisir un combattant', 'Elegir peleador')
-
-  const reachDiff = (profileA?.reach_cm ?? 0) - (profileB?.reach_cm ?? 0)
-  const ageDiff = (profileA?.age ?? 0) - (profileB?.age ?? 0)
+  // The prediction belongs to these two only once it answers for them (it may still be the previous pair's).
+  const current = prediction && prediction.fighter_a_profile.name.toLowerCase() === fighterA.toLowerCase() && prediction.fighter_b_profile.name.toLowerCase() === fighterB.toLowerCase() ? prediction : null
+  const photo = (name: string, profile: FighterProfile | null) => (
+    <FighterAvatar name={name} imageUrl={getFighterImageUrl(name, imageByName, profile?.image_url)} className={cornerPhotoClass} />
+  )
+  const change = (side: Side) => (
+    <button
+      type="button"
+      onClick={() => setSelecting(side)}
+      className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-sm border-[1.5px] border-white px-4 text-[15px] font-bold text-white hover:bg-white/20"
+    >
+      {L(lang, 'Trocar lutador', 'Change fighter', 'Changer de combattant', 'Cambiar peleador')}
+      <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
+    </button>
+  )
 
   return (
-    <section className="surface-card-elevated relative overflow-hidden rounded-3xl border border-[var(--border-subtle)] dark:border-white/10 bg-[var(--bg-surface)] dark:bg-[#0a0c13] text-[var(--text-primary)] dark:text-white p-4 sm:p-6 lg:p-7 shadow-xl">
-      {/* Background Volumetric Lighting */}
-      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden opacity-25 dark:opacity-100">
-        <div className="absolute -left-20 top-1/4 h-[420px] w-[420px] rounded-full bg-[#E11D48]/15 blur-[120px]" />
-        <div className="absolute -right-20 top-1/4 h-[420px] w-[420px] rounded-full bg-[#2563EB]/15 blur-[120px]" />
-        <div className="absolute left-1/2 -bottom-20 h-[300px] w-[500px] -translate-x-1/2 rounded-full bg-[#F59E0B]/8 blur-[130px]" />
-      </div>
-
-      {/* Header Bar */}
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-[var(--border-subtle)] dark:border-white/10 pb-4">
-        <div className="flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-[#E11D48] animate-pulse" />
-          <span className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-[var(--text-muted)]">
-            {L(i18n.language, 'SIMULADOR DE COMBATE // COMPARATIVO EDITORIAL', 'FIGHT SIMULATOR // EDITORIAL TALE OF THE TAPE', 'SIMULATEUR DE COMBAT // FICHE COMPARATIVE ÉDITORIALE', 'SIMULADOR DE PELEA // COMPARATIVA EDITORIAL')}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={swapCorners}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)] dark:border-white/15 dark:bg-white/5 dark:text-zinc-300 dark:hover:bg-white/10 dark:hover:text-white transition cursor-pointer"
-          >
-            <ArrowLeftRight className="h-3.5 w-3.5" />
-            <span>{L(i18n.language, 'Inverter Cantos', 'Swap Corners', 'Inverser les coins', 'Intercambiar esquinas')}</span>
-          </button>
-        </div>
-      </div>
-
-      {/* TALE OF THE TAPE: SPLIT SCREEN FACE-TO-FACE */}
-      <div className="relative z-10 mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-        {/* CORNER RED (FIGHTER A) */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="lg:col-span-5 flex flex-col items-center lg:items-start text-center lg:text-left space-y-3"
-        >
-          <div className="flex items-center gap-2">
-            <span className="rounded bg-[#E11D48] px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-white">
-              {L(i18n.language, 'CÓRNER VERMELHO', 'CORNER RED', 'COIN ROUGE', 'ESQUINA ROJA')}
-            </span>
-            {profileA?.belt && (
-              <span className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase text-[#fbbf24]">
-                <Trophy className="h-3 w-3" /> {L(i18n.language, 'CAMPEÃO', 'CHAMPION', 'CHAMPION', 'CAMPEÓN')}
-              </span>
-            )}
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setSelectingCorner('a')}
-            className="group flex items-center gap-2 cursor-pointer text-left"
-          >
-            <div>
-              {profileA?.nickname && (
-                <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-[#E11D48]">
-                  “{profileA.nickname}”
-                </p>
-              )}
-              <h3 className="font-['Anton','Barlow_Condensed',Impact,sans-serif] text-2xl sm:text-3xl xl:text-4xl uppercase leading-[0.9] tracking-[0.02em] text-[var(--text-primary)] dark:text-white group-hover:text-[#E11D48] transition">
-                {nameA || pickFighterLabel}
-              </h3>
+    <div>
+      <CornerSplit
+        headingLevel="h2"
+        red={{ name: fighterA, label: redLabel, photo: photo(fighterA, profileA), action: change('a') }}
+        blue={{ name: fighterB, label: blueLabel, photo: photo(fighterB, profileB), action: change('b') }}
+      />
+      {current ? (
+        <>
+          <ProbabilityBand nameA={fighterA} nameB={fighterB} probabilityA={current.fighter_a_probability} />
+          <p className="mt-4 max-w-[70ch] text-base sm:text-lg">{predictionSentence(lang, current.predicted_winner, current.probability)}</p>
+          {current.data_confidence ? (
+            <div className="mt-3 max-w-[70ch]">
+              <DataConfidenceNote confidence={current.data_confidence} />
             </div>
-            <ChevronDown className="h-4 w-4 text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition" />
-          </button>
-
-          <p className="font-mono text-xs text-[var(--text-muted)]">
-            {profileA
-              ? `${getDivisionName(profileA.division, i18n.language) || 'UFC'} • ${profileA.wins}${L(i18n.language, 'V', 'W', 'V', 'V')} - ${profileA.losses}${L(i18n.language, 'D', 'L', 'D', 'D')}`
-              : '—'}
-          </p>
-
-          {/* Cutout Hero Image */}
-          <div className="relative h-44 w-44 sm:h-52 sm:w-52 overflow-hidden rounded-2xl border border-[var(--border-subtle)] dark:border-white/10 bg-gradient-to-t from-[var(--bg-surface-hover)] to-transparent dark:from-black/80 dark:via-white/5 p-2">
-            <PhotoCredit imageUrl={imgA} className="left-1 top-2" />
-            {imgA ? (
-              <img
-                src={imgA}
-                alt={nameA}
-                className="h-full w-full object-contain object-bottom filter drop-shadow-[0_10px_20px_rgba(225,29,72,0.3)] transition duration-300 hover:scale-105"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center font-black text-5xl text-white/20">
-                {nameA ? nameA.slice(0, 2).toUpperCase() : '?'}
-              </div>
-            )}
-          </div>
-        </motion.div>
-
-        {/* CENTER AXIS: WIN PROBABILITY & MACHINE LEARNING SCORE */}
-        <div className="lg:col-span-2 flex flex-col items-center justify-center text-center py-4">
-          <div className="relative flex flex-col items-center">
-            {/* VS Badge */}
-            <span className="font-display font-extrabold text-2xl text-[var(--text-muted)] tracking-widest uppercase">
-              VS
-            </span>
-
-            {/* Central ML Probabilities */}
-            <div className="mt-3 flex items-baseline justify-center gap-3">
-              <div className="text-right">
-                <span className="font-display font-extrabold text-3xl sm:text-4xl text-[#E11D48] tracking-tight tabular-nums">
-                  {showPrediction ? <><AnimatedCounter value={probA} />%</> : '–'}
-                </span>
-              </div>
-              <span className="text-[var(--text-muted)] font-display font-extrabold text-xl">:</span>
-              <div className="text-left">
-                <span className="font-display font-extrabold text-3xl sm:text-4xl text-[#2563EB] tracking-tight tabular-nums">
-                  {showPrediction ? <><AnimatedCounter value={probB} />%</> : '–'}
-                </span>
-              </div>
-            </div>
-
-            <p className="mt-1 font-mono text-[11px] uppercase tracking-widest text-[var(--text-muted)] font-medium">
-              {!matchupReady
-                ? L(i18n.language, 'ESCOLHA DOIS LUTADORES PARA SIMULAR', 'PICK TWO FIGHTERS TO SIMULATE', 'CHOISISSEZ DEUX COMBATTANTS À SIMULER', 'ELIGE DOS PELEADORES PARA SIMULAR')
-                : predicting
-                ? L(i18n.language, 'CALCULANDO MOTOR SHAP...', 'CALCULATING SHAP ENGINE...', 'CALCUL DU MOTEUR SHAP...', 'CALCULANDO MOTOR SHAP...')
-                : L(i18n.language, '● MOTOR v2.4 // PROBABILIDADE SHAP', '● ENGINE v2.4 // SHAP PROBABILITY', '● MOTEUR v2.4 // PROBABILITÉ SHAP', '● MOTOR v2.4 // PROBABILIDAD SHAP')}
-            </p>
-
-            {/* Prediction Indicator */}
-            {showPrediction && (
-              <div className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-black/60 px-3 py-1 shadow-md">
-                <Sparkles className="h-3 w-3 text-[#fbbf24]" />
-                <span className="font-mono text-[11px] font-medium tracking-widest uppercase text-white truncate max-w-[140px]">
-                  {L(i18n.language, 'FAVORITO:', 'FAVORITE:', 'FAVORI :', 'FAVORITO:')} {prediction.predicted_winner.split(' ').pop()}
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* CORNER BLUE (FIGHTER B) */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="lg:col-span-5 flex flex-col items-center lg:items-end text-center lg:text-right space-y-3"
-        >
-          <div className="flex items-center gap-2">
-            {profileB?.belt && (
-              <span className="inline-flex items-center gap-1 font-mono text-[10px] font-bold uppercase text-[#fbbf24]">
-                <Trophy className="h-3 w-3" /> {L(i18n.language, 'CAMPEÃO', 'CHAMPION', 'CHAMPION', 'CAMPEÓN')}
-              </span>
-            )}
-            <span className="rounded bg-[#2563EB] px-2 py-0.5 font-mono text-[10px] font-black uppercase tracking-wider text-white">
-              {L(i18n.language, 'CÓRNER AZUL', 'CORNER BLUE', 'COIN BLEU', 'ESQUINA AZUL')}
-            </span>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setSelectingCorner('b')}
-            className="group flex items-center gap-2 cursor-pointer text-right"
-          >
-            <ChevronDown className="h-4 w-4 text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition" />
-            <div>
-              {profileB?.nickname && (
-                <p className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-[#2563EB]">
-                  “{profileB.nickname}”
-                </p>
-              )}
-              <h3 className="font-['Anton','Barlow_Condensed',Impact,sans-serif] text-2xl sm:text-3xl xl:text-4xl uppercase leading-[0.9] tracking-[0.02em] text-[var(--text-primary)] dark:text-white group-hover:text-[#2563EB] transition">
-                {nameB || pickFighterLabel}
-              </h3>
-            </div>
-          </button>
-
-          <p className="font-mono text-xs text-[var(--text-muted)]">
-            {profileB
-              ? `${getDivisionName(profileB.division, i18n.language) || 'UFC'} • ${profileB.wins}${L(i18n.language, 'V', 'W', 'V', 'V')} - ${profileB.losses}${L(i18n.language, 'D', 'L', 'D', 'D')}`
-              : '—'}
-          </p>
-
-          {/* Cutout Hero Image */}
-          <div className="relative h-44 w-44 sm:h-52 sm:w-52 overflow-hidden rounded-2xl border border-[var(--border-subtle)] dark:border-white/10 bg-gradient-to-t from-[var(--bg-surface-hover)] to-transparent dark:from-black/80 dark:via-white/5 p-2">
-            <PhotoCredit imageUrl={imgB} className="left-1 top-2" />
-            {imgB ? (
-              <img
-                src={imgB}
-                alt={nameB}
-                className="h-full w-full object-contain object-bottom filter drop-shadow-[0_10px_20px_rgba(37,99,235,0.3)] transition duration-300 hover:scale-105"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center font-black text-5xl text-white/20">
-                {nameB ? nameB.slice(0, 2).toUpperCase() : '?'}
-              </div>
-            )}
-          </div>
-        </motion.div>
-      </div>
-
-      {/* COMPARATIVE METRIC BARS */}
-      {profileA && profileB && (
-      <div className="relative z-10 mt-8 space-y-4 pt-5 border-t border-[var(--border-subtle)] dark:border-white/10">
-        <h4 className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-[var(--text-muted)] text-center">
-          {L(i18n.language, 'ANÁLISE COMPARATIVA DE VOLUME E DEFESA', 'COMPARATIVE VOLUME & DEFENSE ANALYSIS', 'ANALYSE COMPARATIVE DES VOLUMES ET DE LA DÉFENSE', 'ANÁLISIS COMPARATIVO DE VOLUMEN Y DEFENSA')}
-        </h4>
-
-        {/* Striking Volume (SLpM) */}
-        <ComparativeBar
-          label={L(
-            i18n.language,
-            'Golpes Significativos Conectados / Min (SLpM)',
-            'Significant Strikes Landed / Min (SLpM)',
-            'Coups significatifs réussis / min (SLpM)',
-            'Golpes significativos conectados / min (SLpM)',
-          )}
-          valA={profileA?.sig_strikes_landed_per_min ?? 4.2}
-          valB={profileB?.sig_strikes_landed_per_min ?? 3.8}
-          unit={` ${L(i18n.language, 'golpes', 'strikes', 'coups', 'golpes')}`}
-        />
-
-        {/* Striking Accuracy */}
-        <ComparativeBar
-          label={L(
-            i18n.language,
-            'Precisão de Golpes (%)',
-            'Striking Accuracy (Strike Accuracy %)',
-            'Précision des coups (%)',
-            'Precisión de golpes (%)',
-          )}
-          valA={Math.round((profileA?.sig_str_acc ?? 0.5) * 100)}
-          valB={Math.round((profileB?.sig_str_acc ?? 0.48) * 100)}
-          unit="%"
-        />
-
-        {/* Takedown Defense */}
-        <ComparativeBar
-          label={L(
-            i18n.language,
-            'Defesa de Quedas (TDD %)',
-            'Takedown Defense (TDD %)',
-            'Défense des amenées au sol (TDD %)',
-            'Defensa de derribos (TDD %)',
-          )}
-          valA={Math.round((profileA?.takedown_defense ?? 0.75) * 100)}
-          valB={Math.round((profileB?.takedown_defense ?? 0.72) * 100)}
-          unit="%"
-        />
-
-        {/* Physical measurements info row */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-4">
-          <MeasurementCard
-            label={L(i18n.language, 'Envergadura A', 'Reach A', 'Allonge A', 'Alcance A')}
-            val={`${Math.round(profileA?.reach_cm ?? 180)} cm`}
-          />
-          <MeasurementCard
-            label={L(i18n.language, 'Diferencial de Alcance', 'Reach Advantage', 'Écart d’Allonge', 'Ventaja de alcance')}
-            val={`${reachDiff >= 0 ? '+' : ''}${Math.round(reachDiff)} cm`}
-            highlight={reachDiff !== 0}
-          />
-          <MeasurementCard
-            label={L(i18n.language, 'Envergadura B', 'Reach B', 'Allonge B', 'Alcance B')}
-            val={`${Math.round(profileB?.reach_cm ?? 180)} cm`}
-          />
-          <MeasurementCard
-            label={L(i18n.language, 'Diferença de Idade', 'Age Difference', 'Écart d’Âge', 'Diferencia de edad')}
-            val={`${ageDiff >= 0 ? '+' : ''}${Math.round(ageDiff)} ${L(i18n.language, 'anos', 'yrs', 'ans', 'años')}`}
-          />
-        </div>
-      </div>
+          ) : null}
+        </>
+      ) : (
+        <p className="flex h-[84px] items-center bg-[var(--panel)] px-7 text-base text-[var(--muted)]" role="status">
+          {L(lang, 'Calculando a chance de vitória…', 'Working out the win chance…', 'Calcul de la chance de victoire…', 'Calculando la probabilidad de victoria…')}
+        </p>
       )}
 
-      {/* CORNER SELECTION MODAL */}
-      <AnimatePresence>
-        {selectingCorner && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-lg rounded-3xl border border-[var(--border-default)] dark:border-white/20 bg-[var(--bg-surface)] dark:bg-[#0d1017] text-[var(--text-primary)] dark:text-white p-6 shadow-2xl"
-            >
-              <div className="flex items-center justify-between border-b border-[var(--border-subtle)] dark:border-white/10 pb-4">
-                <h3 className="text-lg font-black uppercase text-[var(--text-primary)] dark:text-white">
-                  {selectingCorner === 'a'
-                    ? L(i18n.language, 'Selecionar Canto Vermelho', 'Select Red Corner', 'Sélectionner le coin rouge', 'Seleccionar esquina roja')
-                    : L(i18n.language, 'Selecionar Canto Azul', 'Select Blue Corner', 'Sélectionner le coin bleu', 'Seleccionar esquina azul')}
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => setSelectingCorner(null)}
-                  className="rounded-full p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
-                >
-                  ✕
-                </button>
-              </div>
+      <SideBySide profileA={profileA} profileB={profileB} />
 
-              <div className="mt-4">
-                <div className="relative">
-                  <Search className="absolute left-3.5 top-3.5 h-4 w-4 text-[var(--text-muted)]" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder={L(i18n.language, 'Buscar atleta pelo nome...', 'Search fighter by name...', 'Rechercher un athlète...', 'Buscar peleador por nombre...')}
-                    className="w-full rounded-xl border border-[var(--border-default)] dark:border-white/15 bg-[var(--bg-surface-subtle)] dark:bg-white/5 py-2.5 pl-10 pr-4 text-sm text-[var(--text-primary)] dark:text-white placeholder-[var(--text-muted)] focus:border-[#E11D48] focus:outline-none"
-                    autoFocus
-                  />
-                </div>
+      <section className="grid gap-x-[72px] gap-y-12 pt-16 lg:grid-cols-2">
+        <div>
+          <h2 className="text-[32px] leading-[1.05] sm:text-4xl">
+            {current
+              ? L(lang, `Por que o modelo prefere ${current.predicted_winner}`, `Why the model favours ${current.predicted_winner}`, `Pourquoi le modèle préfère ${current.predicted_winner}`, `Por qué el modelo prefiere a ${current.predicted_winner}`)
+              : L(lang, 'O que pesa na previsão', 'What weighs on the prediction', 'Ce qui pèse dans le pronostic', 'Qué pesa en el pronóstico')}
+          </h2>
+          {current && current.main_factors.length ? (
+            <ul className="mt-3 border-t-[3px] border-[var(--ink)]">
+              {current.main_factors.slice(0, 4).map((factor) => (
+                <li key={factor.feature} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-[var(--rule)] py-3.5">
+                  <span className="text-base font-semibold">{localizeFeature(factor.feature, lang)}</span>
+                  <span className="text-[15px] text-[var(--muted)]">{L(lang, `a favor de ${factor.impact}`, `in favour of ${factor.impact}`, `en faveur de ${factor.impact}`, `a favor de ${factor.impact}`)}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-2 text-base text-[var(--muted)]">
+              {L(lang, 'Os fatores aparecem quando o modelo terminar o cálculo.', 'The factors show once the model has finished.', 'Les facteurs s’affichent une fois le calcul terminé.', 'Los factores aparecen cuando el modelo termine el cálculo.')}
+            </p>
+          )}
+          <p className="mt-4">
+            <Link to="/model" className={sectionActionClass}>
+              {L(lang, 'Entender como a previsão é feita', 'See how the prediction is made', 'Comprendre comment le pronostic est fait', 'Entender cómo se hace el pronóstico')}
+            </Link>
+          </p>
+        </div>
 
-                <div className="mt-4 max-h-72 overflow-y-auto space-y-1.5 pr-1">
-                  {filteredFighters.map((f) => (
-                    <button
-                      key={f.name}
-                      type="button"
-                      onClick={() => selectFighter(f.name)}
-                      className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left hover:bg-[var(--bg-surface-hover)] dark:hover:bg-white/10 transition cursor-pointer"
-                    >
-                      <div>
-                        <p className="font-bold text-[var(--text-primary)] dark:text-white text-sm">{f.name}</p>
-                        <p className="text-xs text-[var(--text-muted)] font-mono">
-                          {getDivisionName(f.division, i18n.language) || 'UFC'} • {f.wins}{L(i18n.language, 'V', 'W', 'V', 'V')} - {f.losses}{L(i18n.language, 'D', 'L', 'D', 'D')}
-                        </p>
-                      </div>
-                      <span className="font-mono text-xs text-[var(--text-muted)]">
-                        {L(i18n.language, 'Selecionar', 'Select', 'Sélectionner', 'Seleccionar')}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-    </section>
-  )
-}
+        <CommonOpponents fighterA={fighterA} fighterB={fighterB} history={history} />
+      </section>
 
-function ComparativeBar({
-  label,
-  valA,
-  valB,
-  unit = '',
-}: {
-  label: string
-  valA: number
-  valB: number
-  unit?: string
-}) {
-  const sum = valA + valB || 1
-  const pctA = Math.round((valA / sum) * 100)
-  const pctB = 100 - pctA
-
-  return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between text-xs">
-        <span className="font-mono font-bold text-[#E11D48] tabular-nums">
-          {valA}
-          {unit}
-        </span>
-        <span className="font-sans font-medium text-xs text-[var(--text-muted)] text-center uppercase tracking-wider">{label}</span>
-        <span className="font-mono font-bold text-[#2563EB] tabular-nums">
-          {valB}
-          {unit}
-        </span>
-      </div>
-
-      <div className="flex h-2.5 w-full overflow-hidden rounded-full bg-[var(--border-subtle)] dark:bg-white/5 p-0.5">
-        <div
-          className="h-full rounded-l-full bg-gradient-to-r from-[#E11D48] to-[#ff4d6d] transition-all duration-500"
-          style={{ width: `${pctA}%` }}
+      {selecting ? (
+        <FighterPicker
+          title={selecting === 'a' ? redLabel : blueLabel}
+          exclude={selecting === 'a' ? fighterB : fighterA}
+          onClose={() => setSelecting(null)}
+          onPick={(name) => {
+            choose(selecting, name)
+            setSelecting(null)
+          }}
         />
-        <div
-          className="h-full rounded-r-full bg-gradient-to-l from-[#2563EB] to-[#60a5fa] transition-all duration-500"
-          style={{ width: `${pctB}%` }}
-        />
-      </div>
+      ) : null}
     </div>
   )
 }
 
-function MeasurementCard({
-  label,
-  val,
-  highlight = false,
-}: {
-  label: string
-  val: string
-  highlight?: boolean
-}) {
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+type Row = { label: string; a: number | null; b: number | null; textA: string; textB: string }
+
+/** "1,93 m" in the language on screen. */
+function metres(cm: number | null | undefined, lang: string) {
+  return cm ? `${(cm / 100).toLocaleString(localeTag(lang), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} m` : '—'
+}
+
+function percent(value: number | null | undefined, lang: string) {
+  return value != null ? new Intl.NumberFormat(localeTag(lang), { style: 'percent', maximumFractionDigits: 0 }).format(value) : '—'
+}
+
+function record(profile: FighterProfile | null) {
+  if (!profile || profile.wins == null) return '—'
+  return `${profile.wins}-${profile.losses ?? 0}-${profile.draws ?? 0}`
+}
+
+/** The fighters' numbers, value / label / value, with bars that grow from the centre towards the larger value. */
+function SideBySide({ profileA, profileB }: { profileA: FighterProfile | null; profileB: FighterProfile | null }) {
+  const { i18n } = useTranslation()
+  const lang = i18n.language
+  const decimal = (value: number | null | undefined) => (value != null ? value.toLocaleString(localeTag(lang), { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : '—')
+
+  const rows: Row[] = [
+    { label: L(lang, 'Cartel', 'Record', 'Palmarès', 'Récord'), a: profileA?.win_rate ?? null, b: profileB?.win_rate ?? null, textA: record(profileA), textB: record(profileB) },
+    { label: L(lang, 'Altura', 'Height', 'Taille', 'Estatura'), a: profileA?.height_cm ?? null, b: profileB?.height_cm ?? null, textA: metres(profileA?.height_cm, lang), textB: metres(profileB?.height_cm, lang) },
+    { label: L(lang, 'Envergadura', 'Reach', 'Allonge', 'Alcance'), a: profileA?.reach_cm ?? null, b: profileB?.reach_cm ?? null, textA: metres(profileA?.reach_cm, lang), textB: metres(profileB?.reach_cm, lang) },
+    { label: L(lang, 'Golpes por minuto', 'Strikes per minute', 'Coups par minute', 'Golpes por minuto'), a: profileA?.sig_strikes_landed_per_min ?? null, b: profileB?.sig_strikes_landed_per_min ?? null, textA: decimal(profileA?.sig_strikes_landed_per_min), textB: decimal(profileB?.sig_strikes_landed_per_min) },
+    { label: L(lang, 'Precisão dos golpes', 'Striking accuracy', 'Précision des coups', 'Precisión de golpes'), a: profileA?.sig_str_acc ?? null, b: profileB?.sig_str_acc ?? null, textA: percent(profileA?.sig_str_acc, lang), textB: percent(profileB?.sig_str_acc, lang) },
+    { label: L(lang, 'Defesa de quedas', 'Takedown defence', 'Défense de takedown', 'Defensa de derribos'), a: profileA?.takedown_defense ?? null, b: profileB?.takedown_defense ?? null, textA: percent(profileA?.takedown_defense, lang), textB: percent(profileB?.takedown_defense, lang) },
+  ]
+
   return (
-    <div className="rounded-xl border border-[var(--border-subtle)] dark:border-white/5 bg-[var(--bg-surface-subtle)] dark:bg-white/[0.03] p-2.5 text-center backdrop-blur-sm">
-      <span className="font-sans text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-medium">{label}</span>
-      <p className={`mt-0.5 text-sm font-bold font-mono tabular-nums ${highlight ? 'text-[#F59E0B]' : 'text-[var(--text-primary)] dark:text-white'}`}>
-        {val}
+    <section className="pt-16">
+      <h2 className="text-[32px] leading-[1.05] sm:text-[40px]">{L(lang, 'Lado a lado', 'Side by side', 'Côte à côte', 'Lado a lado')}</h2>
+      <p className="mb-6 mt-1.5 text-base text-[var(--muted)]">
+        {L(lang, 'A barra cresce a partir do centro, para o lado de quem tem o maior valor.', 'Each bar grows from the centre, towards whoever has the larger value.', 'Chaque barre part du centre, vers celui qui a la valeur la plus haute.', 'La barra crece desde el centro, hacia quien tiene el valor más alto.')}
       </p>
+      <dl className="border-t-[3px] border-[var(--ink)]">
+        {rows.map((row) => {
+          const max = Math.max(row.a ?? 0, row.b ?? 0)
+          const width = (value: number | null) => (value != null && max > 0 ? `${(value / max) * 100}%` : '0%')
+          return (
+            <div key={row.label} className="border-b border-[var(--rule)] py-3.5 sm:flex sm:items-center sm:gap-4 sm:py-4">
+              <dt className="mb-2 text-center text-[15px] font-bold sm:order-2 sm:mb-0 sm:w-[180px] sm:shrink-0 sm:text-base">{row.label}</dt>
+              <dd className="flex flex-1 items-center gap-2 sm:order-1 sm:gap-3.5">
+                <span className="w-[68px] shrink-0 text-right font-display text-[22px] font-extrabold leading-none tabular-nums sm:w-24 sm:text-[30px]">{row.textA}</span>
+                <span className="flex h-3 flex-1 justify-end bg-[var(--track)] sm:h-3.5" aria-hidden="true">
+                  <span className="h-full bg-[var(--red)]" style={{ width: width(row.a) }} />
+                </span>
+                <span className="flex h-3 flex-1 bg-[var(--track)] sm:hidden" aria-hidden="true">
+                  <span className="h-full bg-[var(--blue)]" style={{ width: width(row.b) }} />
+                </span>
+                <span className="w-[68px] shrink-0 font-display text-[22px] font-extrabold leading-none tabular-nums sm:hidden">{row.textB}</span>
+              </dd>
+              <dd className="hidden flex-1 items-center gap-3.5 sm:order-3 sm:flex">
+                <span className="flex h-3.5 flex-1 bg-[var(--track)]" aria-hidden="true">
+                  <span className="h-full bg-[var(--blue)]" style={{ width: width(row.b) }} />
+                </span>
+                <span className="w-24 shrink-0 font-display text-[30px] font-extrabold leading-none tabular-nums">{row.textB}</span>
+              </dd>
+            </div>
+          )
+        })}
+      </dl>
+      <p className="mt-3 text-sm text-[var(--muted)]">
+        {L(lang, 'A barra do cartel compara a taxa de vitórias. Um traço indica que o dado não está disponível.', 'The record bar compares win rates. A dash means the figure is not available.', 'La barre du palmarès compare les taux de victoire. Un tiret signale une donnée absente.', 'La barra del récord compara el porcentaje de victorias. Un guion indica que el dato no está disponible.')}
+      </p>
+    </section>
+  )
+}
+
+/** The opponents both fighters have faced, and how each did. */
+function CommonOpponents({ fighterA, fighterB, history }: { fighterA: string; fighterB: string; history: HeadToHeadResponse | null }) {
+  const { i18n } = useTranslation()
+  const lang = i18n.language
+  const surname = (name: string) => name.trim().split(/\s+/).pop() ?? name
+  const shared = history && history.fighter_a.toLowerCase() === fighterA.toLowerCase() && history.fighter_b.toLowerCase() === fighterB.toLowerCase() ? history.common_opponents : null
+  const outcome = (result: 'win' | 'loss' | null) =>
+    result === 'win' ? L(lang, 'Vitória', 'Win', 'Victoire', 'Victoria') : result === 'loss' ? L(lang, 'Derrota', 'Loss', 'Défaite', 'Derrota') : L(lang, 'Sem resultado', 'No result', 'Sans résultat', 'Sin resultado')
+
+  return (
+    <div>
+      <h2 className="text-[32px] leading-[1.05] sm:text-4xl">{L(lang, 'Adversários em comum', 'Common opponents', 'Adversaires communs', 'Rivales en común')}</h2>
+      {shared === null ? (
+        <p className="mt-2 text-base text-[var(--muted)]" role="status">{L(lang, 'Carregando o histórico dos dois…', 'Loading both fighters’ history…', 'Chargement de l’historique des deux…', 'Cargando el historial de los dos…')}</p>
+      ) : shared.length === 0 ? (
+        <p className="mt-2 text-base text-[var(--muted)]">{L(lang, 'Os dois ainda não enfrentaram o mesmo adversário.', 'The two have not faced the same opponent yet.', 'Les deux n’ont pas encore affronté le même adversaire.', 'Los dos aún no se han enfrentado al mismo rival.')}</p>
+      ) : (
+        <table className="mt-3 w-full border-t-[3px] border-[var(--ink)] text-left">
+          <thead>
+            <tr className="border-b border-[var(--rule)] text-[15px]">
+              <th className="py-3 pr-3 font-bold">{L(lang, 'Adversário', 'Opponent', 'Adversaire', 'Rival')}</th>
+              <th className="py-3 pr-3 font-bold text-[var(--red-text)]">{surname(fighterA)}</th>
+              <th className="py-3 font-bold text-[var(--blue-text)]">{surname(fighterB)}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {shared.map((row) => (
+              <tr key={row.opponent} className="border-b border-[var(--rule)] text-base">
+                <td className="py-3.5 pr-3">{row.opponent}</td>
+                <td className="py-3.5 pr-3">{outcome(row.fighter_a_result)}</td>
+                <td className="py-3.5">{outcome(row.fighter_b_result)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------------------------------------------------------ */
+
+/** A name field with the matching fighters under it. */
+function NameField({ value, exclude, onChoose }: { value: string; exclude: string; onChoose: (name: string) => void }) {
+  const { i18n } = useTranslation()
+  const lang = i18n.language
+  const { fighters } = useFighters()
+  const id = useId()
+  const [query, setQuery] = useState(value)
+  const matches = useMemo(() => {
+    const term = query.trim().toLowerCase()
+    if (term.length < 2 || term === value.toLowerCase()) return []
+    return fighters.filter((f) => f.name.toLowerCase().includes(term) && f.name !== exclude).slice(0, 8)
+  }, [fighters, query, value, exclude])
+
+  return (
+    <div className="relative">
+      <label htmlFor={id} className="mb-2 block text-[15px] text-[var(--muted)]">
+        {L(lang, 'Nome do lutador', 'Fighter’s name', 'Nom du combattant', 'Nombre del peleador')}
+      </label>
+      <input
+        id={id}
+        type="text"
+        autoComplete="off"
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+        placeholder={L(lang, 'Digite um nome', 'Type a name', 'Tapez un nom', 'Escribe un nombre')}
+        aria-controls={`${id}-list`}
+        className="soft-input min-h-14 w-full px-4 text-lg font-medium"
+      />
+      {matches.length ? (
+        <ul id={`${id}-list`} className="absolute inset-x-0 top-full z-20 mt-1 max-h-72 overflow-y-auto border-[1.5px] border-[var(--ink)] bg-[var(--panel)]">
+          {matches.map((f) => (
+            <li key={f.name}>
+              <button
+                type="button"
+                onClick={() => {
+                  setQuery(f.name)
+                  onChoose(f.name)
+                }}
+                className="flex min-h-12 w-full cursor-pointer flex-col items-start justify-center px-4 py-2 text-left hover:bg-[var(--panel-hover)]"
+              >
+                <span className="text-base font-bold">{f.name}</span>
+                <span className="text-sm text-[var(--muted)]">
+                  {[getDivisionName(f.division, lang), f.wins != null ? `${f.wins}-${f.losses ?? 0}-${f.draws ?? 0}` : null].filter(Boolean).join(' · ')}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  )
+}
+
+/** Before both corners are filled: a name field for each, and the fights already booked as a shortcut. */
+function EmptyMatchup({
+  fighterA,
+  fighterB,
+  onChoose,
+  scheduled,
+}: {
+  fighterA: string
+  fighterB: string
+  onChoose: (side: Side, name: string) => void
+  scheduled: UpcomingPick[]
+}) {
+  const { i18n } = useTranslation()
+  const lang = i18n.language
+  const sameFighter = Boolean(fighterA && fighterB && fighterA.toLowerCase() === fighterB.toLowerCase())
+  const day = (date: string | null) => {
+    const parsed = date ? new Date(`${date}T00:00:00Z`) : null
+    return parsed && !Number.isNaN(parsed.getTime()) ? parsed.toLocaleDateString(localeTag(lang), { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) : null
+  }
+  const panel = (side: Side, value: string, exclude: string) => (
+    <div className={`min-w-0 flex-[1_1_420px] border-t-8 bg-[var(--panel)] px-5 pb-8 pt-6 sm:px-8 ${side === 'a' ? 'border-[var(--red)]' : 'border-[var(--blue)]'}`}>
+      <p className="mb-3 text-base font-bold">{side === 'a' ? L(lang, 'Canto vermelho', 'Red corner', 'Coin rouge', 'Esquina roja') : L(lang, 'Canto azul', 'Blue corner', 'Coin bleu', 'Esquina azul')}</p>
+      <NameField value={value} exclude={exclude} onChoose={(name) => onChoose(side, name)} />
+      <p className="mt-3 text-[15px] text-[var(--muted)]">
+        {L(lang, 'Ou ', 'Or ', 'Ou ', 'O ')}
+        <Link to="/fighters" className="font-bold text-[var(--ink)] underline underline-offset-4">
+          {L(lang, 'veja a lista de lutadores', 'browse the fighter list', 'parcourez la liste des combattants', 'mira la lista de peleadores')}
+        </Link>
+        .
+      </p>
+    </div>
+  )
+
+  return (
+    <div>
+      <div className="flex flex-wrap items-stretch">
+        {panel('a', fighterA, fighterB)}
+        <div className="flex flex-[0_0_96px] items-center justify-center font-display text-[44px] font-black text-[var(--muted)] max-md:basis-full max-md:py-2">vs</div>
+        {panel('b', fighterB, fighterA)}
+      </div>
+      <p className="mt-4 text-[15px] text-[var(--muted)]" role="status">
+        {sameFighter
+          ? L(lang, 'Escolha dois lutadores diferentes.', 'Choose two different fighters.', 'Choisissez deux combattants différents.', 'Elige dos peleadores distintos.')
+          : L(lang, 'Escolha os dois lutadores para ver a chance de vitória estimada pelo modelo.', 'Choose both fighters to see the model’s estimated win chance.', 'Choisissez les deux combattants pour voir la chance de victoire estimée par le modèle.', 'Elige a los dos peleadores para ver la probabilidad de victoria estimada por el modelo.')}
+      </p>
+
+      {scheduled.length ? (
+        <section className="pt-14">
+          <h2 className="text-[32px] leading-[1.05] sm:text-4xl">{L(lang, 'Ou comece por uma luta marcada', 'Or start from a booked fight', 'Ou partez d’un combat programmé', 'O empieza por una pelea programada')}</h2>
+          <ul className="mt-4 border-t-[3px] border-[var(--ink)]">
+            {scheduled.slice(0, 5).map((pick) => (
+              <li key={`${pick.event_name}-${pick.fighter_1}`} className="border-b border-[var(--rule)]">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onChoose('a', pick.fighter_1)
+                    onChoose('b', pick.fighter_2)
+                  }}
+                  className="row-link flex w-full cursor-pointer flex-wrap items-center gap-x-8 gap-y-2 px-3 py-5 text-left hover:bg-[var(--panel)]"
+                >
+                  <span className="flex-[1.4_1_320px] font-display text-[34px] font-black leading-none sm:text-[44px]">
+                    {pick.fighter_1.split(' ').pop()} vs {pick.fighter_2.split(' ').pop()}
+                  </span>
+                  <span className="flex-[1.6_1_280px] text-base text-[var(--muted)]">
+                    {[pick.event_name, day(pick.event_date), pick.title_fight ? L(lang, 'luta pelo cinturão', 'title fight', 'combat de titre', 'pelea por el título') : null].filter(Boolean).join(', ')}
+                  </span>
+                  <span className="text-base font-bold">{L(lang, 'Comparar', 'Compare', 'Comparer', 'Comparar')}</span>
+                  <svg className="row-arrow h-7 w-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
+                    <path d="M4 12h16M14 6l6 6-6 6" />
+                  </svg>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+    </div>
+  )
+}
+
+/** A dialog to change the fighter in one corner. */
+function FighterPicker({ title, exclude, onClose, onPick }: { title: string; exclude: string; onClose: () => void; onPick: (name: string) => void }) {
+  const { i18n } = useTranslation()
+  const lang = i18n.language
+  const { fighters } = useFighters()
+  const [query, setQuery] = useState('')
+  const id = useId()
+  const list = useMemo(() => {
+    const term = query.trim().toLowerCase()
+    return (term ? fighters.filter((f) => f.name.toLowerCase().includes(term) || f.nickname?.toLowerCase().includes(term)) : fighters).filter((f) => f.name !== exclude).slice(0, 15)
+  }, [fighters, query, exclude])
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[var(--modal-backdrop)] p-4" onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-labelledby={`${id}-title`} className="w-full max-w-lg border-[1.5px] border-[var(--ink)] bg-[var(--mat)] p-6" onClick={(event) => event.stopPropagation()}>
+        <div className="flex items-center justify-between gap-4 border-b-[3px] border-[var(--ink)] pb-3">
+          <h2 id={`${id}-title`} className="text-[28px] leading-none">
+            {title}
+          </h2>
+          <button type="button" onClick={onClose} aria-label={L(lang, 'Fechar', 'Close', 'Fermer', 'Cerrar')} className="grid h-11 w-11 cursor-pointer place-items-center hover:bg-[var(--panel-hover)]">
+            <X className="h-5 w-5" aria-hidden="true" />
+          </button>
+        </div>
+        <label htmlFor={id} className="mb-2 mt-4 block text-[15px] text-[var(--muted)]">
+          {L(lang, 'Nome do lutador', 'Fighter’s name', 'Nom du combattant', 'Nombre del peleador')}
+        </label>
+        <div className="soft-input flex min-h-14 items-center gap-3 px-4">
+          <Search className="h-4 w-4 shrink-0 text-[var(--muted)]" aria-hidden="true" />
+          <input
+            id={id}
+            type="text"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={L(lang, 'Digite um nome', 'Type a name', 'Tapez un nom', 'Escribe un nombre')}
+            className="w-full bg-transparent text-lg outline-none"
+            autoFocus
+          />
+        </div>
+        <ul className="mt-4 max-h-72 divide-y divide-[var(--rule)] overflow-y-auto">
+          {list.map((f) => (
+            <li key={f.name}>
+              <button type="button" onClick={() => onPick(f.name)} className="flex min-h-12 w-full cursor-pointer flex-col items-start justify-center px-2 py-2 text-left hover:bg-[var(--panel-hover)]">
+                <span className="text-base font-bold">{f.name}</span>
+                <span className="text-sm text-[var(--muted)]">
+                  {[getDivisionName(f.division, lang), f.wins != null ? `${f.wins}-${f.losses ?? 0}-${f.draws ?? 0}` : null].filter(Boolean).join(' · ')}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }

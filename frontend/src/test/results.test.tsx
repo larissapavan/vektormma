@@ -32,9 +32,10 @@ describe('the recent results page', () => {
     renderResults()
     expect(await screen.findByText('UFC 900: Alpha vs. Beta', undefined, { timeout: 10000 })).toBeInTheDocument()
     expect(screen.getByText('Knockout (Punches) · R1 · 2:10', { exact: false })).toBeInTheDocument()
-    expect(screen.getByText('2 of 3 fights')).toBeInTheDocument() // one bout has no result yet
+    expect(screen.getByText('2 of 3 fights decided')).toBeInTheDocument() // one bout has no result yet
     expect(screen.getByText(/No result yet/)).toBeInTheDocument()
-    const summary = screen.getByLabelText('Summary of the period')
+    // The period's numbers sit in the page header, beside the title.
+    const summary = screen.getByRole('heading', { level: 1, name: 'Recent results' }).closest('header')!
     expect(within(summary).getByText('50%')).toBeInTheDocument()
     expect(within(summary).getByText('1 of 2')).toBeInTheDocument()
   })
@@ -42,17 +43,17 @@ describe('the recent results page', () => {
   it('marks the model pick as right or wrong once the fight has a winner', async () => {
     renderResults()
     await screen.findByText('UFC 900: Alpha vs. Beta', undefined, { timeout: 10000 })
-    expect(screen.getByText(/· right/)).toBeInTheDocument()
-    expect(screen.getByText(/· wrong/)).toBeInTheDocument()
+    expect(screen.getByText('right')).toBeInTheDocument()
+    expect(screen.getByText('wrong')).toBeInTheDocument()
   })
 
   it('asks for a wider window when the visitor picks one', async () => {
     renderResults()
     await screen.findByText('UFC 900: Alpha vs. Beta', undefined, { timeout: 10000 })
     expect(requested).toContain('days=7')
-    await userEvent.click(screen.getByRole('button', { name: '14 days' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Last 14 days' }))
     await screen.findByText('UFC 900: Alpha vs. Beta')
     expect(requested).toContain('days=14')
-    expect(screen.getByRole('button', { name: '14 days' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: 'Last 14 days' })).toHaveAttribute('aria-pressed', 'true')
   })
 })

@@ -27,15 +27,15 @@ export function ShapFactorBars({
     <article className="surface-card rounded-[20px] p-3 sm:p-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Explicabilidade da IA (SHAP)', 'SHAP explainability', 'Explicabilité de l’IA (SHAP)', 'Explicabilidad de la IA (SHAP)')}</p>
-          <h2 className="mt-0.5 text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{L(i18n.language, 'Fatores Decisivos do Combate', 'Key matchup factors', 'Facteurs décisifs du combat', 'Factores decisivos del enfrentamiento')}</h2>
+          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'O que mais pesa na previsão', 'What weighs most on the prediction', 'Ce qui pèse le plus dans le pronostic', 'Lo que más pesa en el pronóstico')}</p>
+          <h2 className="mt-0.5 text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{L(i18n.language, 'Fatores decisivos do combate', 'Key matchup factors', 'Facteurs décisifs du combat', 'Factores decisivos del enfrentamiento')}</h2>
         </div>
         <div className="flex flex-wrap items-center gap-3 text-[11px] font-bold uppercase tracking-[0.12em]">
           <span className="inline-flex items-center gap-1.5 text-[#C8102E]">
-            <span className="h-2 w-2 rounded-full bg-[#C8102E]" />
+            <span className="h-2 w-2 rounded-full bg-[var(--red)]" />
             {fighterAName}
           </span>
-          <span className="inline-flex items-center gap-1.5 text-[var(--accent-blue)]">
+          <span className="inline-flex items-center gap-1.5 text-[var(--blue-text)]">
             <span className="h-2 w-2 rounded-full bg-[var(--accent-blue)]" />
             {fighterBName}
           </span>
@@ -55,8 +55,8 @@ export function ShapFactorBars({
         {rows.map((factor) => {
           const favorsA = factor.impact === fighterAName
           const favorsB = factor.impact === fighterBName
-          const color = favorsA ? 'bg-[#C8102E]' : 'bg-[var(--accent-blue)]'
-          const nameColor = favorsA ? 'text-[#C8102E]' : 'text-[var(--accent-blue)]'
+          const color = favorsA ? 'bg-[var(--red)]' : 'bg-[var(--blue)]'
+          const nameColor = favorsA ? 'text-[#C8102E]' : 'text-[var(--blue-text)]'
           const favoredName = favorsA ? fighterAName : favorsB ? fighterBName : factor.impact
           const width = Math.max((factor.magnitude / max) * 100, 8)
           const featureTitle = localizeFeature(factor.feature, i18n.language)

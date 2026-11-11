@@ -29,14 +29,14 @@ const RESULT_LIMIT = 48
 
 const cornerStyles = {
   red: {
-    accent: 'text-[var(--accent-red)]',
-    border: 'border-[#C8102E]/24',
-    bar: 'bg-[#C8102E]',
+    accent: 'text-[var(--red-text)]',
+    border: 'border-[var(--red)]',
+    bar: 'bg-[var(--red)]',
   },
   blue: {
-    accent: 'text-[var(--accent-blue)]',
-    border: 'border-[#2F5FA8]/24',
-    bar: 'bg-[#2F5FA8]',
+    accent: 'text-[var(--blue-text)]',
+    border: 'border-[var(--blue)]',
+    bar: 'bg-[var(--blue)]',
   },
 }
 
@@ -446,7 +446,7 @@ function PickerAvatar({
         />
       ) : null}
       {fighter && (!imgUrl || !loaded || failed) ? (
-        <span className={`type-display text-lg font-bold uppercase ${corner === 'red' ? 'text-[var(--accent-red)]' : 'text-[var(--accent-blue)]'}`}>
+        <span className={`type-display text-lg font-bold uppercase ${corner === 'red' ? 'text-[var(--accent-red)]' : 'text-[var(--blue-text)]'}`}>
           {getInitials(fighter.name)}
         </span>
       ) : null}

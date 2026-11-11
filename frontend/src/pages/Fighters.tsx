@@ -2,7 +2,6 @@ import { useSearchParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import {
-  Award,
   Bell,
   CalendarDays,
   ChevronLeft,
@@ -15,14 +14,12 @@ import {
   Hammer,
   Medal,
   Radio,
-  Ruler,
   Search,
   Shield,
   SlidersHorizontal,
   Swords,
   Target,
   Timer,
-  Weight,
   Zap,
   Trophy,
 } from 'lucide-react'
@@ -37,8 +34,8 @@ import { BADGES, badgesForRankings, getBadgeLabel } from '../shared/data/badges'
 import { getDivisionName } from '../shared/data/divisions'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { FighterProfileModal } from '../shared/components/FighterProfileModal'
-import { MiniStat } from '../shared/components/MiniStat'
-import { SectionHeading } from '../shared/components/SectionHeading'
+import { Eyebrow } from '../shared/components/ui/Eyebrow'
+import { PageHeader } from '../shared/components/ui/PageHeader'
 import { formatPercent } from '../shared/data/fightLabels'
 import { isKnownActive, isKnownRetired } from '../shared/data/fighterStatusOverrides'
 import { useFighters } from '../shared/hooks/useFighters'
@@ -107,30 +104,6 @@ const divisionGroups: DivisionGroup[] = [
     match: (fighter) => !divisionGroups.slice(0, -1).some((group) => group.match(fighter)),
   },
 ]
-
-const toneStyles = {
-  red: {
-    text: 'text-[var(--accent-red)]',
-    border: 'border-[#C8102E]/24',
-    bg: 'bg-[#C8102E]/10',
-    bar: 'bg-[#C8102E]',
-    glow: '',
-  },
-  blue: {
-    text: 'text-[var(--accent-blue)]',
-    border: 'border-[#2F5FA8]/24',
-    bg: 'bg-[#2F5FA8]/10',
-    bar: 'bg-[#2F5FA8]',
-    glow: '',
-  },
-  gold: {
-    text: 'text-[var(--text-main)]',
-    border: 'border-[var(--rule)]',
-    bg: 'bg-[var(--surface-3)]',
-    bar: 'bg-[var(--rule)]',
-    glow: '',
-  },
-}
 
 const STANCE_NAMES: Record<UiLang, Record<string, string> | null> = {
   en: null,
@@ -248,31 +221,26 @@ export function Fighters() {
   const featuredFighters = groupedFighters.get(featuredGroup.key) ?? []
 
   return (
-    <div className="space-y-3 sm:space-y-4">
-      <section className="page-hero rounded-[20px] px-3 py-3 xs:px-4 xs:py-3.5 md:px-5 md:py-5 lg:px-6 lg:py-6">
-        <div className="grid gap-3 xl:grid-cols-[1fr_0.8fr] xl:items-end">
-          <SectionHeading level={1}
-            eyebrow={t('fighters.title')}
-            title={t('fighters.division')}
-            description={t('fighters.subtitle')}
-          />
-
-          <div className="grid grid-cols-2 gap-2">
-            <SummaryTile label={t('fighters.title')} value={visibleFighters.length.toLocaleString(localeTag(i18n.language))} />
-            <SummaryTile label={t('fighters.division')} value={`${divisionGroups.length}`} />
-          </div>
-        </div>
-
-        <div className="mt-3 grid gap-2.5 md:grid-cols-[1fr_220px_240px]">
+    <div className="space-y-6 sm:space-y-8">
+      <PageHeader
+        eyebrow={t('fighters.title')}
+        title={t('fighters.division')}
+        description={t('fighters.subtitle')}
+        stats={[
+          { label: t('fighters.title'), value: visibleFighters.length.toLocaleString(localeTag(i18n.language)) },
+          { label: t('fighters.division'), value: `${divisionGroups.length}` },
+        ]}
+      >
+        <div className="grid gap-2.5 md:grid-cols-[1fr_220px_240px]">
           <div className="flex gap-2">
-            <div className="soft-input flex min-w-0 flex-1 items-center gap-2.5 rounded-xl px-3 py-2.5">
-              <Search className="h-4 w-4 shrink-0 text-[#C8102E]" />
+            <div className="soft-input flex min-w-0 flex-1 items-center gap-2.5 rounded-control px-3 py-2.5">
+              <Search className="h-4 w-4 shrink-0 text-[var(--text-red)]" />
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder={t('fighters.search')}
                 aria-label={t('fighters.search')}
-                className="theme-text w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-[var(--text-muted)] md:min-w-[300px]"
+                className="w-full min-w-0 bg-transparent text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)]"
               />
             </div>
             <button
@@ -280,12 +248,12 @@ export function Fighters() {
               onClick={() => setFiltersOpen((current) => !current)}
               aria-expanded={filtersOpen}
               aria-controls="fighter-extra-filters"
-              className="ghost-action theme-text inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold uppercase tracking-[0.1em] md:hidden"
+              className="ghost-action inline-flex shrink-0 items-center gap-1.5 rounded-control px-3 text-xs uppercase md:hidden"
             >
               <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
               {L(i18n.language, 'Filtros', 'Filters', 'Filtres', 'Filtros')}
               {stanceFilter !== 'All stances' || badgeFilter !== '' ? (
-                <span className="grid h-5 min-w-5 place-items-center bg-[var(--accent-red-solid)] px-1 text-[11px] text-white">
+                <span className="grid h-5 min-w-5 place-items-center rounded-full bg-[var(--accent-red-solid)] px-1 text-label text-white">
                   {(stanceFilter !== 'All stances' ? 1 : 0) + (badgeFilter !== '' ? 1 : 0)}
                 </span>
               ) : null}
@@ -296,7 +264,7 @@ export function Fighters() {
             value={stanceFilter}
             onChange={(event) => setStanceFilter(event.target.value)}
             aria-label={L(i18n.language, 'Filtrar por base', 'Filter by stance', 'Filtrer par garde', 'Filtrar por guardia')}
-            className="soft-input theme-text rounded-xl px-3 py-2.5 text-sm outline-none"
+            className="soft-input rounded-control px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
           >
             {stances.map((stance) => (
               <option key={stance} value={stance}>
@@ -308,7 +276,7 @@ export function Fighters() {
             value={badgeFilter}
             onChange={(event) => setBadgeFilter(event.target.value)}
             aria-label={L(i18n.language, 'Filtrar por selo ou origem', 'Filter by badge or origin', 'Filtrer par badge ou origine', 'Filtrar por insignia u origen')}
-            className="soft-input theme-text rounded-xl px-3 py-2.5 text-sm outline-none"
+            className="soft-input rounded-control px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
           >
             <option value="">{L(i18n.language, 'Todos os selos e origens', 'All badges and origins', 'Tous les badges et origines', 'Todas las insignias y orígenes')}</option>
             {Object.entries(BADGES).map(([key]) => (
@@ -320,8 +288,8 @@ export function Fighters() {
           </div>
         </div>
 
-        <div className="mt-2.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-t border-[var(--border-subtle)] pt-2.5">
-          <div role="group" aria-label={L(i18n.language, 'Status do lutador', 'Fighter status', 'Statut du combattant', 'Estado del peleador')} className="inline-flex max-w-full overflow-x-auto rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] p-0.5 chip-scroll">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+          <div role="group" aria-label={L(i18n.language, 'Status do lutador', 'Fighter status', 'Statut du combattant', 'Estado del peleador')} className="chip-scroll inline-flex max-w-full overflow-x-auto rounded-control border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-0.5">
             <ActiveTabButton active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} count={fighters.length}>
               {t('fighters.all')}
             </ActiveTabButton>
@@ -332,13 +300,13 @@ export function Fighters() {
               {t('fighters.former')}
             </ActiveTabButton>
           </div>
-          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">
-            <span className="tabular-nums text-[var(--text-main)]">{visibleFighters.length}</span> {L(i18n.language, 'exibidos', 'shown', 'affichés', 'mostrados')}
+          <p className="text-sm text-[var(--text-muted)]">
+            <span className="font-semibold tabular-nums text-[var(--text-primary)]">{visibleFighters.length.toLocaleString(localeTag(i18n.language))}</span> {L(i18n.language, 'exibidos', 'shown', 'affichés', 'mostrados')}
           </p>
         </div>
-      </section>
+      </PageHeader>
 
-      {error ? <p className="rounded-xl border border-[#C8102E]/25 bg-[#C8102E]/8 px-3 py-2 text-sm font-semibold text-[var(--text-red)]">{error}</p> : null}
+      {error ? <p role="alert" className="error-note">{error}</p> : null}
 
       {loading ? (
         <section className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
@@ -347,7 +315,7 @@ export function Fighters() {
           ))}
         </section>
       ) : hasAnyResults ? (
-        <div className="space-y-3">
+        <div className="space-y-6">
           <WeightClassBar
             groups={divisionGroups}
             counts={groupedFighters}
@@ -368,8 +336,8 @@ export function Fighters() {
           </div>
         </div>
       ) : (
-        <div className="surface-card rounded-[20px] px-4 py-7 text-center">
-          <p className="type-display text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">
+        <div className="px-4 py-12 text-center">
+          <p className="type-display text-2xl text-[var(--text-primary)]">
             {L(i18n.language, 'Nenhum lutador encontrado', 'No fighters found', 'Aucun combattant trouvé', 'No se encontraron peleadores')}
           </p>
           <p className="mt-2 text-sm text-[var(--text-muted)]">
@@ -415,10 +383,10 @@ function ActiveTabButton({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[5px] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] transition ${
+      className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
         active
-          ? 'bg-[var(--rule)] text-[var(--card-bg)]'
-          : 'text-[var(--text-main)] hover:bg-[var(--tape)] hover:text-[#0E0E0E]'
+          ? 'bg-[var(--text-primary)] text-[var(--bg-surface)]'
+          : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]'
       }`}
     >
       {children}
@@ -430,8 +398,8 @@ function ActiveTabButton({
 function CountPill({ active, children }: { active: boolean; children: React.ReactNode }) {
   return (
     <span
-      className={`inline-flex min-w-[1.6em] items-center justify-center rounded-full px-1.5 py-px text-[11px] font-bold tabular-nums tracking-normal ${
-        active ? 'bg-[var(--tape)] text-[var(--on-tape)]' : 'bg-[var(--surface-3)] text-[var(--text-muted)]'
+      className={`inline-flex min-w-[1.6em] items-center justify-center rounded-full px-1.5 py-px text-label font-bold tabular-nums tracking-normal ${
+        active ? 'bg-[var(--bg-surface)]/20 text-[var(--bg-surface)]' : 'bg-[var(--bg-surface-subtle)] text-[var(--text-muted)]'
       }`}
     >
       {children}
@@ -563,49 +531,40 @@ function DivisionPanel({
 
   return (
     <motion.section
-      className="surface-card overflow-hidden rounded-[20px]"
       initial={{ opacity: 0, x: 10 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -10 }}
       transition={{ duration: 0.22, ease: 'easeOut' }}
     >
-      <div className="flex w-full flex-col gap-3 px-3 py-3 text-left xs:px-4 sm:flex-row sm:items-center sm:justify-between md:px-5">
-        <div className="flex items-center gap-3">
-          <div className="grid h-11 w-11 shrink-0 place-items-center border-2 border-[var(--rule)] bg-[var(--card-bg)] text-[var(--text-main)]">
-            <group.icon className="h-5 w-5" aria-hidden="true" />
-          </div>
-          <div>
-            <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Categoria selecionada', 'Active division', 'Catégorie affichée', 'División activa')}</p>
-            <h2 className="mt-0.5 text-xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)] sm:text-2xl">
-              {groupLabel}
-            </h2>
-            <p className="mt-1 text-xs text-[var(--text-muted)]">
-              {fighters.length} {L(i18n.language, 'atletas', 'athletes', 'combattants', 'atletas')} • {group.limit === 'Mixed' ? L(i18n.language, 'Misto', 'Mixed', 'Mixte', 'Mixto') : group.limit}
-            </p>
-          </div>
+      <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-1 pb-3">
+        <div className="min-w-0">
+          <Eyebrow>{L(i18n.language, 'Categoria selecionada', 'Selected division', 'Catégorie affichée', 'División seleccionada')}</Eyebrow>
+          <h2 className="section-title mt-1">{groupLabel}</h2>
         </div>
-        <span className="type-tech w-fit border-2 border-[var(--rule)] bg-[var(--card-bg)] px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--text-main)]">
-          {group.shortLabel}
-        </span>
+        <p className="text-base text-[var(--muted)]">
+          <span className="font-bold tabular-nums text-[var(--ink)]">{fighters.length.toLocaleString(localeTag(i18n.language))}</span>{' '}
+          {L(i18n.language, 'lutadores', 'fighters', 'combattants', 'peleadores')}
+          {' · '}
+          {group.limit === 'Mixed' ? L(i18n.language, 'misto', 'mixed', 'mixte', 'mixto') : group.limit}
+        </p>
       </div>
 
-      <div className="border-t border-[var(--border-subtle)] px-3 py-3 xs:px-4 md:px-5">
+      <div>
         {fighters.length ? (
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
-            {shown.map((fighter, index) => (
+          <ul className="border-t-[3px] border-[var(--ink)]">
+            {shown.map((fighter) => (
               <FighterDivisionCard
                 key={fighter.name}
                 fighter={fighter}
                 group={group}
-                index={index}
                 imageUrl={getFighterImageUrl(fighter.name, imageByName, fighter.image_url)}
                 onSelect={() => onSelectFighter(fighter.name)}
               />
             ))}
-          </div>
+          </ul>
         ) : (
-          <div className="rounded-2xl border border-dashed border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-4 py-7 text-center">
-            <p className="type-display text-xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">
+          <div className="px-4 py-12 text-center">
+            <p className="type-display text-xl text-[var(--text-primary)]">
               {L(i18n.language, 'Nenhum atleta nesta categoria', 'No athletes in this division', 'Aucun combattant dans cette catégorie', 'No hay atletas en esta división')}
             </p>
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[var(--text-muted)]">
@@ -620,25 +579,25 @@ function DivisionPanel({
           </div>
         )}
         {remaining > 0 ? (
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
             <button
               type="button"
               onClick={() => setPaging({ source: fighters, limit: limit + PAGE_SIZE })}
-              className="primary-action inline-flex items-center justify-center rounded-full px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-white"
+              className="primary-action inline-flex items-center justify-center px-6"
             >
               {L(i18n.language, `Mostrar mais ${Math.min(PAGE_SIZE, remaining)}`, `Show ${Math.min(PAGE_SIZE, remaining)} more`, `Afficher ${Math.min(PAGE_SIZE, remaining)} de plus`, `Mostrar ${Math.min(PAGE_SIZE, remaining)} más`)}
             </button>
             <button
               type="button"
               onClick={() => setPaging({ source: fighters, limit: fighters.length })}
-              className="ghost-action theme-text inline-flex items-center justify-center rounded-full px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.14em]"
+              className="ghost-action inline-flex items-center justify-center px-6"
             >
               {L(i18n.language, `Mostrar todos (${fighters.length.toLocaleString('pt-BR')})`, `Show all ${fighters.length.toLocaleString('en-US')}`, `Tout afficher (${fighters.length.toLocaleString(localeTag(i18n.language))})`, `Mostrar todos (${fighters.length.toLocaleString('es-419')})`)}
             </button>
           </div>
         ) : null}
         {fighters.length > PAGE_SIZE ? (
-          <p className="mt-2 text-center text-[11px] text-[var(--text-muted)]" aria-live="polite">
+          <p className="mt-3 text-center text-sm text-[var(--muted)]" aria-live="polite">
             {L(
               i18n.language,
               `Exibindo ${shown.length.toLocaleString('pt-BR')} de ${fighters.length.toLocaleString('pt-BR')}`,
@@ -671,10 +630,10 @@ function DivisionPill({
       onClick={onClick}
       aria-pressed={isActive}
       className={[
-        'inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md border px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] transition duration-200 md:px-3 md:text-xs',
+        'inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-control border px-3 py-1.5 text-xs font-semibold transition-colors',
         isActive
-          ? 'border-[var(--rule)] bg-[var(--rule)] text-[var(--card-bg)]'
-          : 'border-[var(--rule)] bg-[var(--card-bg)] text-[var(--text-main)] hover:bg-[var(--tape)] hover:text-[#0E0E0E]',
+          ? 'border-[var(--text-primary)] bg-[var(--text-primary)] text-[var(--bg-surface)]'
+          : 'border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:border-[var(--border-default)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]',
       ].join(' ')}
     >
       <group.icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
@@ -685,128 +644,92 @@ function DivisionPill({
   )
 }
 
+/** One fighter as a row: photo, name large, what the record says, the body numbers, and the way into the profile. */
 function FighterDivisionCard({
   fighter,
   group,
-  index,
   imageUrl,
   onSelect,
 }: {
   fighter: FighterProfile
   group: DivisionGroup
-  index: number
   imageUrl?: string | null
   onSelect: () => void
 }) {
   const { i18n } = useTranslation()
-  const styles = toneStyles[group.tone]
+  const lang = i18n.language
+  const division = getDivisionName(fighter.division ?? group.label, lang)
 
   return (
-    <motion.article
-      className="surface-card group flex h-full flex-col overflow-hidden rounded-[18px] transition duration-300 hover:-translate-y-0.5"
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, delay: Math.min(index * 0.012, 0.18) }}
-    >
-      <div className={`h-1 w-full ${styles.bar}`} />
-      <div className="flex flex-1 flex-col p-3">
-        {/* On a phone the card is centred and stacked, so a long name such as "Khabib Nurmagomedov" wraps inside it. */}
-        <div className="grid grid-cols-1 content-start justify-items-center gap-3 text-center sm:min-h-[176px] sm:grid-cols-[70px_1fr] sm:justify-items-stretch sm:text-left">
-          <FighterPortrait fighter={fighter} imageUrl={imageUrl ?? undefined} tone={group.tone} />
-          <div className="min-w-0 max-sm:w-full">
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0 max-sm:w-full">
-                <p className={`broadcast-label text-[11px] ${styles.text}`}>
-                  {getDivisionName(fighter.division ?? group.shortLabel, i18n.language)}
-                </p>
-                <h3 className="mt-1 flex max-w-full flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-xl font-bold uppercase leading-none tracking-[0.03em] text-[var(--text-main)] sm:justify-start">
-                  <FlagList fighter={fighter} />
-                  <span className="min-w-0 break-words">{fighter.name}</span>
-                  {fighter.belt ? <ChampionBelt /> : null}
-                </h3>
+    <li className="border-b border-[var(--rule)]">
+      <div className="flex items-stretch">
+        <button
+          type="button"
+          onClick={onSelect}
+          aria-label={L(lang, `${fighter.name}. Ver perfil`, `${fighter.name}. View profile`, `${fighter.name}. Voir le profil`, `${fighter.name}. Ver perfil`)}
+          className="row-link group flex min-w-0 flex-1 cursor-pointer flex-wrap items-center gap-x-6 gap-y-3 px-3 py-5 text-left hover:bg-[var(--panel)] sm:flex-nowrap"
+        >
+          <FighterPortrait fighter={fighter} imageUrl={imageUrl ?? undefined} />
+          <span className="min-w-0 flex-[1_1_240px]">
+            <span className="block text-[15px] text-[var(--muted)]">{division}</span>
+            <span className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+              <FlagList fighter={fighter} />
+              <span className="min-w-0 break-words font-display text-[32px] font-black leading-[0.95] sm:text-[40px]">{fighter.name}</span>
+              {fighter.belt ? <ChampionBelt /> : null}
+            </span>
+            <span className="mt-1 block text-base">
+              {formatRecord(fighter, lang)}
+              {fighter.nickname ? ` · “${fighter.nickname}”` : ''}
+            </span>
+            {fighter.belt || fighter.next_fight ? (
+              <span className="mt-2 flex flex-wrap gap-2">
                 {fighter.belt ? (
-                  <div className="mt-1 flex flex-wrap items-center max-sm:justify-center">
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/50 bg-gradient-to-r from-amber-500/20 to-amber-600/10 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.2)]">
-                      <Trophy className="h-3 w-3 text-amber-500 dark:text-amber-400" />
-                      <span>{L(i18n.language, `Campeão ${getDivisionName(fighter.division ?? group.label, i18n.language)}`, `${getDivisionName(fighter.division ?? group.label, i18n.language)} Champion`, `Champion ${getDivisionName(fighter.division ?? group.label, i18n.language)}`, `Campeón de ${getDivisionName(fighter.division ?? group.label, i18n.language)}`)}</span>
-                    </span>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-
-            <p className="mt-1.5 line-clamp-2 text-xs leading-5 text-[var(--text-muted)]">
-              {formatRecord(fighter, i18n.language)}
-              {fighter.nickname ? ` • "${fighter.nickname}"` : ''}
-            </p>
-            {fighter.next_fight ? (
-              <div className="mt-1.5 flex flex-wrap items-center gap-1 max-sm:justify-center">
-                {fighter.next_fight ? (
-                  <span
-                    title={`${fighter.next_fight.event_name}: vs ${fighter.next_fight.opponent}`}
-                    className="inline-flex items-center gap-1 rounded-full border border-[#22c55e]/40 bg-[#22c55e]/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--text-green)]"
-                  >
-                    <CalendarDays className="h-2.5 w-2.5" />
-                    {L(i18n.language, 'Luta marcada', 'Fight booked', 'Combat prévu', 'Pelea confirmada')}
+                  <span className="inline-flex items-center gap-1.5 rounded-sm border-[1.5px] border-[var(--ink)] px-2.5 py-1 text-[13px] font-bold">
+                    <Trophy className="h-3.5 w-3.5 text-[var(--gold)]" aria-hidden="true" />
+                    {L(lang, `Campeão ${division}`, `${division} champion`, `Champion ${division}`, `Campeón de ${division}`)}
                   </span>
                 ) : null}
-              </div>
+                {fighter.next_fight ? (
+                  <span title={`${fighter.next_fight.event_name}: vs ${fighter.next_fight.opponent}`} className="inline-flex items-center gap-1.5 rounded-sm border-[1.5px] border-[var(--ink)] px-2.5 py-1 text-[13px] font-bold">
+                    <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
+                    {L(lang, 'Luta marcada', 'Fight booked', 'Combat prévu', 'Pelea confirmada')}
+                  </span>
+                ) : null}
+              </span>
             ) : null}
-            <FighterOrigin fighter={fighter} className="mt-1.5 max-sm:[&>li]:justify-center" />
-            <FighterBadges badges={badgesForRankings(fighter.badges)} className="mt-1.5 max-sm:justify-center" />
-          </div>
-        </div>
-
-        <div className="mt-auto grid grid-cols-3 gap-1.5 pt-3">
-          <MiniStat icon={Ruler} label={L(i18n.language, 'Altura', 'Height', 'Taille', 'Estatura')} value={fighter.height_cm ? `${Math.round(fighter.height_cm)} cm` : '—'} />
-          <MiniStat icon={Weight} label={L(i18n.language, 'Peso', 'Weight', 'Poids', 'Peso')} value={fighter.weight_lbs ? `${fighter.weight_lbs.toFixed(0)} lb` : '—'} />
-          <MiniStat icon={Ruler} label={L(i18n.language, 'Envergadura', 'Reach', 'Allonge', 'Alcance')} value={fighter.reach_cm ? `${fighter.reach_cm.toFixed(0)} cm` : '—'} />
-          <MiniStat icon={CalendarDays} label={L(i18n.language, 'Idade', 'Age', 'Âge', 'Edad')} value={fighter.age ? `${Math.floor(fighter.age)} ${L(i18n.language, 'anos', 'yrs', 'ans', 'años')}` : '—'} />
-          <MiniStat
-            icon={Swords}
-            label={L(i18n.language, 'Base', 'Stance', 'Garde', 'Guardia')}
-            value={fighter.stance ? stanceLabel(fighter.stance, i18n.language) : L(i18n.language, 'Não informada', 'Unknown', 'Inconnue', 'No informada')}
-          />
-          <MiniStat icon={Shield} label={L(i18n.language, 'Aproveitamento', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias')} value={formatPercent(fighter.win_rate)} />
-        </div>
-
-        <div className="mt-3 flex gap-2">
-          <button
-            type="button"
-            onClick={onSelect}
-            className="primary-action inline-flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-white"
+            <FighterOrigin fighter={fighter} className="mt-2" />
+            <FighterBadges badges={badgesForRankings(fighter.badges)} className="mt-2" />
+          </span>
+          <dl className="grid w-full grid-cols-3 gap-x-5 gap-y-3 sm:w-auto sm:flex-[0_1_360px]">
+            <CardFact label={L(lang, 'Altura', 'Height', 'Taille', 'Estatura')} value={fighter.height_cm ? `${Math.round(fighter.height_cm)} cm` : '—'} />
+            <CardFact label={L(lang, 'Peso', 'Weight', 'Poids', 'Peso')} value={fighter.weight_lbs ? `${fighter.weight_lbs.toFixed(0)} lb` : '—'} />
+            <CardFact label={L(lang, 'Envergadura', 'Reach', 'Allonge', 'Alcance')} value={fighter.reach_cm ? `${fighter.reach_cm.toFixed(0)} cm` : '—'} />
+            <CardFact label={L(lang, 'Idade', 'Age', 'Âge', 'Edad')} value={fighter.age ? `${Math.floor(fighter.age)} ${L(lang, 'anos', 'yrs', 'ans', 'años')}` : '—'} />
+            <CardFact label={L(lang, 'Base', 'Stance', 'Garde', 'Guardia')} value={fighter.stance ? stanceLabel(fighter.stance, lang) : '—'} />
+            <CardFact label={L(lang, 'Vitórias', 'Win rate', 'Victoires', 'Victorias')} value={formatPercent(fighter.win_rate)} />
+          </dl>
+          <svg className="row-arrow h-8 w-8 shrink-0 max-sm:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
+            <path d="M4 12h16M14 6l6 6-6 6" />
+          </svg>
+        </button>
+        {fighter.fighter_url ? (
+          <a
+            href={fighter.fighter_url}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={L(lang, `${fighter.name} no UFCStats (abre em nova aba)`, `${fighter.name} on UFCStats (opens in a new tab)`, `${fighter.name} sur UFCStats (s’ouvre dans un nouvel onglet)`, `${fighter.name} en UFCStats (se abre en una pestaña nueva)`)}
+            title={L(lang, 'Abrir no UFCStats', 'Open on UFCStats', 'Ouvrir sur UFCStats', 'Abrir en UFCStats')}
+            className="grid w-12 shrink-0 place-items-center text-[var(--muted)] hover:bg-[var(--panel)] hover:text-[var(--ink)]"
           >
-            <Award className="h-3.5 w-3.5" />
-            {L(i18n.language, 'Ver Perfil', 'View profile', 'Profil', 'Perfil')}
-          </button>
-          {fighter.fighter_url ? (
-            <a
-              href={fighter.fighter_url}
-              target="_blank"
-              rel="noreferrer"
-              onClick={(event) => event.stopPropagation()}
-              aria-label={L(i18n.language, `${fighter.name} no UFCStats (abre em nova aba)`, `${fighter.name} on UFCStats (opens in a new tab)`, `${fighter.name} sur UFCStats (s’ouvre dans un nouvel onglet)`, `${fighter.name} en UFCStats (se abre en una pestaña nueva)`)}
-              title={L(i18n.language, 'Abrir no UFCStats', 'Open on UFCStats', 'Ouvrir sur UFCStats', 'Abrir en UFCStats')}
-              className="ghost-action inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#C8102E]"
-            >
-              <ExternalLink className="h-3.5 w-3.5" />
-            </a>
-          ) : null}
-        </div>
+            <ExternalLink className="h-4 w-4" aria-hidden="true" />
+          </a>
+        ) : null}
       </div>
-    </motion.article>
+    </li>
   )
 }
 
-function FighterPortrait({
-  fighter,
-  imageUrl,
-  tone,
-}: {
-  fighter: FighterProfile
-  imageUrl?: string
-  tone: DivisionGroup['tone']
-}) {
+function FighterPortrait({ fighter, imageUrl }: { fighter: FighterProfile; imageUrl?: string }) {
   const { i18n } = useTranslation()
   const credit = usePhotoCredit(imageUrl)
   const imageKey = `${fighter.name}:${imageUrl ?? ''}`
@@ -819,17 +742,10 @@ function FighterPortrait({
     .join('')
     .slice(0, 2)
     .toUpperCase()
-  const toneClass =
-    tone === 'red'
-      ? 'from-[#C8102E]/34 to-[var(--avatar-bg)]'
-      : tone === 'blue'
-        ? 'from-[#2F5FA8]/34 to-[var(--avatar-bg)]'
-        : 'from-white/12 to-[var(--avatar-bg)]'
-
   const showImage = Boolean(imageUrl && !imageFailed)
 
   return (
-    <div title={credit ? photoRightsText(credit, i18n.language) : undefined} className={`relative h-[86px] w-[70px] overflow-hidden rounded-2xl border max-sm:h-[118px] max-sm:w-24 border-[var(--line-soft)] bg-gradient-to-br ${toneClass}`}>
+    <span title={credit ? photoRightsText(credit, i18n.language) : undefined} className="relative block h-[92px] w-[74px] shrink-0 overflow-hidden bg-[var(--track)]">
       {showImage ? (
         <img
           src={imageUrl}
@@ -839,28 +755,22 @@ function FighterPortrait({
           referrerPolicy="no-referrer"
           onLoad={() => setImageState({ key: imageKey, failed: false, loaded: true })}
           onError={() => setImageState({ key: imageKey, failed: true, loaded: false })}
-          className={`absolute inset-0 h-full w-full object-cover object-top transition duration-500 group-hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute inset-0 h-full w-full object-cover object-top ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
         />
       ) : null}
-      {(!showImage || !imageLoaded) ? (
-        <>
-          <div className="absolute inset-x-2 bottom-0 h-14 rounded-t-full bg-black/24" />
-          <div className="absolute left-1/2 top-4 h-7 w-7 -translate-x-1/2 rounded-full bg-white/16" />
-          <div className="absolute left-1/2 top-10 h-12 w-11 -translate-x-1/2 rounded-t-[24px] bg-white/12" />
-          <div className="absolute inset-0 grid place-items-center">
-            <span className="type-display text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{initials}</span>
-          </div>
-        </>
+      {!showImage || !imageLoaded ? (
+        <span className="absolute inset-0 grid place-items-center font-display text-2xl font-black text-[var(--muted)]">{initials}</span>
       ) : null}
-    </div>
+    </span>
   )
 }
 
-function SummaryTile({ label, value }: { label: string; value: string }) {
+/** One fact on a fighter card: a quiet label over its value, with no box of its own. */
+function CardFact({ label, value }: { label: string; value: string }) {
   return (
-    <div className="metric-tile rounded-xl px-3 py-2 sm:py-2.5">
-      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{label}</p>
-      <p className="data-value mt-0.5 text-xl font-bold text-[var(--text-main)] sm:mt-1 sm:text-2xl">{value}</p>
+    <div className="min-w-0">
+      <dt className="truncate text-sm text-[var(--muted)]">{label}</dt>
+      <dd className="break-words font-display text-xl font-extrabold leading-tight tabular-nums">{value}</dd>
     </div>
   )
 }

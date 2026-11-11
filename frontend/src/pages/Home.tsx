@@ -1,12 +1,11 @@
-import { motion } from 'framer-motion'
-import { ArrowRight, Award, CalendarDays, ListOrdered, ShieldAlert, Swords, TrendingUp, Trophy } from 'lucide-react'
+import { ArrowRight, ListOrdered, ShieldAlert, TrendingUp, Trophy } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { FighterAvatar } from '../shared/components/FighterAvatar'
 import { FighterProfileModal } from '../shared/components/FighterProfileModal'
-import { FighterBadges, FlagList, TitleFightBadge } from '../shared/components/FighterBadges'
+import { FighterBadges, TitleFightBadge } from '../shared/components/FighterBadges'
 import { L, localeTag } from '../i18n/lang'
 import { badgesForRankings } from '../shared/data/badges'
 import { getDivisionName } from '../shared/data/divisions'
@@ -14,7 +13,12 @@ import { shownMetrics } from '../shared/data/modelAccuracy'
 import { LatestNewsCard } from '../shared/components/LatestNewsCard'
 import { FightMatchupCard } from '../shared/components/FightMatchupCard'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
-import { WinProbabilityBar } from '../shared/components/WinProbabilityBar'
+import { DataConfidenceNote } from '../shared/components/DataConfidenceNote'
+import { CornerSplit, cornerPhotoClass } from '../shared/components/ui/CornerSplit'
+import { predictionSentence, ProbabilityBand } from '../shared/components/ui/ProbabilityBand'
+import { Eyebrow } from '../shared/components/ui/Eyebrow'
+import { Section, sectionActionClass } from '../shared/components/ui/Section'
+import { Stat } from '../shared/components/ui/Stat'
 import { useDataInfo } from '../shared/hooks/useDataInfo'
 import { useModelInfo } from '../shared/hooks/useModelInfo'
 import { usePrediction } from '../shared/hooks/usePrediction'
@@ -25,7 +29,7 @@ import { useRankings } from '../shared/hooks/useRankings'
 import { useUpcomingPicks } from '../shared/hooks/useUpcomingPicks'
 import { useUpcomingEvents } from '../shared/hooks/useUpcomingEvents'
 import { getFighterPerformance } from '../shared/services/api'
-import type { EventSummary, FighterPerformance, FightResult } from '../shared/types/api'
+import type { DataConfidence, EventSummary, FighterPerformance, FightResult } from '../shared/types/api'
 
 type Trend = { streak: number; finishRate: number | null }
 
@@ -70,97 +74,43 @@ export function Home() {
   const p4pRankings = rankings.find((category) => category.is_p4p) ?? null
   const systemError = modelError ?? eventsError
 
+  const metrics = shownMetrics(modelInfo, i18n.language)
+
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-8 sm:space-y-10">
       {systemError ? (
-        <p className="flex items-center gap-2 rounded-xl border border-[#C8102E]/20 bg-[#C8102E]/8 px-3 py-2 text-sm text-[var(--text-main)]">
-          <ShieldAlert className="h-4 w-4 shrink-0 text-[var(--accent-red)]" />
+        <p className="flex items-center gap-2 rounded-card border border-[var(--accent-red)]/30 bg-[var(--accent-red)]/10 px-3 py-2 text-sm text-[var(--text-primary)]">
+          <ShieldAlert className="h-4 w-4 shrink-0 text-[var(--text-red)]" />
           {systemError}
         </p>
       ) : null}
 
-      <motion.section
-        className="surface-card relative overflow-hidden rounded-[24px] border border-[var(--border-subtle)] p-5 sm:p-7 shadow-xl"
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3 py-1 text-xs font-semibold tracking-wide text-[var(--text-muted)] backdrop-blur-sm">
-          <span className="h-2 w-2 rounded-full bg-[var(--accent-red)] animate-pulse" />
-          <span>{L(i18n.language, 'Inteligência UFC • Aprendizado de máquina e análises', 'UFC Intelligence • Machine Learning & Analytics', 'Intelligence UFC • Apprentissage automatique et analyses', 'Inteligencia UFC • Aprendizaje automático y análisis')}</span>
-        </div>
-
-        <h1 className="mt-3 text-3xl font-black uppercase leading-tight tracking-tight text-[var(--text-main)] sm:text-5xl">
-          Vektor MMA
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--text-muted)] sm:text-base font-normal">
-          {L(
-            i18n.language,
-            'O que vem a seguir no UFC: a próxima luta principal, o palpite da IA, o momento dos lutadores e os líderes do ranking peso por peso.',
-            "What's next in the UFC: the upcoming main event, the model's pick for it, how the fighters are trending and the top of the pound-for-pound ranking, all from the same data the model uses.",
-            "La suite à l’UFC : le prochain combat principal, le choix du modèle, la forme des combattants et le haut du classement livre pour livre, à partir des mêmes données que le modèle.",
-            'Lo que viene en la UFC: la próxima pelea estelar, el pronóstico del modelo, cómo vienen los peleadores y la cima del ranking libra por libra, todo con los mismos datos que usa el modelo.',
-          )}
-        </p>
-
-        <div className="mt-4 flex flex-wrap items-center gap-2.5">
-          <Link
-            to="/predictor"
-            className="primary-action inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-white shadow-md hover:shadow-lg transition-all max-xs:w-full"
-          >
-            {L(i18n.language, 'Simular uma Luta', 'Predict a fight', 'Pronostiquer un combat', 'Pronosticar una pelea')}
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-          <Link
-            to="/events"
-            className="ghost-action theme-text inline-flex items-center justify-center rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] transition-all hover:bg-[var(--bg-surface-hover)] max-xs:w-full"
-          >
-            {L(i18n.language, 'Ver Card Completo', 'See the full card', 'Voir la carte complète', 'Ver la cartelera completa')}
-          </Link>
-        </div>
-
-        <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
-          <MiniStat
-            label={L(i18n.language, 'Lutadores na base', 'Fighters tracked', 'Combattants suivis', 'Peleadores registrados')}
-            value={health?.fighters_loaded ? health.fighters_loaded.toLocaleString(localeTag(i18n.language)) : '—'}
-            icon={Swords}
-          />
-          <MiniStat
-            label={L(i18n.language, 'Próximo evento', 'Next event', 'Prochain événement', 'Próximo evento')}
-            value={eventsLoading ? L(i18n.language, 'Carregando...', 'Loading...', 'Chargement...', 'Cargando...') : nextEvent ? formatShortDate(nextEvent.date, i18n.language) : '—'}
-            icon={CalendarDays}
-          />
-          <MiniStat
-            label={L(i18n.language, 'Dados até', 'Data through', 'Données jusqu’au', 'Datos hasta')}
-            value={dataInfo?.last_updated ? formatShortDate(dataInfo.last_updated, i18n.language) : '—'}
-            icon={Award}
-          />
-        </div>
-      </motion.section>
-
-      <TrackRecordStrip
-        fightsAnalyzed={health?.fights_tracked ?? null}
-        testAccuracy={shownMetrics(modelInfo, i18n.language).accuracy}
-        testNote={shownMetrics(modelInfo, i18n.language).caption}
-        liveAccuracy={trackRecord?.accuracy ?? null}
-        resolved={trackRecord?.resolved ?? null}
-      />
-
-      <MainEventCard
+      <NextFightHero
         loading={eventsLoading}
         error={eventsError}
         nextEvent={nextEvent}
         mainEvent={mainEvent}
         predictedWinner={prediction?.predicted_winner ?? null}
         probabilityA={prediction?.fighter_a_probability ?? null}
-        probabilityB={prediction?.fighter_b_probability ?? null}
+        probability={prediction?.probability ?? null}
+        confidence={prediction?.data_confidence}
         predicting={predicting}
       />
 
-      <section className="grid gap-4 lg:grid-cols-2">
+      <StatsStrip
+        fightsAnalyzed={health?.fights_tracked ?? null}
+        fightersTracked={health?.fighters_loaded ?? null}
+        dataThrough={dataInfo?.last_updated ?? null}
+        testAccuracy={metrics.accuracy}
+        testNote={metrics.caption}
+        liveAccuracy={trackRecord?.accuracy ?? null}
+        resolved={trackRecord?.resolved ?? null}
+      />
+
+      <div className="grid gap-8 lg:grid-cols-2 lg:gap-10">
         <TrendingCard mainEvent={mainEvent} trends={trends} onOpenProfile={setProfileName} />
         <RankingsCard category={p4pRankings} loading={rankingsLoading} error={rankingsError} onOpenProfile={setProfileName} />
-      </section>
+      </div>
 
       <FullCardSection nextEvent={nextEvent} />
 
@@ -204,14 +154,16 @@ function formatFullDate(date: string | null, lang: string = 'pt-BR') {
   return new Date(`${date}T00:00:00`).toLocaleDateString(localeTag(lang), { month: 'long', day: 'numeric', year: 'numeric' })
 }
 
-function MainEventCard({
+/** The top of the page: the next event, then its main event as two corners with the model's estimate under them. */
+function NextFightHero({
   loading,
   error,
   nextEvent,
   mainEvent,
   predictedWinner,
   probabilityA,
-  probabilityB,
+  probability,
+  confidence,
   predicting,
 }: {
   loading: boolean
@@ -220,123 +172,109 @@ function MainEventCard({
   mainEvent: FightResult | null
   predictedWinner: string | null
   probabilityA: number | null
-  probabilityB: number | null
+  probability: number | null
+  confidence: DataConfidence | null | undefined
   predicting: boolean
 }) {
   const { t, i18n } = useTranslation()
-  if (loading) return <LoadingSkeleton className="h-[340px] rounded-[20px]" />
-
-  if (error || !nextEvent || !mainEvent) {
-    return (
-      <div className="surface-card rounded-[20px] p-4 text-center">
-        <p className="text-sm leading-6 text-[var(--text-muted)]">
-          {error ?? L(i18n.language, 'Nenhum evento do UFC agendado no momento.', 'No upcoming UFC events are scheduled right now.', 'Aucun événement UFC n’est programmé pour le moment.', 'No hay eventos de la UFC programados por ahora.')}
-        </p>
-      </div>
-    )
-  }
-
-  return (
-    <article className="surface-card rounded-[20px] p-4 sm:p-6">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="broadcast-label text-[11px] text-[var(--accent-red)]">{t('home.nextCard', 'Upcoming event')}</p>
-          <h2 className="mt-1 text-2xl font-black uppercase leading-tight tracking-[0.03em] text-[var(--text-main)] sm:text-4xl">{nextEvent.name}</h2>
-          <p className="mt-2 flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
-            <CalendarDays className="h-3.5 w-3.5" />
-            {formatFullDate(nextEvent.date, i18n.language)} • {nextEvent.fight_count} {L(i18n.language, 'lutas', 'fights', 'combats', 'peleas')}
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-5 rounded-2xl border border-[var(--line-soft)] bg-[var(--surface-3)] p-4 sm:p-5">
-        <div className="flex flex-wrap items-center gap-2">
-          <p className="broadcast-label text-[11px] text-[var(--accent-red)]">{t('home.mainEvent', 'Main event')}</p>
-          <TitleFightBadge fight={mainEvent} />
-        </div>
-
-        <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4">
-          <MainEventName name={mainEvent.fighter_1} align="right" />
-          <span className="broadcast-label border border-[var(--rule)] px-2 py-1 text-[11px] text-[var(--text-muted)]">VS</span>
-          <MainEventName name={mainEvent.fighter_2} align="left" />
-        </div>
-        {mainEvent.weight_class ? (
-          <p className="type-tech mt-2 text-center text-[11px] uppercase tracking-[0.12em] text-[var(--text-muted)]">{getDivisionName(mainEvent.weight_class, i18n.language)}</p>
-        ) : null}
-
-        {predicting ? (
-          <div className="mt-4">
-            <LoadingSkeleton className="h-[88px]" />
-          </div>
-        ) : probabilityA != null && probabilityB != null ? (
-          <div className="mt-5">
-            <WinProbabilityBar
-              showNames={false}
-              nameA={mainEvent.fighter_1}
-              nameB={mainEvent.fighter_2}
-              probabilityA={probabilityA}
-              probabilityB={probabilityB}
-              predictedWinner={predictedWinner}
-            />
-          </div>
-        ) : null}
-      </div>
-
-      <Link
-        to={`/matchup-intelligence?a=${encodeURIComponent(mainEvent.fighter_1)}&b=${encodeURIComponent(mainEvent.fighter_2)}&event=${encodeURIComponent(nextEvent.name)}`}
-        className="primary-action mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-white"
-      >
-        {t('home.analyzeMatchup', 'Analyze matchup')}
-        <ArrowRight className="h-4 w-4" />
-      </Link>
-    </article>
-  )
-}
-
-function MainEventName({ name, align }: { name: string; align: 'left' | 'right' }) {
+  const lang = i18n.language
   const lookup = useFighterLookup()
   const { imageByName } = useFighterImages()
-  const fighter = lookup(name)
-  const right = align === 'right'
+  const fight = !loading && !error && nextEvent ? mainEvent : null
+  const photo = (name: string) => (
+    <FighterAvatar name={name} imageUrl={getFighterImageUrl(name, imageByName, lookup(name)?.image_url)} className={cornerPhotoClass} />
+  )
 
-  // Narrow screens stack the photo above the name; from `sm` up it sits beside it, facing the middle of the card.
   return (
-    <div className={`flex min-w-0 flex-col items-center gap-2 sm:items-center sm:gap-3 ${right ? 'sm:flex-row-reverse sm:justify-start' : 'sm:flex-row'}`}>
-      <FighterAvatar
-        name={name}
-        imageUrl={getFighterImageUrl(name, imageByName, fighter?.image_url)}
-        highlight
-        className="h-20 w-[4.25rem] shrink-0 sm:h-24 sm:w-20"
-      />
-      <div className={`flex min-w-0 flex-1 flex-col gap-1 ${right ? 'items-end text-right' : 'items-start text-left'} max-sm:w-full max-sm:items-center max-sm:text-center`}>
-        <p className="type-display w-full break-words text-[13px] font-bold uppercase leading-tight text-[var(--text-main)] min-[380px]:text-base sm:text-2xl">{name}</p>
-        {fighter ? (
-          <span className={`flex flex-wrap items-center gap-1 ${right ? 'sm:justify-end' : 'sm:justify-start'} max-sm:justify-center`}>
-            <FlagList fighter={fighter} />
-            <FighterBadges badges={fighter.badges} />
-          </span>
-        ) : null}
+    <section>
+      <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-5">
+        <div className="min-w-0 max-w-[760px]">
+          <Eyebrow>
+            {fight
+              ? t('home.nextCard', 'Upcoming event')
+              : L(lang, 'Estatísticas e previsões do UFC', 'UFC stats and predictions', 'Statistiques et pronostics UFC', 'Estadísticas y pronósticos de la UFC')}
+          </Eyebrow>
+          <h1 className="mt-1 text-[40px] leading-none sm:text-[52px]">{fight && nextEvent ? nextEvent.name : 'Vektor MMA'}</h1>
+          {fight && nextEvent ? (
+            <p className="mt-2 text-base text-[var(--muted)]">
+              {formatFullDate(nextEvent.date, lang)} · {nextEvent.fight_count} {L(lang, 'lutas', 'fights', 'combats', 'peleas')}
+            </p>
+          ) : null}
+        </div>
+        <div className="flex flex-wrap gap-3 max-xs:w-full">
+          {fight && nextEvent ? (
+            <Link
+              to={`/matchup-intelligence?a=${encodeURIComponent(fight.fighter_1)}&b=${encodeURIComponent(fight.fighter_2)}&event=${encodeURIComponent(nextEvent.name)}`}
+              className="primary-action inline-flex min-h-[52px] items-center justify-center px-7 !text-[17px] max-xs:w-full"
+            >
+              {L(lang, 'Ver a análise da luta', 'See the fight analysis', 'Voir l’analyse du combat', 'Ver el análisis de la pelea')}
+            </Link>
+          ) : null}
+          <Link to="/predictor" className={`${fight ? 'ghost-action' : 'primary-action'} inline-flex min-h-[52px] items-center justify-center px-7 !text-[17px] max-xs:w-full`}>
+            {L(lang, 'Simular uma luta', 'Predict a fight', 'Pronostiquer un combat', 'Pronosticar una pelea')}
+          </Link>
+        </div>
       </div>
-    </div>
+
+      {loading ? (
+        <LoadingSkeleton className="mt-8 h-[460px]" />
+      ) : !fight ? (
+        <p className="mt-8 bg-[var(--panel)] px-6 py-10 text-base text-[var(--muted)]">
+          {error ?? L(lang, 'Nenhum evento do UFC marcado no momento. Veja os eventos anteriores em Eventos.', 'No UFC event is booked right now. Past cards are under Events.', 'Aucun événement UFC n’est programmé pour le moment. Les cartes passées sont dans Événements.', 'No hay eventos de la UFC programados por ahora. Las carteleras anteriores están en Eventos.')}
+        </p>
+      ) : (
+        <div className="mt-8">
+          <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+            <p className="text-[17px] font-bold">{t('home.mainEvent', 'Main event')}</p>
+            {/* The title badge already names the division. */}
+            {fight.weight_class && !fight.title_fight && !fight.interim_title ? <p className="text-base text-[var(--muted)]">{getDivisionName(fight.weight_class, lang)}</p> : null}
+            <TitleFightBadge fight={fight} />
+          </div>
+          <CornerSplit
+            headingLevel="h2"
+            red={{ name: fight.fighter_1, label: L(lang, 'Canto vermelho', 'Red corner', 'Coin rouge', 'Esquina roja'), photo: photo(fight.fighter_1) }}
+            blue={{ name: fight.fighter_2, label: L(lang, 'Canto azul', 'Blue corner', 'Coin bleu', 'Esquina azul'), photo: photo(fight.fighter_2) }}
+          />
+          {predicting ? (
+            <p className="flex h-[84px] items-center bg-[var(--panel)] px-7 text-base text-[var(--muted)]" role="status">
+              {L(lang, 'Calculando a chance de vitória…', 'Working out the win chance…', 'Calcul de la chance de victoire…', 'Calculando la probabilidad de victoria…')}
+            </p>
+          ) : probabilityA != null ? (
+            <>
+              <ProbabilityBand nameA={fight.fighter_1} nameB={fight.fighter_2} probabilityA={probabilityA} />
+              {predictedWinner && probability != null ? <p className="mt-4 max-w-[70ch] text-base sm:text-lg">{predictionSentence(lang, predictedWinner, probability)}</p> : null}
+              {confidence ? (
+                <div className="mt-3 max-w-[70ch]">
+                  <DataConfidenceNote confidence={confidence} />
+                </div>
+              ) : null}
+            </>
+          ) : null}
+        </div>
+      )}
+    </section>
   )
 }
 
 function FullCardSection({ nextEvent }: { nextEvent: EventSummary | null }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const pickFor = useUpcomingPicks()
   if (!nextEvent || nextEvent.fights.length <= 1) return null
 
   const restOfCard = nextEvent.fights.slice(1)
 
   return (
-    <section className="surface-card rounded-[20px] p-4 sm:p-5">
-      <div className="flex items-center gap-2 text-[var(--accent-red)]">
-        <ListOrdered className="h-4 w-4" />
-        <p className="broadcast-label text-[11px]">
-          {t('home.restOfCard', { count: restOfCard.length, defaultValue: `Rest of the card • ${restOfCard.length} fights` })}
-        </p>
-      </div>
-      <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+    <Section
+      icon={ListOrdered}
+      title={t('home.restOfCard', { count: restOfCard.length, defaultValue: `Rest of the card • ${restOfCard.length} fights` })}
+      action={
+        <Link to="/events" className={sectionActionClass}>
+          {L(i18n.language, 'Ver card completo', 'See the full card', 'Voir la carte complète', 'Ver la cartelera completa')}
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      }
+    >
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
         {restOfCard.map((fight, index) => (
           <FightMatchupCard
             key={index}
@@ -346,7 +284,7 @@ function FullCardSection({ nextEvent }: { nextEvent: EventSummary | null }) {
           />
         ))}
       </div>
-    </section>
+    </Section>
   )
 }
 
@@ -363,21 +301,22 @@ function TrendingCard({
   if (!mainEvent) return null
 
   return (
-    <article className="surface-card rounded-[20px] p-3 sm:p-4">
-      <div className="flex items-center gap-2 text-[#C8102E]">
-        <TrendingUp className="h-4 w-4" />
-        <p className="broadcast-label text-[11px]">{t('home.trending', 'Trending')}</p>
-      </div>
-      <div className="mt-2.5 space-y-1.5">
-        <TrendRow name={mainEvent.fighter_1} trend={trends[mainEvent.fighter_1]} onOpenProfile={onOpenProfile} />
-        <TrendRow name={mainEvent.fighter_2} trend={trends[mainEvent.fighter_2]} onOpenProfile={onOpenProfile} />
-      </div>
-    </article>
+    <Section rows icon={TrendingUp} title={t('home.trending', 'Trending')}>
+      <ul className="divide-y divide-[var(--border-subtle)]">
+        <li>
+          <TrendRow name={mainEvent.fighter_1} trend={trends[mainEvent.fighter_1]} onOpenProfile={onOpenProfile} />
+        </li>
+        <li>
+          <TrendRow name={mainEvent.fighter_2} trend={trends[mainEvent.fighter_2]} onOpenProfile={onOpenProfile} />
+        </li>
+      </ul>
+    </Section>
   )
 }
 
-const CLICKABLE_ROW =
-  'w-full cursor-pointer text-left transition hover:!bg-[#F2C230]/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F2C230]'
+/** A row of a list that sits on the page background; the hover fill bleeds a little past the text column. */
+const ROW = '-mx-2 flex w-[calc(100%+1rem)] items-center gap-3 rounded-control px-2 py-2.5 text-left'
+const CLICKABLE_ROW = 'cursor-pointer transition-colors hover:bg-[var(--bg-surface-hover)]'
 
 function TrendRow({
   name,
@@ -391,7 +330,7 @@ function TrendRow({
   const { t, i18n } = useTranslation()
   const profile = useFighterLookup()(name)
   const { imageByName } = useFighterImages()
-  if (!trend) return <LoadingSkeleton className="h-[52px]" />
+  if (!trend) return <LoadingSkeleton className="my-1.5 h-[52px]" />
 
   const content = (
     <>
@@ -401,19 +340,19 @@ function TrendRow({
         className="h-10 w-9"
       />
       <span className="min-w-0">
-        <p className="truncate text-sm font-bold text-[var(--text-main)]">{name}</p>
-        <p className="mt-0.5 text-xs leading-4 text-[var(--text-muted)]">
+        <span className="block truncate text-sm font-bold text-[var(--text-primary)]">{name}</span>
+        <span className="mt-0.5 block text-xs leading-4 text-[var(--text-muted)]">
           {trend.streak > 0 ? (
-            <span className="text-[var(--accent-red)]">↑ {trend.streak} {t('home.winStreak', 'fight win streak')}</span>
+            <span className="text-[var(--text-red)]">↑ {trend.streak} {t('home.winStreak', 'fight win streak')}</span>
           ) : (
             <span>{L(i18n.language, 'Vindo de derrota', 'Coming off a loss', 'Sort d’une défaite', 'Viene de una derrota')}</span>
           )}
           {trend.finishRate != null ? ` • ${Math.round(trend.finishRate * 100)}% ${t('home.finishRate', 'finish rate')}` : ''}
-        </p>
+        </span>
       </span>
     </>
   )
-  const box = 'flex items-center gap-2.5 rounded-xl border border-[var(--line-soft)] bg-[var(--surface-3)] px-3 py-2.5'
+  const box = ROW
 
   // Only fighters we have a profile for open one; anyone else stays a plain row.
   return profile ? (
@@ -440,63 +379,63 @@ function RankingsCard({
   const lookup = useFighterLookup()
   const { imageByName } = useFighterImages()
   return (
-    <article className="surface-card rounded-[20px] p-3 sm:p-4">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 text-[#C8102E]">
-          <Trophy className="h-4 w-4" />
-          <p className="broadcast-label text-[11px]">{t('home.poundForPound', 'Pound-for-pound')}</p>
-        </div>
-        <Link to="/rankings" className="type-tech inline-flex min-h-10 items-center text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--accent-red)]">
+    <Section
+      rows
+      icon={Trophy}
+      title={t('home.poundForPound', 'Pound-for-pound')}
+      action={
+        <Link to="/rankings" className={sectionActionClass}>
           {L(i18n.language, 'Ver todos', 'View all', 'Tout voir', 'Ver todos')}
+          <ArrowRight className="h-3.5 w-3.5" />
         </Link>
-      </div>
-
+      }
+    >
       {loading ? (
-        <div className="mt-2.5 space-y-1.5">
+        <div className="space-y-2">
           {Array.from({ length: 3 }).map((_, index) => (
-            <LoadingSkeleton key={index} className="h-[40px]" />
+            <LoadingSkeleton key={index} className="h-[52px]" />
           ))}
         </div>
       ) : error ? (
-        <p className="mt-2.5 text-xs text-[var(--text-muted)]">{error}</p>
+        <p role="alert" className="error-note">{error}</p>
       ) : category ? (
-        <div className="mt-2.5 space-y-1.5">
+        <ol className="divide-y divide-[var(--border-subtle)]">
           {category.entries.slice(0, 3).map((entry) => {
             const profile = lookup(entry.fighter)
             const content = (
               <>
+                <span className="w-5 shrink-0 text-center font-display text-base font-bold tabular-nums text-[var(--text-red)]">{entry.rank}</span>
                 <FighterAvatar
                   name={entry.fighter}
                   imageUrl={getFighterImageUrl(entry.fighter, imageByName, profile?.image_url)}
                   className="h-10 w-9"
                 />
-                <span className="data-value w-5 shrink-0 text-sm font-bold text-[var(--accent-red)]">{entry.rank}</span>
-                <span className="min-w-0 flex-1 truncate text-sm font-bold text-[var(--text-main)]">{entry.fighter}</span>
+                <span className="min-w-0 flex-1 truncate text-sm font-bold text-[var(--text-primary)]">{entry.fighter}</span>
                 {profile ? <FighterBadges badges={badgesForRankings(profile.badges)} /> : null}
               </>
             )
-            const box = 'flex items-center gap-2.5 rounded-xl border border-[var(--line-soft)] bg-[var(--surface-3)] px-3 py-2.5'
-            return profile ? (
-              <button
-                key={entry.rank}
-                type="button"
-                onClick={() => onOpenProfile(profile.name)}
-                aria-label={L(i18n.language, `${entry.fighter}, posição ${entry.rank}. Ver perfil`, `${entry.fighter}, rank ${entry.rank}. View profile`, `${entry.fighter}, rang ${entry.rank}. Voir le profil`, `${entry.fighter}, puesto ${entry.rank}. Ver perfil`)}
-                className={`${box} ${CLICKABLE_ROW}`}
-              >
-                {content}
-              </button>
-            ) : (
-              <div key={entry.rank} className={box}>
-                {content}
-              </div>
+            return (
+              <li key={entry.rank}>
+                {profile ? (
+                  <button
+                    type="button"
+                    onClick={() => onOpenProfile(profile.name)}
+                    aria-label={L(i18n.language, `${entry.fighter}, posição ${entry.rank}. Ver perfil`, `${entry.fighter}, rank ${entry.rank}. View profile`, `${entry.fighter}, rang ${entry.rank}. Voir le profil`, `${entry.fighter}, puesto ${entry.rank}. Ver perfil`)}
+                    className={`${ROW} ${CLICKABLE_ROW}`}
+                  >
+                    {content}
+                  </button>
+                ) : (
+                  <div className={ROW}>{content}</div>
+                )}
+              </li>
             )
           })}
-        </div>
+        </ol>
       ) : (
-        <p className="mt-2.5 text-xs text-[var(--text-muted)]">{L(i18n.language, 'Rankings indisponíveis no momento.', 'Rankings unavailable right now.', 'Classements indisponibles pour le moment.', 'El ranking no está disponible por ahora.')}</p>
+        <p className="text-sm text-[var(--text-muted)]">{L(i18n.language, 'Rankings indisponíveis no momento.', 'Rankings unavailable right now.', 'Classements indisponibles pour le moment.', 'El ranking no está disponible por ahora.')}</p>
       )}
-    </article>
+    </Section>
   )
 }
 
@@ -505,66 +444,57 @@ function percentLabel(value: number | null | undefined) {
   return `${(value * 100).toFixed(1)}%`
 }
 
-function TrackRecordStrip({
+/** The numbers behind the site, in one open row: no boxes, a rule between columns on wide screens. */
+function StatsStrip({
   fightsAnalyzed,
+  fightersTracked,
+  dataThrough,
   testAccuracy,
   testNote,
   liveAccuracy,
   resolved,
 }: {
   fightsAnalyzed: number | null
+  fightersTracked: number | null
+  dataThrough: string | null
   testAccuracy: number | null
   testNote: string
   liveAccuracy: number | null
   resolved: number | null
 }) {
   const { i18n } = useTranslation()
-  const accuracy = resolved && resolved > 0 && liveAccuracy != null ? liveAccuracy : testAccuracy
-  const accuracyNote = resolved && resolved > 0 && liveAccuracy != null ? L(i18n.language, 'palpites ao vivo', 'live picks', 'pronostics en direct', 'pronósticos en vivo') : testNote
+  const lang = i18n.language
+  const live = Boolean(resolved && resolved > 0 && liveAccuracy != null)
+  const count = (value: number | null) => (value ? value.toLocaleString(localeTag(lang)) : '—')
+  const column = 'lg:border-l lg:border-[var(--border-subtle)] lg:pl-6'
 
   return (
-    <section className="surface-card flex flex-wrap items-center justify-between gap-3 rounded-[20px] px-3 py-3 sm:px-4">
-      <div className="flex min-w-0 flex-wrap items-center gap-x-6 gap-y-2">
-        <div>
-          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Taxa de Acerto da IA', 'Model accuracy', 'Précision du modèle', 'Precisión del modelo')}</p>
-          <p className="data-value text-xl font-bold text-[var(--text-main)]">{percentLabel(accuracy)}</p>
-          <p className="text-[11px] text-[var(--text-muted)]">{accuracyNote}</p>
-        </div>
-        <div>
-          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Lutas Analisadas', 'Fights analyzed', 'Combats analysés', 'Peleas analizadas')}</p>
-          <p className="data-value text-xl font-bold text-[var(--text-main)]">
-            {fightsAnalyzed ? fightsAnalyzed.toLocaleString(localeTag(i18n.language)) : '—'}
-          </p>
-          <p className="text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'histórico oficial do UFC', 'career bouts on file', 'combats de carrière au dossier', 'peleas de carrera registradas')}</p>
-        </div>
+    <section
+      aria-label={L(lang, 'Números do modelo', 'The model in numbers', 'Le modèle en chiffres', 'El modelo en números')}
+      className="grid grid-cols-2 gap-x-6 gap-y-6 lg:grid-cols-[repeat(4,minmax(0,1fr))_auto] lg:items-center"
+    >
+      <Stat
+        label={L(lang, 'Acerto do modelo', 'Model hit rate', 'Réussite du modèle', 'Acierto del modelo')}
+        value={percentLabel(live ? liveAccuracy : testAccuracy)}
+        note={live ? L(lang, 'palpites ao vivo', 'live picks', 'pronostics en direct', 'pronósticos en vivo') : testNote}
+      />
+      <div className={column}>
+        <Stat
+          label={L(lang, 'Lutas analisadas', 'Fights analyzed', 'Combats analysés', 'Peleas analizadas')}
+          value={count(fightsAnalyzed)}
+          note={L(lang, 'histórico oficial do UFC', 'career bouts on file', 'combats de carrière au dossier', 'peleas de carrera registradas')}
+        />
       </div>
-      <Link
-        to="/track-record"
-        className="inline-flex min-h-10 items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#C8102E] transition hover:text-white"
-      >
-        {L(i18n.language, 'Histórico Completo', 'Track record', 'Bilan du modèle', 'Historial de aciertos')}
+      <div className={column}>
+        <Stat label={L(lang, 'Lutadores na base', 'Fighters tracked', 'Combattants suivis', 'Peleadores registrados')} value={count(fightersTracked)} />
+      </div>
+      <div className={column}>
+        <Stat label={L(lang, 'Dados até', 'Data through', 'Données jusqu’au', 'Datos hasta')} value={dataThrough ? formatShortDate(dataThrough, lang) : '—'} />
+      </div>
+      <Link to="/track-record" className={`${sectionActionClass} col-span-2 lg:col-span-1`}>
+        {L(lang, 'Histórico completo', 'Track record', 'Bilan du modèle', 'Historial de aciertos')}
         <ArrowRight className="h-3.5 w-3.5" />
       </Link>
     </section>
-  )
-}
-
-function MiniStat({
-  label,
-  value,
-  icon: Icon,
-}: {
-  label: string
-  value: string
-  icon: React.ComponentType<{ className?: string }>
-}) {
-  return (
-    <div className="min-w-0 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-2 py-1.5 sm:px-3 sm:py-2">
-      <div className="flex items-center gap-1.5 text-[var(--accent-red)] sm:gap-2">
-        <Icon className="hidden h-3.5 w-3.5 shrink-0 sm:block" />
-        <p className="broadcast-label truncate text-[11px] text-[var(--text-muted)]">{label}</p>
-      </div>
-      <p className="data-value mt-0.5 truncate text-base font-bold text-[var(--text-main)] sm:mt-1 sm:text-xl">{value}</p>
-    </div>
   )
 }

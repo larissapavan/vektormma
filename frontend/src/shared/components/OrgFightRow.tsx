@@ -49,15 +49,15 @@ export function OrgFightRow({
 
       {scheduled && pick ? (
         <div className="mt-2.5 flex items-center justify-center">
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-[#F2C230]/40 bg-[#F2C230]/10 px-3 py-1 text-xs">
-            <Sparkles className="h-3 w-3 text-[#F2C230]" />
-            <span className="font-bold uppercase tracking-wider text-[#F2C230]">
-              {L(i18n.language, 'Palpite da IA:', 'AI Pick:', 'Pronostic :', 'Pronóstico:')}
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-[var(--accent-gold)]/40 bg-[var(--accent-gold)]/10 px-3 py-1 text-xs">
+            <Sparkles className="h-3 w-3 text-[var(--text-gold)]" />
+            <span className="font-bold uppercase tracking-wider text-[var(--text-gold)]">
+              {L(i18n.language, 'Palpite do modelo:', 'Model’s pick:', 'Pronostic :', 'Pronóstico:')}
             </span>
             <span className="font-extrabold text-[var(--text-main)]">
               {pick.predicted_winner}
             </span>
-            <span className="rounded bg-[#F2C230] px-1.5 py-0.5 font-mono text-[10px] font-extrabold text-[#0E0E0E]">
+            <span className="rounded bg-[#F2C230] px-1.5 py-0.5 font-mono text-label font-extrabold text-[#0E0E0E]">
               {Math.round(pick.probability * 100)}%
             </span>
           </div>
@@ -115,8 +115,8 @@ function Corner({
   const content = (
     <span
       className={`block truncate text-sm sm:text-base font-extrabold uppercase tracking-tight transition ${
-        won ? 'text-[#F2C230]' : 'text-[var(--text-main)]'
-      } ${known ? 'group-hover:text-[#F2C230]' : ''}`}
+        won ? 'text-[var(--text-gold)]' : 'text-[var(--text-main)]'
+      } ${known ? 'group-hover:text-[var(--text-gold)]' : ''}`}
     >
       {name}
     </span>

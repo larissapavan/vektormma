@@ -98,7 +98,7 @@ export function FighterProfileModal({
         if (status === 404) {
           setError(L(i18n.language, 'Nenhum histórico encontrado para este lutador.', 'No performance history found.', 'Aucun historique trouvé.', 'No se encontró historial de este peleador.'))
         } else {
-          setError(L(i18n.language, 'Falha ao carregar telemetria.', 'Failed to load telemetry.', 'Échec du chargement.', 'No se pudo cargar la telemetría.'))
+          setError(L(i18n.language, 'Não foi possível carregar os números do lutador. Tente de novo em instantes.', 'The fighter’s numbers could not be loaded. Try again in a moment.', 'Impossible de charger les chiffres du combattant. Réessayez dans un instant.', 'No se pudieron cargar los números del peleador. Inténtalo de nuevo en un momento.'))
         }
       })
       .finally(() => {
@@ -135,11 +135,11 @@ export function FighterProfileModal({
 
     // País / Origem
     if (profile?.country) {
-      parts.push(translateHometown(profile.country, i18n.language).toUpperCase())
+      parts.push(translateHometown(profile.country, i18n.language))
     } else if (profile?.nationalities && profile.nationalities.length > 0) {
       parts.push(translateHometown(profile.nationalities[0].name, i18n.language).toUpperCase())
     } else if (profile?.hometown) {
-      const city = translateHometown(profile.hometown.split(',').pop()?.trim(), i18n.language).toUpperCase()
+      const city = translateHometown(profile.hometown.split(',').pop()?.trim(), i18n.language)
       if (city) parts.push(city)
     } else {
       parts.push('UFC')
@@ -147,14 +147,14 @@ export function FighterProfileModal({
 
     // Categoria de Peso
     if (profile?.division) {
-      parts.push(getDivisionName(profile.division, i18n.language).toUpperCase())
+      parts.push(getDivisionName(profile.division, i18n.language))
     } else {
-      parts.push(L(i18n.language, 'PESO LIVRE', 'OPEN WEIGHT', 'POIDS LIBRE', 'PESO ABIERTO'))
+      parts.push(L(i18n.language, 'Peso livre', 'Open weight', 'Poids libre', 'Peso abierto'))
     }
 
     // Ranking / P4P / Status
     if (profile?.ranking && profile.ranking.includes('#')) {
-      parts.push(`${L(i18n.language, 'DESAFIANTE', 'CONTENDER', 'ASPIRANT', 'ASPIRANTE')} ${profile.ranking}`)
+      parts.push(`${L(i18n.language, 'Desafiante', 'Contender', 'Aspirant', 'Aspirante')} ${profile.ranking}`)
     }
 
     return parts.join(' • ')
@@ -267,20 +267,20 @@ export function FighterProfileModal({
       const isFirstUfcFight = seasonFights.some((f) => f.is_ufc !== false) && !fights.slice(0, fights.indexOf(seasonFights[0])).some((f) => f.is_ufc !== false)
       if (year === debutYear) {
         milestone = seasonFights.some((f) => f.is_ufc === false)
-          ? L(i18n.language, 'Estreia Profissional', 'Pro Debut', 'Début Pro', 'Debut profesional')
-          : L(i18n.language, 'Estreia no UFC', 'UFC Debut', 'Début UFC', 'Debut en la UFC')
+          ? L(i18n.language, 'Estreia profissional', 'Pro debut', 'Début Pro', 'Debut profesional')
+          : L(i18n.language, 'Estreia no UFC', 'UFC debut', 'Début UFC', 'Debut en la UFC')
       } else if (isFirstUfcFight) {
-        milestone = L(i18n.language, 'Estreia no UFC', 'UFC Debut', 'Début UFC', 'Debut en la UFC')
+        milestone = L(i18n.language, 'Estreia no UFC', 'UFC debut', 'Début UFC', 'Debut en la UFC')
       } else if (seasonFights.some((f) => f.result === 'win' && f.title_fight && !f.interim_title)) {
-        milestone = L(i18n.language, 'Campeão Linear', 'Undisputed Champion', 'Champion incontesté', 'Campeón indiscutido')
+        milestone = L(i18n.language, 'Campeão linear', 'Undisputed champion', 'Champion incontesté', 'Campeón indiscutido')
       } else if (seasonFights.some((f) => f.result === 'win' && f.bmf_title)) {
-        milestone = L(i18n.language, 'Cinturão BMF', 'BMF Champion', 'Ceinture BMF', 'Campeón BMF')
+        milestone = L(i18n.language, 'Cinturão BMF', 'BMF champion', 'Ceinture BMF', 'Campeón BMF')
       } else if (seasonFights.some((f) => f.result === 'win' && f.interim_title)) {
-        milestone = L(i18n.language, 'Campeão Interino', 'Interim Champion', 'Champion intérimaire', 'Campeón interino')
+        milestone = L(i18n.language, 'Campeão interino', 'Interim champion', 'Champion intérimaire', 'Campeón interino')
       } else if (year === 2018 && seasonWins >= 3) {
-        milestone = L(i18n.language, 'Início da Série Histórica', 'Historic Streak Began', 'Début de série historique', 'Inicio de la racha histórica')
+        milestone = L(i18n.language, 'Início da série histórica', 'Historic streak began', 'Début de série historique', 'Inicio de la racha histórica')
       } else if (seasonWins >= 3 && seasonLosses === 0) {
-        milestone = L(i18n.language, 'Série Histórica', 'Historic Streak', 'Série historique', 'Racha histórica')
+        milestone = L(i18n.language, 'Série histórica', 'Historic streak', 'Série historique', 'Racha histórica')
       }
 
       return {
@@ -299,7 +299,7 @@ export function FighterProfileModal({
 
   return createPortal(
     <motion.div
-      className="fixed inset-0 z-[95] flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/85 backdrop-blur-md"
+      className="fixed inset-0 z-[95] flex items-center justify-center p-2 sm:p-4 md:p-6 bg-[var(--modal-backdrop)]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -308,7 +308,7 @@ export function FighterProfileModal({
       }}
     >
       <motion.section
-        className="relative flex h-[min(90vh,880px)] w-full max-w-6xl flex-col overflow-hidden rounded-[24px] sm:rounded-[32px] border border-white/[0.08] bg-[#08090C] text-white shadow-[0_0_80px_rgba(0,0,0,0.8)]"
+        className="relative flex h-[min(90vh,880px)] w-full max-w-6xl flex-col overflow-hidden border border-[var(--rule)] bg-[var(--mat)] text-[var(--ink)]"
         initial={{ opacity: 0, y: 16, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.25, ease: 'easeOut' }}
@@ -321,16 +321,16 @@ export function FighterProfileModal({
               onClose()
               navigate(athletePath(name))
             }}
-            className="group inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-white/10 bg-white/[0.04] hover:bg-white/[0.09] hover:border-white/20 px-3 sm:px-4 py-1.5 sm:py-2 font-mono text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-neutral-300 hover:text-white shadow-[0_0_20px_rgba(255,255,255,0.03)] backdrop-blur-md transition-all cursor-pointer"
-            title={L(i18n.language, 'Abrir Dossiê Completo', 'Open Full Dossier', 'Ouvrir le dossier', 'Abrir dosier completo')}
+            className="group inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-[var(--rule)] bg-[var(--panel)] hover:bg-[var(--panel)] hover:border-[var(--rule)] px-3 sm:px-4 py-1.5 sm:py-2 text-label font-semibold text-[var(--ink)] hover:text-[var(--ink)] transition-all cursor-pointer"
+            title={L(i18n.language, 'Abrir dossiê completo', 'Open full dossier', 'Ouvrir le dossier', 'Abrir dosier completo')}
           >
-            <Sparkles className="h-3.5 w-3.5 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.6)] transition-transform group-hover:scale-110" />
-            <span>{L(i18n.language, 'DOSSIÊ COMPLETO', 'FULL DOSSIER', 'DOSSIER COMPLET', 'DOSIER COMPLETO')}</span>
+            <Sparkles className="h-3.5 w-3.5 text-[var(--gold)] transition-transform group-hover:scale-110" />
+            <span>{L(i18n.language, 'Dossiê completo', 'Full dossier', 'Dossier complet', 'Dosier completo')}</span>
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] text-neutral-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition cursor-pointer"
+            className="grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-full border border-[var(--rule)] bg-[var(--panel)] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--panel)] hover:border-[var(--rule)] transition cursor-pointer"
             aria-label={L(i18n.language, 'Fechar perfil de desempenho', "Close performance profile", 'Fermer le profil de performance', 'Cerrar perfil de rendimiento')}
           >
             <X className="h-4 w-4" />
@@ -343,8 +343,6 @@ export function FighterProfileModal({
           <div className="relative min-h-[220px] sm:min-h-[280px] lg:min-h-0 lg:h-full lg:col-span-5 overflow-hidden flex flex-col justify-end p-5 pb-2.5 sm:p-7 sm:pb-4 lg:p-9 select-none">
             {/* Foto recortada em alta qualidade com gradientes de fusão */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
-              {/* Brilho radial ambiente suave */}
-              <div className="absolute top-1/4 left-1/3 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-rose-600/[0.08] blur-3xl pointer-events-none" />
 
               {imageUrl ? (
                 <img
@@ -359,14 +357,14 @@ export function FighterProfileModal({
                   }}
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center font-display font-black text-8xl text-white/[0.05]">
+                <div className="w-full h-full flex items-center justify-center font-display font-black text-8xl text-[var(--muted)]">
                   {name.slice(0, 2).toUpperCase()}
                 </div>
               )}
 
               {/* Transição suave em gradiente para o fundo #08090C */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#08090C] via-[#08090C]/50 to-transparent" />
-              <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-transparent via-[#08090C]/25 to-[#08090C]" />
+              <div className="absolute inset-0" />
+              <div className="hidden lg:block absolute inset-0" />
             </div>
 
             <PhotoCredit imageUrl={imageUrl} className="left-2 top-4" />
@@ -374,26 +372,26 @@ export function FighterProfileModal({
             {/* Tipografia Display Monumental, Badges Oficiais e Assinatura */}
             <div className="relative z-10 space-y-2.5 pb-1">
               <div className="inline-flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-semibold">
-                  {L(i18n.language, 'ATLETA ATIVO // VEKTOR MMA', 'ACTIVE ATHLETE // VEKTOR MMA', 'ATHLÈTE ACTIF // VEKTOR MMA', 'ATLETA ACTIVO // VEKTOR MMA')}
+                <span className="h-1.5 w-1.5 rounded-full bg-[var(--positive)]" />
+                <span className="text-label text-[var(--muted)] font-semibold">
+                  {L(i18n.language, 'Atleta ativo', 'Active fighter', 'Combattant actif', 'Peleador activo')}
                 </span>
               </div>
 
-              <h1 className="font-display font-black text-3xl sm:text-4xl lg:text-[2.6rem] uppercase tracking-tighter text-white leading-[0.95] drop-shadow-2xl break-words">
+              <h1 className="font-display font-black text-3xl sm:text-4xl lg:text-[2.6rem] text-[var(--ink)] leading-[0.95] break-words">
                 {name}
               </h1>
 
               {/* BADGES OFICIAIS DE CAMPEÃO E HONRAS (Destaque Dourado e Ex-BMF) */}
               <div className="flex flex-wrap items-center gap-2 pt-0.5">
                 {isCurrentDivisionChamp && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/60 bg-gradient-to-r from-amber-500/25 via-amber-400/15 to-amber-500/10 px-3 py-1 font-mono text-xs font-bold uppercase tracking-wider text-amber-300 shadow-[0_0_16px_rgba(251,191,36,0.25)] backdrop-blur-md">
-                    <Trophy className="h-3.5 w-3.5 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--gold)] px-3 py-1 text-xs font-bold text-[var(--gold)]">
+                    <Trophy className="h-3.5 w-3.5 text-[var(--gold)]" />
                     <span>
                       {L(
                         i18n.language,
-                        `Campeão Atual ${getDivisionName(championDivision, i18n.language)}`,
-                        `Current ${getDivisionName(championDivision, i18n.language)} Champion`,
+                        `Campeão atual ${getDivisionName(championDivision, i18n.language)}`,
+                        `Current ${getDivisionName(championDivision, i18n.language)} champion`,
                         `Champion actuel ${getDivisionName(championDivision, i18n.language)}`,
                         `Campeón actual de ${getDivisionName(championDivision, i18n.language)}`
                       )}
@@ -402,28 +400,28 @@ export function FighterProfileModal({
                 )}
 
                 {isCurrentBmf && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/50 bg-amber-400/15 px-2.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.2)]">
-                    <Sparkles className="h-3 w-3 text-amber-400" />
-                    <span>{L(i18n.language, 'Campeão BMF Atual', 'Current BMF Champion', 'Champion BMF actuel', 'Campeón BMF actual')}</span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--gold)] bg-[var(--gold-fill)] px-2.5 py-1 text-label font-bold text-[var(--gold)]">
+                    <Sparkles className="h-3 w-3 text-[var(--gold)]" />
+                    <span>{L(i18n.language, 'Campeão BMF atual', 'Current BMF champion', 'Champion BMF actuel', 'Campeón BMF actual')}</span>
                   </span>
                 )}
 
                 {isFormerBmf && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-neutral-300 backdrop-blur-sm">
-                    <span>✦ {L(i18n.language, 'Ex-Campeão BMF', 'Former BMF Champion', 'Ancien champion BMF', 'Excampeón BMF')}</span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--rule)] bg-[var(--panel)] px-2.5 py-1 text-label font-bold text-[var(--ink)]">
+                    <span>{L(i18n.language, 'Ex-Campeão BMF', 'Former BMF champion', 'Ancien champion BMF', 'Excampeón BMF')}</span>
                   </span>
                 )}
 
                 {formerDivisionTitles.map((title) => (
                   <span
                     key={`former-${title}`}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-2.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-neutral-200 backdrop-blur-sm"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-[var(--rule)] bg-[var(--panel)] px-2.5 py-1 text-label font-bold text-[var(--ink)]"
                   >
                     <span>
-                      ✦ {L(
+                      {L(
                         i18n.language,
                         `Ex-Campeão ${getDivisionName(title, i18n.language)}`,
-                        `Former ${getDivisionName(title, i18n.language)} Champion`,
+                        `Former ${getDivisionName(title, i18n.language)} champion`,
                         `Ancien champion ${getDivisionName(title, i18n.language)}`,
                         `Excampeón de ${getDivisionName(title, i18n.language)}`
                       )}
@@ -434,14 +432,14 @@ export function FighterProfileModal({
                 {formerInterimTitles.map((title) => (
                   <span
                     key={`interim-${title}`}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-2.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-neutral-300"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-[var(--rule)] bg-[var(--panel)] px-2.5 py-1 text-label font-bold text-[var(--ink)]"
                   >
                     <span>
-                      ✦ {L(
+                      {L(
                         i18n.language,
-                        `Ex-Campeão Interino ${getDivisionName(title, i18n.language)}`,
-                        `Former Interim ${getDivisionName(title, i18n.language)} Champion`,
-                        `Ancien champion Intérimaire ${getDivisionName(title, i18n.language)}`,
+                        `Ex-campeão interino ${getDivisionName(title, i18n.language)}`,
+                        `Former interim ${getDivisionName(title, i18n.language)} champion`,
+                        `Ancien champion intérimaire ${getDivisionName(title, i18n.language)}`,
                         `Excampeón interino de ${getDivisionName(title, i18n.language)}`
                       )}
                     </span>
@@ -449,7 +447,7 @@ export function FighterProfileModal({
                 ))}
               </div>
 
-              <p className="font-mono text-xs sm:text-[13px] uppercase tracking-wider text-neutral-400 font-medium">
+              <p className="text-xs sm:text-[13px] text-[var(--muted)] font-medium">
                 {signatureLine}
               </p>
             </div>
@@ -458,15 +456,15 @@ export function FighterProfileModal({
           {/* ZONA DIREITA - TELEMETRIA EDITORIAL (Sem retângulos fechados, ~60% width) */}
           <div className="lg:col-span-7 p-5 pt-2 sm:p-7 sm:pt-4 lg:px-10 lg:py-9 flex flex-col justify-start space-y-5 sm:space-y-6 lg:min-h-0 lg:overflow-y-auto no-scrollbar">
             {loading ? (
-              <div className="space-y-6 animate-pulse">
-                <div className="h-16 w-32 bg-white/5 rounded-xl" />
-                <div className="h-4 w-full bg-white/5 rounded" />
-                <div className="h-12 w-full bg-white/5 rounded-xl" />
+              <div className="space-y-6">
+                <div className="h-16 w-32 bg-[var(--panel)]" />
+                <div className="h-4 w-full bg-[var(--panel)] rounded" />
+                <div className="h-12 w-full bg-[var(--panel)]" />
               </div>
             ) : error ? (
               <div className="space-y-2">
-                <p className="font-mono text-xs uppercase tracking-wider text-rose-400 font-semibold">{error}</p>
-                <p className="font-sans text-xs text-neutral-500">
+                <p role="alert" className="error-note">{error}</p>
+                <p className="font-sans text-xs text-[var(--muted)]">
                   {L(i18n.language, 'Histórico detalhado indisponível no momento.', 'Detailed history unavailable at this time.', 'Historique détaillé indisponible pour le moment.', 'El historial detallado no está disponible por ahora.')}
                 </p>
               </div>
@@ -477,21 +475,21 @@ export function FighterProfileModal({
                   {/* Cartel no UFC em Destaque Monumental */}
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#E11D48] animate-pulse" />
-                      <p className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-neutral-400 font-bold">
-                        {L(i18n.language, 'CARTEL NO OCTÓGONO (UFC)', 'UFC OCTAGON RECORD', 'PALMARÈS DANS L’OCTOGONE (UFC)', 'RÉCORD EN EL OCTÁGONO (UFC)')}
+                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--ink)]" />
+                      <p className="text-label text-[var(--muted)] font-bold">
+                        {L(i18n.language, 'Cartel no octógono (UFC)', 'UFC Octagon record', 'Palmarès dans l’octogone (UFC)', 'Récord en el octágono (UFC)')}
                       </p>
                     </div>
 
                     <div className="flex items-baseline gap-3 sm:gap-5 flex-wrap">
-                      <span className="font-display font-black text-3xl sm:text-4xl lg:text-5xl tracking-tighter text-white tabular-nums leading-none">
+                      <span className="font-display font-black text-3xl sm:text-4xl lg:text-5xl text-[var(--ink)] tabular-nums leading-none">
                         {ufcRecord.total}
                       </span>
                       <div className="space-y-0.5">
-                        <p className="font-mono text-xs sm:text-sm font-bold uppercase tracking-wider text-white">
-                          {ufcRecord.wins} {L(i18n.language, 'VITÓRIAS', 'WINS', 'VICTOIRES', 'VICTORIAS')} • {ufcRecord.losses} {L(i18n.language, 'DERROTAS', 'LOSSES', 'DÉFAITES', 'DERROTAS')}{ufcRecord.nc ? ` • ${ufcRecord.nc} NC` : ''}
+                        <p className="text-xs sm:text-sm font-bold text-[var(--ink)]">
+                          {ufcRecord.wins} {L(i18n.language, 'vitórias', 'wins', 'victoires', 'victorias')} • {ufcRecord.losses} {L(i18n.language, 'derrotas', 'losses', 'défaites', 'derrotas')}{ufcRecord.nc ? ` • ${ufcRecord.nc} NC` : ''}
                         </p>
-                        <p className="font-sans text-[11px] text-neutral-400">
+                        <p className="font-sans text-label text-[var(--muted)]">
                           {L(i18n.language, `${ufcRecord.win_rate}% de aproveitamento oficial no octógono`, `${ufcRecord.win_rate}% official UFC win rate`, `${ufcRecord.win_rate} % de victoires à l’UFC`, `${ufcRecord.win_rate} % de victorias oficiales en la UFC`)}
                         </p>
                       </div>
@@ -499,17 +497,17 @@ export function FighterProfileModal({
                   </div>
 
                   {/* Atributos Físicos & Biometria Oficial */}
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 p-3 rounded-xl border border-white/[0.08] bg-white/[0.02]">
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 p-3 border border-[var(--rule)] bg-[var(--panel)]">
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-semibold">
-                        {L(i18n.language, 'ALTURA', 'HEIGHT', 'TAILLE', 'ESTATURA')}
+                      <p className="text-label text-[var(--muted)] font-semibold">
+                        {L(i18n.language, 'Altura', 'Height', 'Taille', 'Estatura')}
                       </p>
-                      <p className="font-mono text-sm font-bold text-white tabular-nums mt-0.5">
+                      <p className="text-sm font-bold text-[var(--ink)] tabular-nums mt-0.5">
                         {profile?.height_cm
                           ? `${Math.round(profile.height_cm)} cm`
                           : '—'}
                       </p>
-                      <p className="font-mono text-[10px] text-neutral-400">
+                      <p className="text-label text-[var(--muted)]">
                         {profile?.height_cm
                           ? `${Math.floor(profile.height_cm / 30.48)}'${Math.round((profile.height_cm % 30.48) / 2.54)}"`
                           : ''}
@@ -517,15 +515,15 @@ export function FighterProfileModal({
                     </div>
 
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-semibold">
-                        {L(i18n.language, 'PESO', 'WEIGHT', 'POIDS', 'PESO')}
+                      <p className="text-label text-[var(--muted)] font-semibold">
+                        {L(i18n.language, 'Peso', 'Weight', 'Poids', 'Peso')}
                       </p>
-                      <p className="font-mono text-sm font-bold text-white tabular-nums mt-0.5">
+                      <p className="text-sm font-bold text-[var(--ink)] tabular-nums mt-0.5">
                         {profile?.weight_lbs
                           ? `${Math.round(profile.weight_lbs)} lb`
                           : '—'}
                       </p>
-                      <p className="font-mono text-[10px] text-neutral-400">
+                      <p className="text-label text-[var(--muted)]">
                         {profile?.weight_lbs
                           ? `${(profile.weight_lbs * 0.45359237).toFixed(1)} kg`
                           : ''}
@@ -533,15 +531,15 @@ export function FighterProfileModal({
                     </div>
 
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-semibold">
-                        {L(i18n.language, 'ENVERGADURA', 'REACH', 'ALLONGE', 'ALCANCE')}
+                      <p className="text-label text-[var(--muted)] font-semibold">
+                        {L(i18n.language, 'Envergadura', 'Reach', 'Allonge', 'Alcance')}
                       </p>
-                      <p className="font-mono text-sm font-bold text-white tabular-nums mt-0.5">
+                      <p className="text-sm font-bold text-[var(--ink)] tabular-nums mt-0.5">
                         {profile?.reach_cm
                           ? `${Math.round(profile.reach_cm)} cm`
                           : '—'}
                       </p>
-                      <p className="font-mono text-[10px] text-neutral-400">
+                      <p className="text-label text-[var(--muted)]">
                         {profile?.reach_cm
                           ? `${Math.round(profile.reach_cm / 2.54)}"`
                           : ''}
@@ -549,45 +547,45 @@ export function FighterProfileModal({
                     </div>
 
                     <div>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-semibold">
-                        {L(i18n.language, 'IDADE', 'AGE', 'ÂGE', 'EDAD')}
+                      <p className="text-label text-[var(--muted)] font-semibold">
+                        {L(i18n.language, 'Idade', 'Age', 'Âge', 'Edad')}
                       </p>
-                      <p className="font-mono text-sm font-bold text-white tabular-nums mt-0.5">
+                      <p className="text-sm font-bold text-[var(--ink)] tabular-nums mt-0.5">
                         {profile?.age
                           ? `${Math.floor(profile.age)} ${L(i18n.language, 'anos', 'yrs', 'ans', 'años')}`
                           : '—'}
                       </p>
-                      <p className="font-mono text-[10px] text-neutral-400">
+                      <p className="text-label text-[var(--muted)]">
                         {profile?.ufc_status === 'active'
                           ? L(i18n.language, 'Ativo no UFC', 'Active UFC', 'Actif UFC', 'Activo en la UFC')
-                          : L(i18n.language, 'Plantel UFC', 'UFC Roster', 'Effectif UFC', 'Plantel de la UFC')}
+                          : L(i18n.language, 'Plantel UFC', 'UFC roster', 'Effectif UFC', 'Plantel de la UFC')}
                       </p>
                     </div>
 
                     <div className="col-span-2 sm:col-span-1">
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-neutral-400 font-semibold">
-                        {L(i18n.language, 'BASE', 'STANCE', 'GARDE', 'GUARDIA')}
+                      <p className="text-label text-[var(--muted)] font-semibold">
+                        {L(i18n.language, 'Base', 'Stance', 'Garde', 'Guardia')}
                       </p>
-                      <p className="font-mono text-sm font-bold text-white truncate mt-0.5">
+                      <p className="text-sm font-bold text-[var(--ink)] truncate mt-0.5">
                         {profile?.stance
                           ? translateStance(profile.stance, i18n.language)
                           : '—'}
                       </p>
-                      <p className="font-mono text-[10px] text-neutral-400 truncate">
+                      <p className="text-label text-[var(--muted)] truncate">
                         {profile?.stance ? L(i18n.language, 'Base de luta', profile.stance, 'Garde de combat', 'Guardia de combate') : ''}
                       </p>
                     </div>
                   </div>
 
                   {/* Cartel Completo Pro MMA (Todas as Organizações) */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 rounded-xl border border-white/[0.08] bg-white/[0.02]">
+                  <div className="flex flex-wrap items-center justify-between gap-2 p-2.5 border border-[var(--rule)] bg-[var(--panel)]">
                     <div className="space-y-0.5">
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-amber-400 font-bold">
-                        {L(i18n.language, 'CARTEL PROFISSIONAL COMPLETO (PRO MMA)', 'PRO MMA COMPLETE CAREER RECORD', 'PALMARÈS PROFESSIONNEL COMPLET (MMA)', 'RÉCORD PROFESIONAL COMPLETO (MMA)')}
+                      <p className="text-label text-[var(--gold)] font-bold">
+                        {L(i18n.language, 'Cartel profissional completo (pro MMA)', 'Pro MMA complete career record', 'Palmarès professionnel complet (MMA)', 'Récord profesional completo (MMA)')}
                       </p>
-                      <p className="font-mono text-xs sm:text-sm font-bold text-neutral-200 tabular-nums">
-                        {completeRecord.total} {L(i18n.language, 'LUTAS', 'BOUTS', 'COMBATS', 'PELEAS')} • {completeRecord.wins}V - {completeRecord.losses}D{completeRecord.nc ? ` - ${completeRecord.nc}NC` : ''}
-                        <span className="text-neutral-400 font-normal text-xs ml-1.5 font-sans">
+                      <p className="text-xs sm:text-sm font-bold text-[var(--ink)] tabular-nums">
+                        {completeRecord.total} {L(i18n.language, 'Lutas', 'Bouts', 'Combats', 'Peleas')} • {completeRecord.wins}V - {completeRecord.losses}D{completeRecord.nc ? ` - ${completeRecord.nc}NC` : ''}
+                        <span className="text-[var(--muted)] font-normal text-xs ml-1.5 font-sans">
                           ({completeRecord.win_rate}% {L(i18n.language, 'geral', 'overall', 'global', 'general')})
                         </span>
                       </p>
@@ -598,10 +596,10 @@ export function FighterProfileModal({
                         {organizations.map((org: string) => (
                           <span
                             key={org}
-                            className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider ${
+                            className={`px-1.5 py-0.5 text-label font-semibold ${
                               org === 'UFC'
-                                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                                : 'bg-white/5 text-neutral-300 border border-white/10'
+                                ? 'bg-[var(--ink)] text-[var(--on-ink)] border border-[var(--ink)]'
+                                : 'bg-[var(--panel)] text-[var(--ink)] border border-[var(--rule)]'
                             }`}
                           >
                             {org}
@@ -629,38 +627,38 @@ export function FighterProfileModal({
 
                       return (
                         <>
-                          <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-semibold">
-                            <span>{L(i18n.language, 'PRÓXIMO COMBATE', 'NEXT BOUT', 'PROCHAIN COMBAT', 'PRÓXIMA PELEA')} // {nextBout.event_name}</span>
-                            <span className="text-amber-400 font-bold">
+                          <div className="flex items-center justify-between text-label text-[var(--muted)] font-semibold">
+                            <span>{L(i18n.language, 'Próximo combate', 'Next bout', 'Prochain combat', 'Próxima pelea')} // {nextBout.event_name}</span>
+                            <span className="text-[var(--gold)] font-bold">
                               {isOpponentTbd
-                                ? L(i18n.language, 'BUSCA POR OPONENTE', 'SEEKING OPPONENT', 'RECHERCHE D’ADVERSAIRE', 'BUSCA RIVAL')
-                                : L(i18n.language, 'PROGNÓSTICO POR IA', 'AI WIN FORECAST', 'PRONOSTIC IA', 'PRONÓSTICO DE LA IA')}
+                                ? L(i18n.language, 'Busca por oponente', 'Seeking opponent', 'Recherche d’adversaire', 'Busca rival')
+                                : L(i18n.language, 'Chance estimada pelo modelo', 'Model’s estimated chance', 'Chance estimée par le modèle', 'Probabilidad estimada por el modelo')}
                             </span>
                           </div>
 
-                          <div className="flex items-baseline justify-between font-display font-bold text-base sm:text-lg text-white">
+                          <div className="flex items-baseline justify-between font-display font-bold text-base sm:text-lg text-[var(--ink)]">
                             <span className="truncate">
                               {name}{' '}
                               {!isOpponentTbd && (
-                                <span className="font-mono text-xs text-amber-400 tabular-nums">
+                                <span className="text-xs text-[var(--gold)] tabular-nums">
                                   ({nextPrediction?.fighterProb ?? 50}%)
                                 </span>
                               )}
                             </span>
-                            <span className="px-3 text-neutral-400 font-mono text-xs font-normal">VS</span>
+                            <span className="px-3 text-[var(--muted)] text-xs font-normal">VS</span>
                             {isOpponentTbd ? (
-                              <span className="truncate text-right font-mono text-xs sm:text-sm font-bold text-amber-400 uppercase tracking-wider">
-                                ✦ {L(i18n.language, 'Aguardando Adversário (a definir)', 'Awaiting Opponent (TBD)', 'Adversaire à déterminer', 'Esperando rival (por definir)')}
+                              <span className="truncate text-right text-xs sm:text-sm font-bold text-[var(--gold)]">
+                                {L(i18n.language, 'Aguardando adversário (a definir)', 'Awaiting opponent (TBD)', 'Adversaire à déterminer', 'Esperando rival (por definir)')}
                               </span>
                             ) : (
                               <button
                                 type="button"
                                 onClick={() => onSelectFighter(nextBout.opponent)}
-                                className="truncate text-right hover:text-sky-400 transition cursor-pointer font-bold"
+                                className="truncate text-right hover:text-[var(--ink)] transition cursor-pointer font-bold"
                                 title={L(i18n.language, `Ver perfil de ${nextBout.opponent}`, `View profile of ${nextBout.opponent}`, `Voir le profil de ${nextBout.opponent}`, `Ver el perfil de ${nextBout.opponent}`)}
                               >
                                 {nextBout.opponent}{' '}
-                                <span className="font-mono text-xs text-sky-400 tabular-nums">
+                                <span className="text-xs text-[var(--ink)] tabular-nums">
                                   ({nextPrediction?.oppProb ?? 50}%)
                                 </span>
                               </button>
@@ -669,30 +667,30 @@ export function FighterProfileModal({
 
                           {/* Scale prediction bar ou breathing bar se oponente indefinido */}
                           {isOpponentTbd ? (
-                            <div className="h-[3px] w-full rounded-full bg-amber-400/20 overflow-hidden">
-                              <div className="h-full w-full bg-gradient-to-r from-amber-500/30 via-amber-400 to-amber-500/30 animate-pulse" />
+                            <div className="h-[3px] w-full rounded-full bg-[var(--gold-fill)] overflow-hidden">
+                              <div className="h-full w-full" />
                             </div>
                           ) : (
-                            <div className="h-[3px] w-full rounded-full bg-white/10 flex overflow-hidden">
+                            <div className="flex h-2 w-full gap-[2px] overflow-hidden">
                               <div
                                 style={{ width: `${nextPrediction?.fighterProb ?? 50}%` }}
-                                className="bg-amber-400 transition-all duration-700"
+                                className="bg-[var(--ink)]"
                               />
                               <div
                                 style={{ width: `${nextPrediction?.oppProb ?? 50}%` }}
-                                className="bg-sky-400 transition-all duration-700"
+                                className="bg-[var(--track)]"
                               />
                             </div>
                           )}
 
-                          <div className="flex items-center justify-between font-sans text-[11px] text-neutral-400">
-                            <span>{nextBout.weight_class ? getDivisionName(nextBout.weight_class, i18n.language) : L(i18n.language, 'Card Principal', 'Main Card', 'Carte principale', 'Cartelera principal')}</span>
-                            <span className="font-mono text-[10px] uppercase text-neutral-400">
+                          <div className="flex items-center justify-between font-sans text-label text-[var(--muted)]">
+                            <span>{nextBout.weight_class ? getDivisionName(nextBout.weight_class, i18n.language) : L(i18n.language, 'Card principal', 'Main card', 'Carte principale', 'Cartelera principal')}</span>
+                            <span className="text-label text-[var(--muted)]">
                               {isOpponentTbd
-                                ? L(i18n.language, '✦ Luta Mantida • Buscando Substituto', '✦ Bout Booked • Seeking Opponent', '✦ Combat confirmé • En recherche d’adversaire', '✦ Pelea confirmada • Busca rival')
+                                ? L(i18n.language, 'Luta mantida • Buscando substituto', 'Bout booked • Seeking opponent', 'Combat confirmé • En recherche d’adversaire', 'Pelea confirmada • Busca rival')
                                 : nextBout.title_fight
-                                  ? L(i18n.language, '✦ Disputa de Cinturão', '✦ Title Fight', '✦ Combat pour le titre', '✦ Pelea por el título')
-                                  : L(i18n.language, 'Combate Confirmado', 'Confirmed Bout', 'Combat confirmé', 'Pelea confirmada')}
+                                  ? L(i18n.language, 'Disputa de cinturão', 'Title fight', 'Combat pour le titre', 'Pelea por el título')
+                                  : L(i18n.language, 'Combate confirmado', 'Confirmed bout', 'Combat confirmé', 'Pelea confirmada')}
                             </span>
                           </div>
                         </>
@@ -701,45 +699,45 @@ export function FighterProfileModal({
                   </div>
                 ) : (
                   <div className="space-y-1.5 pt-1">
-                    <p className="font-mono text-[11px] uppercase tracking-widest text-neutral-400 font-semibold">
-                      {L(i18n.language, 'PRÓXIMO COMBATE // AGUARDANDO CASAMENTO DE LUTA', 'NEXT BOUT // AWAITING FIGHT SCHEDULING', 'PROCHAIN COMBAT // EN ATTENTE D’ANNONCE', 'PRÓXIMA PELEA // A LA ESPERA DE PROGRAMACIÓN')}
+                    <p className="text-label text-[var(--muted)] font-semibold">
+                      {L(i18n.language, 'Próxima luta: ainda não marcada', 'Next fight: not booked yet', 'Prochain combat : pas encore programmé', 'Próxima pelea: aún no programada')}
                     </p>
-                    <p className="font-sans text-xs text-neutral-400 leading-relaxed">
+                    <p className="font-sans text-xs text-[var(--muted)] leading-relaxed">
                       {L(
                         i18n.language,
-                        'Atleta ativo no plantel do UFC • Telemetria analítica e modelo de predição prontos para o octógono.',
-                        'Active athlete on the UFC roster • Analytical telemetry and prediction model ready for the Octagon.',
-                        'Athlète actif de l’UFC • Télémétrie analytique et modèle de prédiction prêts pour l’Octogone.',
-                        'Atleta activo en el plantel de la UFC • Telemetría analítica y modelo de pronóstico listos para el octágono.'
+                        'Atleta ativo no plantel do UFC, ainda sem luta marcada.',
+                        'Active on the UFC roster, with no fight booked yet.',
+                        'Combattant actif de l’UFC, sans combat programmé pour l’instant.',
+                        'Peleador activo en el plantel de la UFC, aún sin pelea programada.'
                       )}
                     </p>
                   </div>
                 )}
 
                 {/* 4. Métricas Flutuantes Adicionais (Pure Typography, Zero Boxes) */}
-                <div className="grid grid-cols-3 gap-6 pt-3 border-t border-white/[0.06]">
+                <div className="grid grid-cols-3 gap-6 pt-3 border-t border-[var(--rule)]">
                   <div>
-                    <p className="font-display font-bold text-xl sm:text-2xl text-white tabular-nums">
-                      {profile?.sig_strikes_landed_per_min ? profile.sig_strikes_landed_per_min.toFixed(2) : '3.82'}
+                    <p className="font-display font-bold text-xl sm:text-2xl text-[var(--ink)] tabular-nums">
+                      {profile?.sig_strikes_landed_per_min ? profile.sig_strikes_landed_per_min.toFixed(2) : '—'}
                     </p>
-                    <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-medium">
+                    <p className="text-label text-[var(--muted)] font-medium">
                       {L(i18n.language, 'Golpes / Min (SLpM)', 'Strikes / Min (SLpM)', 'Coups / min (SLpM)', 'Golpes / min (SLpM)')}
                     </p>
                   </div>
                   <div>
-                    <p className="font-display font-bold text-xl sm:text-2xl text-white tabular-nums">
-                      {profile?.striking_defense ? `${Math.round(profile.striking_defense * 100)}%` : '53%'}
+                    <p className="font-display font-bold text-xl sm:text-2xl text-[var(--ink)] tabular-nums">
+                      {profile?.striking_defense ? `${Math.round(profile.striking_defense * 100)}%` : '—'}
                     </p>
-                    <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-medium">
-                      {L(i18n.language, 'Defesa de Golpes', 'Striking Defense', 'Défense des frappes', 'Defensa de golpes')}
+                    <p className="text-label text-[var(--muted)] font-medium">
+                      {L(i18n.language, 'Defesa de golpes', 'Striking defense', 'Défense des frappes', 'Defensa de golpes')}
                     </p>
                   </div>
                   <div>
-                    <p className="font-display font-bold text-xl sm:text-2xl text-white tabular-nums">
-                      {profile?.takedown_defense ? `${Math.round(profile.takedown_defense * 100)}%` : '56%'}
+                    <p className="font-display font-bold text-xl sm:text-2xl text-[var(--ink)] tabular-nums">
+                      {profile?.takedown_defense ? `${Math.round(profile.takedown_defense * 100)}%` : '—'}
                     </p>
-                    <p className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 font-medium">
-                      {L(i18n.language, 'Defesa de Quedas', 'Takedown Defense', 'Défense au sol', 'Defensa de derribos')}
+                    <p className="text-label text-[var(--muted)] font-medium">
+                      {L(i18n.language, 'Defesa de quedas', 'Takedown defense', 'Défense au sol', 'Defensa de derribos')}
                     </p>
                   </div>
                 </div>
@@ -760,18 +758,18 @@ export function FighterProfileModal({
         />
 
         {/* ZONA INFERIOR - RÉGUA CRONOLÓGICA (Horizontal Timeline) */}
-        <div className="relative border-t border-white/[0.08] bg-black/60 backdrop-blur-md px-4 sm:px-8 py-2.5 sm:py-3.5 shrink-0 flex flex-col justify-between">
-          <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-neutral-400 mb-2 font-semibold">
-            <span>{L(i18n.language, 'RÉGUA CRONOLÓGICA // HISTÓRICO DE TEMPORADAS', 'TIMELINE // SEASONAL CAREER HISTORY', 'CHRONOLOGIE // HISTORIQUE DE CARRIÈRE', 'LÍNEA DE TIEMPO // HISTORIAL DE TEMPORADAS')}</span>
-            <span className="hidden sm:inline text-amber-400/90 font-medium">
+        <div className="relative border-t border-[var(--rule)] bg-[var(--mat)] px-4 sm:px-8 py-2.5 sm:py-3.5 shrink-0 flex flex-col justify-between">
+          <div className="flex items-center justify-between text-label text-[var(--muted)] mb-2 font-semibold">
+            <span>{L(i18n.language, 'Carreira ano a ano', 'Career year by year', 'Carrière année par année', 'Carrera año por año')}</span>
+            <span className="hidden sm:inline text-[var(--muted)] font-medium">
               {selectedEra
-                ? `✦ ${L(i18n.language, 'TEMPORADA', 'SEASON', 'SAISON', 'TEMPORADA')} ${selectedEra.year} ${L(i18n.language, 'SELECIONADA • CLIQUE PARA ALTERNAR OU FECHAR', 'SELECTED • CLICK TO TOGGLE OR CLOSE', 'SÉLECTIONNÉE • CLIQUER POUR FERMER', 'SELECCIONADA • CLIC PARA ALTERNAR O CERRAR')}`
-                : L(i18n.language, 'CLIQUE NO ANO PARA EXIBIR AS LUTAS ⇄', 'CLICK A YEAR TO VIEW BOUTS ⇄', 'CLIQUEZ SUR UNE ANNÉE POUR VOIR LES COMBATS ⇄', 'HAZ CLIC EN UN AÑO PARA VER LAS PELEAS ⇄')}
+                ? `${L(i18n.language, 'Temporada', 'Season', 'Saison', 'Temporada')} ${selectedEra.year} ${L(i18n.language, 'aberta. Clique de novo para fechar', 'open. Click again to close', 'ouverte. Cliquez à nouveau pour fermer', 'abierta. Haz clic de nuevo para cerrar')}`
+                : L(i18n.language, 'Escolha um ano para ver as lutas', 'Pick a year to see the fights', 'Choisissez une année pour voir les combats', 'Elige un año para ver las peleas')}
             </span>
           </div>
 
           {timelineEras.length === 0 ? (
-            <p className="font-sans text-xs text-neutral-400 py-2">
+            <p className="font-sans text-xs text-[var(--muted)] py-2">
               {L(i18n.language, 'Sem histórico de temporadas registrado.', 'No seasonal career history recorded.', 'Aucun historique de saisons enregistré.', 'No hay historial de temporadas registrado.')}
             </p>
           ) : (

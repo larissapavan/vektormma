@@ -125,7 +125,7 @@ export function SeasonTimeline({
   const maskImage = `linear-gradient(to right, ${fadeLeft}, ${fadeRight})`
 
   const arrowClass =
-    'absolute top-1/2 z-20 hidden h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-[#0C0D14] text-neutral-300 shadow-lg transition hover:border-amber-400/60 hover:text-amber-400 cursor-pointer sm:flex'
+    'absolute top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center border-[1.5px] border-[var(--ink)] bg-[var(--mat)] text-[var(--ink)] transition-colors hover:bg-[var(--ink)] hover:text-[var(--on-ink)] cursor-pointer sm:flex'
 
   return (
     <div className="relative">
@@ -181,10 +181,10 @@ export function SeasonTimeline({
               <span
                 className={`font-display text-sm font-bold tabular-nums transition-colors sm:text-base ${
                   isSelected
-                    ? 'text-amber-400'
+                    ? 'text-[var(--ink)] underline decoration-[3px] underline-offset-4'
                     : era.hasTitleFight
-                      ? 'text-amber-400/90'
-                      : 'text-neutral-300 group-hover:text-white group-focus-visible:text-white'
+                      ? 'text-[var(--gold)]'
+                      : 'text-[var(--muted)] group-hover:text-[var(--ink)] group-focus-visible:text-[var(--ink)]'
                 }`}
               >
                 {era.year}
@@ -192,24 +192,24 @@ export function SeasonTimeline({
 
               <span className="relative my-1.5 flex h-4 w-full items-center justify-center">
                 <span
-                  className={`absolute h-px bg-white/15 ${isFirst ? 'left-1/2' : 'left-0'} ${isLast ? 'right-1/2' : 'right-0'}`}
+                  className={`absolute h-px bg-[var(--rule)] ${isFirst ? 'left-1/2' : 'left-0'} ${isLast ? 'right-1/2' : 'right-0'}`}
                 />
                 <span
                   className={`relative rounded-full transition-all duration-200 ${
                     isSelected
-                      ? 'h-3.5 w-3.5 bg-amber-400 ring-4 ring-amber-400/30'
+                      ? 'h-3.5 w-3.5 bg-[var(--gold-fill)] ring-2 ring-[var(--ink)] ring-offset-2 ring-offset-[var(--mat)]'
                       : era.hasTitleFight
-                        ? 'h-3 w-3 bg-amber-400 ring-4 ring-amber-400/15 group-hover:ring-amber-400/30'
+                        ? 'h-3 w-3 bg-[var(--gold-fill)]'
                         : allWins
-                          ? 'h-2.5 w-2.5 bg-emerald-400 ring-2 ring-emerald-400/20 group-hover:ring-emerald-400/40'
-                          : 'h-2.5 w-2.5 bg-white/35 group-hover:bg-white group-focus-visible:bg-white'
+                          ? 'h-2.5 w-2.5 bg-[var(--positive)]'
+                          : 'h-2.5 w-2.5 bg-[var(--muted)] group-hover:bg-[var(--ink)] group-focus-visible:bg-[var(--ink)]'
                   }`}
                 />
               </span>
 
               <span
-                className={`font-mono text-[10px] font-semibold tabular-nums transition-colors ${
-                  isSelected ? 'text-white' : 'text-neutral-400 group-hover:text-neutral-200'
+                className={`text-label font-semibold tabular-nums transition-colors ${
+                  isSelected ? 'text-[var(--ink)]' : 'text-[var(--muted)] group-hover:text-[var(--ink)]'
                 }`}
               >
                 {era.wins}
@@ -217,7 +217,7 @@ export function SeasonTimeline({
                 {L(lang, 'D', 'L', 'D', 'D')}
               </span>
 
-              <span className="mt-0.5 flex min-h-[26px] items-start justify-center text-center font-mono text-[9px] font-semibold leading-tight tracking-tight text-amber-400/90 sm:text-[10px]">
+              <span className="mt-0.5 flex min-h-[26px] items-start justify-center text-center text-label font-semibold leading-tight text-[var(--gold)]">
                 {era.milestone && (
                   <span className="inline-flex items-start gap-0.5">
                     {era.hasTitleFight && <Trophy className="mt-px h-2.5 w-2.5 shrink-0" />}
