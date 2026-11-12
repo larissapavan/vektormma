@@ -116,26 +116,28 @@ export function Landing() {
       </div>
 
       {/* 4. Footer. */}
-      <footer className="mt-14 border-t-[3px] border-[var(--ink)] sm:mt-16">
-        <div className={`${COLUMN} pb-10 pt-8`}>
-          <div className="flex flex-wrap items-start justify-between gap-x-10 gap-y-5">
-            <div>
-              <p className="font-display text-[28px] leading-none">
+      <footer className="mt-10 border-t-[3px] border-[var(--ink)] sm:mt-12">
+        <div className={`${COLUMN} pb-5 pt-3`}>
+          <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-1">
+            <p className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+              <span className="font-display text-[22px] leading-none">
                 <span className="font-black">Vektor</span> <span className="font-medium">MMA</span>
-              </p>
-              <p className="mt-1.5 text-[15px] text-[var(--muted)]">
+              </span>
+              <span className="text-sm text-[var(--muted)]">
                 {L(lang, 'Estatísticas e previsões de esportes de combate.', 'Combat sports stats and predictions.', 'Statistiques et pronostics de sports de combat.', 'Estadísticas y pronósticos de deportes de combate.')}
-              </p>
+              </span>
+            </p>
+            {/* Both link lists share one line; "About" is already in the site links. */}
+            <div className="flex flex-wrap items-center gap-x-6">
+              <nav aria-label={L(lang, 'Links do rodapé', 'Footer links', 'Liens de bas de page', 'Enlaces del pie de página')} className="flex flex-wrap gap-x-6 text-[15px] font-semibold">
+                <Link to="/data" className="inline-flex min-h-11 items-center decoration-2 underline-offset-[6px] hover:underline">{L(lang, 'Dados', 'Data', 'Données', 'Datos')}</Link>
+                <Link to="/model" className="inline-flex min-h-11 items-center decoration-2 underline-offset-[6px] hover:underline">{L(lang, 'Como o modelo funciona', 'How the model works', 'Comment marche le modèle', 'Cómo funciona el modelo')}</Link>
+                <Link to="/track-record" className="inline-flex min-h-11 items-center decoration-2 underline-offset-[6px] hover:underline">{L(lang, 'Desempenho', 'Track record', 'Bilan', 'Desempeño')}</Link>
+              </nav>
+              <SiteLinks className="text-[15px] font-semibold" />
             </div>
-            <nav aria-label={L(lang, 'Links do rodapé', 'Footer links', 'Liens de bas de page', 'Enlaces del pie de página')} className="flex flex-wrap gap-x-6 text-[15px] font-semibold">
-              <Link to="/about" className="inline-flex min-h-11 items-center decoration-2 underline-offset-[6px] hover:underline">{L(lang, 'Sobre', 'About', 'À propos', 'Acerca de')}</Link>
-              <Link to="/data" className="inline-flex min-h-11 items-center decoration-2 underline-offset-[6px] hover:underline">{L(lang, 'Dados', 'Data', 'Données', 'Datos')}</Link>
-              <Link to="/model" className="inline-flex min-h-11 items-center decoration-2 underline-offset-[6px] hover:underline">{L(lang, 'Como o modelo funciona', 'How the model works', 'Comment marche le modèle', 'Cómo funciona el modelo')}</Link>
-              <Link to="/track-record" className="inline-flex min-h-11 items-center decoration-2 underline-offset-[6px] hover:underline">{L(lang, 'Desempenho', 'Track record', 'Bilan', 'Desempeño')}</Link>
-            </nav>
           </div>
-          <SiteLinks className="mt-2 text-[15px] font-semibold" />
-          <div className="mt-6 flex flex-wrap items-center justify-between gap-x-10 gap-y-3">
+          <div className="mt-1 flex flex-wrap items-center justify-between gap-x-8 gap-y-1">
             <p className="max-w-[84ch] text-sm leading-6 text-[var(--muted)]">
               {L(
                 lang,

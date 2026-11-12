@@ -116,21 +116,21 @@ export function MainLayout({ children }: { children: ReactNode }) {
           {showLoading ? <ServerLoadingState /> : children}
         </motion.main>
         {landing ? null : (
-          <footer className="mt-16 border-t-[3px] border-[var(--ink)] pb-10 pt-8 sm:mt-24">
-            <div className="flex flex-wrap items-start justify-between gap-x-10 gap-y-5">
-              <div>
-                <p className="font-display text-[28px] leading-none text-[var(--ink)]">
+          <footer className="mt-10 border-t-[3px] border-[var(--ink)] pb-5 pt-3 sm:mt-12">
+            <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-1">
+              <p className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+                <span className="font-display text-[22px] leading-none text-[var(--ink)]">
                   <span className="font-black">Vektor</span> <span className="font-medium">MMA</span>
-                </p>
-                <p className="mt-1.5 text-[15px] text-[var(--muted)]">{t('footer.tagline', 'Combat sports analytics and predictions.')}</p>
+                </span>
+                <span className="text-sm text-[var(--muted)]">{t('footer.tagline', 'Combat sports analytics and predictions.')}</span>
                 {footerDate ? (
-                  <p className="mt-1.5 text-[15px] text-[var(--muted)]">{t('footer.dataUpTo', { date: footerDate, defaultValue: `Data up to ${footerDate}` })}</p>
+                  <span className="text-sm text-[var(--muted)]">{t('footer.dataUpTo', { date: footerDate, defaultValue: `Data up to ${footerDate}` })}</span>
                 ) : null}
-              </div>
+              </p>
               <SiteLinks className="text-[15px] font-semibold" />
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center justify-between gap-x-10 gap-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-x-8">
               <p className="max-w-[84ch] text-sm leading-6 text-[var(--muted)]">
                 <Link to="/about" className="underline decoration-1 underline-offset-4 hover:decoration-2">
                   {t('footer.disclaimer', {
