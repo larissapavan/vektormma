@@ -41,7 +41,7 @@ export function OrgFightLine({ fight, knownOpponent, onSelect }: { fight: FightR
               type="button"
               onClick={() => onSelect(fight.opponent)}
               aria-label={L(i18n.language, `${fight.opponent}. Ver perfil`, `${fight.opponent}. View profile`, `${fight.opponent}. Voir le profil`, `${fight.opponent}. Ver perfil`)}
-              className="font-semibold underline decoration-2 underline-offset-2 hover:bg-[#F2C230] hover:text-[#0E0E0E]"
+              className="font-semibold underline decoration-2 underline-offset-2 hover:bg-[var(--gold-fill)] hover:text-[#10151d]"
             >
               {fight.opponent}
             </button>
@@ -49,7 +49,7 @@ export function OrgFightLine({ fight, knownOpponent, onSelect }: { fight: FightR
             fight.opponent
           )}
           {fight.title_fight ? (
-            <span className="ml-1.5 bg-[#F2C230] px-1 text-[10px] font-bold uppercase text-[#0E0E0E]">
+            <span className="ml-1.5 bg-[var(--gold-fill)] px-1 text-[10px] font-bold uppercase text-[#10151d]">
               {L(i18n.language, 'Cinturão', 'Title', 'Titre', 'Título')}
             </span>
           ) : null}

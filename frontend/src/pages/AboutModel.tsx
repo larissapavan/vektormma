@@ -187,7 +187,7 @@ export function AboutModel() {
                 >
                   <div className="flex items-center justify-between gap-4">
                     <span className="inline-flex items-center gap-2">
-                      <span className="rounded-xl bg-[#C8102E]/10 p-1.5 text-[var(--accent-red)]">
+                      <span className="rounded-xl bg-[var(--panel)] p-1.5 text-[var(--accent-red)]">
                         <Icon className="h-4 w-4" />
                       </span>
                       {L(i18n.language, labelPt, label, labelFr, labelEs)}
@@ -218,7 +218,7 @@ export function AboutModel() {
                       <button
                         type="button"
                         onClick={() => void handleCopyLink(href)}
-                        className="ghost-action inline-flex items-center justify-center rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#C8102E]"
+                        className="ghost-action inline-flex items-center justify-center rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--ink)]"
                       >
                         {copiedLink === href ? L(i18n.language, 'Copiado', 'Copied', 'Copié', 'Copiado') : L(i18n.language, 'Copiar URL', 'Copy URL', 'Copier l’URL', 'Copiar URL')}
                       </button>
@@ -252,8 +252,8 @@ export function AboutModel() {
 
           <article className="border-t-[3px] border-[var(--ink)] pt-5">
             <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Aviso importante', 'Important note', 'Note importante', 'Nota importante')}</p>
-            <div className="mt-3 rounded-2xl border border-[#C8102E]/20 bg-[#C8102E]/8 p-3">
-              <div className="mb-2 flex items-center gap-2 text-[#C8102E]">
+            <div className="mt-3 rounded-2xl border border-[var(--rule)] bg-[var(--panel)] p-3">
+              <div className="mb-2 flex items-center gap-2 text-[var(--ink)]">
                 <AlertTriangle className="h-4 w-4" />
                 <span className="type-tech text-xs font-semibold uppercase tracking-[0.18em]">
                   {L(i18n.language, 'Aviso legal', 'Use disclaimer', 'Avertissement', 'Aviso legal')}
@@ -300,7 +300,7 @@ function InfoCard({
 }) {
   return (
     <article className="surface-card rounded-[20px] p-3 transition duration-300 hover:-translate-y-0.5 hover:border-[var(--border-subtle)]">
-      <div className="inline-flex rounded-xl bg-[#C8102E]/10 p-2.5 text-[var(--accent-red)]">
+      <div className="inline-flex rounded-xl bg-[var(--panel)] p-2.5 text-[var(--accent-red)]">
         <Icon className="h-4 w-4" />
       </div>
       <h2 className="section-title mt-3 ">{title}</h2>

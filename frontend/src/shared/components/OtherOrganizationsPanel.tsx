@@ -66,7 +66,7 @@ function OrgHistory({ item }: { item: OtherOrganization }) {
           type="button"
           onClick={() => setAll((current) => !current)}
           aria-expanded={all}
-          className="ghost-action mt-2 px-3 py-1.5 text-label font-bold text-[#FFFFFF]"
+          className="ghost-action mt-2 px-3 py-1.5 text-label font-bold text-[var(--ink)]"
         >
           {all
             ? L(i18n.language, 'Mostrar menos', 'Show fewer', 'Afficher moins', 'Mostrar menos')

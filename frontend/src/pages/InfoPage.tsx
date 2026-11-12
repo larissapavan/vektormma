@@ -10,7 +10,7 @@ const EMAIL = (import.meta.env.VITE_CONTACT_EMAIL as string | undefined)?.trim()
 function LinkItem({ link }: { link: InfoLink }) {
   const { i18n } = useTranslation()
   const className =
-    'inline-flex items-center gap-1 text-[var(--text-main)] underline decoration-[#C8102E]/70 underline-offset-4 transition hover:decoration-[#C8102E] focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C8102E]'
+    'inline-flex items-center gap-1 text-[var(--text-main)] underline decoration-[var(--rule)] underline-offset-4 transition hover:decoration-[var(--ink)] focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]'
   if (link.href.startsWith('/')) {
     return (
       <Link to={link.href} className={className}>

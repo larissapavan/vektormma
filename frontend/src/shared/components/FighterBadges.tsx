@@ -30,9 +30,9 @@ export function FighterBadges({ badges, variant = 'short', className = '' }: Fig
             title={label}
             className={`border-2 border-[var(--rule)] px-1.5 py-px text-label font-bold ${
               CHAMPION_SEALS.has(key)
-                ? 'bg-[#C9CDD3] text-[#0E0E0E]'
+                ? 'bg-[var(--rule)] text-[#10151d]'
                 : info.honor
-                  ? 'bg-[#F2C230] text-[#0E0E0E]'
+                  ? 'bg-[var(--gold-fill)] text-[#10151d]'
                   : 'bg-[var(--surface-3)] text-[var(--text-main)]'
             }`}
           >
@@ -109,14 +109,14 @@ export function TitleFightBadge({ fight, className = '' }: TitleFightBadgeProps)
     )
 
     return (
-      <span className={`${base} bg-[#1F4E9C] text-[var(--ink)]`}>
+      <span className={`${base} bg-[var(--ink)] text-[var(--ink)]`}>
         {label}
       </span>
     )
   }
   if (fight.bmf_title) {
     return (
-      <span className={`${base} bg-[#C9CDD3] text-[#0E0E0E]`}>
+      <span className={`${base} bg-[var(--rule)] text-[#10151d]`}>
         {L(i18n.language, 'Disputa de cinturão BMF', 'BMF title fight', 'Combat de titre BMF', 'Pelea por el cinturón BMF')}
       </span>
     )
@@ -131,5 +131,5 @@ export function TitleFightBadge({ fight, className = '' }: TitleFightBadgeProps)
     divEs ? `Pelea por el título • ${divEs}` : 'Pelea por el título',
   )
 
-  return <span className={`${base} bg-[var(--gold-fill)] text-[#0E0E0E]`}>{label}</span>
+  return <span className={`${base} bg-[var(--gold-fill)] text-[#10151d]`}>{label}</span>
 }

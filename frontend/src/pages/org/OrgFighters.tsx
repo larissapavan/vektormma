@@ -521,7 +521,7 @@ function ScrollButton({
       onClick={onClick}
       disabled={!visible}
       tabIndex={visible ? 0 : -1}
-      className={`absolute top-1/2 z-20 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] transition hover:text-[#F2C230] ${
+      className={`absolute top-1/2 z-20 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] transition hover:text-[var(--gold)] ${
         direction === 'left' ? 'left-0.5' : 'right-0.5'
       } ${visible ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
     >
@@ -555,7 +555,7 @@ function FighterCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
     >
-      <div className={`h-1 w-full ${fighter.belt ? 'bg-[#F2C230]' : 'bg-[var(--accent-red)]'}`} />
+      <div className={`h-1 w-full ${fighter.belt ? 'bg-[var(--gold-fill)]' : 'bg-[var(--accent-red)]'}`} />
       <div className="flex flex-1 flex-col p-4">
         <div className="grid grid-cols-1 content-start justify-items-center gap-3 text-center sm:min-h-[160px] sm:grid-cols-[72px_1fr] sm:justify-items-stretch sm:text-left">
           <FighterAvatar
@@ -588,7 +588,7 @@ function FighterCard({
 
             <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-label max-sm:justify-center">
               {fighter.belt ? (
-                <span className="rounded bg-[#F2C230] px-1.5 py-0.5 font-bold uppercase text-[#0E0E0E]">
+                <span className="rounded bg-[var(--gold-fill)] px-1.5 py-0.5 font-bold uppercase text-[#10151d]">
                   {interim ? L(i18n.language, 'Interino', 'Interim', 'Intérimaire', 'Interino') : L(i18n.language, 'Campeão', 'Champion', 'Champion', 'Campeón')}
                 </span>
               ) : fighter.ranking ? (

@@ -213,8 +213,8 @@ export function HeadToHead() {
               disabled={!fighterAName && !fighterBName}
               title={L(i18n.language, 'Inverter lutadores', 'Swap fighters', 'Inverser les combattants', 'Intercambiar peleadores')}
               aria-label={L(i18n.language, 'Inverter lutadores', 'Swap fighters', 'Inverser les combattants', 'Intercambiar peleadores')}
-              className={`type-display group relative inline-flex items-center justify-center rounded-full border border-[#C8102E]/25 bg-[#C8102E]/10 px-3 py-1.5 text-xl font-bold uppercase text-[#C8102E] transition ${
-                fighterAName || fighterBName ? 'cursor-pointer hover:bg-[#C8102E] hover:text-white' : 'cursor-default'
+              className={`type-display group relative inline-flex items-center justify-center rounded-full border border-[var(--rule)] bg-[var(--panel)] px-3 py-1.5 text-xl font-bold uppercase text-[var(--ink)] transition ${
+                fighterAName || fighterBName ? 'cursor-pointer hover:bg-[var(--ink)] hover:text-white' : 'cursor-default'
               }`}
             >
               <span className={fighterAName || fighterBName ? 'group-hover:opacity-0 transition-opacity' : ''}>{t('common.vs')}</span>
@@ -298,18 +298,18 @@ function HeadToHeadResultView({ result, onOpenProfile }: { result: HeadToHeadRes
           <button
             type="button"
             onClick={() => onOpenProfile(result.fighter_a)}
-            className="type-display cursor-pointer truncate text-right text-lg font-bold uppercase text-[var(--text-main)] hover:text-[#C8102E] hover:underline sm:text-xl"
+            className="type-display cursor-pointer truncate text-right text-lg font-bold uppercase text-[var(--text-main)] hover:text-[var(--ink)] hover:underline sm:text-xl"
           >
             {result.fighter_a}
           </button>
-          <p className="data-value text-3xl font-bold text-[#C8102E] sm:text-4xl">
+          <p className="data-value text-3xl font-bold text-[var(--ink)] sm:text-4xl">
             {result.fighter_a_wins}-{result.fighter_b_wins}
             {result.no_contests ? `-${result.no_contests}` : ''}
           </p>
           <button
             type="button"
             onClick={() => onOpenProfile(result.fighter_b)}
-            className="type-display cursor-pointer truncate text-left text-lg font-bold uppercase text-[var(--text-main)] hover:text-[#C8102E] hover:underline sm:text-xl"
+            className="type-display cursor-pointer truncate text-left text-lg font-bold uppercase text-[var(--text-main)] hover:text-[var(--ink)] hover:underline sm:text-xl"
           >
             {result.fighter_b}
           </button>
@@ -333,7 +333,7 @@ function NetworkPathCard({ result, onOpenProfile }: { result: HeadToHeadResponse
 
   return (
     <article className="surface-card rounded-[20px] p-3 sm:p-4">
-      <div className="flex items-center gap-2 text-[#C8102E]">
+      <div className="flex items-center gap-2 text-[var(--ink)]">
         <Share2 className="h-4 w-4" />
         <p className="broadcast-label text-[11px]">
           {L(i18n.language, `Conexão pela rede de lutas • ${degrees} grau${degrees === 1 ? '' : 's'} de separação`, `Bout network path • ${degrees} degree${degrees === 1 ? '' : 's'} of separation`, `Réseau de combats • ${degrees} degré${degrees === 1 ? '' : 's'} de séparation`, `Ruta en la red de peleas • ${degrees} ${degrees === 1 ? 'grado' : 'grados'} de separación`)}
@@ -347,8 +347,8 @@ function NetworkPathCard({ result, onOpenProfile }: { result: HeadToHeadResponse
               <button
                 type="button"
                 onClick={() => onOpenProfile(name)}
-                className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.06em] transition hover:border-[#F2C230] ${
-                  isEndpoint ? 'border-[#C8102E]/25 bg-[#C8102E]/10 text-[var(--accent-red)]' : 'border-[var(--line-soft)] bg-[var(--surface-3)] text-[var(--text-main)]'
+                className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.06em] transition hover:border-[var(--gold)] ${
+                  isEndpoint ? 'border-[var(--rule)] bg-[var(--panel)] text-[var(--accent-red)]' : 'border-[var(--line-soft)] bg-[var(--surface-3)] text-[var(--text-main)]'
                 }`}
               >
                 {name}
@@ -366,7 +366,7 @@ function CommonOpponentsCard({ result }: { result: HeadToHeadResponse }) {
   const { i18n } = useTranslation()
   return (
     <article className="surface-card rounded-[20px] p-3 sm:p-4">
-      <div className="flex items-center gap-2 text-[#C8102E]">
+      <div className="flex items-center gap-2 text-[var(--ink)]">
         <Users className="h-4 w-4" />
         <p className="broadcast-label text-[11px]">{L(i18n.language, `Adversários em comum (${result.common_opponents.length})`, `Common opponents (${result.common_opponents.length})`, `Adversaires communs (${result.common_opponents.length})`, `Rivales en común (${result.common_opponents.length})`)}</p>
       </div>
@@ -393,7 +393,7 @@ function ResultChip({ result }: { result: 'win' | 'loss' | null }) {
 
   if (result === 'win') {
     return (
-      <span className="type-tech justify-self-end rounded-full border border-[#C8102E]/25 bg-[#C8102E]/10 px-2 py-0.5 text-[11px] font-bold uppercase text-[#C8102E]">
+      <span className="type-tech justify-self-end rounded-full border border-[var(--rule)] bg-[var(--panel)] px-2 py-0.5 text-[11px] font-bold uppercase text-[var(--ink)]">
         {L(i18n.language, 'Vitória', 'Win', 'Victoire', 'Victoria')}
       </span>
     )
@@ -435,7 +435,7 @@ function MeetingRow({ meeting, fighterA, fighterB }: { meeting: FightRecord; fig
       <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
         {winnerName ? (
           <span className="inline-flex items-center gap-1.5 font-semibold text-[var(--text-main)]">
-            <Trophy className="h-4 w-4 text-[#C8102E]" />
+            <Trophy className="h-4 w-4 text-[var(--ink)]" />
             {winnerName} {L(i18n.language, 'venceu', 'won', 'a gagné', 'ganó')}
           </span>
         ) : (

@@ -273,7 +273,7 @@ function RankingRow({
         {profile ? <FighterBadges badges={badgesForRankings(profile.badges)} className="mt-1" /> : null}
         <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[var(--text-muted)]">
           {isChampion ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-[#F2C230] px-2 py-0.5 text-xs font-bold uppercase tracking-[0.06em] text-[#0E0E0E]">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--gold-fill)] px-2 py-0.5 text-xs font-bold uppercase tracking-[0.06em] text-[#10151d]">
               <Trophy className="h-3.5 w-3.5" /> {t('rankings.champion')}
             </span>
           ) : null}

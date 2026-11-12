@@ -32,7 +32,7 @@ export function DivisionMatrixCard({ category }: { category: string }) {
   return (
     <section aria-label={L(i18n.language, 'Todos contra todos na categoria', 'Division round robin', 'Tous contre tous dans la catégorie', 'Todos contra todos en la división')} className="surface-card rounded-[20px] p-3 sm:p-4">
       <div className="flex items-center gap-2">
-        <Swords className="h-4 w-4 text-[#C8102E]" />
+        <Swords className="h-4 w-4 text-[var(--ink)]" />
         <h2 className="broadcast-label text-xs text-[var(--text-main)]">
           {L(i18n.language, 'Quem o modelo favorece nesta categoria?', 'Who does the model like in this division?', 'Qui le modèle favorise-t-il dans cette catégorie ?', '¿A quién prefiere el modelo en esta división?')}
         </h2>
@@ -84,7 +84,7 @@ function Standings({ matrix }: { matrix: DivisionMatrix }) {
               <span className="type-num font-bold">{percent(row.average_win_probability)}</span>
             </div>
             <div className="mt-1 h-3 border-2 border-[var(--rule)] bg-[var(--surface-3)]">
-              <div className="h-full bg-[#C8102E]" style={{ width: `${Math.round(row.average_win_probability * 100)}%` }} />
+              <div className="h-full bg-[var(--ink)]" style={{ width: `${Math.round(row.average_win_probability * 100)}%` }} />
             </div>
           </li>
         ))}

@@ -31,7 +31,7 @@ export function ShapFactorBars({
           <h2 className="mt-0.5 text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{L(i18n.language, 'Fatores decisivos do combate', 'Key matchup factors', 'Facteurs décisifs du combat', 'Factores decisivos del enfrentamiento')}</h2>
         </div>
         <div className="flex flex-wrap items-center gap-3 text-[11px] font-bold uppercase tracking-[0.12em]">
-          <span className="inline-flex items-center gap-1.5 text-[#C8102E]">
+          <span className="inline-flex items-center gap-1.5 text-[var(--red-text)]">
             <span className="h-2 w-2 rounded-full bg-[var(--red)]" />
             {fighterAName}
           </span>
@@ -56,7 +56,7 @@ export function ShapFactorBars({
           const favorsA = factor.impact === fighterAName
           const favorsB = factor.impact === fighterBName
           const color = favorsA ? 'bg-[var(--red)]' : 'bg-[var(--blue)]'
-          const nameColor = favorsA ? 'text-[#C8102E]' : 'text-[var(--blue-text)]'
+          const nameColor = favorsA ? 'text-[var(--red-text)]' : 'text-[var(--blue-text)]'
           const favoredName = favorsA ? fighterAName : favorsB ? fighterBName : factor.impact
           const width = Math.max((factor.magnitude / max) * 100, 8)
           const featureTitle = localizeFeature(factor.feature, i18n.language)

@@ -41,7 +41,7 @@ export function LatestNewsCard({ limit = 6, quiet = false }: { limit?: number; q
           href={UFC_X_URL}
           target="_blank"
           rel="noreferrer"
-          className="ghost-action inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#FFFFFF] transition hover:!bg-[#F2C230] hover:!text-[#0E0E0E]"
+          className="ghost-action inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#FFFFFF] transition hover:!bg-[var(--gold-fill)] hover:!text-[#10151d]"
         >
           {L(i18n.language, 'Seguir @ufc no X', 'Follow @ufc on X', 'Suivre @ufc sur X', 'Seguir a @ufc en X')}
           <ExternalLink className="h-3 w-3" />
@@ -58,7 +58,7 @@ export function LatestNewsCard({ limit = 6, quiet = false }: { limit?: number; q
 
       <p className="theme-muted mt-3 text-xs">
         {L(i18n.language, 'Notícias via ', 'Headlines via ', 'Titres via ', 'Noticias vía ')}
-        <a href={data.source_url} target="_blank" rel="noreferrer" className="font-semibold underline decoration-2 underline-offset-2 hover:bg-[#F2C230] hover:text-[#0E0E0E]">
+        <a href={data.source_url} target="_blank" rel="noreferrer" className="font-semibold underline decoration-2 underline-offset-2 hover:bg-[var(--gold-fill)] hover:text-[#10151d]">
           {data.source_name}
         </a>
         {L(i18n.language, '. Cada história abre no site oficial da fonte.', '. Each story opens on their site.', '. Chaque article s’ouvre sur le site de la source.', '. Cada historia se abre en el sitio oficial de la fuente.')}
@@ -85,7 +85,7 @@ function NewsRow({ item, quiet = false }: { item: NewsItem; quiet?: boolean }) {
           <Newspaper className={`m-auto text-[var(--text-muted)] ${quiet ? 'mt-3 h-4 w-4' : 'mt-6 h-6 w-6'}`} />
         )}
         {item.kind === 'video' ? (
-          <span className="absolute bottom-0 left-0 inline-flex items-center gap-1 bg-[#C8102E] px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] text-white">
+          <span className="absolute bottom-0 left-0 inline-flex items-center gap-1 bg-[var(--ink)] px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] text-white">
             <Play className="h-2.5 w-2.5 fill-current" />
             {L(i18n.language, 'Vídeo', 'Video', 'Vidéo', 'Video')}
           </span>

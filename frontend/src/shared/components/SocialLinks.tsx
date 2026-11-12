@@ -70,17 +70,17 @@ export function SocialLinks({ className = 'flex items-center gap-1.5', iconClass
     {
       ...SOCIAL_LINKS.youtube,
       icon: YouTubeIcon,
-      hoverColor: 'hover:text-[#FF0000] hover:bg-[#FF0000]/10',
+      hoverColor: 'hover:text-[var(--ink)] hover:bg-[var(--panel)]',
     },
     {
       ...SOCIAL_LINKS.instagram,
       icon: InstagramIcon,
-      hoverColor: 'hover:text-[#E4405F] hover:bg-[#E4405F]/10',
+      hoverColor: 'hover:text-[var(--ink)] hover:bg-[var(--panel)]',
     },
     {
       ...SOCIAL_LINKS.tiktok,
       icon: TikTokIcon,
-      hoverColor: 'hover:text-[#25F4EE] hover:bg-[#25F4EE]/10',
+      hoverColor: 'hover:text-[var(--ink)] hover:bg-[var(--panel)]',
     },
   ]
 
@@ -96,7 +96,7 @@ export function SocialLinks({ className = 'flex items-center gap-1.5', iconClass
             rel="noreferrer"
             aria-label={`${item.label} (${item.handle})`}
             title={`${item.label}: ${item.handle}`}
-            className={`inline-flex items-center gap-1.5 rounded-lg p-1.5 text-[var(--text-secondary)] transition-colors duration-150 ${item.hoverColor} focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C8102E]`}
+            className={`inline-flex items-center gap-1.5 rounded-lg p-1.5 text-[var(--text-secondary)] transition-colors duration-150 ${item.hoverColor} focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]`}
           >
             <Icon className={iconClassName} />
             {showLabels && <span className="font-mono text-xs font-semibold">{item.label}</span>}

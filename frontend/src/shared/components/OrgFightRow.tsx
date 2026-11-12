@@ -57,7 +57,7 @@ export function OrgFightRow({
             <span className="font-extrabold text-[var(--text-main)]">
               {pick.predicted_winner}
             </span>
-            <span className="rounded bg-[#F2C230] px-1.5 py-0.5 font-mono text-label font-extrabold text-[#0E0E0E]">
+            <span className="rounded bg-[var(--gold-fill)] px-1.5 py-0.5 font-mono text-label font-extrabold text-[#10151d]">
               {Math.round(pick.probability * 100)}%
             </span>
           </div>
@@ -87,7 +87,7 @@ export function OrgSportTag({ discipline }: { discipline: string | null | undefi
 export function OrgTitleBadge({ weightClass }: { weightClass: string | null | undefined }) {
   const { i18n } = useTranslation()
   return (
-    <span className="border-2 border-[var(--rule)] bg-[#F2C230] px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#0E0E0E]">
+    <span className="border-2 border-[var(--rule)] bg-[var(--gold-fill)] px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#10151d]">
       {L(
         i18n.language,
         `Disputa de Cinturão ${weightClass ? `(${getDivisionName(weightClass, 'pt')})` : ''}`,

@@ -755,7 +755,7 @@ export function EditorialFighterDossier({
                               key={bIdx}
                               className="inline-flex items-center gap-1.5 border border-[var(--rule)] bg-[var(--panel)] px-2.5 py-1 text-xs"
                             >
-                              <span className={bout.result === 'win' ? 'text-[var(--positive)] dark:text-[#4ade80] font-bold' : 'text-[#c8102e] dark:text-[#ff4d6a]'}>
+                              <span className={bout.result === 'win' ? 'text-[var(--positive)] dark:text-[#4ade80] font-bold' : 'text-[var(--ink)] dark:text-[var(--ink)]'}>
                                 {bout.result === 'win' ? L(i18n.language, 'V', 'W', 'V', 'V') : L(i18n.language, 'D', 'L', 'D', 'D')}
                               </span>
                               <span className="text-[var(--ink)] font-medium">{bout.opponent}</span>

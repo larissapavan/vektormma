@@ -71,18 +71,18 @@ export function Model() {
                 <ResponsiveContainer width="100%" height="100%" minWidth={280} initialDimension={{ width: 320, height: 210 }}>
                   <BarChart data={baselineChart}>
                     <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
-                    <XAxis dataKey="name" tick={{ fill: '#999999', fontSize: 12 }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: '#999999', fontSize: 12 }} axisLine={false} tickLine={false} />
+                    <XAxis dataKey="name" tick={{ fill: 'var(--muted)', fontSize: 13 }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fill: 'var(--muted)', fontSize: 13 }} axisLine={false} tickLine={false} />
                     <Tooltip
                       contentStyle={{
-                        background: '#111111',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        borderRadius: '14px',
-                        color: '#FFFFFF',
+                        background: 'var(--panel)',
+                        border: '1.5px solid var(--ink)',
+                        borderRadius: '4px',
+                        color: 'var(--ink)',
                       }}
                     />
-                    <Bar dataKey="accuracy" fill="#C8102E" radius={[6, 6, 0, 0]} />
-                    <Bar dataKey="rocAuc" fill="#999999" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="accuracy" fill="var(--ink)" radius={[2, 2, 0, 0]} />
+                    <Bar dataKey="rocAuc" fill="var(--muted)" radius={[2, 2, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -99,16 +99,16 @@ export function Model() {
                   <BarChart data={featurePreview} layout="vertical">
                     <CartesianGrid stroke="rgba(255,255,255,0.06)" horizontal={false} />
                     <XAxis type="number" hide />
-                    <YAxis dataKey="feature" type="category" tick={{ fill: '#999999', fontSize: 12 }} axisLine={false} tickLine={false} width={110} />
+                    <YAxis dataKey="feature" type="category" tick={{ fill: 'var(--muted)', fontSize: 13 }} axisLine={false} tickLine={false} width={110} />
                     <Tooltip
                       contentStyle={{
-                        background: '#111111',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        borderRadius: '14px',
-                        color: '#FFFFFF',
+                        background: 'var(--panel)',
+                        border: '1.5px solid var(--ink)',
+                        borderRadius: '4px',
+                        color: 'var(--ink)',
                       }}
                     />
-                    <Bar dataKey="score" fill="#C8102E" radius={[0, 6, 6, 0]} />
+                    <Bar dataKey="score" fill="var(--ink)" radius={[0, 2, 2, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -155,7 +155,7 @@ function MetricCard({ label, value, compact = false }: { label: string; value: s
   return (
     <article className="metric-tile min-w-0 rounded-2xl p-3">
       <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{label}</p>
-      <p className={`data-value mt-1.5 break-words font-bold text-[#FFFFFF] ${size}`}>{breakCamelCase(value)}</p>
+      <p className={`data-value mt-1.5 break-words font-bold text-[var(--ink)] ${size}`}>{breakCamelCase(value)}</p>
     </article>
   )
 }

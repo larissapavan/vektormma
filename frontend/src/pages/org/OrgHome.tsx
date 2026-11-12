@@ -266,7 +266,7 @@ export function OrgHome() {
             {org.hasChampions ? (
               <Link
                 to={orgPath(org, 'champions')}
-                className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-main)] underline decoration-2 underline-offset-4 hover:bg-[#F2C230] hover:text-[#0E0E0E]"
+                className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-main)] underline decoration-2 underline-offset-4 hover:bg-[var(--gold-fill)] hover:text-[#10151d]"
               >
                 {L(i18n.language, 'Seção completa de campeões', 'Full champions section', 'Section complète des champions', 'Sección completa de campeones')}
                 <ArrowRight className="h-3.5 w-3.5" />
@@ -336,7 +336,7 @@ export function OrgHome() {
                     onClick={() => setSelectedDivision(div)}
                     className={`shrink-0 rounded-lg px-3.5 py-2 text-xs font-black uppercase tracking-[0.08em] transition-all duration-150 ${
                       isSelected
-                        ? 'bg-[#F2C230] text-[#0E0E0E] ring-2 ring-[#F2C230] scale-[1.02]'
+                        ? 'bg-[var(--gold-fill)] text-[#10151d] ring-2 ring-[var(--gold)] scale-[1.02]'
                         : 'border border-[var(--border-subtle)] bg-[var(--surface-3)] text-[var(--text-secondary)] hover:border-[var(--text-main)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-main)]'
                     }`}
                   >
@@ -411,7 +411,7 @@ export function OrgHome() {
               'Les prévisions, le face-à-face et le bilan des pronostics restent pour l’instant limités à l’UFC : le modèle est entraîné sur des combats UFC.',
               'Los pronósticos, el cara a cara y el historial de aciertos son solo de la UFC por ahora: el modelo se entrena con peleas de la UFC.',
             )}{' '}
-        <Link to={org.hasPredictions ? orgPath(org, 'predictor') : '/predictor'} className="font-semibold underline decoration-2 underline-offset-2 hover:bg-[#F2C230] hover:text-[#0E0E0E]">
+        <Link to={org.hasPredictions ? orgPath(org, 'predictor') : '/predictor'} className="font-semibold underline decoration-2 underline-offset-2 hover:bg-[var(--gold-fill)] hover:text-[#10151d]">
           {org.hasPredictions
             ? L(i18n.language, `Simular lutas ${orgPt(org, 'em')}`, `Try the ${org.shortName} predictor`, `Simuler des combats ${org.shortName}`, `Probar el pronosticador de ${orgEs(org)}`)
             : L(i18n.language, 'Simular lutas no UFC', 'Try the UFC predictor', 'Simuler des combats UFC', 'Probar el pronosticador de la UFC')}

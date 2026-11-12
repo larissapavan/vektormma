@@ -290,7 +290,7 @@ export function FighterSelect({
                       setOnlyOpponents((value) => !value)
                       setActiveIndex(0)
                     }}
-                    className="type-tech ghost-action theme-text shrink-0 px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] hover:!bg-[#F2C230] hover:!text-[#0E0E0E]"
+                    className="type-tech ghost-action theme-text shrink-0 px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] hover:!bg-[var(--gold-fill)] hover:!text-[#10151d]"
                   >
                     {onlyOpponents
                       ? L(i18n.language, 'Ver todos os lutadores', 'Show all fighters', 'Voir tous les combattants', 'Ver todos los peleadores')
@@ -298,7 +298,7 @@ export function FighterSelect({
                   </button>
                 ) : null}
                 {selectedFighter ? (
-                  <span className={`type-tech rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${styles.border} ${corner === 'blue' ? 'bg-[#2F5FA8]/10' : 'bg-[#C8102E]/10'} ${styles.accent}`}>
+                  <span className={`type-tech rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${styles.border} ${corner === 'blue' ? 'bg-[var(--blue)]/10' : 'bg-[var(--red)]/10'} ${styles.accent}`}>
                     {L(i18n.language, 'Selecionado:', 'Selected:', 'Sélectionné :', 'Seleccionado:')} {selectedFighter.name}
                   </span>
                 ) : null}
@@ -335,7 +335,7 @@ export function FighterSelect({
                           onClick={() => selectFighter(fighter)}
                           className={`selector-option group grid w-full grid-cols-[56px_1fr] gap-3 rounded-2xl border px-3 py-3 text-left transition duration-150 sm:grid-cols-[64px_1fr_auto] ${
                             isActive ? 'selector-option-active' : ''
-                          } ${isSelected ? (corner === 'blue' ? 'ring-1 ring-[#2F5FA8]/45' : 'ring-1 ring-[#C8102E]/45') : ''} ${isDisabled ? 'cursor-not-allowed opacity-45' : ''}`}
+                          } ${isSelected ? (corner === 'blue' ? 'ring-1 ring-[var(--blue)]/45' : 'ring-1 ring-[var(--red)]/45') : ''} ${isDisabled ? 'cursor-not-allowed opacity-45' : ''}`}
                         >
                           <PickerAvatar
                             fighter={fighter}
@@ -349,7 +349,7 @@ export function FighterSelect({
                                 {fighter.name}
                               </span>
                               {isSelected ? (
-                                <span className={`type-tech rounded-full border px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.12em] ${styles.border} ${corner === 'blue' ? 'bg-[#2F5FA8]/10' : 'bg-[#C8102E]/10'} ${styles.accent}`}>
+                                <span className={`type-tech rounded-full border px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.12em] ${styles.border} ${corner === 'blue' ? 'bg-[var(--blue)]/10' : 'bg-[var(--red)]/10'} ${styles.accent}`}>
                                   {L(i18n.language, 'Selecionado', 'Selected', 'Sélectionné', 'Seleccionado')}
                                 </span>
                               ) : null}
@@ -361,7 +361,7 @@ export function FighterSelect({
                               <span className="selector-chip">{L(i18n.language, 'Cartel:', 'Record:', 'Palmarès :', 'Récord:')} {formatRecord(fighter)}</span>
                               <span className="selector-chip">{stanceDisplay}</span>
                               {ranking ? (
-                                <span className={`rounded-full border px-2.5 py-1 ${styles.border} ${corner === 'blue' ? 'bg-[#2F5FA8]/10' : 'bg-[#C8102E]/10'} ${styles.accent}`}>
+                                <span className={`rounded-full border px-2.5 py-1 ${styles.border} ${corner === 'blue' ? 'bg-[var(--blue)]/10' : 'bg-[var(--red)]/10'} ${styles.accent}`}>
                                   {ranking}
                                 </span>
                               ) : null}

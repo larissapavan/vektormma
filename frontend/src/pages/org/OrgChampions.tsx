@@ -385,7 +385,7 @@ function CurrentChampionDivisionCard({
                 />
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="inline-flex items-center gap-1 border border-transparent bg-[#F2C230] px-2 py-0.5 text-label font-black uppercase tracking-[0.08em] text-[#0E0E0E]">
+                    <span className="inline-flex items-center gap-1 border border-transparent bg-[var(--gold-fill)] px-2 py-0.5 text-label font-black uppercase tracking-[0.08em] text-[#10151d]">
                       <Crown className="h-3 w-3" aria-hidden="true" />
                       {isArchived
                         ? L(i18n.language, 'Último campeão', 'Final champion', 'Dernier champion', 'Último campeón')
@@ -447,7 +447,7 @@ function CurrentChampionDivisionCard({
                 <button
                   type="button"
                   onClick={() => onOpenFighter(interimEntry.fighter)}
-                  className="text-xs font-extrabold text-[var(--text-main)] underline decoration-2 underline-offset-2 hover:text-[#F2C230]"
+                  className="text-xs font-extrabold text-[var(--text-main)] underline decoration-2 underline-offset-2 hover:text-[var(--gold)]"
                 >
                   {interimEntry.fighter}
                 </button>
@@ -554,7 +554,7 @@ export function DivisionHistoryCard({
           <button
             type="button"
             onClick={() => onOpenFighter(finalChampion)}
-            className="inline-flex items-center gap-1.5 border-2 border-[var(--rule)] bg-[#F2C230] px-2.5 py-1 text-label font-bold uppercase tracking-[0.08em] text-[#0E0E0E] transition hover:brightness-95"
+            className="inline-flex items-center gap-1.5 border-2 border-[var(--rule)] bg-[var(--gold-fill)] px-2.5 py-1 text-label font-bold uppercase tracking-[0.08em] text-[#10151d] transition hover:brightness-95"
           >
             <Crown className="h-3 w-3 shrink-0" aria-hidden="true" />
             <span>
@@ -589,9 +589,9 @@ export function DivisionHistoryCard({
                   <span
                     className={`inline-flex min-w-[2rem] items-center justify-center border border-[var(--rule)] px-1 py-0.5 font-mono text-label font-bold uppercase leading-none ${
                       reign.isFinal
-                        ? 'bg-[#F2C230] text-[#0E0E0E]'
+                        ? 'bg-[var(--gold-fill)] text-[#10151d]'
                         : reign.interim
-                          ? 'bg-[#1F4E9C] text-white'
+                          ? 'bg-[var(--ink)] text-white'
                           : 'bg-[var(--surface-3)] text-[var(--text-main)]'
                     }`}
                   >
@@ -623,12 +623,12 @@ export function DivisionHistoryCard({
                       </span>
                     ) : null}
                     {reign.interim ? (
-                      <span className="border border-[var(--rule)] bg-[#1F4E9C] px-1.5 py-px text-label font-bold uppercase text-white">
+                      <span className="border border-[var(--rule)] bg-[var(--ink)] px-1.5 py-px text-label font-bold uppercase text-white">
                         {L(i18n.language, 'Interino', 'Interim', 'Intérimaire', 'Interino')}
                       </span>
                     ) : null}
                     {reign.isFinal ? (
-                      <span className="border border-[var(--rule)] bg-[#F2C230] px-1.5 py-px text-label font-bold uppercase text-[#0E0E0E]">
+                      <span className="border border-[var(--rule)] bg-[var(--gold-fill)] px-1.5 py-px text-label font-bold uppercase text-[#10151d]">
                         {isArchived
                           ? L(i18n.language, 'Último campeão', 'Final champion', 'Dernier champion', 'Último campeón')
                           : L(i18n.language, 'Campeão atual', 'Current champion', 'Champion actuel', 'Campeón actual')}
@@ -703,9 +703,9 @@ function GreatestChampionsView({
       {/* Record Highlights Row */}
       <div className="grid gap-3 md:grid-cols-3">
         {mostTitleWins ? (
-          <div className="surface-card !rounded-card border-l-4 border-l-[#F2C230] p-4">
+          <div className="surface-card !rounded-card border-l-4 border-l-[var(--gold)] p-4">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-muted)]">
-              <Trophy className="h-4 w-4 text-[#F2C230]" aria-hidden="true" />
+              <Trophy className="h-4 w-4 text-[var(--gold)]" aria-hidden="true" />
               {L(i18n.language, 'Mais vitórias em disputas de cinturão', 'Most title-fight wins', 'Plus de victoires en combat de titre', 'Más victorias en peleas por el título')}
             </div>
             <button
@@ -744,9 +744,9 @@ function GreatestChampionsView({
           </div>
         ) : null}
 
-        <div className="surface-card !rounded-card border-l-4 border-l-[#1F4E9C] p-4">
+        <div className="surface-card !rounded-card border-l-4 border-l-[var(--ink)] p-4">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-muted)]">
-            <Layers className="h-4 w-4 text-[#1F4E9C]" aria-hidden="true" />
+            <Layers className="h-4 w-4 text-[var(--ink)]" aria-hidden="true" />
             {L(i18n.language, 'Campeões em múltiplas categorias', 'Multi-division champions', 'Champions multi-catégories', 'Campeones en varias divisiones')}
           </div>
           {multiDivision.length > 0 ? (
@@ -756,7 +756,7 @@ function GreatestChampionsView({
                   key={champ.champion}
                   type="button"
                   onClick={() => onOpenFighter(champ.champion)}
-                  className="border border-[var(--rule)] bg-[var(--surface-3)] px-2.5 py-1 text-xs font-extrabold uppercase text-[var(--text-main)] hover:bg-[#F2C230] hover:text-[#0E0E0E]"
+                  className="border border-[var(--rule)] bg-[var(--surface-3)] px-2.5 py-1 text-xs font-extrabold uppercase text-[var(--text-main)] hover:bg-[var(--gold-fill)] hover:text-[#10151d]"
                 >
                   {champ.champion} ({champ.divisions.map((d) => getDivisionName(d, i18n.language)).join(' & ')})
                 </button>
@@ -842,13 +842,13 @@ function GreatestChampionsView({
                     </button>
                     {record ? <span className="font-mono text-xs text-[var(--text-muted)]">({record})</span> : null}
                     {entry.divisions.length > 1 ? (
-                      <span className="inline-flex items-center gap-1 border border-[var(--rule)] bg-[#1F4E9C] px-1.5 py-px text-label font-bold uppercase text-white">
+                      <span className="inline-flex items-center gap-1 border border-[var(--rule)] bg-[var(--ink)] px-1.5 py-px text-label font-bold uppercase text-white">
                         <Award className="h-3 w-3" aria-hidden="true" />
                         {L(i18n.language, 'Duplo campeão', 'Double champ', 'Double champion', 'Doble campeón')}
                       </span>
                     ) : null}
                     {entry.isCurrentOrFinal ? (
-                      <span className="border border-[var(--rule)] bg-[#F2C230] px-1.5 py-px text-label font-bold uppercase text-[#0E0E0E]">
+                      <span className="border border-[var(--rule)] bg-[var(--gold-fill)] px-1.5 py-px text-label font-bold uppercase text-[#10151d]">
                         {isArchived
                           ? L(i18n.language, 'Último campeão', 'Final champ', 'Dernier champion', 'Último campeón')
                           : L(i18n.language, 'Campeão atual', 'Current champ', 'Champion actuel', 'Campeón actual')}
@@ -867,7 +867,7 @@ function GreatestChampionsView({
                 </div>
 
                 <div className="col-span-3 flex flex-wrap items-center gap-2 sm:col-span-1 sm:justify-end">
-                  <span className="border border-[var(--rule)] bg-[#F2C230] px-2.5 py-1 font-mono text-xs font-extrabold uppercase text-[#0E0E0E]">
+                  <span className="border border-[var(--rule)] bg-[var(--gold-fill)] px-2.5 py-1 font-mono text-xs font-extrabold uppercase text-[#10151d]">
                     {entry.titleWinsCount} {entry.titleWinsCount === 1 ? L(i18n.language, 'vitória de título', 'title win', 'victoire', 'victoria de título') : L(i18n.language, 'vitórias de título', 'title wins', 'victoires', 'victorias de título')}
                   </span>
                   <span className="border border-[var(--line-soft)] bg-[var(--surface-3)] px-2.5 py-1 font-mono text-xs font-bold text-[var(--text-main)]">

@@ -244,27 +244,27 @@ export function About() {
               href="https://www.youtube.com/@Vektor-MMA"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-[var(--text-main)] hover:text-[#FF0000] transition"
+              className="inline-flex items-center gap-1.5 text-[var(--text-main)] hover:text-[var(--ink)] transition"
             >
-              <YouTubeIcon className="h-4 w-4 text-[#FF0000]" />
+              <YouTubeIcon className="h-4 w-4 text-[var(--ink)]" />
               <span>YouTube: @Vektor-MMA</span>
             </a>
             <a
               href="https://www.instagram.com/vektormma"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-[var(--text-main)] hover:text-[#E4405F] transition"
+              className="inline-flex items-center gap-1.5 text-[var(--text-main)] hover:text-[var(--ink)] transition"
             >
-              <InstagramIcon className="h-4 w-4 text-[#E4405F]" />
+              <InstagramIcon className="h-4 w-4 text-[var(--ink)]" />
               <span>Instagram: @vektormma</span>
             </a>
             <a
               href="https://www.tiktok.com/@vektormma"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-[var(--text-main)] hover:text-[#25F4EE] transition"
+              className="inline-flex items-center gap-1.5 text-[var(--text-main)] hover:text-[var(--ink)] transition"
             >
-              <TikTokIcon className="h-4 w-4 text-[#25F4EE]" />
+              <TikTokIcon className="h-4 w-4 text-[var(--ink)]" />
               <span>TikTok: @vektormma</span>
             </a>
           </div>
@@ -310,7 +310,7 @@ function AboutSection({
   return (
     <section className="border-t-[3px] border-[var(--ink)] pt-5" aria-labelledby={`about-${id}`}>
       <div className="flex items-center gap-2.5">
-        <div className="rounded-xl bg-[#C8102E]/12 p-2 text-[#C8102E]">
+        <div className="rounded-xl bg-[var(--panel)] p-2 text-[var(--ink)]">
           <Icon className="h-4 w-4" aria-hidden />
         </div>
         <h2 id={`about-${id}`} className="section-title ">
@@ -329,7 +329,7 @@ function ExternalAnchor({ href, children }: { href: string; children: ReactNode 
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center gap-1 text-[var(--text-main)] underline decoration-[#C8102E]/70 underline-offset-4 transition hover:decoration-[#C8102E] focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C8102E]"
+      className="inline-flex items-center gap-1 text-[var(--text-main)] underline decoration-[var(--rule)] underline-offset-4 transition hover:decoration-[var(--ink)] focus-visible:rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
     >
       {children}
       <ExternalLink className="h-3 w-3 shrink-0" aria-hidden />

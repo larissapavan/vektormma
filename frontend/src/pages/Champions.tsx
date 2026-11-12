@@ -240,7 +240,7 @@ function CompactChampionCard({
 function RankBadge({ rank, goat = false }: { rank: number; goat?: boolean }) {
   if (goat) {
     return (
-      <span className="type-num absolute -bottom-1 -left-1 grid h-5 place-items-center rounded-md border border-[var(--rule)] bg-[#F2C230] px-1 text-[11px] font-bold leading-none tracking-[0.04em] text-[#0E0E0E]">
+      <span className="type-num absolute -bottom-1 -left-1 grid h-5 place-items-center rounded-md border border-[var(--rule)] bg-[var(--gold-fill)] px-1 text-[11px] font-bold leading-none tracking-[0.04em] text-[#10151d]">
         GOAT
       </span>
     )
@@ -508,7 +508,7 @@ function ReignRow({ reign, onOpen }: { reign: TitleReign; onOpen: (name: string)
             {reign.champion}
           </button>
           {reign.is_current ? (
-            <span className="bg-[#F2C230] px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] text-[#0E0E0E]">
+            <span className="bg-[var(--gold-fill)] px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] text-[#10151d]">
               {L(i18n.language, 'Atual', 'Current', 'Actuel', 'Actual')}
             </span>
           ) : null}
@@ -544,7 +544,7 @@ function GreatestChampionsSection({ champions }: { champions: ChampionSummary[] 
   return (
     <section>
       <div className="mb-2 flex items-center gap-2 px-1">
-        <Shield className="h-4 w-4 text-[#C8102E]" />
+        <Shield className="h-4 w-4 text-[var(--ink)]" />
         <h2 className="broadcast-label text-xs text-[var(--text-main)]">{t('champions.greatest')}</h2>
         <span className="theme-muted text-xs">
           {L(i18n.language, 'por tempo total como campeão', 'by total time as champion', 'par temps total en tant que champion', 'por tiempo total como campeón')}
@@ -672,7 +672,7 @@ function RecordCard({ category }: { category: RecordCategory }) {
         aria-controls={panelId}
         className="flex w-full items-center gap-2 px-3 py-2.5 text-left transition duration-150 hover:bg-[var(--bg-surface-subtle)] sm:px-4"
       >
-        <Icon className={`h-4 w-4 shrink-0 ${category.kind === 'positive' ? 'text-[#C8102E]' : 'text-[var(--text-muted)]'}`} />
+        <Icon className={`h-4 w-4 shrink-0 ${category.kind === 'positive' ? 'text-[var(--ink)]' : 'text-[var(--text-muted)]'}`} />
         <h3 className="broadcast-label text-xs text-[var(--text-main)]">{label}</h3>
         <span className="theme-muted text-xs">({category.entries.length})</span>
         <ChevronDown className={`theme-muted ml-auto h-4 w-4 shrink-0 transition ${open ? 'rotate-180' : ''}`} />
@@ -708,7 +708,7 @@ function RecordRow({ entry, unit }: { entry: RecordCategory['entries'][number]; 
       type="button"
       onClick={() => openProfile(entry.champion)}
       aria-label={L(i18n.language, `${entry.champion}, ${entry.rank}º lugar. Ver perfil`, `${entry.champion}, rank ${entry.rank}. View profile`, `${entry.champion}, rang ${entry.rank}. Voir le profil`, `${entry.champion}, puesto ${entry.rank}. Ver perfil`)}
-      className="flex w-full cursor-pointer items-center text-left gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-[#F2C230]/40 focus-visible:bg-[#F2C230]/40 focus-visible:outline-none"
+      className="flex w-full cursor-pointer items-center text-left gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-[var(--gold-fill)]/40 focus-visible:bg-[var(--gold-fill)]/40 focus-visible:outline-none"
     >
       <span className="type-num w-4 shrink-0 text-right text-[11px] text-[var(--text-muted)]">{entry.rank}</span>
       <div className="min-w-0 flex-1">
@@ -733,7 +733,7 @@ function MultiDivisionSection({ category, current }: { category: RecordCategory;
   return (
     <section>
       <div className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-0.5 px-1">
-        <Layers className="h-4 w-4 text-[#C8102E]" />
+        <Layers className="h-4 w-4 text-[var(--ink)]" />
         <h2 className="broadcast-label text-xs text-[var(--text-main)]">{label}</h2>
         <span className="theme-muted text-xs">({category.entries.length})</span>
       </div>
@@ -784,37 +784,37 @@ function MultiDivisionSection({ category, current }: { category: RecordCategory;
 }
 
 const ROLE_STYLES: Record<TitleFight['role'], string> = {
-  won_title: 'bg-[#F2C230] text-[#0E0E0E]',
-  defense: 'bg-[#1F4E9C] text-white',
-  lost_title: 'bg-[#C8102E] text-white',
+  won_title: 'bg-[var(--gold-fill)] text-[#10151d]',
+  defense: 'bg-[var(--ink)] text-[var(--on-ink)]',
+  lost_title: 'border-[1.5px] border-[var(--ink)] text-[var(--ink)]',
   challenge: 'border border-[var(--rule)] text-[var(--text-main)]',
   other: 'border border-dashed border-[var(--rule)] text-[var(--text-main)]',
 }
 
 const RESULT_STYLES: Record<TitleFight['result'], { letter: string; className: string; name: string }> = {
   win: { letter: 'W', className: 'bg-[var(--ink)] text-[var(--on-ink)]', name: 'Win' },
-  loss: { letter: 'L', className: 'bg-[#C8102E] text-white', name: 'Loss' },
+  loss: { letter: 'L', className: 'border-[1.5px] border-[var(--ink)] text-[var(--ink)]', name: 'Loss' },
   draw: { letter: 'D', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Draw' },
   no_contest: { letter: 'NC', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'No contest' },
 }
 
 const RESULT_STYLES_PT: Record<TitleFight['result'], { letter: string; className: string; name: string }> = {
   win: { letter: 'V', className: 'bg-[var(--ink)] text-[var(--on-ink)]', name: 'Vitória' },
-  loss: { letter: 'D', className: 'bg-[#C8102E] text-white', name: 'Derrota' },
+  loss: { letter: 'D', className: 'border-[1.5px] border-[var(--ink)] text-[var(--ink)]', name: 'Derrota' },
   draw: { letter: 'E', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Empate' },
   no_contest: { letter: 'SR', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Sem resultado' },
 }
 
 const RESULT_STYLES_FR: Record<TitleFight['result'], { letter: string; className: string; name: string }> = {
   win: { letter: 'V', className: 'bg-[var(--ink)] text-[var(--on-ink)]', name: 'Victoire' },
-  loss: { letter: 'D', className: 'bg-[#C8102E] text-white', name: 'Défaite' },
+  loss: { letter: 'D', className: 'border-[1.5px] border-[var(--ink)] text-[var(--ink)]', name: 'Défaite' },
   draw: { letter: 'N', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Nul' },
   no_contest: { letter: 'NC', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Sans décision' },
 }
 
 const RESULT_STYLES_ES: Record<TitleFight['result'], { letter: string; className: string; name: string }> = {
   win: { letter: 'V', className: 'bg-[var(--ink)] text-[var(--on-ink)]', name: 'Victoria' },
-  loss: { letter: 'D', className: 'bg-[#C8102E] text-white', name: 'Derrota' },
+  loss: { letter: 'D', className: 'border-[1.5px] border-[var(--ink)] text-[var(--ink)]', name: 'Derrota' },
   draw: { letter: 'E', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Empate' },
   no_contest: { letter: 'SR', className: 'border-2 border-[var(--rule)] text-[var(--text-main)]', name: 'Sin resultado' },
 }
@@ -947,7 +947,7 @@ function ChampionTimeline({ entry }: { entry: RecordEntry }) {
       <button
         type="button"
         onClick={() => openProfile(entry.champion)}
-        className="ghost-action mt-4 inline-flex w-full items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-main)] transition hover:!bg-[#F2C230] hover:text-[#0E0E0E]"
+        className="ghost-action mt-4 inline-flex w-full items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-main)] transition hover:!bg-[var(--gold-fill)] hover:text-[#10151d]"
       >
         {L(i18n.language, 'Ver perfil completo', 'View full profile', 'Voir le profil complet', 'Ver perfil completo')}
       </button>

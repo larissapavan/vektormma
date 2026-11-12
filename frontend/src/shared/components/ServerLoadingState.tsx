@@ -24,7 +24,7 @@ export function ServerLoadingState() {
       <div className="w-full max-w-[620px] border-[3px] border-[var(--rule)] bg-[var(--card-bg)] p-3.5 sm:p-5">
         <div className="flex items-start gap-2.5">
           <span
-            className="mt-1.5 h-2.5 w-2.5 shrink-0 animate-pulse bg-[#F2C230] ring-2 ring-[#C8102E]"
+            className="mt-1.5 h-2.5 w-2.5 shrink-0 animate-pulse bg-[var(--gold-fill)] ring-2 ring-[var(--ink)]"
             aria-hidden="true"
           />
           <div className="min-w-0">

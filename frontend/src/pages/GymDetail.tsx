@@ -38,7 +38,7 @@ export function GymDetail() {
   const back = (
     <Link
       to={orgPath(org, 'gyms')}
-      className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--text-main)] underline decoration-2 underline-offset-4 hover:bg-[var(--gold-fill)] hover:text-[#0E0E0E]"
+      className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--text-main)] underline decoration-2 underline-offset-4 hover:bg-[var(--gold-fill)] hover:text-[#10151d]"
     >
       <ArrowLeft className="h-3.5 w-3.5" />
       {L(i18n.language, `Todas as academias ${orgPt(org, 'de')}`, `All ${org.shortName} gyms`, `Toutes les salles ${org.shortName}`, `Todos los gimnasios de ${org.shortName}`)}
@@ -170,7 +170,7 @@ function FighterCard({ fighter, onOpen }: { fighter: GymFighter; onOpen: (fighte
         </span>
         <span className="mt-1.5 flex flex-wrap items-center gap-1">
           {fighter.belt ? (
-            <span className="inline-flex items-center gap-1 border-2 border-[var(--rule)] bg-[var(--gold-fill)] px-1.5 py-px text-label font-bold leading-4 text-[#0E0E0E]">
+            <span className="inline-flex items-center gap-1 border-2 border-[var(--rule)] bg-[var(--gold-fill)] px-1.5 py-px text-label font-bold leading-4 text-[#10151d]">
               <Crown className="h-3 w-3" aria-hidden="true" />
               {L(i18n.language, 'Campeão', 'Champion', 'Champion', 'Campeón')}
             </span>
@@ -191,7 +191,7 @@ function FighterCard({ fighter, onOpen }: { fighter: GymFighter; onOpen: (fighte
       type="button"
       onClick={() => onOpen(fighter)}
       aria-label={L(i18n.language, `${fighter.name}. Ver perfil`, `${fighter.name}. View profile`, `${fighter.name}. Voir le profil`, `${fighter.name}. Ver perfil`)}
-      className={`${base} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F2C230]`}
+      className={`${base} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gold)]`}
     >
       {body}
     </button>
