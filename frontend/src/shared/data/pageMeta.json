@@ -2,7 +2,7 @@
   "site": {
     "name": "Vektor MMA",
     "url": "https://www.vektormma.com",
-    "image": "/og-image.jpg?v=5"
+    "image": "/og-image.jpg?v=6"
   },
   "homeTitle": {
     "pt": "Vektor MMA — Estatísticas e previsões de MMA",
@@ -41,15 +41,15 @@
         "description": "Próximos eventos do UFC com previsões da IA, momentos dos atletas e notícias."
       },
       "/predictor": {
-        "title": "Simulador de Lutas",
+        "title": "Simulação de luta",
         "description": "Escolha dois lutadores do UFC e receba a probabilidade de vitória e fatores decisivos."
       },
       "/head-to-head": {
-        "title": "Confronto Direto",
+        "title": "Confronto direto",
         "description": "Histórico de combates entre atletas do UFC, métodos de vitória e oponentes em comum."
       },
       "/matchup-intelligence": {
-        "title": "Análise de Confronto",
+        "title": "Análise do confronto",
         "description": "Números detalhados de trocação, luta no chão e dados físicos, com a explicação da IA."
       },
       "/fighters": {
@@ -61,7 +61,7 @@
         "description": "Arquivo histórico de eventos do UFC com resultados oficiais e próximos cards."
       },
       "/results": {
-        "title": "Resultados Recentes",
+        "title": "Resultados recentes",
         "description": "Os eventos mais recentes de todas as organizações, com o palpite que o modelo deu antes de cada luta."
       },
       "/rankings": {
@@ -73,7 +73,7 @@
         "description": "Campeões atuais do UFC, maiores reinados da história e recordistas de cinturão."
       },
       "/record-book": {
-        "title": "Livro de Recordes",
+        "title": "Livro de recordes",
         "description": "Líderes históricos de todas as 32 estatísticas oficiais do UFC: lutas, tempo, trocação e luta no chão."
       },
       "/cancelled-fights": {
@@ -85,7 +85,7 @@
         "description": "Jogo: crie um lutador, treine, enfrente lutadores reais e termine com uma imagem do seu retrospecto para salvar ou compartilhar."
       },
       "/about": {
-        "title": "Sobre o Projeto",
+        "title": "Sobre o projeto",
         "description": "Projeto pessoal independente de Larissa Pavan, fontes de dados e metodologia."
       },
       "/data": {
@@ -93,11 +93,11 @@
         "description": "Como os dados brutos de lutas são tratados para alimentar o modelo preditivo."
       },
       "/model": {
-        "title": "Sistema e IA",
+        "title": "Como o modelo funciona",
         "description": "O modelo preditivo de aprendizado de máquina, métricas de precisão e calibração."
       },
       "/track-record": {
-        "title": "Histórico de Palpites",
+        "title": "Acertos e histórico",
         "description": "Desempenho dos palpites da IA em lutas reais: registrados antes do card e checados após o evento."
       },
       "/pfl": {
@@ -165,11 +165,11 @@
         "description": "Rankings oficiais do ONE Championship por categoria e peso por peso."
       },
       "/one/predictor": {
-        "title": "Simulador de Lutas do ONE Championship",
+        "title": "Simulação de luta do ONE Championship",
         "description": "Escolha dois atletas do ONE Championship e receba a probabilidade de vitória e os fatores decisivos."
       },
       "/pfl/predictor": {
-        "title": "Simulador de Lutas da PFL",
+        "title": "Simulação de luta da PFL",
         "description": "Escolha dois atletas da PFL e veja a probabilidade de vitória, com o aviso de que o modelo foi treinado com lutas do UFC."
       },
       "/one/champions": {
@@ -293,7 +293,7 @@
         "description": "Academias e equipes dos atletas do Invicta FC."
       },
       "/about-model": {
-        "title": "Sobre o Modelo de IA",
+        "title": "Sobre o modelo",
         "description": "Projeto completo de IA aplicada: fluxo de dados, modelo preditivo e API."
       },
       "/guide": {
@@ -305,11 +305,11 @@
         "description": "Corrija um dado, envie uma sugestão ou fale sobre privacidade e direitos autorais com o Vektor MMA."
       },
       "/privacy": {
-        "title": "Política de Privacidade",
+        "title": "Política de privacidade",
         "description": "Quais informações o Vektor MMA recebe, como funcionam os anúncios do Google AdSense e quais são os seus direitos."
       },
       "/terms": {
-        "title": "Termos de Uso",
+        "title": "Termos de uso",
         "description": "As regras do site: previsões não são conselho de apostas, origem dos dados, direitos autorais e uso aceitável."
       }
     },
@@ -339,7 +339,7 @@
         "description": "The full UFC event archive with results, plus upcoming cards and the model's picks."
       },
       "/results": {
-        "title": "Recent Results",
+        "title": "Recent results",
         "description": "The latest events from every organization, with the pick the model made before each fight."
       },
       "/rankings": {
@@ -371,7 +371,7 @@
         "description": "How raw UFC data becomes the dataset the model predicts from."
       },
       "/model": {
-        "title": "System",
+        "title": "How the model works",
         "description": "The prediction model, how it was trained and how it compares with simpler ones."
       },
       "/track-record": {
@@ -443,11 +443,11 @@
         "description": "Official ONE Championship divisional and pound-for-pound rankings."
       },
       "/one/predictor": {
-        "title": "ONE Championship predictor",
+        "title": "Predict a ONE Championship fight",
         "description": "Pick two ONE Championship fighters and get a win probability with the stats that drove it."
       },
       "/pfl/predictor": {
-        "title": "PFL fight predictor",
+        "title": "Predict a PFL fight",
         "description": "Pick two PFL fighters and see a win probability, with a note that the model is trained on UFC fights."
       },
       "/one/champions": {
@@ -583,11 +583,11 @@
         "description": "Correct a piece of data, send a suggestion, or get in touch about privacy and copyright with Vektor MMA."
       },
       "/privacy": {
-        "title": "Privacy Policy",
+        "title": "Privacy policy",
         "description": "What information Vektor MMA receives, how Google AdSense ads work and what your rights are."
       },
       "/terms": {
-        "title": "Terms of Use",
+        "title": "Terms of use",
         "description": "The rules of the site: predictions are not betting advice, where the data comes from, copyright and acceptable use."
       }
     },
@@ -649,7 +649,7 @@
         "description": "Comment les données brutes UFC deviennent le jeu de données à partir duquel le modèle prédit."
       },
       "/model": {
-        "title": "Système",
+        "title": "Comment fonctionne le modèle",
         "description": "Le modèle de prévision, comment il a été entraîné et comment il se compare à des modèles plus simples."
       },
       "/track-record": {
@@ -895,7 +895,7 @@
         "description": "El archivo completo de eventos de la UFC con resultados, más las próximas carteleras y los pronósticos del modelo."
       },
       "/results": {
-        "title": "Resultados Recientes",
+        "title": "Resultados recientes",
         "description": "Los eventos más recientes de todas las organizaciones, con el pronóstico del modelo antes de cada pelea."
       },
       "/rankings": {
@@ -927,7 +927,7 @@
         "description": "Cómo los datos en bruto de la UFC se convierten en el conjunto de datos con el que predice el modelo."
       },
       "/model": {
-        "title": "Sistema",
+        "title": "Cómo funciona el modelo",
         "description": "El modelo de pronóstico, cómo se entrenó y cómo se compara con otros más simples."
       },
       "/track-record": {

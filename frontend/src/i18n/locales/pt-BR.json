@@ -231,7 +231,7 @@
   },
   "model": {
     "eyebrow": "Inteligência artificial",
-    "title": "Como funciona o modelo preditivo",
+    "title": "Como o modelo funciona",
     "description": "A arquitetura do algoritmo, calibração estatística, comparação com métodos simplificados e o peso de cada variável na decisão.",
     "modelCard": "Ficha técnica do modelo",
     "rocAuc": "ROC AUC (discriminação)",

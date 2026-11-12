@@ -24,11 +24,11 @@ const template = `<!doctype html>
     <meta property="og:url" content="https://www.vektormma.com/" />
     <meta property="og:title" content="Home" />
     <meta property="og:description" content="Home." />
-    <meta property="og:image" content="https://www.vektormma.com/og-image.jpg?v=5" />
+    <meta property="og:image" content="https://www.vektormma.com/og-image.jpg?v=6" />
     <meta name="twitter:url" content="https://www.vektormma.com/" />
     <meta name="twitter:title" content="Home" />
     <meta name="twitter:description" content="Home." />
-    <meta name="twitter:image" content="https://www.vektormma.com/og-image.jpg?v=5" />
+    <meta name="twitter:image" content="https://www.vektormma.com/og-image.jpg?v=6" />
     <script type="application/ld+json">{ "inLanguage": "pt-BR", "description": "Home." }</script>
   </head>
   <body><div id="root"></div></body>
@@ -142,7 +142,7 @@ describe('a page written in a language', () => {
     const home = routeHtml(template, site, '/', { title: 'Vektor MMA — UFC stats', description: 'D.' }, undefined, { lang: 'en', rawTitle: true })
     expect(home).toContain('<title>Vektor MMA — UFC stats</title>')
     expect(home).toContain('<link rel="canonical" href="https://www.vektormma.com/en" />')
-    expect(home).toContain('og-image.jpg?v=5')
+    expect(home).toContain('og-image.jpg?v=6')
   })
 })
 

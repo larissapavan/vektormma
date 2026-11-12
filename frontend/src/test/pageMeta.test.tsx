@@ -42,7 +42,7 @@ describe('PageMeta', () => {
     expect(canonical()).toBe('https://www.vektormma.com/en/predictor')
     expect(meta('meta[property="og:url"]')).toBe('https://www.vektormma.com/en/predictor')
     expect(meta('meta[name="twitter:url"]')).toBe('https://www.vektormma.com/en/predictor')
-    expect(meta('meta[property="og:image"]')).toBe('https://www.vektormma.com/og-image.jpg?v=5')
+    expect(meta('meta[property="og:image"]')).toBe('https://www.vektormma.com/og-image.jpg?v=6')
     expect(meta('meta[property="og:title"]')).toBe('Predict a fight · Vektor MMA')
     expect(document.head.querySelector('meta[name="robots"]')).toBeNull()
   })
@@ -51,7 +51,7 @@ describe('PageMeta', () => {
     await i18n.changeLanguage('pt-BR')
     renderAt('/head-to-head')
 
-    expect(document.title).toBe('Confronto Direto · Vektor MMA')
+    expect(document.title).toBe('Confronto direto · Vektor MMA')
     expect(meta('meta[property="og:locale"]')).toBe('pt_BR')
     // Portuguese is the language of the bare address.
     expect(canonical()).toBe('https://www.vektormma.com/head-to-head')
