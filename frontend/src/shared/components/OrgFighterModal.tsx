@@ -257,7 +257,7 @@ function OrgOnlyFighterModal({
           <button
             type="button"
             onClick={onClose}
-            className="grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-full border border-[var(--rule)] bg-[var(--panel)] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--panel)] hover:border-[var(--rule)] transition cursor-pointer"
+            className="grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-sm border border-[var(--rule)] bg-[var(--panel)] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--panel)] hover:border-[var(--rule)] transition cursor-pointer"
             aria-label={L(lang, 'Fechar perfil do lutador', 'Close fighter profile', 'Fermer le profil du combattant', 'Cerrar el perfil del peleador')}
           >
             <X className="h-4 w-4" />
@@ -293,7 +293,7 @@ function OrgOnlyFighterModal({
 
             <div className="relative z-10 space-y-2.5 pb-1">
               <div className="inline-flex items-center gap-2">
-                <span className={`h-1.5 w-1.5 rounded-full ${profile?.is_active !== false && !archived ? 'bg-[var(--positive)]' : 'bg-[var(--muted)]'}`} />
+                <span className={`h-1.5 w-1.5 rounded-sm ${profile?.is_active !== false && !archived ? 'bg-[var(--positive)]' : 'bg-[var(--muted)]'}`} />
                 <span className="text-label text-[var(--muted)] font-semibold">{statusLabel}</span>
               </div>
 
@@ -304,7 +304,7 @@ function OrgOnlyFighterModal({
 
               <div className="flex flex-wrap items-center gap-2 pt-0.5">
                 {isChampion ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--gold)] px-3 py-1 text-xs font-bold text-[var(--gold)]">
+                  <span className="inline-flex items-center gap-1.5 rounded-sm border border-[var(--gold)] px-3 py-1 text-xs font-bold text-[var(--gold)]">
                     <Trophy className="h-3.5 w-3.5 text-[var(--gold)]" />
                     <span>
                       {isInterim
@@ -320,7 +320,7 @@ function OrgOnlyFighterModal({
                 {formerTitles.map((title) => (
                   <span
                     key={`former-${title}`}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-[var(--rule)] bg-[var(--panel)] px-2.5 py-1 text-label font-bold text-[var(--ink)]"
+                    className="inline-flex items-center gap-1.5 rounded-sm border border-[var(--rule)] bg-[var(--panel)] px-2.5 py-1 text-label font-bold text-[var(--ink)]"
                   >
                     {L(
                       lang,
@@ -367,7 +367,7 @@ function OrgOnlyFighterModal({
                 <div className="space-y-3">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--ink)]" />
+                      <span className="h-1.5 w-1.5 rounded-sm bg-[var(--ink)]" />
                       <p className="text-label text-[var(--muted)] font-bold">
                         {L(lang, `Cartel no ${org.shortName}`, `${org.shortName} record`, `Palmarès chez ${org.shortName}`, `Récord en ${orgEs(org)}`)}
                       </p>
@@ -500,7 +500,7 @@ function OrgOnlyFighterModal({
                           </div>
 
                           {opponentTbd ? (
-                            <div className="h-[3px] w-full rounded-full bg-[var(--gold-fill)] overflow-hidden">
+                            <div className="h-[3px] w-full rounded-sm bg-[var(--gold-fill)] overflow-hidden">
                               <div className="h-full w-full" />
                             </div>
                           ) : nextPrediction ? (

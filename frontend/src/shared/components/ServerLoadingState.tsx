@@ -28,14 +28,14 @@ export function ServerLoadingState() {
             aria-hidden="true"
           />
           <div className="min-w-0">
-            <p className="text-sm font-bold uppercase tracking-[0.04em] text-[var(--text-main)] sm:text-base">
+            <p className="text-sm font-bold text-[var(--text-main)] sm:text-base">
               {t('common.pageLoading')}
             </p>
             <p className="mt-1 text-xs leading-5 text-[var(--text-muted)] sm:text-sm">
               {t('common.serverFast')}
             </p>
             {slowNotice ? (
-              <p className="mt-1 text-[11px] leading-4 text-[var(--text-muted)] sm:text-xs">
+              <p className="mt-1 text-label leading-4 text-[var(--text-muted)] sm:text-xs">
                 {t('common.serverSlow')}
               </p>
             ) : null}

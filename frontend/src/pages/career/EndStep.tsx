@@ -34,9 +34,9 @@ export function EndStep({ career: ended, challenge, onRestart }: { career: Caree
   const card = useMemo(() => retrospect(career, similar), [career, similar])
 
   return (
-    <section className="surface-card rounded-2xl overflow-hidden">
+    <section className="surface-card rounded-sm overflow-hidden">
       <div className="border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-5 py-7 text-center sm:px-8">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--accent-red)]">{L(lang, 'Retrospecto', 'Retrospect', 'Bilan', 'Balance')}</p>
+        <p className="text-xs font-bold text-[var(--ink)]">{L(lang, 'Retrospecto', 'Retrospect', 'Bilan', 'Balance')}</p>
         <h2 ref={heading} tabIndex={-1} className="game-title mt-1 text-2xl focus:outline-none sm:text-4xl">{L(lang, 'Fim de carreira', 'The career is over', 'Fin de carrière', 'Fin de la carrera')}</h2>
         <p className="mx-auto mt-3 max-w-md text-sm text-[var(--text-secondary)]">
           {L(lang, 'Salve a imagem ou compartilhe o link: a carreira em si não fica guardada. As conquistas ficam neste navegador.', 'Save the image or share the link: the career itself is not kept. The achievements stay in this browser.', 'Enregistrez l’image ou partagez le lien : la carrière elle-même n’est pas conservée. Les succès restent dans ce navigateur.', 'Guarda la imagen o comparte el enlace: la carrera en sí no se guarda. Los logros quedan en este navegador.')}
@@ -54,7 +54,7 @@ export function EndStep({ career: ended, challenge, onRestart }: { career: Caree
         ) : null}
         {career.earned.length ? (
           <div className="space-y-2" data-testid="career-achievements">
-            <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--text-gold)]">{L(lang, 'Conquistas desta carreira', 'Achievements of this career', 'Succès de cette carrière', 'Logros de esta carrera')}</h3>
+            <h3 className="text-xs font-bold text-[var(--text-gold)]">{L(lang, 'Conquistas desta carreira', 'Achievements of this career', 'Succès de cette carrière', 'Logros de esta carrera')}</h3>
             <ul className="grid gap-2 sm:grid-cols-2">
               {career.earned.filter(isAchievementId).map((id) => (
                 <AchievementTile key={id} id={id} earned />

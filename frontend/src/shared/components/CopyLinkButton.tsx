@@ -50,7 +50,7 @@ export function CopyLinkButton({ href, label, className = '' }: { href: string; 
     <button
       type="button"
       onClick={() => void copy()}
-      className={`ghost-action theme-text inline-flex items-center justify-center gap-1.5 rounded-full px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.12em] ${className}`}
+      className={`ghost-action theme-text inline-flex items-center justify-center gap-1.5 rounded-sm px-4 py-2.5 text-xs font-semibold ${className}`}
     >
       {state === 'copied' ? <Check className="h-4 w-4" aria-hidden="true" /> : <Link2 className="h-4 w-4" aria-hidden="true" />}
       <span role="status">{state === 'copied' ? copiedLabel : state === 'failed' ? failedLabel : idleLabel}</span>

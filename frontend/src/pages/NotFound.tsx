@@ -9,12 +9,12 @@ export function NotFound() {
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-3 py-8">
-      <div className="surface-card w-full max-w-md rounded-[20px] p-5 text-center">
-        <div className="mx-auto inline-flex rounded-xl bg-[var(--panel)] p-3 text-[var(--accent-red)]">
+      <div className="surface-card w-full max-w-md rounded-sm p-5 text-center">
+        <div className="mx-auto inline-flex rounded-sm bg-[var(--panel)] p-3 text-[var(--ink)]">
           <Compass className="h-6 w-6" />
         </div>
         <p className="data-value mt-3 text-5xl font-bold text-[var(--ink)]">404</p>
-        <h1 className="mt-2 text-2xl font-bold uppercase tracking-[0.03em] text-[var(--ink)]">
+        <h1 className="mt-2 text-2xl font-bold text-[var(--ink)]">
           {L(i18n.language, 'Página não encontrada', 'Page not found', 'Page introuvable', 'Página no encontrada')}
         </h1>
         <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
@@ -28,7 +28,7 @@ export function NotFound() {
         </p>
         <Link
           to="/"
-          className="primary-action mx-auto mt-4 inline-flex w-fit items-center justify-center gap-2 rounded-full px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-white"
+          className="primary-action mx-auto mt-4 inline-flex w-fit items-center justify-center gap-2 rounded-sm px-4 py-2.5 text-xs font-semibold text-white"
         >
           {L(i18n.language, 'Voltar ao início', 'Back to home', "Retour à l’accueil", 'Volver al inicio')}
         </Link>

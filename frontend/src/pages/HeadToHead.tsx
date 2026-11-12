@@ -213,7 +213,7 @@ export function HeadToHead() {
               disabled={!fighterAName && !fighterBName}
               title={L(i18n.language, 'Inverter lutadores', 'Swap fighters', 'Inverser les combattants', 'Intercambiar peleadores')}
               aria-label={L(i18n.language, 'Inverter lutadores', 'Swap fighters', 'Inverser les combattants', 'Intercambiar peleadores')}
-              className={`type-display group relative inline-flex items-center justify-center rounded-full border border-[var(--rule)] bg-[var(--panel)] px-3 py-1.5 text-xl font-bold uppercase text-[var(--ink)] transition ${
+              className={`type-display group relative inline-flex items-center justify-center rounded-sm border border-[var(--rule)] bg-[var(--panel)] px-3 py-1.5 text-xl font-bold text-[var(--ink)] transition ${
                 fighterAName || fighterBName ? 'cursor-pointer hover:bg-[var(--ink)] hover:text-white' : 'cursor-default'
               }`}
             >
@@ -275,8 +275,8 @@ function HeadToHeadResultView({ result, onOpenProfile }: { result: HeadToHeadRes
   if (result.meetings.length === 0) {
     return (
       <div className="space-y-3">
-        <section className="surface-card rounded-[20px] px-4 py-7 text-center">
-          <p className="type-display text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{t('headToHead.neverFought')}</p>
+        <section className="surface-card rounded-sm px-4 py-7 text-center">
+          <p className="type-display text-2xl font-bold text-[var(--text-main)]">{t('headToHead.neverFought')}</p>
           <p className="mt-2 text-sm text-[var(--text-muted)]">
             {t('headToHead.neverFoughtDesc', { fighterA: result.fighter_a, fighterB: result.fighter_b })}
           </p>
@@ -290,15 +290,15 @@ function HeadToHeadResultView({ result, onOpenProfile }: { result: HeadToHeadRes
 
   return (
     <div className="space-y-3">
-      <section className="surface-card rounded-[20px] p-4 text-center">
-        <p className="broadcast-label text-[11px] text-[var(--text-muted)]">
+      <section className="surface-card rounded-sm p-4 text-center">
+        <p className="broadcast-label text-label text-[var(--text-muted)]">
           {L(i18n.language, `${result.meetings.length} ${result.meetings.length === 1 ? 'confronto' : 'confrontos'}`, `${result.meetings.length} ${result.meetings.length === 1 ? 'meeting' : 'meetings'}`, `${result.meetings.length} ${result.meetings.length === 1 ? 'affrontement' : 'affrontements'}`, `${result.meetings.length} ${result.meetings.length === 1 ? 'enfrentamiento' : 'enfrentamientos'}`)}
         </p>
         <div className="mt-2 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
           <button
             type="button"
             onClick={() => onOpenProfile(result.fighter_a)}
-            className="type-display cursor-pointer truncate text-right text-lg font-bold uppercase text-[var(--text-main)] hover:text-[var(--ink)] hover:underline sm:text-xl"
+            className="type-display cursor-pointer truncate text-right text-lg font-bold text-[var(--text-main)] hover:text-[var(--ink)] hover:underline sm:text-xl"
           >
             {result.fighter_a}
           </button>
@@ -309,7 +309,7 @@ function HeadToHeadResultView({ result, onOpenProfile }: { result: HeadToHeadRes
           <button
             type="button"
             onClick={() => onOpenProfile(result.fighter_b)}
-            className="type-display cursor-pointer truncate text-left text-lg font-bold uppercase text-[var(--text-main)] hover:text-[var(--ink)] hover:underline sm:text-xl"
+            className="type-display cursor-pointer truncate text-left text-lg font-bold text-[var(--text-main)] hover:text-[var(--ink)] hover:underline sm:text-xl"
           >
             {result.fighter_b}
           </button>
@@ -332,10 +332,10 @@ function NetworkPathCard({ result, onOpenProfile }: { result: HeadToHeadResponse
   const degrees = result.degrees_of_separation ?? 0
 
   return (
-    <article className="surface-card rounded-[20px] p-3 sm:p-4">
+    <article className="surface-card rounded-sm p-3 sm:p-4">
       <div className="flex items-center gap-2 text-[var(--ink)]">
         <Share2 className="h-4 w-4" />
-        <p className="broadcast-label text-[11px]">
+        <p className="broadcast-label text-label">
           {L(i18n.language, `Conexão pela rede de lutas • ${degrees} grau${degrees === 1 ? '' : 's'} de separação`, `Bout network path • ${degrees} degree${degrees === 1 ? '' : 's'} of separation`, `Réseau de combats • ${degrees} degré${degrees === 1 ? '' : 's'} de séparation`, `Ruta en la red de peleas • ${degrees} ${degrees === 1 ? 'grado' : 'grados'} de separación`)}
         </p>
       </div>
@@ -347,8 +347,8 @@ function NetworkPathCard({ result, onOpenProfile }: { result: HeadToHeadResponse
               <button
                 type="button"
                 onClick={() => onOpenProfile(name)}
-                className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.06em] transition hover:border-[var(--gold)] ${
-                  isEndpoint ? 'border-[var(--rule)] bg-[var(--panel)] text-[var(--accent-red)]' : 'border-[var(--line-soft)] bg-[var(--surface-3)] text-[var(--text-main)]'
+                className={`cursor-pointer rounded-sm border px-3 py-1.5 text-xs font-semibold transition hover:border-[var(--gold)] ${
+                  isEndpoint ? 'border-[var(--rule)] bg-[var(--panel)] text-[var(--ink)]' : 'border-[var(--line-soft)] bg-[var(--surface-3)] text-[var(--text-main)]'
                 }`}
               >
                 {name}
@@ -365,18 +365,18 @@ function NetworkPathCard({ result, onOpenProfile }: { result: HeadToHeadResponse
 function CommonOpponentsCard({ result }: { result: HeadToHeadResponse }) {
   const { i18n } = useTranslation()
   return (
-    <article className="surface-card rounded-[20px] p-3 sm:p-4">
+    <article className="surface-card rounded-sm p-3 sm:p-4">
       <div className="flex items-center gap-2 text-[var(--ink)]">
         <Users className="h-4 w-4" />
-        <p className="broadcast-label text-[11px]">{L(i18n.language, `Adversários em comum (${result.common_opponents.length})`, `Common opponents (${result.common_opponents.length})`, `Adversaires communs (${result.common_opponents.length})`, `Rivales en común (${result.common_opponents.length})`)}</p>
+        <p className="broadcast-label text-label">{L(i18n.language, `Adversários em comum (${result.common_opponents.length})`, `Common opponents (${result.common_opponents.length})`, `Adversaires communs (${result.common_opponents.length})`, `Rivales en común (${result.common_opponents.length})`)}</p>
       </div>
       <div className="mt-2.5 grid grid-cols-[1fr_auto_auto] items-center gap-x-2.5 gap-y-1.5">
         <span />
-        <span className="type-tech text-right text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--accent-red)]">{lastWord(result.fighter_a)}</span>
-        <span className="type-tech text-right text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--blue-text)]">{lastWord(result.fighter_b)}</span>
+        <span className="type-tech text-right text-label font-semibold text-[var(--ink)]">{lastWord(result.fighter_a)}</span>
+        <span className="type-tech text-right text-label font-semibold text-[var(--blue-text)]">{lastWord(result.fighter_b)}</span>
         {result.common_opponents.map((common) => (
           <Fragment key={common.opponent}>
-            <span className="min-w-0 truncate rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3 py-2 text-sm font-semibold text-[var(--text-main)]">
+            <span className="min-w-0 truncate rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3 py-2 text-sm font-semibold text-[var(--text-main)]">
               {common.opponent}
             </span>
             <ResultChip result={common.fighter_a_result} />
@@ -393,20 +393,20 @@ function ResultChip({ result }: { result: 'win' | 'loss' | null }) {
 
   if (result === 'win') {
     return (
-      <span className="type-tech justify-self-end rounded-full border border-[var(--rule)] bg-[var(--panel)] px-2 py-0.5 text-[11px] font-bold uppercase text-[var(--ink)]">
+      <span className="type-tech justify-self-end rounded-sm border border-[var(--rule)] bg-[var(--panel)] px-2 py-0.5 text-label font-bold text-[var(--ink)]">
         {L(i18n.language, 'Vitória', 'Win', 'Victoire', 'Victoria')}
       </span>
     )
   }
   if (result === 'loss') {
     return (
-      <span className="type-tech justify-self-end rounded-full border border-[var(--border-subtle)] px-2 py-0.5 text-[11px] font-bold uppercase text-[var(--text-muted)]">
+      <span className="type-tech justify-self-end rounded-sm border border-[var(--border-subtle)] px-2 py-0.5 text-label font-bold text-[var(--text-muted)]">
         {L(i18n.language, 'Derrota', 'Loss', 'Défaite', 'Derrota')}
       </span>
     )
   }
   return (
-    <span className="type-tech justify-self-end rounded-full border border-[var(--border-subtle)] px-2 py-0.5 text-[11px] font-bold uppercase text-[var(--text-muted)]">
+    <span className="type-tech justify-self-end rounded-sm border border-[var(--border-subtle)] px-2 py-0.5 text-label font-bold text-[var(--text-muted)]">
       NC
     </span>
   )
@@ -421,9 +421,9 @@ function MeetingRow({ meeting, fighterA, fighterB }: { meeting: FightRecord; fig
   const winnerName = meeting.result === 'win' ? fighterA : meeting.result === 'loss' ? fighterB : null
 
   return (
-    <article className="surface-card rounded-[18px] p-3 sm:p-4">
+    <article className="surface-card rounded-sm p-3 sm:p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h3 className="text-sm font-bold uppercase tracking-[0.02em] text-[var(--text-main)]">{meeting.event_name}</h3>
+        <h3 className="text-sm font-bold text-[var(--text-main)]">{meeting.event_name}</h3>
         {meeting.date ? (
           <span className="theme-muted inline-flex items-center gap-1.5 text-xs">
             <CalendarDays className="h-3.5 w-3.5" />

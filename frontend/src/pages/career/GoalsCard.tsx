@@ -14,14 +14,14 @@ export function GoalsCard({ career }: { career: Career }) {
   if (!goals.length) return null
   const met = goals.filter((goal) => goal.done).length
   return (
-    <section aria-label={L(lang, 'Metas da carreira', 'Career goals', 'Objectifs de carrière', 'Metas de la carrera')} className="surface-card rounded-2xl p-4 sm:p-5">
+    <section aria-label={L(lang, 'Metas da carreira', 'Career goals', 'Objectifs de carrière', 'Metas de la carrera')} className="surface-card rounded-sm p-4 sm:p-5">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[var(--accent-red)]">
+        <h3 className="flex items-center gap-2 text-xs font-bold text-[var(--ink)]">
           <Target className="h-4 w-4" aria-hidden="true" />
           {L(lang, 'Metas da carreira', 'Career goals', 'Objectifs de carrière', 'Metas de la carrera')}
           <span className="data-value text-[var(--text-secondary)]" data-testid="goals-met">{met}/{goals.length}</span>
         </h3>
-        <p className="text-[11px] text-[var(--text-muted)]">
+        <p className="text-label text-[var(--text-muted)]">
           {L(lang, `Cada meta vale +${GOAL_REWARD} pontos de ranking.`, `Each goal pays +${GOAL_REWARD} ranking points.`, `Chaque objectif rapporte +${GOAL_REWARD} points de classement.`, `Cada meta vale +${GOAL_REWARD} puntos de ranking.`)}
         </p>
       </div>
@@ -36,8 +36,8 @@ export function GoalsCard({ career }: { career: Career }) {
                 <span className="data-value shrink-0 text-[var(--text-secondary)]">{value}/{def.target}</span>
               )}
             </div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-[var(--border-subtle)]" role="img" aria-label={`${value}/${def.target}`}>
-              <div className={`h-full rounded-full transition-all duration-700 ${done ? 'bg-[var(--accent-green)]' : 'bg-[var(--accent-gold)]'}`} style={{ width: `${(value / def.target) * 100}%` }} />
+            <div className="h-1.5 overflow-hidden rounded-sm bg-[var(--border-subtle)]" role="img" aria-label={`${value}/${def.target}`}>
+              <div className={`h-full rounded-sm transition-all duration-700 ${done ? 'bg-[var(--accent-green)]' : 'bg-[var(--accent-gold)]'}`} style={{ width: `${(value / def.target) * 100}%` }} />
             </div>
           </li>
         ))}

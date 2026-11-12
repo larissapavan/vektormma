@@ -68,7 +68,7 @@ export function OrgSwitcher({ className = '', onNavigate }: { className?: string
           <div
             className="surface-card-elevated absolute! left-0 max-sm:left-auto max-sm:right-0 top-full z-50 mt-1.5 w-44 sm:w-48 p-1 animate-in fade-in-0 zoom-in-95"
           >
-            <div className="px-2 py-1 text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">
+            <div className="px-2 py-1 text-label text-[var(--text-muted)]">
               {L(i18n.language, 'Selecionar liga', 'Select league', 'Choisir la ligue', 'Seleccionar liga')}
             </div>
             <div className="space-y-0.5">
@@ -85,7 +85,7 @@ export function OrgSwitcher({ className = '', onNavigate }: { className?: string
                     aria-label={org.shortName}
                     aria-current={active ? 'true' : undefined}
                     title={org.name}
-                    className={`flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-medium transition cursor-pointer ${
+                    className={`flex items-center justify-between rounded-sm px-2.5 py-1.5 text-xs font-medium transition cursor-pointer ${
                       active
                         ? 'bg-[var(--bg-surface-hover)] text-[var(--text-primary)] font-semibold shadow-xs'
                         : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)]'
@@ -94,7 +94,7 @@ export function OrgSwitcher({ className = '', onNavigate }: { className?: string
                     <span className="font-semibold">{org.shortName}</span>
                     <span
                       aria-hidden="true"
-                      className="truncate text-[10px] max-w-[90px] text-[var(--text-muted)]"
+                      className="truncate text-label max-w-[90px] text-[var(--text-muted)]"
                     >
                       {org.name}
                     </span>

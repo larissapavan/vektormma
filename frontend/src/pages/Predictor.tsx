@@ -130,7 +130,7 @@ export function Predictor() {
       />
 
       {problem ? (
-        <p className="rounded-card border border-[var(--accent-gold)]/40 bg-[var(--accent-gold)]/15 px-3 py-2 text-sm font-semibold text-[var(--text-gold)]">{problem}</p>
+        <p className="rounded-sm border border-[var(--accent-gold)]/40 bg-[var(--accent-gold)]/15 px-3 py-2 text-sm font-semibold text-[var(--text-gold)]">{problem}</p>
       ) : null}
 
       <div className="space-y-6">
@@ -154,7 +154,7 @@ export function Predictor() {
               disabled={!nameA && !nameB}
               title={L(i18n.language, 'Inverter cantos (vermelho ⇄ azul)', 'Swap corners (red ⇄ blue)', 'Inverser les coins (rouge ⇄ bleu)', 'Intercambiar esquinas (roja ⇄ azul)')}
               aria-label={L(i18n.language, 'Inverter cantos', 'Swap corners', 'Inverser les coins', 'Intercambiar esquinas')}
-              className={`poster-display group relative grid h-14 w-14 -rotate-6 place-items-center rounded-full border border-[var(--border-default)] bg-[var(--bg-surface-elevated)] text-2xl transition ${
+              className={`poster-display group relative grid h-14 w-14 -rotate-6 place-items-center rounded-sm border border-[var(--border-default)] bg-[var(--bg-surface-elevated)] text-2xl transition ${
                 nameA || nameB ? 'cursor-pointer hover:rotate-0 hover:scale-105 active:scale-95 text-[var(--text-primary)]' : 'cursor-default text-[var(--text-muted)]'
               }`}
             >
@@ -182,7 +182,7 @@ export function Predictor() {
           type="button"
           onClick={score}
           disabled={!canScore || predicting || loading}
-          className="primary-action flex min-h-14 w-full cursor-pointer items-center justify-center gap-3 rounded-full px-6 text-base uppercase"
+          className="primary-action flex min-h-14 w-full cursor-pointer items-center justify-center gap-3 rounded-sm px-6 text-base"
         >
           {predicting ? <LoaderCircle className="h-5 w-5 animate-spin" /> : null}
           {predicting ? t('predictor.predicting', 'Judges are scoring...') : canScore ? t('predictor.predictMatchup', 'Score the fight') : t('predictor.pickTwoPrompt', 'Pick both corners first')}
@@ -222,10 +222,10 @@ function Scoreboard({ cells }: { cells: { label: string; value: string; note?: s
     <div className="grid grid-cols-2 gap-x-6 gap-y-6 lg:grid-cols-4">
       {cells.map((cell) => (
         <div key={cell.label} className="min-w-0 lg:border-l lg:border-[var(--border-subtle)] lg:pl-6 lg:first:border-l-0 lg:first:pl-0">
-          <p className="font-mono text-label font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]">{cell.label}</p>
+          <p className="text-label font-semibold text-[var(--text-muted)]">{cell.label}</p>
           <p className={`mt-1 flex items-center gap-2 font-display text-2xl font-bold leading-none tabular-nums sm:text-3xl ${cell.alert ? 'text-[var(--text-red)]' : 'text-[var(--text-primary)]'}`}>
             {cell.onlineDot ? (
-              <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--accent-green)] animate-pulse" aria-hidden="true" />
+              <span className="h-2.5 w-2.5 shrink-0 rounded-sm bg-[var(--accent-green)] animate-pulse" aria-hidden="true" />
             ) : null}
             <span className="min-w-0 truncate">{cell.value}</span>
           </p>
@@ -254,12 +254,12 @@ function Corner({
   const block = side === 'red' ? 'bg-[var(--red)] text-white' : 'bg-[var(--blue)] text-white'
 
   return (
-    <section className="flex min-w-0 flex-col overflow-hidden rounded-card border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
+    <section className="flex min-w-0 flex-col overflow-hidden rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
       <div className={`${block} flex items-center justify-between gap-3 px-4 py-2.5`}>
         <span className="poster-display text-lg sm:text-xl">
           {side === 'red' ? L(i18n.language, 'Canto vermelho', 'Red corner', 'Coin rouge', 'Esquina roja') : L(i18n.language, 'Canto azul', 'Blue corner', 'Coin bleu', 'Esquina azul')}
         </span>
-        {fighter ? <span className="truncate text-xs font-bold uppercase tracking-widest">{fighter.division ? getDivisionName(fighter.division, i18n.language) : fighter.stance}</span> : null}
+        {fighter ? <span className="truncate text-xs font-bold">{fighter.division ? getDivisionName(fighter.division, i18n.language) : fighter.stance}</span> : null}
       </div>
 
       <div className="flex flex-1 flex-col gap-4 p-4 sm:p-5">
@@ -268,9 +268,9 @@ function Corner({
         {fighter ? (
           <FighterSheet fighter={fighter} imageUrl={getFighterImageUrl(fighter.name, imageByName, fighter.image_url)} onOpenProfile={() => onOpenProfile(fighter.name)} />
         ) : (
-          <div className="flex flex-1 flex-col items-center justify-center rounded-control border border-dashed border-[var(--border-default)] px-4 py-10 text-center">
+          <div className="flex flex-1 flex-col items-center justify-center rounded-sm border border-dashed border-[var(--border-default)] px-4 py-10 text-center">
             <p className="poster-display text-3xl sm:text-4xl text-[var(--text-muted)]">{loading ? '...' : L(i18n.language, 'A definir', 'TBA', 'À définir', 'Por definir')}</p>
-            <p className="mt-1 text-xs font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">{L(i18n.language, 'Aguardando lutador', 'To be announced', 'En attente d’un combattant', 'Peleador por anunciar')}</p>
+            <p className="mt-1 text-xs font-bold text-[var(--text-muted)]">{L(i18n.language, 'Aguardando lutador', 'To be announced', 'En attente d’un combattant', 'Peleador por anunciar')}</p>
           </div>
         )}
       </div>
@@ -307,14 +307,14 @@ function FighterSheet({ fighter, imageUrl, onOpenProfile }: { fighter: FighterPr
             <button
               type="button"
               onClick={onOpenProfile}
-              className="truncate transition hover:text-[var(--accent-red)] cursor-pointer"
+              className="truncate transition hover:text-[var(--ink)] cursor-pointer"
             >
               {fighter.name}
             </button>
-            <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">({record})</span>
+            <span className="text-xs font-bold text-[var(--text-muted)]">({record})</span>
           </h3>
           {fighter.nickname ? (
-            <p className="mt-1 truncate text-xs font-semibold uppercase tracking-wider text-[var(--accent-red)]">
+            <p className="mt-1 truncate text-xs font-semibold text-[var(--ink)]">
               “{fighter.nickname}”
             </p>
           ) : null}
@@ -355,7 +355,7 @@ function Scorecard({
   )
 
   return (
-    <section className="overflow-hidden rounded-card border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
+    <section className="overflow-hidden rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-subtle)] px-4 py-3">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="text-2xl leading-none">{L(i18n.language, 'Chance de vitória', 'Chance of winning', 'Chances de victoire', 'Probabilidad de victoria')}</h2>
@@ -390,7 +390,7 @@ function Drivers({ factors, redName }: { factors: MainFactor[]; redName: string 
   const rows = factors.slice(0, 6)
 
   return (
-    <section className="overflow-hidden rounded-card border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
+    <section className="overflow-hidden rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
       <div className="flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-4 py-3">
         <span className="poster-display text-lg text-[var(--text-primary)]">{L(i18n.language, 'Fatores determinantes', 'Why the model leans', 'Pourquoi le modèle penche', 'Por qué se inclina el modelo')}</span>
         
@@ -401,14 +401,14 @@ function Drivers({ factors, redName }: { factors: MainFactor[]; redName: string 
           rows.map((factor, index) => (
             <div key={factor.feature}>
               <div className="flex items-end gap-2">
-                <span className="poster-display w-5 shrink-0 text-lg text-[var(--accent-red)]">{index + 1}</span>
-                <span className="min-w-0 flex-1 truncate text-xs font-bold uppercase tracking-wide sm:text-sm text-[var(--text-primary)]">
+                <span className="poster-display w-5 shrink-0 text-lg text-[var(--ink)]">{index + 1}</span>
+                <span className="min-w-0 flex-1 truncate text-xs font-bold sm:text-sm text-[var(--text-primary)]">
                   {localizeFeature(factor.feature, i18n.language)}
                 </span>
                 <span className="poster-leader border-dotted border-[var(--border-default)]" aria-hidden="true" />
                 <span className="poster-display text-sm text-[var(--text-secondary)]">{factor.impact}</span>
               </div>
-              <div className="mt-1 h-2 rounded-full overflow-hidden bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
+              <div className="mt-1 h-2 rounded-sm overflow-hidden bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
                 <div className={`h-full ${factor.impact === redName ? 'bg-[var(--red)]' : 'bg-[var(--blue)]'}`} style={{ width: `${Math.min(100, (factor.magnitude / max) * 100)}%` }} />
               </div>
               <p className="mt-1 text-xs text-[var(--text-muted)]">
@@ -428,7 +428,7 @@ function Drivers({ factors, redName }: { factors: MainFactor[]; redName: string 
               <div key={n} className="flex items-end gap-2 text-[var(--text-muted)]">
                 <span className="poster-display w-6 shrink-0 text-xl text-[var(--text-muted)]/40">{n}</span>
                 <span className="poster-leader border-dotted border-[var(--border-default)]" aria-hidden="true" />
-                <span className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]/60">--</span>
+                <span className="text-xs font-bold text-[var(--text-muted)]/60">--</span>
               </div>
             ))}
             <p className="text-sm font-medium leading-6 text-[var(--text-muted)]">
@@ -459,10 +459,10 @@ function TaleOfTape({ fighterA, fighterB }: { fighterA: FighterProfile | null; f
   const ready = Boolean(fighterA && fighterB)
 
   return (
-    <section className="overflow-hidden rounded-card border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
+    <section className="overflow-hidden rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
       <div className="flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-4 py-3">
         <span className="poster-display text-lg text-[var(--text-primary)]">{L(i18n.language, 'Raio-x dos lutadores', 'Tale of the tape', 'La fiche comparative', 'Comparativa de peleadores')}</span>
-        <span className="hidden text-label font-bold uppercase tracking-[0.12em] sm:inline text-[var(--text-muted)]">{L(i18n.language, 'Destaque = vantagem', 'Highlight = edge', 'Surligné = avantage', 'Resaltado = ventaja')}</span>
+        <span className="hidden text-label font-bold sm:inline text-[var(--text-muted)]">{L(i18n.language, 'Destaque = vantagem', 'Highlight = edge', 'Surligné = avantage', 'Resaltado = ventaja')}</span>
       </div>
 
       <div className="grid grid-cols-[1fr_auto_1fr] border-b border-[var(--border-subtle)] text-center">

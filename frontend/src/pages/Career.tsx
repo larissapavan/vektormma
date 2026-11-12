@@ -178,7 +178,7 @@ export function Career() {
           </div>
         ) : null}
         <details className="mt-4 text-xs leading-5 text-[var(--text-muted)]">
-          <summary className="cursor-pointer font-bold uppercase tracking-[0.12em] text-[var(--text-secondary)]">{L(lang, 'Como funciona', 'How it works', 'Comment ça marche', 'Cómo funciona')}</summary>
+          <summary className="cursor-pointer font-bold text-[var(--text-secondary)]">{L(lang, 'Como funciona', 'How it works', 'Comment ça marche', 'Cómo funciona')}</summary>
           <ul className="mt-2 list-disc space-y-1 pl-5">
             <li>{L(lang, 'A chance de vencer cada luta vem do mesmo modelo do site, que lê precisão de golpes e de quedas, alcance, idade e cartel.', 'The chance of winning each fight comes from the site’s own model, which reads striking and takedown accuracy, reach, age and record.', 'La probabilité de gagner chaque combat vient du modèle du site, qui lit la précision de frappe et d’amenée au sol, l’allonge, l’âge et le bilan.', 'La probabilidad de ganar cada pelea sale del mismo modelo del sitio, que lee la precisión de golpeo y de derribos, el alcance, la edad y el récord.')}</li>
             <li>{L(lang, 'Em cada round você manda o córner atacar, manter o plano ou proteger. Isso não muda a chance que o modelo deu para a luta: muda como você gasta o risco. Na frente nos cartões, proteger vale a pena; atrás, só atacando.', 'Every round you tell the corner to attack, stick to the plan or cover up. That does not change the chance the model gave the fight: it changes how you spend the risk. Ahead on the cards, covering pays; behind, only attacking does.', 'À chaque round, vous dites au coin d’attaquer, de tenir le plan ou de se protéger. Cela ne change pas la probabilité donnée par le modèle : cela change la façon dont vous dépensez le risque. En tête aux cartons, se protéger paie ; derrière, seule l’attaque aide.', 'En cada round le dices al córner que ataque, mantenga el plan o se proteja. Eso no cambia la probabilidad que dio el modelo: cambia cómo gastas el riesgo. Arriba en las tarjetas conviene protegerse; abajo, solo atacar.')}</li>
@@ -194,13 +194,13 @@ export function Career() {
       </header>
 
       {shared && !game ? (
-        <section className="surface-card rounded-2xl space-y-5 p-5 sm:p-8">
+        <section className="surface-card rounded-sm space-y-5 p-5 sm:p-8">
           <p className="text-center text-sm text-[var(--text-secondary)]">
             {L(lang, 'Este é o retrospecto de uma carreira simulada, aberto por um link. Os dados vêm do próprio link e não foram verificados.', 'This is the retrospect of a simulated career, opened from a link. The numbers come from the link itself and have not been verified.', 'Voici le bilan d’une carrière simulée, ouvert depuis un lien. Les chiffres viennent du lien lui-même et n’ont pas été vérifiés.', 'Este es el balance de una carrera simulada, abierto desde un enlace. Los datos vienen del propio enlace y no se han verificado.')}
           </p>
           <RetrospectCard card={shared} actions={false} />
           <div className="text-center">
-            <Link to="/career" className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[var(--accent-red-solid)] px-7 text-sm font-bold uppercase tracking-[0.12em] text-white transition hover:brightness-110">
+            <Link to="/career" className="inline-flex min-h-12 items-center justify-center rounded-sm bg-[var(--ink)] px-7 text-sm font-bold text-[var(--on-ink)] transition hover:brightness-110">
               {L(lang, 'Criar a minha carreira', 'Build my own career', 'Créer ma carrière', 'Crear mi carrera')}
             </Link>
           </div>

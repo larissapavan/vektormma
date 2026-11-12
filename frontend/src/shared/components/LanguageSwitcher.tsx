@@ -59,13 +59,13 @@ export function LanguageSwitcher({ className = '' }: LanguageSwitcherProps) {
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="inline-flex h-11 items-center gap-1 sm:gap-1.5 rounded-sm border-[1.5px] border-[var(--rule)] bg-transparent px-2 sm:px-2.5 text-[11px] sm:text-xs font-medium transition cursor-pointer text-[var(--text-primary)] hover:border-[var(--border-default)] hover:bg-[var(--bg-surface-hover)] shadow-xs"
+        className="inline-flex h-11 items-center gap-1 sm:gap-1.5 rounded-sm border-[1.5px] border-[var(--rule)] bg-transparent px-2 sm:px-2.5 text-label sm:text-xs font-medium transition cursor-pointer text-[var(--text-primary)] hover:border-[var(--border-default)] hover:bg-[var(--bg-surface-hover)] shadow-xs"
         aria-label={t('language.switch', 'Mudar idioma')}
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
         <Globe className="hidden xs:block h-3 w-3 sm:h-3.5 sm:w-3.5 text-[var(--text-muted)]" />
-        <span className="font-semibold text-[11px] sm:text-xs">{activeItem.code}</span>
+        <span className="font-semibold text-label sm:text-xs">{activeItem.code}</span>
         <ChevronDown
           className={`h-2.5 w-2.5 sm:h-3 sm:w-3 text-[var(--text-muted)] transition-transform duration-200 ${isOpen && !isJSDOM ? 'rotate-180' : ''}`}
         />
@@ -90,14 +90,14 @@ export function LanguageSwitcher({ className = '' }: LanguageSwitcherProps) {
                   onClick={() => changeLanguage(language.id)}
                   aria-pressed={active}
                   title={t(language.titleKey)}
-                  className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-medium transition cursor-pointer ${
+                  className={`flex w-full items-center justify-between rounded-sm px-2.5 py-1.5 text-xs font-medium transition cursor-pointer ${
                     active
                       ? 'bg-[var(--bg-surface-hover)] text-[var(--text-primary)] font-semibold shadow-xs'
                       : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)]'
                   }`}
                 >
                   <span>{language.label}</span>
-                  <span className="font-mono text-[10px] font-bold text-[var(--text-muted)]">
+                  <span className="text-label font-bold text-[var(--text-muted)]">
                     {language.code}
                   </span>
                 </button>

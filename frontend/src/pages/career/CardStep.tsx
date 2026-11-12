@@ -20,9 +20,9 @@ export function CardStep({ card, onAnswer }: { card: Card; onAnswer: (accepted: 
     const deal = DEALS[card.deal]
     const text = DEAL_TEXT[card.deal]
     return (
-      <section className="surface-card rounded-2xl space-y-5 p-4 sm:p-7" aria-labelledby="card-title">
+      <section className="surface-card rounded-sm space-y-5 p-4 sm:p-7" aria-labelledby="card-title">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--text-gold)]">{L(lang, 'Proposta de patrocínio', 'Sponsorship offer', 'Offre de parrainage', 'Oferta de patrocinio')}</p>
+          <p className="text-xs font-bold text-[var(--text-gold)]">{L(lang, 'Proposta de patrocínio', 'Sponsorship offer', 'Offre de parrainage', 'Oferta de patrocinio')}</p>
           <h2 id="card-title" ref={heading} tabIndex={-1} className="game-title mt-1 text-xl focus:outline-none sm:text-3xl">
             <Handshake className="mr-2 inline h-6 w-6 align-[-3px] text-[var(--text-gold)]" aria-hidden="true" />
             {text.sponsor}
@@ -50,9 +50,9 @@ export function CardStep({ card, onAnswer }: { card: Card; onAnswer: (accepted: 
 
   const caught = Math.round(FIX_CAUGHT_CHANCE * 100)
   return (
-    <section className="surface-card rounded-2xl space-y-5 border-[var(--accent-red)]/40 p-4 sm:p-7" aria-labelledby="card-title">
+    <section className="surface-card rounded-sm space-y-5 border-[var(--rule)] p-4 sm:p-7" aria-labelledby="card-title">
       <div>
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--text-red)]">{L(lang, 'Proposta ilegal', 'Illegal offer', 'Offre illégale', 'Oferta ilegal')}</p>
+        <p className="text-xs font-bold text-[var(--text-red)]">{L(lang, 'Proposta ilegal', 'Illegal offer', 'Offre illégale', 'Oferta ilegal')}</p>
         <h2 id="card-title" ref={heading} tabIndex={-1} className="game-title mt-1 text-xl focus:outline-none sm:text-3xl">
           <ShieldAlert className="mr-2 inline h-6 w-6 align-[-3px] text-[var(--text-red)]" aria-hidden="true" />
           {L(lang, 'Um empresário quer combinar uma luta', 'A manager wants to fix a fight', 'Un agent veut truquer un combat', 'Un representante quiere arreglar una pelea')}

@@ -33,7 +33,7 @@ export function FlagIcon({ code, country, className = 'h-3.5 w-[21px]' }: FlagIc
       loading="lazy"
       decoding="async"
       onError={() => setFailed(true)}
-      className={`inline-block shrink-0 rounded-[3px] border border-white/15 object-cover ${className}`}
+      className={`inline-block shrink-0 rounded-sm border border-white/15 object-cover ${className}`}
     />
   )
 }

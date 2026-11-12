@@ -30,7 +30,7 @@ export function DivisionMatrixCard({ category }: { category: string }) {
   }
 
   return (
-    <section aria-label={L(i18n.language, 'Todos contra todos na categoria', 'Division round robin', 'Tous contre tous dans la catégorie', 'Todos contra todos en la división')} className="surface-card rounded-[20px] p-3 sm:p-4">
+    <section aria-label={L(i18n.language, 'Todos contra todos na categoria', 'Division round robin', 'Tous contre tous dans la catégorie', 'Todos contra todos en la división')} className="surface-card rounded-sm p-3 sm:p-4">
       <div className="flex items-center gap-2">
         <Swords className="h-4 w-4 text-[var(--ink)]" />
         <h2 className="broadcast-label text-xs text-[var(--text-main)]">
@@ -52,7 +52,7 @@ export function DivisionMatrixCard({ category }: { category: string }) {
           type="button"
           onClick={() => void run()}
           disabled={state === 'loading'}
-          className="ghost-action mt-3 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] disabled:opacity-60"
+          className="ghost-action mt-3 inline-flex items-center gap-1.5 rounded-sm px-4 py-2 text-xs font-semibold disabled:opacity-60"
         >
           {state === 'loading'
             ? L(i18n.language, 'Executando simulação…', 'Running the model…', 'Simulation en cours…', 'Ejecutando el modelo…')

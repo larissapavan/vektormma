@@ -157,7 +157,7 @@ export function OrgFighters() {
       >
         {/* Search & Status Bar */}
         <div className="grid gap-2.5 md:grid-cols-[1fr_auto]">
-          <div className="soft-input flex min-w-0 flex-1 items-center gap-2.5 rounded-control px-3 py-2.5">
+          <div className="soft-input flex min-w-0 flex-1 items-center gap-2.5 rounded-sm px-3 py-2.5">
             <Search className="h-4 w-4 shrink-0 text-[var(--text-red)]" />
             <input
               value={query}
@@ -181,7 +181,7 @@ export function OrgFighters() {
             <div
               role="group"
               aria-label={L(i18n.language, 'Status', 'Status', 'Statut', 'Estado')}
-              className="chip-scroll inline-flex max-w-full overflow-x-auto rounded-control border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-0.5"
+              className="chip-scroll inline-flex max-w-full overflow-x-auto rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-0.5"
             >
               <button
                 type="button"
@@ -191,7 +191,7 @@ export function OrgFighters() {
                   setStatus('active')
                   reset()
                 }}
-                className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 text-xs font-semibold transition-colors ${
+                className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-sm px-3 text-xs font-semibold transition-colors ${
                   status === 'active' ? 'bg-[var(--text-primary)] text-[var(--bg-surface)]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]'
                 }`}
               >
@@ -199,7 +199,7 @@ export function OrgFighters() {
                 <span>{L(i18n.language, 'Ativos', 'Active', 'Actifs', 'Activos')}</span>
                 <span
                   aria-hidden="true"
-                  className={`ml-1 rounded-full px-1.5 py-px text-label font-bold tabular-nums ${
+                  className={`ml-1 rounded-sm px-1.5 py-px text-label font-bold tabular-nums ${
                     status === 'active' ? 'bg-[var(--bg-surface)]/20 text-[var(--bg-surface)]' : 'bg-[var(--bg-surface-subtle)] text-[var(--text-muted)]'
                   }`}
                 >
@@ -215,14 +215,14 @@ export function OrgFighters() {
                   setStatus('all')
                   reset()
                 }}
-                className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 text-xs font-semibold transition-colors ${
+                className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-sm px-3 text-xs font-semibold transition-colors ${
                   status === 'all' ? 'bg-[var(--text-primary)] text-[var(--bg-surface)]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 <span>{L(i18n.language, 'Todos', 'All time', 'Tous', 'Todos')}</span>
                 <span
                   aria-hidden="true"
-                  className={`ml-1 rounded-full px-1.5 py-px text-label font-bold tabular-nums ${
+                  className={`ml-1 rounded-sm px-1.5 py-px text-label font-bold tabular-nums ${
                     status === 'all' ? 'bg-[var(--bg-surface)]/20 text-[var(--bg-surface)]' : 'bg-[var(--bg-surface-subtle)] text-[var(--text-muted)]'
                   }`}
                 >
@@ -258,14 +258,14 @@ export function OrgFighters() {
       {division !== 'ALL' && !loading ? (
         <div className="flex items-center justify-between gap-3 border-b border-[var(--border-subtle)] pb-3">
           <div className="flex items-center gap-3">
-            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-control border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)]">
+            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)]">
               {(() => {
                 const Icon = getDivisionIcon(division)
                 return <Icon className="h-5 w-5" />
               })()}
             </div>
             <div>
-              <p className="font-mono text-label font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]">
+              <p className="text-label font-semibold text-[var(--text-muted)]">
                 {L(i18n.language, 'Categoria ativa', 'Active division', 'Catégorie active', 'División activa')}
               </p>
               <h2 className="mt-1 text-xl text-[var(--text-primary)] sm:text-2xl">
@@ -276,7 +276,7 @@ export function OrgFighters() {
           <button
             type="button"
             onClick={() => setDivision('ALL')}
-            className="text-xs font-bold uppercase tracking-wider text-[var(--accent-red)] hover:underline"
+            className="text-xs font-bold text-[var(--ink)] hover:underline"
           >
             {L(i18n.language, 'Ver todas as categorias', 'View all divisions', 'Voir toutes', 'Ver todas las divisiones')}
           </button>
@@ -287,7 +287,7 @@ export function OrgFighters() {
       {loading ? (
         <section className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 8 }).map((_, index) => (
-            <LoadingSkeleton key={index} className="h-[240px] rounded-[18px]" />
+            <LoadingSkeleton key={index} className="h-[240px] rounded-sm" />
           ))}
         </section>
       ) : matches.length ? (
@@ -318,7 +318,7 @@ export function OrgFighters() {
               <button
                 type="button"
                 onClick={() => setShown((count) => count + PAGE_SIZE)}
-                className="primary-action inline-flex items-center justify-center rounded-full px-6 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-white"
+                className="primary-action inline-flex items-center justify-center rounded-sm px-6 py-2.5 text-xs font-bold text-white"
               >
                 {L(
                   i18n.language,
@@ -331,7 +331,7 @@ export function OrgFighters() {
               <button
                 type="button"
                 onClick={() => setShown(matches.length)}
-                className="ghost-action theme-text inline-flex items-center justify-center rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em]"
+                className="ghost-action theme-text inline-flex items-center justify-center rounded-sm px-5 py-2.5 text-xs font-bold"
               >
                 {L(
                   i18n.language,
@@ -440,7 +440,7 @@ function OrgWeightClassBar({
           type="button"
           onClick={() => onSelect('ALL')}
           aria-pressed={activeDivision === 'ALL'}
-          className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] transition duration-200 ${
+          className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-sm border px-3 py-1.5 text-xs font-semibold transition duration-200 ${
             activeDivision === 'ALL'
               ? 'border-[var(--ink)] bg-[var(--ink)] text-[var(--on-ink)]'
               : 'border-[var(--line-soft)] bg-[var(--card-bg)] text-[var(--text-main)] hover:bg-[var(--tape)] hover:text-[var(--on-tape)]'
@@ -449,7 +449,7 @@ function OrgWeightClassBar({
           <Swords className="h-3.5 w-3.5 shrink-0" />
           <span>{L(i18n.language, 'Todas as categorias', 'All divisions', 'Toutes', 'Todas las divisiones')}</span>
           <span
-            className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
+            className={`rounded-sm px-1.5 py-0.2 text-label font-bold ${
               activeDivision === 'ALL'
                 ? 'bg-[var(--tape)] text-[var(--on-tape)]'
                 : 'bg-[var(--surface-3)] text-[var(--text-muted)]'
@@ -469,7 +469,7 @@ function OrgWeightClassBar({
               type="button"
               onClick={() => onSelect(d)}
               aria-pressed={isActive}
-              className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] transition duration-200 ${
+              className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-sm border px-3 py-1.5 text-xs font-semibold transition duration-200 ${
                 isActive
                   ? 'border-[var(--ink)] bg-[var(--ink)] text-[var(--on-ink)]'
                   : 'border-[var(--line-soft)] bg-[var(--card-bg)] text-[var(--text-main)] hover:bg-[var(--tape)] hover:text-[var(--on-tape)]'
@@ -478,7 +478,7 @@ function OrgWeightClassBar({
               <Icon className="h-3.5 w-3.5 shrink-0" />
               <span>{getDivisionName(d, i18n.language)}</span>
               <span
-                className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
+                className={`rounded-sm px-1.5 py-0.2 text-label font-bold ${
                   isActive
                     ? 'bg-[var(--tape)] text-[var(--on-tape)]'
                     : 'bg-[var(--surface-3)] text-[var(--text-muted)]'
@@ -521,7 +521,7 @@ function ScrollButton({
       onClick={onClick}
       disabled={!visible}
       tabIndex={visible ? 0 : -1}
-      className={`absolute top-1/2 z-20 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] transition hover:text-[var(--gold)] ${
+      className={`absolute top-1/2 z-20 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] transition hover:text-[var(--gold)] ${
         direction === 'left' ? 'left-0.5' : 'right-0.5'
       } ${visible ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
     >
@@ -550,30 +550,30 @@ function FighterCard({
 
   return (
     <motion.article
-      className="surface-card group flex h-full flex-col overflow-hidden !rounded-card hover:border-[var(--border-default)]"
+      className="surface-card group flex h-full flex-col overflow-hidden rounded-sm hover:border-[var(--border-default)]"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
     >
-      <div className={`h-1 w-full ${fighter.belt ? 'bg-[var(--gold-fill)]' : 'bg-[var(--accent-red)]'}`} />
+      <div className={`h-1 w-full ${fighter.belt ? 'bg-[var(--gold-fill)]' : 'bg-[var(--ink)]'}`} />
       <div className="flex flex-1 flex-col p-4">
         <div className="grid grid-cols-1 content-start justify-items-center gap-3 text-center sm:min-h-[160px] sm:grid-cols-[72px_1fr] sm:justify-items-stretch sm:text-left">
           <FighterAvatar
             name={fighter.name}
             imageUrl={fighter.image_url}
             highlight={fighter.belt}
-            className="h-20 w-18 sm:h-24 sm:w-20 rounded-xl"
+            className="h-20 w-18 sm:h-24 sm:w-20 rounded-sm"
           />
 
           <div className="min-w-0 max-sm:w-full">
             <div className="flex items-start justify-between gap-1.5">
               <div className="min-w-0 max-sm:w-full">
                 {fighter.division ? (
-                  <p className="font-mono text-label font-semibold uppercase tracking-[0.08em] text-[var(--text-red)]">
+                  <p className="text-label font-semibold text-[var(--text-red)]">
                     {getDivisionName(fighter.division, i18n.language)}
                   </p>
                 ) : null}
-                <h3 className="mt-0.5 flex max-w-full flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-lg font-bold uppercase leading-tight tracking-[0.02em] text-[var(--text-main)] sm:justify-start">
+                <h3 className="mt-0.5 flex max-w-full flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-lg font-bold leading-tight text-[var(--text-main)] sm:justify-start">
                   {fighter.country_code ? <FlagIcon code={fighter.country_code} country={fighter.country} /> : null}
                   <span className="min-w-0 break-words">{fighter.name}</span>
                   {fighter.belt ? <ChampionBelt /> : null}
@@ -588,7 +588,7 @@ function FighterCard({
 
             <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-label max-sm:justify-center">
               {fighter.belt ? (
-                <span className="rounded bg-[var(--gold-fill)] px-1.5 py-0.5 font-bold uppercase text-[#10151d]">
+                <span className="rounded bg-[var(--gold-fill)] px-1.5 py-0.5 font-bold text-[#10151d]">
                   {interim ? L(i18n.language, 'Interino', 'Interim', 'Intérimaire', 'Interino') : L(i18n.language, 'Campeão', 'Champion', 'Champion', 'Campeón')}
                 </span>
               ) : fighter.ranking ? (
@@ -599,7 +599,7 @@ function FighterCard({
 
               {!archived && fighter.is_active ? (
                 <span className="inline-flex items-center gap-1 font-semibold text-[var(--text-green)]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
+                  <span className="h-1.5 w-1.5 rounded-sm bg-[var(--accent-green)] animate-pulse" />
                   {L(i18n.language, 'Ativo', 'Active', 'Actif', 'Activo')}
                 </span>
               ) : !archived ? (
@@ -644,7 +644,7 @@ function FighterCard({
             type="button"
             onClick={() => onOpen(fighter.name)}
             aria-label={L(i18n.language, `${fighter.name}. Ver perfil`, `${fighter.name}. View profile`, `${fighter.name}. Voir le profil`, `${fighter.name}. Ver perfil`)}
-            className="primary-action inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-full px-3 text-xs uppercase"
+            className="primary-action inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 rounded-sm px-3 text-xs"
           >
             <Award className="h-3.5 w-3.5" />
             {L(i18n.language, 'Ver perfil', 'View profile', 'Voir le profil', 'Ver perfil')}
@@ -656,7 +656,7 @@ function FighterCard({
               rel="noreferrer"
               onClick={(e) => e.stopPropagation()}
               title={L(i18n.language, 'Perfil oficial no ONE', 'Official profile on ONE', 'Profil officiel', 'Perfil oficial en ONE')}
-              className="ghost-action inline-flex min-h-10 min-w-10 items-center justify-center rounded-full px-3 text-[var(--text-red)]"
+              className="ghost-action inline-flex min-h-10 min-w-10 items-center justify-center rounded-sm px-3 text-[var(--text-red)]"
             >
               <ExternalLink className="h-3.5 w-3.5" />
             </a>

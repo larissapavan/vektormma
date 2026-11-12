@@ -141,7 +141,7 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
         <nav aria-label={L(i18n.language, 'Navegação estrutural', 'Breadcrumb', 'Fil d’Ariane', 'Ruta de navegación')}>
           <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold">
             <li>
-              <Link to={`/events?q=${encodeURIComponent(eventName)}`} className="text-[var(--accent-red)] underline decoration-[var(--accent-red)] underline-offset-4">
+              <Link to={`/events?q=${encodeURIComponent(eventName)}`} className="text-[var(--ink)] underline decoration-[var(--ink)] underline-offset-4">
                 {eventName}
               </Link>
             </li>
@@ -161,7 +161,7 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
         />
       </section>
 
-      <section id="matchup-fighters" className="surface-card scroll-mt-4 rounded-[20px] p-4 sm:p-5">
+      <section id="matchup-fighters" className="surface-card scroll-mt-4 rounded-sm p-4 sm:p-5">
         <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] sm:items-end">
           <FighterSelect
             label={t('predictor.redCorner')}
@@ -179,7 +179,7 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
               disabled={!fighterAName && !fighterBName}
               title={L(i18n.language, 'Inverter cantos (vermelho ⇄ azul)', 'Swap corners (red ⇄ blue)', 'Inverser les coins (rouge ⇄ bleu)', 'Intercambiar esquinas (roja ⇄ azul)')}
               aria-label={L(i18n.language, 'Inverter cantos', 'Swap corners', 'Inverser les coins', 'Intercambiar esquinas')}
-              className="ghost-action inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--text-muted)] transition hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
+              className="ghost-action inline-flex h-10 w-10 items-center justify-center rounded-sm text-[var(--text-muted)] transition hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer"
             >
               <ArrowLeftRight className="h-4 w-4" />
             </button>
@@ -197,7 +197,7 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
             type="button"
             onClick={() => void handleAnalyze()}
             disabled={!canAnalyze || analyzing || fightersLoading}
-            className="primary-action inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.14em] text-white disabled:cursor-not-allowed disabled:opacity-50"
+            className="primary-action inline-flex items-center justify-center gap-2 rounded-sm px-4 py-2.5 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
           >
             {analyzing ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Swords className="h-4 w-4" />}
             {analyzing ? t('matchup.analyzing') : t('matchup.analyze')}
@@ -207,21 +207,21 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
 
       {systemError ? (
         <p className="flex items-center gap-2 border-l-[3px] border-[var(--ink)] bg-[var(--panel)] px-4 py-3 text-base font-semibold">
-          <ShieldAlert className="h-4 w-4 shrink-0 text-[var(--accent-red)]" />
+          <ShieldAlert className="h-4 w-4 shrink-0 text-[var(--ink)]" />
           {systemError}
         </p>
       ) : null}
 
       {canAnalyze ? (
         <>
-          <section className="surface-card rounded-[20px] p-4 sm:p-5">
+          <section className="surface-card rounded-sm p-4 sm:p-5">
             <div className="flex items-end justify-between gap-3">
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Probabilidade do modelo', 'Model odds', 'Cotes du modèle', 'Probabilidad del modelo')}</p>
+                  <p className="broadcast-label text-label text-[var(--text-muted)]">{L(i18n.language, 'Probabilidade do modelo', 'Model odds', 'Cotes du modèle', 'Probabilidad del modelo')}</p>
                   {titleFightInfo?.title_fight ? <TitleFightBadge fight={titleFightInfo} /> : null}
                 </div>
-                <h2 className="mt-0.5 text-xl font-black uppercase tracking-[0.03em] text-[var(--text-main)] sm:text-2xl">{t('predictor.winningChance')}</h2>
+                <h2 className="mt-0.5 text-xl font-black text-[var(--text-main)] sm:text-2xl">{t('predictor.winningChance')}</h2>
               </div>
               <CopyLinkButton
                 href={`/matchup-intelligence?a=${encodeURIComponent(fighterAName)}&b=${encodeURIComponent(fighterBName)}`}
@@ -230,7 +230,7 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
             </div>
 
             {fighterA && fighterB ? (
-              <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-2xl border border-[var(--line-soft)] bg-[var(--surface-3)] p-3 sm:gap-4">
+              <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-sm border border-[var(--line-soft)] bg-[var(--surface-3)] p-3 sm:gap-4">
                 <button
                   type="button"
                   onClick={() => setProfileName(fighterA.name)}
@@ -248,14 +248,14 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
                       <FlagList fighter={fighterA} className="h-3.5 w-5 shrink-0" />
                       <span className="truncate text-sm font-bold text-[var(--text-main)] sm:text-base">{fighterA.name}</span>
                     </div>
-                    <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-[11px] text-[var(--text-muted)]">
+                    <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-label text-[var(--text-muted)]">
                       <span className="type-num font-semibold">{fighterA.wins ?? 0}-{fighterA.losses ?? 0}{fighterA.draws ? `-${fighterA.draws}` : ''}</span>
 
                     </div>
                   </div>
                 </button>
 
-                <span className="broadcast-label rounded border border-[var(--line-soft)] px-2 py-0.5 text-[10px] text-[var(--text-muted)]">VS</span>
+                <span className="broadcast-label rounded border border-[var(--line-soft)] px-2 py-0.5 text-label text-[var(--text-muted)]">VS</span>
 
                 <button
                   type="button"
@@ -274,7 +274,7 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
                       <span className="truncate text-sm font-bold text-[var(--text-main)] sm:text-base">{fighterB.name}</span>
                       <FlagList fighter={fighterB} className="h-3.5 w-5 shrink-0" />
                     </div>
-                    <div className="mt-0.5 flex flex-wrap items-center justify-end gap-1.5 text-[11px] text-[var(--text-muted)]">
+                    <div className="mt-0.5 flex flex-wrap items-center justify-end gap-1.5 text-label text-[var(--text-muted)]">
 
                       <span className="type-num font-semibold">{fighterB.wins ?? 0}-{fighterB.losses ?? 0}{fighterB.draws ? `-${fighterB.draws}` : ''}</span>
                     </div>
@@ -376,7 +376,7 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
       ) : null}
 
       {!canAnalyze ? (
-        <section className="surface-card rounded-[20px] px-4 py-8 text-center">
+        <section className="surface-card rounded-sm px-4 py-8 text-center">
           <p className="text-sm leading-6 text-[var(--text-muted)]">
             {L(
               i18n.language,
@@ -405,15 +405,15 @@ function MatchupAnalysisSkeleton({ includeOdds = true }: { includeOdds?: boolean
   const { i18n } = useTranslation()
   return (
     <div className="space-y-3" role="status" aria-label={L(i18n.language, 'Analisando confronto', 'Analyzing matchup', 'Analyse du combat', 'Analizando el enfrentamiento')}>
-      {includeOdds ? <LoadingSkeleton className="h-[180px] rounded-[20px]" label={L(i18n.language, 'Carregando a chance de vitória', 'Loading the win chance', 'Chargement de la chance de victoire', 'Cargando la probabilidad de victoria')} /> : null}
-      <LoadingSkeleton className="h-[340px] rounded-[20px]" label={L(i18n.language, 'Carregando gráfico de radar', 'Loading radar chart', 'Chargement du graphique radar', 'Cargando el gráfico de radar')} />
+      {includeOdds ? <LoadingSkeleton className="h-[180px] rounded-sm" label={L(i18n.language, 'Carregando a chance de vitória', 'Loading the win chance', 'Chargement de la chance de victoire', 'Cargando la probabilidad de victoria')} /> : null}
+      <LoadingSkeleton className="h-[340px] rounded-sm" label={L(i18n.language, 'Carregando gráfico de radar', 'Loading radar chart', 'Chargement du graphique radar', 'Cargando el gráfico de radar')} />
       <div className="grid gap-3 lg:grid-cols-3">
-        <LoadingSkeleton className="h-[180px] rounded-[20px]" />
-        <LoadingSkeleton className="h-[180px] rounded-[20px]" />
-        <LoadingSkeleton className="h-[180px] rounded-[20px]" />
+        <LoadingSkeleton className="h-[180px] rounded-sm" />
+        <LoadingSkeleton className="h-[180px] rounded-sm" />
+        <LoadingSkeleton className="h-[180px] rounded-sm" />
       </div>
-      <LoadingSkeleton className="h-[220px] rounded-[20px]" label={L(i18n.language, 'Carregando fatores do confronto', 'Loading matchup factors', 'Chargement des facteurs du combat', 'Cargando los factores del enfrentamiento')} />
-      <LoadingSkeleton className="h-[260px] rounded-[20px]" label={L(i18n.language, 'Carregando lutas recentes', 'Loading recent fights', 'Chargement des combats récents', 'Cargando las peleas recientes')} />
+      <LoadingSkeleton className="h-[220px] rounded-sm" label={L(i18n.language, 'Carregando fatores do confronto', 'Loading matchup factors', 'Chargement des facteurs du combat', 'Cargando los factores del enfrentamiento')} />
+      <LoadingSkeleton className="h-[260px] rounded-sm" label={L(i18n.language, 'Carregando lutas recentes', 'Loading recent fights', 'Chargement des combats récents', 'Cargando las peleas recientes')} />
     </div>
   )
 }
@@ -439,20 +439,20 @@ function StatComparisonCard({
   rows: ComparisonRow[]
 }) {
   return (
-    <article className="surface-card rounded-[20px] p-3 sm:p-4">
+    <article className="surface-card rounded-sm p-3 sm:p-4">
       <div className="mb-3 flex items-center gap-2.5">
         <div className="p-2">
           <Icon className="h-4 w-4" />
         </div>
-        <h2 className="text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{title}</h2>
+        <h2 className="text-lg font-bold text-[var(--text-main)]">{title}</h2>
       </div>
 
       <div className="grid grid-cols-[1fr_auto_auto] items-center gap-x-4 gap-y-1">
         <span />
-        <span className="type-tech truncate text-right text-xs font-bold uppercase tracking-[0.1em] text-[var(--accent-red)]">
+        <span className="type-tech truncate text-right text-xs font-bold text-[var(--ink)]">
           {firstName(fighterA.name)}
         </span>
-        <span className="type-tech truncate text-right text-xs font-bold uppercase tracking-[0.1em] text-[var(--blue-text)]">
+        <span className="type-tech truncate text-right text-xs font-bold text-[var(--blue-text)]">
           {firstName(fighterB.name)}
         </span>
 

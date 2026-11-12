@@ -29,11 +29,11 @@ export function LatestNewsCard({ limit = 6, quiet = false }: { limit?: number; q
   if (!data?.items.length) return null
 
   return (
-    <section className={`rounded-[20px] border border-[var(--line-soft)] bg-[var(--surface-3)] ${quiet ? 'px-3 py-3 sm:px-4' : 'surface-card p-3 sm:p-4'}`} aria-labelledby="latest-news-title">
+    <section className={`rounded-sm border border-[var(--line-soft)] bg-[var(--surface-3)] ${quiet ? 'px-3 py-3 sm:px-4' : 'surface-card p-3 sm:p-4'}`} aria-labelledby="latest-news-title">
       <div className="mb-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
         <div className="flex items-center gap-2">
           <Newspaper className={`h-3.5 w-3.5 ${quiet ? 'text-[var(--text-muted)]' : 'text-[var(--accent-red)]'}`} />
-          <h2 id="latest-news-title" className={`broadcast-label text-[11px] ${quiet ? 'text-[var(--text-muted)]' : 'text-[var(--text-main)]'}`}>
+          <h2 id="latest-news-title" className={`broadcast-label text-label ${quiet ? 'text-[var(--text-muted)]' : 'text-[var(--text-main)]'}`}>
             {L(i18n.language, 'Últimas notícias do UFC', 'Latest from the UFC', 'Dernières nouvelles de l’UFC', 'Últimas noticias de la UFC')}
           </h2>
         </div>
@@ -41,7 +41,7 @@ export function LatestNewsCard({ limit = 6, quiet = false }: { limit?: number; q
           href={UFC_X_URL}
           target="_blank"
           rel="noreferrer"
-          className="ghost-action inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-[#FFFFFF] transition hover:!bg-[var(--gold-fill)] hover:!text-[#10151d]"
+          className="ghost-action inline-flex items-center gap-1.5 px-3 py-1.5 text-label font-bold text-[#FFFFFF] transition hover:!bg-[var(--gold-fill)] hover:!text-[#10151d]"
         >
           {L(i18n.language, 'Seguir @ufc no X', 'Follow @ufc on X', 'Suivre @ufc sur X', 'Seguir a @ufc en X')}
           <ExternalLink className="h-3 w-3" />
@@ -76,7 +76,7 @@ function NewsRow({ item, quiet = false }: { item: NewsItem; quiet?: boolean }) {
       href={item.url}
       target="_blank"
       rel="noreferrer"
-      className="group flex h-full min-w-0 gap-2.5 border border-[var(--line-soft)] bg-[var(--card-bg)] p-2 transition hover:border-[var(--accent-red)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-red)]"
+      className="group flex h-full min-w-0 gap-2.5 border border-[var(--line-soft)] bg-[var(--card-bg)] p-2 transition hover:border-[var(--ink)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-red)]"
     >
       <div className={`relative shrink-0 overflow-hidden border border-[var(--rule)] bg-[var(--surface-3)] ${quiet ? 'h-12 w-16' : 'h-[72px] w-[104px]'}`}>
         {item.image_url ? (
@@ -85,7 +85,7 @@ function NewsRow({ item, quiet = false }: { item: NewsItem; quiet?: boolean }) {
           <Newspaper className={`m-auto text-[var(--text-muted)] ${quiet ? 'mt-3 h-4 w-4' : 'mt-6 h-6 w-6'}`} />
         )}
         {item.kind === 'video' ? (
-          <span className="absolute bottom-0 left-0 inline-flex items-center gap-1 bg-[var(--ink)] px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] text-white">
+          <span className="absolute bottom-0 left-0 inline-flex items-center gap-1 bg-[var(--ink)] px-1.5 py-0.5 text-label font-bold text-white">
             <Play className="h-2.5 w-2.5 fill-current" />
             {L(i18n.language, 'Vídeo', 'Video', 'Vidéo', 'Video')}
           </span>
@@ -94,7 +94,7 @@ function NewsRow({ item, quiet = false }: { item: NewsItem; quiet?: boolean }) {
 
       <div className="min-w-0 flex-1">
         <p className={`line-clamp-2 font-semibold leading-snug text-[var(--text-main)] ${quiet ? 'text-xs' : 'text-sm'}`}>{item.title}</p>
-        {age ? <p className="mt-1 text-[11px] text-[var(--text-muted)]">{age}</p> : null}
+        {age ? <p className="mt-1 text-label text-[var(--text-muted)]">{age}</p> : null}
       </div>
     </a>
   )

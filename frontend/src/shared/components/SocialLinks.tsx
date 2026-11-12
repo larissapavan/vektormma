@@ -96,10 +96,10 @@ export function SocialLinks({ className = 'flex items-center gap-1.5', iconClass
             rel="noreferrer"
             aria-label={`${item.label} (${item.handle})`}
             title={`${item.label}: ${item.handle}`}
-            className={`inline-flex items-center gap-1.5 rounded-lg p-1.5 text-[var(--text-secondary)] transition-colors duration-150 ${item.hoverColor} focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]`}
+            className={`inline-flex items-center gap-1.5 rounded-sm p-1.5 text-[var(--text-secondary)] transition-colors duration-150 ${item.hoverColor} focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]`}
           >
             <Icon className={iconClassName} />
-            {showLabels && <span className="font-mono text-xs font-semibold">{item.label}</span>}
+            {showLabels && <span className="text-xs font-semibold">{item.label}</span>}
           </a>
         )
       })}

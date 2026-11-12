@@ -43,11 +43,11 @@ export function SkillMeter({ label, value, max = 100, tone = 'red' }: { label: s
   const fill = { red: 'bg-[var(--ink)]', gold: 'bg-[var(--gold)]', blue: 'bg-[var(--ink)]' }[tone]
   return (
     <div>
-      <div className="flex items-baseline justify-between text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--text-secondary)]">
+      <div className="flex items-baseline justify-between text-label font-bold text-[var(--text-secondary)]">
         <span>{label}</span>
         <span className="data-value text-sm text-[var(--text-main)]">{Math.round(value)}</span>
       </div>
-      <div className="mt-1.5 h-2.5 overflow-hidden rounded-full bg-[var(--border-subtle)]" role="img" aria-label={`${label}: ${Math.round(value)}/${max}`}>
+      <div className="mt-1.5 h-2.5 overflow-hidden rounded-sm bg-[var(--border-subtle)]" role="img" aria-label={`${label}: ${Math.round(value)}/${max}`}>
         <motion.div className={`h-full ${fill}`} initial={false} animate={{ width: `${Math.min((value / max) * 100, 100)}%` }} transition={{ duration: reduce ? 0 : 0.6, ease: 'easeOut' }} />
       </div>
     </div>
@@ -76,11 +76,11 @@ export function Radar({ values, labels }: { values: [number, number, number]; la
       {angles.map((_, index) => (
         <line key={index} x1={cx} y1={cy} x2={point(index, 1)[0]} y2={point(index, 1)[1]} stroke="var(--border-subtle)" />
       ))}
-      <motion.polygon points={shape} fill="var(--accent-red)" fillOpacity={0.28} stroke="var(--accent-red)" strokeWidth={2.5} strokeLinejoin="round" initial={false} animate={{ points: shape }} transition={{ duration: reduce ? 0 : 0.35 }} />
+      <motion.polygon points={shape} fill="var(--ink)" fillOpacity={0.28} stroke="var(--ink)" strokeWidth={2.5} strokeLinejoin="round" initial={false} animate={{ points: shape }} transition={{ duration: reduce ? 0 : 0.35 }} />
       {angles.map((_, index) => {
         const [x, y] = point(index, 1.28)
         return (
-          <text key={index} x={x} y={y + (index === 0 ? 0 : 6)} textAnchor={anchors[index]} className="fill-[var(--text-secondary)] text-[12px] font-bold uppercase" style={{ letterSpacing: '0.08em' }}>
+          <text key={index} x={x} y={y + (index === 0 ? 0 : 6)} textAnchor={anchors[index]} className="fill-[var(--text-secondary)] text-label font-bold" style={{ letterSpacing: '0.08em' }}>
             {labels[index]}
           </text>
         )
@@ -99,13 +99,13 @@ export function Stepper({ steps, current }: { steps: string[]; current: number }
         return (
           <li key={step} className="flex items-center gap-1.5 sm:gap-2" aria-current={active ? 'step' : undefined}>
             <span
-              className={`grid h-7 w-7 place-items-center rounded-full text-xs font-bold transition ${
-                done ? 'bg-[var(--accent-green)] text-white' : active ? 'bg-[var(--accent-red-solid)] text-white ring-4 ring-[var(--accent-red)]/25' : 'bg-[var(--bg-surface-subtle)] text-[var(--text-muted)] ring-1 ring-[var(--border-default)]'
+              className={`grid h-7 w-7 place-items-center rounded-sm text-xs font-bold transition ${
+                done ? 'bg-[var(--accent-green)] text-white' : active ? 'bg-[var(--ink)] text-[var(--on-ink)] ring-4 ring-[var(--ink)]' : 'bg-[var(--bg-surface-subtle)] text-[var(--text-muted)] ring-1 ring-[var(--border-default)]'
               }`}
             >
               {done ? <Check className="h-4 w-4" aria-hidden="true" /> : index + 1}
             </span>
-            <span className={`hidden text-xs font-bold uppercase tracking-[0.12em] sm:inline ${active ? 'text-[var(--text-main)]' : 'text-[var(--text-muted)]'}`}>{step}</span>
+            <span className={`hidden text-xs font-bold sm:inline ${active ? 'text-[var(--text-main)]' : 'text-[var(--text-muted)]'}`}>{step}</span>
             {index < steps.length - 1 ? <span className={`h-px w-4 sm:w-8 ${done ? 'bg-[var(--accent-green)]' : 'bg-[var(--border-default)]'}`} aria-hidden="true" /> : null}
           </li>
         )
@@ -116,7 +116,7 @@ export function Stepper({ steps, current }: { steps: string[]; current: number }
 
 export function PrimaryButton({ children, onClick, disabled, type = 'button' }: { children: ReactNode; onClick?: () => void; disabled?: boolean; type?: 'button' | 'submit' }) {
   return (
-    <button type={type} onClick={onClick} disabled={disabled} className="primary-action inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-7 text-sm uppercase">
+    <button type={type} onClick={onClick} disabled={disabled} className="primary-action inline-flex min-h-12 items-center justify-center gap-2 rounded-sm px-7 text-sm">
       {children}
     </button>
   )
@@ -124,7 +124,7 @@ export function PrimaryButton({ children, onClick, disabled, type = 'button' }: 
 
 export function GhostButton({ children, onClick }: { children: ReactNode; onClick?: () => void }) {
   return (
-    <button type="button" onClick={onClick} className="ghost-action inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-5 text-sm uppercase">
+    <button type="button" onClick={onClick} className="ghost-action inline-flex min-h-12 items-center justify-center gap-2 rounded-sm px-5 text-sm">
       {children}
     </button>
   )
@@ -134,9 +134,9 @@ export function GhostButton({ children, onClick }: { children: ReactNode; onClic
 export function Chip({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'red' | 'gold' | 'green' }) {
   const tones = {
     neutral: 'border-[var(--border-default)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)]',
-    red: 'border-[var(--accent-red)]/60 bg-[var(--accent-red)]/10 text-[var(--text-red)]',
+    red: 'border-[var(--rule)] bg-[var(--panel)] text-[var(--text-red)]',
     gold: 'border-[var(--accent-gold)]/60 bg-[var(--accent-gold)]/15 text-[var(--text-gold)]',
     green: 'border-[var(--accent-green)]/60 bg-[var(--accent-green)]/15 text-[var(--text-green)]',
   }
-  return <span className={`inline-flex items-center gap-1 border px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] ${tones[tone]}`}>{children}</span>
+  return <span className={`inline-flex items-center gap-1 border px-2 py-0.5 text-label font-bold ${tones[tone]}`}>{children}</span>
 }

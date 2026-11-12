@@ -52,7 +52,7 @@ function CornerBlock({ corner, side, headingLevel }: { corner: Corner; side: 're
               </>
             ) : null}
             <span
-              className="caps mt-1.5 block whitespace-nowrap font-display font-black leading-[0.8] tracking-[-0.01em]"
+              className="caps mt-1.5 block whitespace-nowrap font-display font-black leading-[0.8]"
               style={{ fontSize: `min(clamp(56px, 8.5vw, 112px), ${fit})` }}
             >
               {surname}

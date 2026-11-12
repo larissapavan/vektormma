@@ -26,7 +26,7 @@ import type { OrgEvent, OrgFighter, OrgRankingCategory, UpcomingPick } from '../
 type PickFor = (event: string, fighterA: string, fighterB: string) => UpcomingPick | undefined
 
 /** A row of a list that sits on the page background; the hover fill bleeds a little past the text column. */
-const ROW = '-mx-2 flex w-[calc(100%+1rem)] items-center gap-3 rounded-control px-2 py-2.5 text-left'
+const ROW = '-mx-2 flex w-[calc(100%+1rem)] items-center gap-3 rounded-sm px-2 py-2.5 text-left'
 const CLICKABLE_ROW = 'cursor-pointer transition-colors hover:bg-[var(--bg-surface-hover)]'
 
 function shortDate(date: string | null, lang: string) {
@@ -55,7 +55,7 @@ export function FeaturedHero({
   const probabilityA = pick ? pick.fighter_1_probability : null
 
   return (
-    <section className="overflow-hidden rounded-panel border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
+    <section className="overflow-hidden rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
       <div className="grid lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
         <div className="flex flex-col justify-center p-5 sm:p-8">
           <Eyebrow tone="accent">
@@ -84,7 +84,7 @@ export function FeaturedHero({
             {main ? (
               <Link
                 to={`${orgPath(org, 'predictor')}?a=${encodeURIComponent(main.fighter_1)}&b=${encodeURIComponent(main.fighter_2)}`}
-                className="primary-action inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-xs uppercase max-xs:w-full"
+                className="primary-action inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-5 text-xs max-xs:w-full"
               >
                 {L(lang, 'Analisar combate completo', 'Analyze matchup', 'Analyser le combat', 'Analizar la pelea completa')}
                 <ArrowRight className="h-4 w-4" />
@@ -92,7 +92,7 @@ export function FeaturedHero({
             ) : null}
             <Link
               to={orgPath(org, 'predictor')}
-              className={`${main ? 'ghost-action' : 'primary-action'} inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-xs uppercase max-xs:w-full`}
+              className={`${main ? 'ghost-action' : 'primary-action'} inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-5 text-xs max-xs:w-full`}
             >
               {L(lang, 'Simular uma luta', 'Predict a fight', 'Pronostiquer un combat', 'Pronosticar una pelea')}
               {main ? null : <ArrowRight className="h-4 w-4" />}
@@ -125,7 +125,7 @@ export function FeaturedHero({
 
               <div className="mt-5 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-start gap-2 sm:gap-4">
                 <MainEventName org={org} name={main.fighter_1} onOpen={onOpenFighter} />
-                <span className="mt-10 font-mono text-label font-semibold text-[var(--text-muted)] sm:mt-12">VS</span>
+                <span className="mt-10 text-label font-semibold text-[var(--text-muted)] sm:mt-12">VS</span>
                 <MainEventName org={org} name={main.fighter_2} onOpen={onOpenFighter} />
               </div>
 

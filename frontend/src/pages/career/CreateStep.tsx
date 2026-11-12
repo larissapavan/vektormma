@@ -18,7 +18,7 @@ const ARCHETYPES: { id: string; skills: Record<Skill, number> }[] = [
   { id: 'rangy', skills: { striking: 40, takedowns: 40, reach: 70 } },
 ]
 
-const field = 'mt-1.5 block min-h-12 w-full rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface-subtle)] px-3.5 text-base font-semibold normal-case tracking-normal text-[var(--text-main)] transition focus:border-[var(--accent-red)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/30'
+const field = 'mt-1.5 block min-h-12 w-full rounded-sm border border-[var(--border-default)] bg-[var(--bg-surface-subtle)] px-3.5 text-base font-semibold normal-case text-[var(--text-main)] transition focus:border-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--ink)]'
 
 /** Building the fighter: a name, a division, a stance and 150 points to split between three skills, with the fighter drawn as it changes. */
 export function CreateStep({ onStart }: { onStart: (build: Build) => void }) {
@@ -56,7 +56,7 @@ export function CreateStep({ onStart }: { onStart: (build: Build) => void }) {
         if (validBuild(build)) onStart(build)
       }}
     >
-      <div className="surface-card rounded-2xl space-y-6 p-5 sm:p-7">
+      <div className="surface-card rounded-sm space-y-6 p-5 sm:p-7">
         <div>
           <h2 className="game-title text-xl sm:text-3xl">{L(lang, 'Crie seu lutador', 'Create your fighter', 'Créez votre combattant', 'Crea a tu peleador')}</h2>
           <p className="mt-2 text-sm text-[var(--text-secondary)]">{L(lang, 'Escolha um perfil pronto ou monte o seu.', 'Pick a ready-made style or build your own.', 'Choisissez un profil prêt à l’emploi ou composez le vôtre.', 'Elige un perfil listo o arma el tuyo.')}</p>
@@ -66,7 +66,7 @@ export function CreateStep({ onStart }: { onStart: (build: Build) => void }) {
                 key={archetype.id}
                 type="button"
                 onClick={() => setBuild((current) => ({ ...current, ...archetype.skills }))}
-                className="min-h-10 border-2 border-[var(--rule)] px-4 text-xs font-bold uppercase tracking-[0.1em] text-[var(--text-secondary)] transition hover:border-[var(--accent-red)] hover:text-[var(--text-main)]"
+                className="min-h-10 border-2 border-[var(--rule)] px-4 text-xs font-bold text-[var(--text-secondary)] transition hover:border-[var(--ink)] hover:text-[var(--text-main)]"
               >
                 {archetypeName[archetype.id]}
               </button>
@@ -75,11 +75,11 @@ export function CreateStep({ onStart }: { onStart: (build: Build) => void }) {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <label className="block text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-secondary)]">
+          <label className="block text-xs font-bold text-[var(--text-secondary)]">
             {L(lang, 'Nome', 'Name', 'Nom', 'Nombre')}
             <input value={build.name} maxLength={24} onChange={(event) => setBuild({ ...build, name: event.target.value })} className={field} />
           </label>
-          <label className="block text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-secondary)]">
+          <label className="block text-xs font-bold text-[var(--text-secondary)]">
             {L(lang, 'Divisão', 'Division', 'Catégorie', 'División')}
             <select value={build.division} onChange={(event) => setBuild({ ...build, division: event.target.value })} className={field}>
               {GAME_DIVISIONS.map((division) => (
@@ -89,7 +89,7 @@ export function CreateStep({ onStart }: { onStart: (build: Build) => void }) {
               ))}
             </select>
           </label>
-          <label className="block text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-secondary)]">
+          <label className="block text-xs font-bold text-[var(--text-secondary)]">
             {L(lang, 'Base', 'Stance', 'Garde', 'Guardia')}
             <select value={build.stance} onChange={(event) => setBuild({ ...build, stance: event.target.value as Stance })} className={field}>
               {STANCES.map((stance) => (
@@ -102,9 +102,9 @@ export function CreateStep({ onStart }: { onStart: (build: Build) => void }) {
         </div>
 
         <fieldset className="space-y-5">
-          <legend className="flex w-full items-baseline justify-between text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-secondary)]">
+          <legend className="flex w-full items-baseline justify-between text-xs font-bold text-[var(--text-secondary)]">
             <span>{L(lang, 'Distribua os pontos', 'Spend your points', 'Répartissez vos points', 'Reparte tus puntos')}</span>
-            <span className="data-value border border-[var(--accent-red)]/40 bg-[var(--accent-red)]/12 px-3 py-1 text-sm text-[var(--text-red)]" data-testid="points-left">
+            <span className="data-value border border-[var(--rule)] bg-[var(--panel)] px-3 py-1 text-sm text-[var(--text-red)]" data-testid="points-left">
               {L(lang, `${left} livres`, `${left} left`, `${left} restants`, `${left} libres`)}
             </span>
           </legend>
@@ -121,7 +121,7 @@ export function CreateStep({ onStart }: { onStart: (build: Build) => void }) {
                 max={SKILL_MAX}
                 value={build[key]}
                 onChange={(event) => setSkill(key, Number(event.target.value))}
-                className="mt-1 block h-8 w-full cursor-pointer accent-[var(--accent-red)]"
+                className="mt-1 block h-8 w-full cursor-pointer accent-[var(--ink)]"
               />
               <p className="text-xs text-[var(--text-muted)]">{hint}</p>
             </div>
@@ -130,7 +130,7 @@ export function CreateStep({ onStart }: { onStart: (build: Build) => void }) {
       </div>
 
       <div className="lg:sticky lg:top-4 lg:self-start">
-      <aside className="surface-card rounded-2xl flex flex-col items-center gap-4 p-5 text-center sm:p-7" aria-label={L(lang, 'Prévia do lutador', 'Fighter preview', 'Aperçu du combattant', 'Vista previa del peleador')}>
+      <aside className="surface-card rounded-sm flex flex-col items-center gap-4 p-5 text-center sm:p-7" aria-label={L(lang, 'Prévia do lutador', 'Fighter preview', 'Aperçu du combattant', 'Vista previa del peleador')}>
         <Emblem name={build.name || '?'} className="h-24 w-24 text-4xl" />
         <div>
           <p className="game-title text-2xl">{build.name || L(lang, 'Seu nome', 'Your name', 'Votre nom', 'Tu nombre')}</p>

@@ -14,7 +14,7 @@ export function PickChip({ pick, className = '' }: { pick: UpcomingPick | undefi
 
   return (
     <span
-      className={`inline-flex max-w-full items-center gap-1.5 border border-[var(--accent-red)] bg-[var(--card-bg)] px-1.5 py-1 text-[11px] font-bold uppercase leading-tight tracking-[0.06em] text-[var(--text-main)] sm:text-xs sm:tracking-[0.08em] ${className}`}
+      className={`inline-flex max-w-full items-center gap-1.5 border border-[var(--ink)] bg-[var(--card-bg)] px-1.5 py-1 text-label font-bold leading-tight text-[var(--text-main)] sm:text-xs ${className}`}
       title={L(
         i18n.language,
         `Palpite do modelo baseado em dados estatísticos. Não é recomendação de aposta.`,
@@ -23,12 +23,12 @@ export function PickChip({ pick, className = '' }: { pick: UpcomingPick | undefi
         `El pronóstico del modelo (${edgeLabel(pick.probability, 'es').toLowerCase()}), basado en las estadísticas actuales de cada peleador. No es un consejo de apuestas.`,
       )}
     >
-      <Sparkles className="h-3 w-3 shrink-0 text-[var(--accent-red)]" aria-hidden="true" />
+      <Sparkles className="h-3 w-3 shrink-0 text-[var(--ink)]" aria-hidden="true" />
       <span>
         {L(i18n.language, 'Modelo', 'Model', 'Modèle', 'Modelo')}: {pick.predicted_winner} {shown}
       </span>
-      <span className="h-2 w-14 shrink-0 overflow-hidden rounded-full bg-[var(--rule)]" aria-hidden="true">
-        <span className="block h-full bg-[var(--accent-red)]" style={{ width: `${percent}%` }} />
+      <span className="h-2 w-14 shrink-0 overflow-hidden rounded-sm bg-[var(--rule)]" aria-hidden="true">
+        <span className="block h-full bg-[var(--ink)]" style={{ width: `${percent}%` }} />
       </span>
     </span>
   )

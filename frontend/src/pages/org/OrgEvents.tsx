@@ -106,7 +106,7 @@ export function OrgEvents() {
             ]}
       >
         <div className="grid gap-2.5 sm:grid-cols-[1fr_180px]">
-          <div className="soft-input flex items-center gap-2.5 rounded-control px-3 py-2.5">
+          <div className="soft-input flex items-center gap-2.5 rounded-sm px-3 py-2.5">
             <Search className="h-4 w-4 shrink-0 text-[var(--text-red)]" />
             <input
               value={query}
@@ -120,7 +120,7 @@ export function OrgEvents() {
             value={yearFilter}
             onChange={(event) => setYearFilter(event.target.value)}
             aria-label={L(i18n.language, 'Filtrar por ano', 'Filter by year', 'Filtrer par année', 'Filtrar por año')}
-            className="soft-input min-w-0 rounded-control px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
+            className="soft-input min-w-0 rounded-sm px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
           >
             <option value="ALL">{allYearsLabel}</option>
             {years.map((year) => (
@@ -176,7 +176,7 @@ export function OrgEvents() {
                   <button
                     type="button"
                     onClick={() => setOpenYears((current) => toggle(current, year))}
-                    className="-mx-2 flex min-h-11 w-[calc(100%+1rem)] items-center gap-2 rounded-control px-2 text-left transition-colors hover:bg-[var(--bg-surface-hover)]"
+                    className="-mx-2 flex min-h-11 w-[calc(100%+1rem)] items-center gap-2 rounded-sm px-2 text-left transition-colors hover:bg-[var(--bg-surface-hover)]"
                     aria-expanded={isOpen}
                   >
                     <Swords className="h-4 w-4 shrink-0 text-[var(--text-red)]" />
@@ -239,7 +239,7 @@ function EventCard({
 }) {
   const { i18n } = useTranslation()
   return (
-    <article className="surface-card overflow-hidden !rounded-card">
+    <article className="surface-card overflow-hidden rounded-sm">
       <button
         type="button"
         onClick={onToggle}

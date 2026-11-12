@@ -78,7 +78,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
     >
       <a
         href="#main-content"
-        className="type-tech sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-full focus:bg-[var(--ink)] focus:px-4 focus:py-2 focus:text-xs focus:font-semibold focus:uppercase focus:tracking-[0.14em] focus:text-white"
+        className="type-tech sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-sm focus:bg-[var(--ink)] focus:px-4 focus:py-2 focus:text-xs focus:font-semibold focus:text-white"
       >
         {t('common.skipToContent', 'Skip to content')}
       </a>
@@ -97,7 +97,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
         <ScrollToTop />
         <PageMeta />
         {apiState === 'down' && !opensAtOnce ? (
-          <p role="status" className="mt-3 border border-[var(--border-subtle)] bg-[var(--ink)] px-3 py-2 text-sm font-semibold text-white rounded-lg">
+          <p role="status" className="mt-3 border border-[var(--border-subtle)] bg-[var(--ink)] px-3 py-2 text-sm font-semibold text-white rounded-sm">
             {t('common.serverDown', 'The server is not answering right now. Give it a minute and reload the page.')}
           </p>
         ) : null}

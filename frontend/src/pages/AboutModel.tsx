@@ -149,7 +149,7 @@ export function AboutModel() {
 
       <section className="grid gap-3 xl:grid-cols-[1fr_1fr]">
         <article className="border-t-[3px] border-[var(--ink)] pt-5">
-          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Tecnologias principais', 'Core stack', 'Socle technique', 'Tecnologías principales')}</p>
+          <p className="broadcast-label text-label text-[var(--text-muted)]">{L(i18n.language, 'Tecnologias principais', 'Core stack', 'Socle technique', 'Tecnologías principales')}</p>
           <h2 className="section-title mt-1 ">
             {L(i18n.language, 'Tecnologias utilizadas', 'What it is built with', 'Avec quoi c’est construit', 'Con qué está hecho')}
           </h2>
@@ -164,7 +164,7 @@ export function AboutModel() {
               L(i18n.language, 'Recharts (visualização de dados)', 'Recharts (data viz)', 'Recharts (visualisation de données)', 'Recharts (visualización de datos)'),
               L(i18n.language, 'Testes automatizados (Pytest & Vitest)', 'Automated tests (Pytest & Vitest)', 'Tests automatisés (Pytest & Vitest)', 'Pruebas automatizadas (Pytest y Vitest)'),
             ].map((item) => (
-              <div key={item} className="metric-tile rounded-xl px-3 py-2.5 text-xs font-medium text-[var(--text-main)]">
+              <div key={item} className="metric-tile rounded-sm px-3 py-2.5 text-xs font-medium text-[var(--text-main)]">
                 {item}
               </div>
             ))}
@@ -172,7 +172,7 @@ export function AboutModel() {
         </article>
 
         <article className="border-t-[3px] border-[var(--ink)] pt-5">
-          <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Links e contato', 'Links & contact', 'Liens et contact', 'Enlaces y contacto')}</p>
+          <p className="broadcast-label text-label text-[var(--text-muted)]">{L(i18n.language, 'Links e contato', 'Links & contact', 'Liens et contact', 'Enlaces y contacto')}</p>
           <h2 className="section-title mt-1 ">
             {L(i18n.language, 'Código & redes', 'Find the project', 'Retrouver le projet', 'Encuentra el proyecto')}
           </h2>
@@ -183,11 +183,11 @@ export function AboutModel() {
               return (
                 <div
                   key={label}
-                  className="metric-tile rounded-xl px-3 py-2.5 text-sm text-[var(--text-main)]"
+                  className="metric-tile rounded-sm px-3 py-2.5 text-sm text-[var(--text-main)]"
                 >
                   <div className="flex items-center justify-between gap-4">
                     <span className="inline-flex items-center gap-2">
-                      <span className="rounded-xl bg-[var(--panel)] p-1.5 text-[var(--accent-red)]">
+                      <span className="rounded-sm bg-[var(--panel)] p-1.5 text-[var(--ink)]">
                         <Icon className="h-4 w-4" />
                       </span>
                       {L(i18n.language, labelPt, label, labelFr, labelEs)}
@@ -197,7 +197,7 @@ export function AboutModel() {
                         href={href}
                         target="_blank"
                         rel="noreferrer"
-                        className="type-tech text-xs uppercase tracking-[0.14em] text-[var(--text-muted)] transition hover:text-[var(--text-main)]"
+                        className="type-tech text-xs text-[var(--text-muted)] transition hover:text-[var(--text-main)]"
                       >
                         {L(i18n.language, 'Abrir no navegador', 'Open in browser', 'Ouvrir dans le navigateur', 'Abrir en el navegador')}
                       </a>
@@ -205,7 +205,7 @@ export function AboutModel() {
                       <button
                         type="button"
                         onClick={() => handleOpenExternal(href)}
-                        className="type-tech text-xs uppercase tracking-[0.14em] text-[var(--text-muted)] transition hover:text-[var(--text-main)]"
+                        className="type-tech text-xs text-[var(--text-muted)] transition hover:text-[var(--text-main)]"
                       >
                         {L(i18n.language, 'Acessar LinkedIn', 'Open LinkedIn', 'Ouvrir LinkedIn', 'Abrir LinkedIn')}
                       </button>
@@ -218,7 +218,7 @@ export function AboutModel() {
                       <button
                         type="button"
                         onClick={() => void handleCopyLink(href)}
-                        className="ghost-action inline-flex items-center justify-center rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--ink)]"
+                        className="ghost-action inline-flex items-center justify-center rounded-sm px-3 py-1.5 text-xs font-semibold text-[var(--ink)]"
                       >
                         {copiedLink === href ? L(i18n.language, 'Copiado', 'Copied', 'Copié', 'Copiado') : L(i18n.language, 'Copiar URL', 'Copy URL', 'Copier l’URL', 'Copiar URL')}
                       </button>
@@ -239,7 +239,7 @@ export function AboutModel() {
       ) : modelInfo ? (
         <section className="grid gap-3 xl:grid-cols-[0.95fr_1.05fr]">
           <article className="border-t-[3px] border-[var(--ink)] pt-5">
-            <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Ficha técnica do modelo', 'Technical snapshot', 'Fiche technique', 'Ficha técnica')}</p>
+            <p className="broadcast-label text-label text-[var(--text-muted)]">{L(i18n.language, 'Ficha técnica do modelo', 'Technical snapshot', 'Fiche technique', 'Ficha técnica')}</p>
             <h2 className="section-title mt-1 break-words ">{modelInfo.model_name}</h2>
             <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
               <Metric label={L(i18n.language, 'Variáveis', 'Features', 'Variables', 'Variables')} value={`${modelInfo.feature_count}`} />
@@ -251,11 +251,11 @@ export function AboutModel() {
           </article>
 
           <article className="border-t-[3px] border-[var(--ink)] pt-5">
-            <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Aviso importante', 'Important note', 'Note importante', 'Nota importante')}</p>
-            <div className="mt-3 rounded-2xl border border-[var(--rule)] bg-[var(--panel)] p-3">
+            <p className="broadcast-label text-label text-[var(--text-muted)]">{L(i18n.language, 'Aviso importante', 'Important note', 'Note importante', 'Nota importante')}</p>
+            <div className="mt-3 rounded-sm border border-[var(--rule)] bg-[var(--panel)] p-3">
               <div className="mb-2 flex items-center gap-2 text-[var(--ink)]">
                 <AlertTriangle className="h-4 w-4" />
-                <span className="type-tech text-xs font-semibold uppercase tracking-[0.18em]">
+                <span className="type-tech text-xs font-semibold">
                   {L(i18n.language, 'Aviso legal', 'Use disclaimer', 'Avertissement', 'Aviso legal')}
                 </span>
               </div>
@@ -273,7 +273,7 @@ export function AboutModel() {
               {modelInfo.highlights.map((item) => (
                 <motion.div
                   key={item}
-                  className="metric-tile rounded-xl px-3 py-2.5 text-xs leading-5 text-[var(--text-main)]"
+                  className="metric-tile rounded-sm px-3 py-2.5 text-xs leading-5 text-[var(--text-main)]"
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.35 }}
@@ -299,8 +299,8 @@ function InfoCard({
   description: string
 }) {
   return (
-    <article className="surface-card rounded-[20px] p-3 transition duration-300 hover:-translate-y-0.5 hover:border-[var(--border-subtle)]">
-      <div className="inline-flex rounded-xl bg-[var(--panel)] p-2.5 text-[var(--accent-red)]">
+    <article className="surface-card rounded-sm p-3 transition duration-300 hover:-translate-y-0.5 hover:border-[var(--border-subtle)]">
+      <div className="inline-flex rounded-sm bg-[var(--panel)] p-2.5 text-[var(--ink)]">
         <Icon className="h-4 w-4" />
       </div>
       <h2 className="section-title mt-3 ">{title}</h2>
@@ -311,8 +311,8 @@ function InfoCard({
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="metric-tile rounded-xl px-3 py-2.5">
-      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{label}</p>
+    <div className="metric-tile rounded-sm px-3 py-2.5">
+      <p className="broadcast-label text-label text-[var(--text-muted)]">{label}</p>
       <p className="data-value mt-1 text-xl font-semibold text-[var(--text-main)]">{value}</p>
     </div>
   )

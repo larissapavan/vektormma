@@ -165,7 +165,7 @@ export function FighterSelect({
 
   return (
     <div className="relative z-30 flex flex-col gap-1.5">
-      <span className={`broadcast-label text-[11px] ${styles.accent}`}>{label}</span>
+      <span className={`broadcast-label text-label ${styles.accent}`}>{label}</span>
       <button
         type="button"
         onClick={openSearch}
@@ -174,7 +174,7 @@ export function FighterSelect({
             ? L(i18n.language, `${label}: ${selectedFighter.name}. Trocar lutador`, `${label}: ${selectedFighter.name}. Change fighter`, `${label} : ${selectedFighter.name}. Changer de combattant`, `${label}: ${selectedFighter.name}. Cambiar de peleador`)
             : L(i18n.language, `${label}: buscar lutador`, `${label}: search fighter`, `${label} : chercher un combattant`, `${label}: buscar peleador`)
         }
-        className="flex min-h-[56px] w-full items-center gap-3 rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface-subtle)] px-3.5 py-2.5 text-left text-[var(--text-primary)] shadow-xs outline-none transition hover:border-[var(--border-strong)] hover:bg-[var(--bg-surface-hover)] focus-visible:ring-2 focus-visible:ring-[var(--accent-red)] cursor-pointer"
+        className="flex min-h-[56px] w-full items-center gap-3 rounded-sm border border-[var(--border-default)] bg-[var(--bg-surface-subtle)] px-3.5 py-2.5 text-left text-[var(--text-primary)] shadow-xs outline-none transition hover:border-[var(--border-strong)] hover:bg-[var(--bg-surface-hover)] focus-visible:ring-2 focus-visible:ring-[var(--ink)] cursor-pointer"
       >
         {selectedFighter ? (
           <FighterAvatar
@@ -185,10 +185,10 @@ export function FighterSelect({
         ) : (
           <Search className={`h-5 w-5 shrink-0 ${styles.accent}`} aria-hidden="true" />
         )}
-        <span className="min-w-0 flex-1 truncate text-sm font-bold uppercase tracking-wide sm:text-base">
+        <span className="min-w-0 flex-1 truncate text-sm font-bold sm:text-base">
           {selectedFighter?.name ?? placeholder}
         </span>
-        <span className="shrink-0 text-[11px] font-bold uppercase tracking-widest text-[var(--accent-red)]">{selectedFighter ? L(i18n.language, 'Trocar', 'Change', 'Changer', 'Cambiar') : L(i18n.language, 'Buscar', 'Search', 'Chercher', 'Buscar')}</span>
+        <span className="shrink-0 text-label font-bold text-[var(--ink)]">{selectedFighter ? L(i18n.language, 'Trocar', 'Change', 'Changer', 'Cambiar') : L(i18n.language, 'Buscar', 'Search', 'Chercher', 'Buscar')}</span>
       </button>
 
       {createPortal(
@@ -205,7 +205,7 @@ export function FighterSelect({
             }}
           >
             <motion.section
-              className={`surface-card flex h-[min(720px,calc(100vh-1.5rem))] w-full max-w-[760px] flex-col overflow-hidden rounded-[20px] border border-[var(--border-default)] sm:h-[min(760px,calc(100vh-2.5rem))] sm:rounded-[24px] ${corner === 'blue' ? 'picker-blue' : ''}`}
+              className={`surface-card flex h-[min(720px,calc(100vh-1.5rem))] w-full max-w-[760px] flex-col overflow-hidden rounded-sm border border-[var(--border-default)] sm:h-[min(760px,calc(100vh-2.5rem))] sm:rounded-sm ${corner === 'blue' ? 'picker-blue' : ''}`}
               initial={{ opacity: 0, y: 18, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 12, scale: 0.98 }}
@@ -214,8 +214,8 @@ export function FighterSelect({
               <div className={`h-1 w-full ${styles.bar}`} />
               <div className="flex shrink-0 items-start justify-between gap-3 border-b border-[var(--line-soft)] px-4 py-3 sm:px-5 sm:py-4">
                 <div className="min-w-0">
-                  <p className={`broadcast-label text-[11px] ${styles.accent}`}>{label}</p>
-                  <h2 className="theme-text mt-1 text-[clamp(1.35rem,5vw,2rem)] font-bold uppercase leading-tight tracking-[0.03em]">
+                  <p className={`broadcast-label text-label ${styles.accent}`}>{label}</p>
+                  <h2 className="theme-text mt-1 text-[clamp(1.35rem,5vw,2rem)] font-bold leading-tight">
                     {placeholder}
                   </h2>
                   <p className="theme-muted mt-1 hidden text-sm leading-6 sm:block">
@@ -231,7 +231,7 @@ export function FighterSelect({
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="ghost-action theme-text grid h-9 w-9 shrink-0 place-items-center rounded-full"
+                  className="ghost-action theme-text grid h-9 w-9 shrink-0 place-items-center rounded-sm"
                   aria-label={L(i18n.language, 'Fechar busca de atletas', 'Close fighter search', 'Fermer la recherche de combattants', 'Cerrar la búsqueda de peleadores')}
                 >
                   <X className="h-4 w-4" />
@@ -239,7 +239,7 @@ export function FighterSelect({
               </div>
 
               <div className="shrink-0 border-b border-[var(--line-soft)] px-4 py-3 sm:px-5">
-                <div className={`${corner === 'blue' ? 'soft-input-blue' : 'soft-input'} flex items-center gap-3 rounded-2xl px-4 py-3`}>
+                <div className={`${corner === 'blue' ? 'soft-input-blue' : 'soft-input'} flex items-center gap-3 rounded-sm px-4 py-3`}>
                   <Search className={`h-4 w-4 shrink-0 ${styles.accent}`} />
                   <input
                     ref={searchRef}
@@ -269,7 +269,7 @@ export function FighterSelect({
                   ) : (
                     <Search className="h-3.5 w-3.5 shrink-0" />
                   )}
-                  <span className="broadcast-label truncate text-[11px]">
+                  <span className="broadcast-label truncate text-label">
                     {opponentView
                       ? L(
                           i18n.language,
@@ -290,7 +290,7 @@ export function FighterSelect({
                       setOnlyOpponents((value) => !value)
                       setActiveIndex(0)
                     }}
-                    className="type-tech ghost-action theme-text shrink-0 px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em] hover:!bg-[var(--gold-fill)] hover:!text-[#10151d]"
+                    className="type-tech ghost-action theme-text shrink-0 px-2.5 py-1 text-label font-bold hover:!bg-[var(--gold-fill)] hover:!text-[#10151d]"
                   >
                     {onlyOpponents
                       ? L(i18n.language, 'Ver todos os lutadores', 'Show all fighters', 'Voir tous les combattants', 'Ver todos los peleadores')
@@ -298,7 +298,7 @@ export function FighterSelect({
                   </button>
                 ) : null}
                 {selectedFighter ? (
-                  <span className={`type-tech rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${styles.border} ${corner === 'blue' ? 'bg-[var(--blue)]/10' : 'bg-[var(--red)]/10'} ${styles.accent}`}>
+                  <span className={`type-tech rounded-sm border px-2.5 py-1 text-label font-semibold ${styles.border} ${corner === 'blue' ? 'bg-[var(--blue)]/10' : 'bg-[var(--red)]/10'} ${styles.accent}`}>
                     {L(i18n.language, 'Selecionado:', 'Selected:', 'Sélectionné :', 'Seleccionado:')} {selectedFighter.name}
                   </span>
                 ) : null}
@@ -333,7 +333,7 @@ export function FighterSelect({
                           disabled={isDisabled}
                           onPointerEnter={() => setActiveIndex(index)}
                           onClick={() => selectFighter(fighter)}
-                          className={`selector-option group grid w-full grid-cols-[56px_1fr] gap-3 rounded-2xl border px-3 py-3 text-left transition duration-150 sm:grid-cols-[64px_1fr_auto] ${
+                          className={`selector-option group grid w-full grid-cols-[56px_1fr] gap-3 rounded-sm border px-3 py-3 text-left transition duration-150 sm:grid-cols-[64px_1fr_auto] ${
                             isActive ? 'selector-option-active' : ''
                           } ${isSelected ? (corner === 'blue' ? 'ring-1 ring-[var(--blue)]/45' : 'ring-1 ring-[var(--red)]/45') : ''} ${isDisabled ? 'cursor-not-allowed opacity-45' : ''}`}
                         >
@@ -345,11 +345,11 @@ export function FighterSelect({
                           />
                           <span className="min-w-0">
                             <span className="flex flex-wrap items-center gap-2">
-                              <span className="type-display theme-text truncate text-xl font-bold uppercase leading-none tracking-[0.03em]">
+                              <span className="type-display theme-text truncate text-xl font-bold leading-none">
                                 {fighter.name}
                               </span>
                               {isSelected ? (
-                                <span className={`type-tech rounded-full border px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.12em] ${styles.border} ${corner === 'blue' ? 'bg-[var(--blue)]/10' : 'bg-[var(--red)]/10'} ${styles.accent}`}>
+                                <span className={`type-tech rounded-sm border px-2 py-0.5 text-label font-bold ${styles.border} ${corner === 'blue' ? 'bg-[var(--blue)]/10' : 'bg-[var(--red)]/10'} ${styles.accent}`}>
                                   {L(i18n.language, 'Selecionado', 'Selected', 'Sélectionné', 'Seleccionado')}
                                 </span>
                               ) : null}
@@ -361,7 +361,7 @@ export function FighterSelect({
                               <span className="selector-chip">{L(i18n.language, 'Cartel:', 'Record:', 'Palmarès :', 'Récord:')} {formatRecord(fighter)}</span>
                               <span className="selector-chip">{stanceDisplay}</span>
                               {ranking ? (
-                                <span className={`rounded-full border px-2.5 py-1 ${styles.border} ${corner === 'blue' ? 'bg-[var(--blue)]/10' : 'bg-[var(--red)]/10'} ${styles.accent}`}>
+                                <span className={`rounded-sm border px-2.5 py-1 ${styles.border} ${corner === 'blue' ? 'bg-[var(--blue)]/10' : 'bg-[var(--red)]/10'} ${styles.accent}`}>
                                   {ranking}
                                 </span>
                               ) : null}
@@ -369,7 +369,7 @@ export function FighterSelect({
                           </span>
                           <span className="hidden items-center justify-end sm:flex">
                             {isDisabled ? (
-                              <span className="type-tech theme-muted inline-flex items-center gap-1.5 rounded-full border border-[var(--line-soft)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em]">
+                              <span className="type-tech theme-muted inline-flex items-center gap-1.5 rounded-sm border border-[var(--line-soft)] px-3 py-1 text-label font-semibold">
                                 <Lock className="h-3 w-3" />
                                 {L(i18n.language, 'Outro canto', 'Other corner', 'Autre coin', 'Otra esquina')}
                               </span>
@@ -384,8 +384,8 @@ export function FighterSelect({
                     })}
                   </div>
                 ) : (
-                  <div className="rounded-2xl border border-dashed border-[var(--line-soft)] bg-[var(--surface-3)] px-4 py-10 text-center">
-                    <p className="type-display theme-text text-2xl font-bold uppercase tracking-[0.03em]">
+                  <div className="rounded-sm border border-dashed border-[var(--line-soft)] bg-[var(--surface-3)] px-4 py-10 text-center">
+                    <p className="type-display theme-text text-2xl font-bold">
                       {L(i18n.language, 'Nenhum lutador encontrado', 'No fighters found', 'Aucun combattant trouvé', 'No se encontraron peleadores')}
                     </p>
                     <p className="theme-muted mx-auto mt-2 max-w-md text-sm leading-6">
@@ -432,7 +432,7 @@ function PickerAvatar({
   const toneClass = corner === 'red' ? '' : ''
 
   return (
-    <span title={credit ? photoRightsText(credit, i18n.language) : undefined} className={`relative grid shrink-0 place-items-center overflow-hidden rounded-2xl border border-[var(--line-soft)] ${toneClass}${sizeClass}`}>
+    <span title={credit ? photoRightsText(credit, i18n.language) : undefined} className={`relative grid shrink-0 place-items-center overflow-hidden rounded-sm border border-[var(--line-soft)] ${toneClass}${sizeClass}`}>
       {imgUrl && !failed ? (
         <img
           src={imgUrl}
@@ -446,7 +446,7 @@ function PickerAvatar({
         />
       ) : null}
       {fighter && (!imgUrl || !loaded || failed) ? (
-        <span className={`type-display text-lg font-bold uppercase ${corner === 'red' ? 'text-[var(--accent-red)]' : 'text-[var(--blue-text)]'}`}>
+        <span className={`type-display text-lg font-bold ${corner === 'red' ? 'text-[var(--ink)]' : 'text-[var(--blue-text)]'}`}>
           {getInitials(fighter.name)}
         </span>
       ) : null}

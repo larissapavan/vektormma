@@ -195,7 +195,7 @@ export function SeasonTimeline({
                   className={`absolute h-px bg-[var(--rule)] ${isFirst ? 'left-1/2' : 'left-0'} ${isLast ? 'right-1/2' : 'right-0'}`}
                 />
                 <span
-                  className={`relative rounded-full transition-all duration-200 ${
+                  className={`relative rounded-sm transition-all duration-200 ${
                     isSelected
                       ? 'h-3.5 w-3.5 bg-[var(--gold-fill)] ring-2 ring-[var(--ink)] ring-offset-2 ring-offset-[var(--mat)]'
                       : era.hasTitleFight

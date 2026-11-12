@@ -177,7 +177,7 @@ export function Events() {
           ]}
         >
           <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-[1fr_180px_180px]">
-            <div className="soft-input col-span-2 flex items-center gap-2.5 rounded-control px-3 py-2.5 lg:col-span-1">
+            <div className="soft-input col-span-2 flex items-center gap-2.5 rounded-sm px-3 py-2.5 lg:col-span-1">
               <Search className="h-4 w-4 shrink-0 text-[var(--text-red)]" />
               <input
                 value={query}
@@ -191,7 +191,7 @@ export function Events() {
               value={yearFilter}
               onChange={(event) => setYearFilter(event.target.value)}
               aria-label={L(i18n.language, 'Filtrar por ano', 'Filter by year', 'Filtrer par année', 'Filtrar por año')}
-              className="soft-input min-w-0 rounded-control px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
+              className="soft-input min-w-0 rounded-sm px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
             >
               <option value="ALL">{t('events.allYears')}</option>
               {years.map((year) => (
@@ -204,7 +204,7 @@ export function Events() {
               value={monthFilter}
               onChange={(event) => setMonthFilter(event.target.value)}
               aria-label={L(i18n.language, 'Filtrar por mês', 'Filter by month', 'Filtrer par mois', 'Filtrar por mes')}
-              className="soft-input min-w-0 rounded-control px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
+              className="soft-input min-w-0 rounded-sm px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
             >
               <option value="ALL">{t('events.allMonths')}</option>
               {MONTH_KEYS.map((month) => (
@@ -326,7 +326,7 @@ function EventGroup({
         <button
           type="button"
           onClick={() => onToggleGroup(groupKey)}
-          className="-mx-2 flex min-h-11 w-[calc(100%+1rem)] items-center gap-2 rounded-control px-2 text-left transition-colors hover:bg-[var(--bg-surface-hover)]"
+          className="-mx-2 flex min-h-11 w-[calc(100%+1rem)] items-center gap-2 rounded-sm px-2 text-left transition-colors hover:bg-[var(--bg-surface-hover)]"
           aria-expanded={isOpen}
         >
           <Icon className="h-4 w-4 shrink-0 text-[var(--text-red)]" />

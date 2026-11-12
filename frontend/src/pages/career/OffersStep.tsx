@@ -52,15 +52,15 @@ function Gauge({ chance }: { chance: number }) {
   const { i18n } = useTranslation()
   const band = chanceBand(chance)
   const lit = BANDS.indexOf(band)
-  const tone = band === 'favorite' ? 'bg-[var(--accent-green)]' : band === 'even' ? 'bg-[var(--accent-gold)]' : 'bg-[var(--accent-red)]'
+  const tone = band === 'favorite' ? 'bg-[var(--accent-green)]' : band === 'even' ? 'bg-[var(--accent-gold)]' : 'bg-[var(--ink)]'
   return (
     <div>
       <div className="flex gap-1" aria-hidden="true">
         {BANDS.map((name, index) => (
-          <span key={name} className={`h-1.5 flex-1 rounded-full ${index <= lit ? tone : 'bg-[var(--border-subtle)]'}`} />
+          <span key={name} className={`h-1.5 flex-1 rounded-sm ${index <= lit ? tone : 'bg-[var(--border-subtle)]'}`} />
         ))}
       </div>
-      <p className="mt-1.5 text-xs font-bold uppercase tracking-[0.1em] text-[var(--text-main)]">{pick(i18n.language, BAND_LABELS[band])}</p>
+      <p className="mt-1.5 text-xs font-bold text-[var(--text-main)]">{pick(i18n.language, BAND_LABELS[band])}</p>
     </div>
   )
 }
@@ -74,7 +74,7 @@ function OfferCard({ offer, selected, onChoose, heading }: { offer: GameOpponent
       <span className="flex min-w-0 flex-1 flex-col gap-2">
         {heading ? <span className="flex">{heading}</span> : null}
         <span className="min-w-0">
-          <span className="line-clamp-2 break-words font-display text-base font-extrabold uppercase leading-tight text-[var(--text-main)] sm:text-lg">{offer.name}</span>
+          <span className="line-clamp-2 break-words font-display text-base font-extrabold leading-tight text-[var(--text-main)] sm:text-lg">{offer.name}</span>
           <span className="mt-0.5 flex items-center gap-2 text-xs text-[var(--text-secondary)]">
             <FlagList fighter={{ country_code: offer.country_code }} />
             <span className="data-value text-sm font-bold text-[var(--text-main)]">{offer.record}</span>
@@ -132,9 +132,9 @@ export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { car
   ]
 
   return (
-    <section className="surface-card rounded-2xl space-y-5 p-4 sm:space-y-6 sm:p-7">
+    <section className="surface-card rounded-sm space-y-5 p-4 sm:space-y-6 sm:p-7">
       <div>
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--accent-red)]">{L(lang, 'Matchmaking', 'Matchmaking', 'Matchmaking', 'Matchmaking')}</p>
+        <p className="text-xs font-bold text-[var(--ink)]">{L(lang, 'Matchmaking', 'Matchmaking', 'Matchmaking', 'Matchmaking')}</p>
         <h2 ref={heading} tabIndex={-1} className="game-title mt-1 text-xl focus:outline-none sm:text-3xl">
           {career.champion
             ? L(lang, 'Defesa de cinturão: escolha o desafiante', 'Title defense: choose the challenger', 'Défense de ceinture : choisissez le challenger', 'Defensa del cinturón: elige al retador')
@@ -196,16 +196,16 @@ export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { car
         <div className="space-y-4 border-t border-[var(--border-subtle)] pt-5">
           <HeadToHead career={career} player={offers.player} opponent={chosen} />
           <fieldset className="space-y-4">
-            <legend className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-secondary)]">{L(lang, 'Plano de luta', 'Game plan', 'Plan de combat', 'Plan de pelea')}</legend>
+            <legend className="text-xs font-bold text-[var(--text-secondary)]">{L(lang, 'Plano de luta', 'Game plan', 'Plan de combat', 'Plan de pelea')}</legend>
             <div className="grid grid-cols-3 gap-2.5 sm:gap-3">
               {plans.map((option) => {
                 const edge = planNudge(option.value, offers.player, chosen) > 0.005
                 return (
                   <button key={option.value} type="button" aria-pressed={plan === option.value} onClick={() => setPlan(option.value)} className="game-pick flex h-full flex-col gap-2 p-3 text-left sm:p-4">
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[var(--accent-red)]/12 text-[var(--text-red)]">{option.icon}</span>
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-sm bg-[var(--panel)] text-[var(--text-red)]">{option.icon}</span>
                     <span>
                       <span className="block text-xs font-bold text-[var(--text-main)] sm:text-sm">{option.label}</span>
-                      <span className="block text-[11px] leading-4 text-[var(--text-secondary)] sm:text-xs sm:leading-5">
+                      <span className="block text-label leading-4 text-[var(--text-secondary)] sm:text-xs sm:leading-5">
                         {option.hint}
                         {edge ? ` ${L(lang, 'Você tem a vantagem aqui.', 'You have the edge here.', 'Vous avez l’avantage ici.', 'Tienes la ventaja aquí.')}` : ''}
                       </span>
@@ -232,7 +232,7 @@ export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { car
       ) : null}
 
       {canRetire ? (
-        <button type="button" onClick={onRetire} className="min-h-11 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-secondary)] hover:text-[var(--accent-red)]">
+        <button type="button" onClick={onRetire} className="min-h-11 text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--ink)]">
           {L(lang, 'Aposentar agora', 'Retire now', 'Prendre sa retraite maintenant', 'Retirarme ahora')}
         </button>
       ) : null}

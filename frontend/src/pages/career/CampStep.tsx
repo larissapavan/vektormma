@@ -23,8 +23,8 @@ function CoachCard({ coachId, career, onTrain }: { coachId: CoachId; career: Car
       <span className="flex items-center gap-3">
         <Emblem name={text.name.replace('Coach ', '')} className="h-12 w-12 text-lg" />
         <span className="min-w-0">
-          <span className="block break-words font-display text-base font-extrabold uppercase leading-tight text-[var(--text-main)]">{text.name}</span>
-          <span className="block text-xs font-bold uppercase tracking-[0.1em] text-[var(--text-red)]">{pick(lang, text.specialty)}</span>
+          <span className="block break-words font-display text-base font-extrabold leading-tight text-[var(--text-main)]">{text.name}</span>
+          <span className="block text-xs font-bold text-[var(--text-red)]">{pick(lang, text.specialty)}</span>
         </span>
       </span>
       <span className="text-xs leading-5 text-[var(--text-secondary)]">{pick(lang, text.blurb)}</span>
@@ -39,7 +39,7 @@ function CoachCard({ coachId, career, onTrain }: { coachId: CoachId; career: Car
         type="button"
         onClick={onTrain}
         aria-label={L(lang, `Treinar com ${text.name}`, `Train with ${text.name}`, `S’entraîner avec ${text.name}`, `Entrenar con ${text.name}`)}
-        className="ghost-action inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl px-4 text-xs uppercase hover:!border-[var(--accent-red)]"
+        className="ghost-action inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-sm px-4 text-xs hover:!border-[var(--ink)]"
       >
         {L(lang, 'Treinar', 'Train', 'S’entraîner', 'Entrenar')}
         <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -55,9 +55,9 @@ export function CampStep({ career, coaches, note, onTrain, onRetire, retirable =
   const heading = useFocusOnMount<HTMLHeadingElement>()
 
   return (
-    <section className="surface-card rounded-2xl space-y-5 p-4 sm:space-y-6 sm:p-7">
+    <section className="surface-card rounded-sm space-y-5 p-4 sm:space-y-6 sm:p-7">
       <div>
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--accent-red)]">{L(lang, 'Preparação', 'Preparation', 'Préparation', 'Preparación')}</p>
+        <p className="text-xs font-bold text-[var(--ink)]">{L(lang, 'Preparação', 'Preparation', 'Préparation', 'Preparación')}</p>
         <h2 ref={heading} tabIndex={-1} className="game-title mt-1 text-xl focus:outline-none sm:text-3xl">
           {career.ufcFights === 0
             ? L(lang, 'Camp para a estreia no UFC', 'Camp for your UFC debut', 'Préparation pour vos débuts à l’UFC', 'Campamento para tu debut en la UFC')
@@ -67,7 +67,7 @@ export function CampStep({ career, coaches, note, onTrain, onRetire, retirable =
       </div>
 
       {note?.injured ? (
-        <p role="status" className="flex items-start gap-2 rounded-xl border border-[var(--accent-red)]/40 bg-[var(--accent-red)]/10 px-4 py-3 text-sm font-semibold text-[var(--text-main)]">
+        <p role="status" className="flex items-start gap-2 rounded-sm border border-[var(--rule)] bg-[var(--panel)] px-4 py-3 text-sm font-semibold text-[var(--text-main)]">
           <HeartPulse className="mt-0.5 h-4 w-4 shrink-0 text-[var(--text-red)]" aria-hidden="true" />
           {L(lang, 'Você se machucou no camp anterior e perdeu tempo e um pouco de rendimento.', 'You got hurt in the last camp and lost time and some sharpness.', 'Vous vous êtes blessé lors de la dernière préparation et avez perdu du temps et un peu de rendement.', 'Te lesionaste en el campamento anterior y perdiste tiempo y algo de nivel.')}
         </p>
@@ -76,7 +76,7 @@ export function CampStep({ career, coaches, note, onTrain, onRetire, retirable =
         <p className="text-xs text-[var(--text-muted)]">{L(lang, 'Os anos pesam: seus golpes e quedas perdem um pouco a cada camp.', 'The years show: your striking and takedowns slip a little every camp.', 'Les années se font sentir : votre frappe et vos amenées perdent un peu à chaque préparation.', 'Los años pesan: tu golpeo y tus derribos bajan un poco en cada campamento.')}</p>
       ) : null}
       {career.rival ? (
-        <p className="rounded-xl bg-[var(--bg-surface-subtle)] px-4 py-3 text-sm text-[var(--text-secondary)]">
+        <p className="rounded-sm bg-[var(--bg-surface-subtle)] px-4 py-3 text-sm text-[var(--text-secondary)]">
           {L(lang, `Seu rival: ${career.rival}. Ele pode aparecer como revanche.`, `Your rival: ${career.rival}. A rematch may be on offer.`, `Votre rival : ${career.rival}. Une revanche peut vous être proposée.`, `Tu rival: ${career.rival}. Puede ofrecerse una revancha.`)}
         </p>
       ) : null}

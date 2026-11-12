@@ -16,12 +16,12 @@ function Measure({ row }: { row: Row }) {
     <li className="space-y-1.5">
       <div className="flex items-baseline justify-between gap-3 text-xs">
         <span className={`data-value text-sm font-bold ${lead === 'you' ? 'text-[var(--text-green)]' : 'text-[var(--text-main)]'}`}>{you === null ? '—' : row.show(you)}</span>
-        <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--text-muted)]">{row.label}</span>
+        <span className="text-label font-bold text-[var(--text-muted)]">{row.label}</span>
         <span className={`data-value text-sm font-bold ${lead === 'opp' ? 'text-[var(--text-red)]' : 'text-[var(--text-main)]'}`}>{opp === null ? '—' : row.show(opp)}</span>
       </div>
-      <div className="flex h-1.5 gap-0.5 overflow-hidden rounded-full" aria-hidden="true">
-        <span className={`rounded-l-full transition-all duration-500 ${lead === 'you' ? 'bg-[var(--accent-green)]' : 'bg-[var(--border-default)]'}`} style={{ width: `${share}%` }} />
-        <span className={`flex-1 rounded-r-full ${lead === 'opp' ? 'bg-[var(--accent-red)]' : 'bg-[var(--border-default)]'}`} />
+      <div className="flex h-1.5 gap-0.5 overflow-hidden rounded-sm" aria-hidden="true">
+        <span className={`rounded-l-sm transition-all duration-500 ${lead === 'you' ? 'bg-[var(--accent-green)]' : 'bg-[var(--border-default)]'}`} style={{ width: `${share}%` }} />
+        <span className={`flex-1 rounded-r-sm ${lead === 'opp' ? 'bg-[var(--ink)]' : 'bg-[var(--border-default)]'}`} />
       </div>
     </li>
   )
@@ -42,8 +42,8 @@ export function HeadToHead({ career, player, opponent }: { career: Career; playe
     { label: L(lang, 'Idade', 'Age', 'Âge', 'Edad'), you: Math.floor(career.age), opp: opponent.age === null ? null : Math.floor(opponent.age), show: (value) => String(value), edge: false },
   ]
   return (
-    <section aria-label={L(lang, 'Frente a frente', 'Head to head', 'Face à face', 'Cara a cara')} className="space-y-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]/60 p-4">
-      <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-3 text-[11px] font-bold uppercase tracking-[0.14em]">
+    <section aria-label={L(lang, 'Frente a frente', 'Head to head', 'Face à face', 'Cara a cara')} className="space-y-3 rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]/60 p-4">
+      <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-3 text-label font-bold">
         <span className="break-words text-[var(--text-green)]">{career.name}</span>
         <span className="text-[var(--text-secondary)]">{L(lang, 'Frente a frente', 'Head to head', 'Face à face', 'Cara a cara')}</span>
         <span className="break-words text-right text-[var(--text-red)]">{opponent.name}</span>

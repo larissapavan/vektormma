@@ -233,7 +233,7 @@ export function Fighters() {
       >
         <div className="grid gap-2.5 md:grid-cols-[1fr_220px_240px]">
           <div className="flex gap-2">
-            <div className="soft-input flex min-w-0 flex-1 items-center gap-2.5 rounded-control px-3 py-2.5">
+            <div className="soft-input flex min-w-0 flex-1 items-center gap-2.5 rounded-sm px-3 py-2.5">
               <Search className="h-4 w-4 shrink-0 text-[var(--text-red)]" />
               <input
                 value={query}
@@ -248,12 +248,12 @@ export function Fighters() {
               onClick={() => setFiltersOpen((current) => !current)}
               aria-expanded={filtersOpen}
               aria-controls="fighter-extra-filters"
-              className="ghost-action inline-flex shrink-0 items-center gap-1.5 rounded-control px-3 text-xs uppercase md:hidden"
+              className="ghost-action inline-flex shrink-0 items-center gap-1.5 rounded-sm px-3 text-xs md:hidden"
             >
               <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
               {L(i18n.language, 'Filtros', 'Filters', 'Filtres', 'Filtros')}
               {stanceFilter !== 'All stances' || badgeFilter !== '' ? (
-                <span className="grid h-5 min-w-5 place-items-center rounded-full bg-[var(--accent-red-solid)] px-1 text-label text-white">
+                <span className="grid h-5 min-w-5 place-items-center rounded-sm bg-[var(--ink)] px-1 text-label text-[var(--on-ink)]">
                   {(stanceFilter !== 'All stances' ? 1 : 0) + (badgeFilter !== '' ? 1 : 0)}
                 </span>
               ) : null}
@@ -264,7 +264,7 @@ export function Fighters() {
             value={stanceFilter}
             onChange={(event) => setStanceFilter(event.target.value)}
             aria-label={L(i18n.language, 'Filtrar por base', 'Filter by stance', 'Filtrer par garde', 'Filtrar por guardia')}
-            className="soft-input rounded-control px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
+            className="soft-input rounded-sm px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
           >
             {stances.map((stance) => (
               <option key={stance} value={stance}>
@@ -276,7 +276,7 @@ export function Fighters() {
             value={badgeFilter}
             onChange={(event) => setBadgeFilter(event.target.value)}
             aria-label={L(i18n.language, 'Filtrar por selo ou origem', 'Filter by badge or origin', 'Filtrer par badge ou origine', 'Filtrar por insignia u origen')}
-            className="soft-input rounded-control px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
+            className="soft-input rounded-sm px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
           >
             <option value="">{L(i18n.language, 'Todos os selos e origens', 'All badges and origins', 'Tous les badges et origines', 'Todas las insignias y orígenes')}</option>
             {Object.entries(BADGES).map(([key]) => (
@@ -289,7 +289,7 @@ export function Fighters() {
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-          <div role="group" aria-label={L(i18n.language, 'Status do lutador', 'Fighter status', 'Statut du combattant', 'Estado del peleador')} className="chip-scroll inline-flex max-w-full overflow-x-auto rounded-control border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-0.5">
+          <div role="group" aria-label={L(i18n.language, 'Status do lutador', 'Fighter status', 'Statut du combattant', 'Estado del peleador')} className="chip-scroll inline-flex max-w-full overflow-x-auto rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-0.5">
             <ActiveTabButton active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} count={fighters.length}>
               {t('fighters.all')}
             </ActiveTabButton>
@@ -383,7 +383,7 @@ function ActiveTabButton({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
+      className={`inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-sm px-3 py-1.5 text-xs font-semibold transition-colors ${
         active
           ? 'bg-[var(--text-primary)] text-[var(--bg-surface)]'
           : 'text-[var(--text-secondary)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]'
@@ -398,7 +398,7 @@ function ActiveTabButton({
 function CountPill({ active, children }: { active: boolean; children: React.ReactNode }) {
   return (
     <span
-      className={`inline-flex min-w-[1.6em] items-center justify-center rounded-full px-1.5 py-px text-label font-bold tabular-nums tracking-normal ${
+      className={`inline-flex min-w-[1.6em] items-center justify-center rounded-sm px-1.5 py-px text-label font-bold tabular-nums ${
         active ? 'bg-[var(--bg-surface)]/20 text-[var(--bg-surface)]' : 'bg-[var(--bg-surface-subtle)] text-[var(--text-muted)]'
       }`}
     >
@@ -451,7 +451,7 @@ function WeightClassBar({
   const sectionOf = (key: string) => (key === 'open-class' ? 2 : key.startsWith('w-') ? 1 : 0)
 
   return (
-    <nav aria-label={L(i18n.language, 'Filtro por categoria de peso', 'Weight class filter', 'Filtre de catégorie de poids', 'Filtro por división de peso')} className="relative rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] py-1.5">
+    <nav aria-label={L(i18n.language, 'Filtro por categoria de peso', 'Weight class filter', 'Filtre de catégorie de poids', 'Filtro por división de peso')} className="relative rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] py-1.5">
       <ScrollArrow direction="left" visible={edges.left} onClick={() => scrollByStep(-1)} />
       <ScrollArrow direction="right" visible={edges.right} onClick={() => scrollByStep(1)} />
       <div
@@ -500,7 +500,7 @@ function ScrollArrow({
           ? L(i18n.language, 'Rolar categorias para a esquerda', 'Scroll weight classes left', 'Faire défiler les catégories vers la gauche', 'Desplazar divisiones a la izquierda')
           : L(i18n.language, 'Rolar categorias para a direita', 'Scroll weight classes right', 'Faire défiler les catégories vers la droite', 'Desplazar divisiones a la derecha')
       }
-      className={`absolute top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] transition hover:text-[var(--ink)] focus-visible:text-[var(--ink)] focus-visible:outline-none ${
+      className={`absolute top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] transition hover:text-[var(--ink)] focus-visible:text-[var(--ink)] focus-visible:outline-none ${
         direction === 'left' ? 'left-1' : 'right-1'
       } ${visible ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
     >
@@ -630,7 +630,7 @@ function DivisionPill({
       onClick={onClick}
       aria-pressed={isActive}
       className={[
-        'inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-control border px-3 py-1.5 text-xs font-semibold transition-colors',
+        'inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-sm border px-3 py-1.5 text-xs font-semibold transition-colors',
         isActive
           ? 'border-[var(--text-primary)] bg-[var(--text-primary)] text-[var(--bg-surface)]'
           : 'border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:border-[var(--border-default)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]',

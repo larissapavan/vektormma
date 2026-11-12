@@ -21,7 +21,7 @@ import { Chip, Emblem, GhostButton, PrimaryButton, useFocusOnMount } from './ui'
 
 const EDGE_STYLE: Record<Edge, string> = {
   you: 'border-[var(--accent-green)] bg-[var(--accent-green)]/8',
-  opp: 'border-[var(--accent-red)] bg-[var(--accent-red)]/8',
+  opp: 'border-[var(--ink)] bg-[var(--panel)]',
   even: 'border-[var(--border-default)] bg-[var(--bg-surface-subtle)]',
 }
 
@@ -37,12 +37,12 @@ function Scorecard({ state }: { state: FightState }) {
   const lang = i18n.language
   return (
     <div className="flex items-center justify-center gap-3" data-testid="scorecard">
-      <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--text-muted)]">{L(lang, 'Cartões', 'Scorecards', 'Cartons', 'Tarjetas')}</span>
+      <span className="text-label font-bold text-[var(--text-muted)]">{L(lang, 'Cartões', 'Scorecards', 'Cartons', 'Tarjetas')}</span>
       <ol className="flex gap-1.5" aria-label={L(lang, `Cartões: ${state.youRounds} a ${state.oppRounds}`, `Scorecards: ${state.youRounds} to ${state.oppRounds}`, `Cartons : ${state.youRounds} à ${state.oppRounds}`, `Tarjetas: ${state.youRounds} a ${state.oppRounds}`)}>
         {Array.from({ length: state.scheduled }, (_, index) => {
           const story = state.stories[index]
-          const tone = !story ? 'border border-[var(--border-default)] bg-transparent' : story.edge === 'you' ? 'bg-[var(--accent-green)]' : 'bg-[var(--accent-red)]'
-          return <li key={index} className={`h-3 w-7 rounded-full transition-colors duration-500 ${tone}`} />
+          const tone = !story ? 'border border-[var(--border-default)] bg-transparent' : story.edge === 'you' ? 'bg-[var(--accent-green)]' : 'bg-[var(--ink)]'
+          return <li key={index} className={`h-3 w-7 rounded-sm transition-colors duration-500 ${tone}`} />
         })}
       </ol>
       <span className="data-value text-sm font-bold text-[var(--text-main)]">{state.youRounds}–{state.oppRounds}</span>
@@ -56,10 +56,10 @@ function TacticButton({ tactic, onPick }: { tactic: Tactic; onPick: () => void }
   const text = TACTIC_TEXT[tactic]
   return (
     <button type="button" onClick={onPick} className="game-pick flex h-full flex-col gap-2 p-3 text-left sm:p-4">
-      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[var(--accent-red)]/12 text-[var(--text-red)]">{TACTIC_ICON[tactic]}</span>
+      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-sm bg-[var(--panel)] text-[var(--text-red)]">{TACTIC_ICON[tactic]}</span>
       <span>
         <span className="block text-xs font-bold text-[var(--text-main)] sm:text-sm">{pick(lang, text.name)}</span>
-        <span className="block text-[11px] leading-4 text-[var(--text-secondary)] sm:text-xs sm:leading-5">{pick(lang, text.hint)}</span>
+        <span className="block text-label leading-4 text-[var(--text-secondary)] sm:text-xs sm:leading-5">{pick(lang, text.hint)}</span>
       </span>
     </button>
   )
@@ -98,10 +98,10 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
   }
 
   return (
-    <section className="surface-card rounded-2xl overflow-hidden">
+    <section className="surface-card rounded-sm overflow-hidden">
       <div className="border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-5 pb-6 pt-5 sm:px-8">
         {title ? (
-          <p className="mb-3 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[var(--text-gold)]">
+          <p className="mb-3 flex items-center justify-center gap-2 text-xs font-bold text-[var(--text-gold)]">
             <Trophy className="h-4 w-4" aria-hidden="true" />
             {L(lang, 'Disputa de cinturão', 'Title fight', 'Combat pour la ceinture', 'Pelea por el cinturón')}
           </p>
@@ -116,8 +116,8 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
             <p className="data-value text-sm font-bold text-[var(--text-secondary)]">{recordText(career)}</p>
           </div>
           <div className="text-center">
-            <p className="game-title text-4xl text-[var(--accent-red)] sm:text-6xl">VS</p>
-            <p className="mt-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--text-muted)]">{L(lang, `${state.scheduled} rounds`, `${state.scheduled} rounds`, `${state.scheduled} rounds`, `${state.scheduled} rounds`)}</p>
+            <p className="game-title text-4xl text-[var(--ink)] sm:text-6xl">VS</p>
+            <p className="mt-1 text-label font-bold text-[var(--text-muted)]">{L(lang, `${state.scheduled} rounds`, `${state.scheduled} rounds`, `${state.scheduled} rounds`, `${state.scheduled} rounds`)}</p>
           </div>
           <div className="flex flex-col items-center gap-2 text-center">
             <FighterAvatar name={offer.name} imageUrl={offer.image_url} className="h-20 w-20 sm:h-28 sm:w-28" highlight={offer.champion} />
@@ -127,11 +127,11 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
         </div>
 
         <div className="mt-5 space-y-2" role="img" aria-label={`${L(lang, 'Momento da luta', 'Fight momentum', 'Momentum du combat', 'Impulso de la pelea')}: ${pick(lang, BAND_LABELS[band])}`}>
-          <div className="relative h-3 overflow-hidden rounded-full bg-[var(--accent-red)]/40">
-            <motion.div className="h-full rounded-full bg-[var(--accent-green)]" initial={false} animate={{ width: `${Math.min(Math.max(chance * 100, 4), 100)}%` }} transition={{ type: 'spring', stiffness: 90, damping: 16 }} />
+          <div className="relative h-3 overflow-hidden rounded-sm bg-[var(--panel)]">
+            <motion.div className="h-full rounded-sm bg-[var(--accent-green)]" initial={false} animate={{ width: `${Math.min(Math.max(chance * 100, 4), 100)}%` }} transition={{ type: 'spring', stiffness: 90, damping: 16 }} />
             <span className="absolute inset-y-0 left-1/2 w-px bg-[var(--bg-app)]/60" aria-hidden="true" />
           </div>
-          {!finished ? <p className="text-center text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-secondary)]" data-testid="live-band">{pick(lang, BAND_LABELS[band])}</p> : null}
+          {!finished ? <p className="text-center text-xs font-bold text-[var(--text-secondary)]" data-testid="live-band">{pick(lang, BAND_LABELS[band])}</p> : null}
         </div>
         <div className="mt-3">
           <Scorecard state={state} />
@@ -141,14 +141,14 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
       <div className="space-y-5 p-5 sm:p-8">
         <ol className="space-y-2.5" aria-live="polite">
           {state.stories.map((story) => (
-            <motion.li key={story.round} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className={`rounded-xl border-l-4 px-4 py-3 text-sm leading-6 text-[var(--text-main)] ${EDGE_STYLE[story.edge]}`}>
-              <span className="mr-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-muted)]">Round {story.round}</span>
+            <motion.li key={story.round} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className={`rounded-sm border-l-4 px-4 py-3 text-sm leading-6 text-[var(--text-main)] ${EDGE_STYLE[story.edge]}`}>
+              <span className="mr-2 text-xs font-bold text-[var(--text-muted)]">Round {story.round}</span>
               {story.tactic && story.tactic !== 'steady' ? <span className="mr-2 align-middle"><Chip tone={story.tactic === 'attack' ? 'red' : 'neutral'}>{pick(lang, TACTIC_TEXT[story.tactic].name)}</Chip></span> : null}
               {roundText(lang, story, state.over?.method ?? 'dec', state.over?.won ?? false, career.name, offer.name)}
             </motion.li>
           ))}
           {state.over?.method === 'dec' ? (
-            <motion.li initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="rounded-xl border-l-4 border-[var(--accent-gold)] bg-[var(--accent-gold)]/10 px-4 py-3 text-sm font-semibold text-[var(--text-main)]">
+            <motion.li initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="rounded-sm border-l-4 border-[var(--accent-gold)] bg-[var(--accent-gold)]/10 px-4 py-3 text-sm font-semibold text-[var(--text-main)]">
               {decisionText(lang, state.over.won, state.over.split, career.name, offer.name)}
             </motion.li>
           ) : null}
@@ -156,7 +156,7 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
 
         {!finished ? (
           <fieldset className="space-y-4">
-            <legend className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+            <legend className="text-xs font-bold text-[var(--text-secondary)]">
               {state.played === 0
                 ? L(lang, 'Soa o gongo. O que o córner manda no round 1?', 'The bell rings. What does the corner say for round 1?', 'Le gong retentit. Que dit le coin pour le round 1 ?', 'Suena la campana. ¿Qué indica el córner para el round 1?')
                 : L(lang, `O que o córner manda no round ${state.played + 1}?`, `What does the corner say for round ${state.played + 1}?`, `Que dit le coin pour le round ${state.played + 1} ?`, `¿Qué indica el córner para el round ${state.played + 1}?`)}
@@ -177,7 +177,7 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
               </GhostButton>
             </div>
             {asked ? (
-              <p role="status" className="rounded-xl bg-[var(--bg-surface-subtle)] px-4 py-3 text-sm leading-6 text-[var(--text-secondary)]" data-testid="corner-advice">
+              <p role="status" className="rounded-sm bg-[var(--bg-surface-subtle)] px-4 py-3 text-sm leading-6 text-[var(--text-secondary)]" data-testid="corner-advice">
                 {pick(lang, ADVICE_TEXT[cornerAdvice(state)])}
               </p>
             ) : null}
@@ -185,11 +185,11 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
           </fieldset>
         ) : result ? (
           <div className="space-y-5 border-t border-[var(--border-subtle)] pt-6">
-            <div className={`game-pop rounded-2xl px-5 py-6 text-center ring-2 ${result.won ? 'bg-[var(--accent-green)]/10 ring-[var(--accent-green)]/50' : 'bg-[var(--accent-red)]/10 ring-[var(--accent-red)]/50'}`}>
+            <div className={`game-pop rounded-sm px-5 py-6 text-center ring-2 ${result.won ? 'bg-[var(--accent-green)]/10 ring-[var(--accent-green)]/50' : 'bg-[var(--panel)] ring-[var(--ink)]'}`}>
               <p className={`game-title text-4xl focus:outline-none sm:text-6xl ${result.won ? 'text-[var(--text-green)]' : 'text-[var(--text-red)]'}`} ref={resultText} tabIndex={-1} data-testid="fight-result">
                 {result.won ? L(lang, 'Vitória', 'Victory', 'Victoire', 'Victoria') : L(lang, 'Derrota', 'Defeat', 'Défaite', 'Derrota')}
                 <span className="sr-only"> · </span>
-                <span className="mt-2 block text-base tracking-[0.1em] text-[var(--text-secondary)] sm:text-xl">
+                <span className="mt-2 block text-base text-[var(--text-secondary)] sm:text-xl">
                   {pick(lang, METHOD_LABELS[result.method])}
                   {result.method !== 'dec' ? ` · round ${result.round}` : ''}
                 </span>
@@ -230,7 +230,7 @@ export function FightStep({ career, offer, start, random, onContinue, onRetire, 
             </ul>
             {result.unlocked.length ? (
               <div className="space-y-2" data-testid="unlocked">
-                <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-gold)]">{L(lang, 'Conquista desbloqueada', 'Achievement unlocked', 'Succès débloqué', 'Logro desbloqueado')}</p>
+                <p className="text-xs font-bold text-[var(--text-gold)]">{L(lang, 'Conquista desbloqueada', 'Achievement unlocked', 'Succès débloqué', 'Logro desbloqueado')}</p>
                 <ul className="grid gap-2 sm:grid-cols-2">
                   {result.unlocked.map((id) => (
                     <AchievementTile key={id} id={id} earned fresh />

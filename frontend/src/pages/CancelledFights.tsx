@@ -74,7 +74,7 @@ export function CancelledFights() {
               <button
                 type="button"
                 onClick={picks.clearAll}
-                className="ml-auto inline-flex min-h-10 items-center gap-1.5 text-xs font-bold uppercase tracking-[0.1em] text-[var(--text-secondary)] hover:text-[var(--accent-red)]"
+                className="ml-auto inline-flex min-h-10 items-center gap-1.5 text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--ink)]"
               >
                 <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
                 {L(lang, 'Limpar palpites', 'Clear picks', 'Effacer les pronostics', 'Borrar pronósticos')}
@@ -121,26 +121,26 @@ function FightCard({ fight, pick: current, picks }: { fight: CancelledFight; pic
   const canAnalyze = Boolean(fight.fighter_1.profile_name && fight.fighter_2.profile_name)
 
   return (
-    <article aria-labelledby={headingId} className="surface-card overflow-hidden rounded-2xl border border-[var(--border-subtle)]">
+    <article aria-labelledby={headingId} className="surface-card overflow-hidden rounded-sm border border-[var(--border-subtle)]">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-4 py-2.5 sm:px-6">
-        <Ban className="h-4 w-4 shrink-0 text-[var(--accent-red)]" aria-hidden="true" />
-        <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-main)]">
+        <Ban className="h-4 w-4 shrink-0 text-[var(--ink)]" aria-hidden="true" />
+        <p className="text-xs font-bold text-[var(--text-main)]">
           {fight.event_name} <span className="font-medium text-[var(--text-muted)]">· {date}</span>
         </p>
-        <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--text-secondary)]">{getDivisionName(fight.weight_class, lang)}</span>
+        <span className="text-xs font-semibold text-[var(--text-secondary)]">{getDivisionName(fight.weight_class, lang)}</span>
         <TitleFightBadge fight={{ title_fight: fight.title_fight, weight_class: fight.weight_class }} />
-        <span className="ml-auto border border-[var(--accent-red)] px-2 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--accent-red)]">
+        <span className="ml-auto border border-[var(--ink)] px-2 py-0.5 text-label font-bold text-[var(--ink)]">
           {pick(lang, REASON_LABELS[fight.reason])}
         </span>
       </div>
 
       <div className="space-y-4 px-4 py-4 sm:px-6 sm:py-5">
         <div>
-          <h2 id={headingId} className="font-display text-xl font-extrabold uppercase tracking-tight text-[var(--text-main)] sm:text-2xl">
+          <h2 id={headingId} className="font-display text-xl font-extrabold text-[var(--text-main)] sm:text-2xl">
             {names}
           </h2>
           {fight.attempts > 1 ? (
-            <p className="mt-1 text-xs font-bold uppercase tracking-[0.12em] text-[var(--accent-red)]">
+            <p className="mt-1 text-xs font-bold text-[var(--ink)]">
               {L(lang, `Marcada ${fight.attempts} vezes`, `Booked ${fight.attempts} times`, `Programmé ${fight.attempts} fois`, `Programada ${fight.attempts} veces`)}
             </p>
           ) : null}
@@ -148,7 +148,7 @@ function FightCard({ fight, pick: current, picks }: { fight: CancelledFight; pic
         </div>
 
         <fieldset>
-          <legend className="mb-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-muted)]">
+          <legend className="mb-2 text-xs font-bold text-[var(--text-muted)]">
             {L(lang, 'Quem vence?', 'Who wins?', 'Qui l’emporte ?', '¿Quién gana?')}
           </legend>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -166,7 +166,7 @@ function FightCard({ fight, pick: current, picks }: { fight: CancelledFight; pic
         {current ? (
           <div className="space-y-4 border-t border-[var(--border-subtle)] pt-4">
             <fieldset>
-              <legend className="mb-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-muted)]">
+              <legend className="mb-2 text-xs font-bold text-[var(--text-muted)]">
                 {L(lang, 'Como? (opcional)', 'How? (optional)', 'Comment ? (facultatif)', '¿Cómo? (opcional)')}
               </legend>
               <div className="flex flex-wrap gap-2">
@@ -176,10 +176,10 @@ function FightCard({ fight, pick: current, picks }: { fight: CancelledFight; pic
                     type="button"
                     aria-pressed={current.method === method}
                     onClick={() => picks.chooseMethod(fight.id, method)}
-                    className={`min-h-10 border-2 px-3.5 text-xs font-bold uppercase tracking-[0.1em] transition ${
+                    className={`min-h-10 border-2 px-3.5 text-xs font-bold transition ${
                       current.method === method
-                        ? 'border-[var(--accent-red)] bg-[var(--accent-red)] text-white'
-                        : 'border-[var(--rule)] text-[var(--text-secondary)] hover:border-[var(--accent-red)] hover:text-[var(--text-main)]'
+                        ? 'border-[var(--ink)] bg-[var(--ink)] text-[var(--on-ink)]'
+                        : 'border-[var(--rule)] text-[var(--text-secondary)] hover:border-[var(--ink)] hover:text-[var(--text-main)]'
                     }`}
                   >
                     {pick(lang, METHOD_LABELS[method])}
@@ -205,7 +205,7 @@ function FightCard({ fight, pick: current, picks }: { fight: CancelledFight; pic
             <button
               type="button"
               onClick={() => picks.clear(fight.id)}
-              className="inline-flex min-h-10 items-center gap-1.5 text-xs font-bold uppercase tracking-[0.1em] text-[var(--text-secondary)] hover:text-[var(--accent-red)]"
+              className="inline-flex min-h-10 items-center gap-1.5 text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--ink)]"
             >
               <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
               {L(lang, 'Refazer palpite', 'Change my pick', 'Refaire mon pronostic', 'Rehacer mi pronóstico')}
@@ -229,7 +229,7 @@ function FightCard({ fight, pick: current, picks }: { fight: CancelledFight; pic
           {canAnalyze ? (
             <Link
               to={`/matchup-intelligence?a=${encodeURIComponent(fight.fighter_1.name)}&b=${encodeURIComponent(fight.fighter_2.name)}`}
-              className="inline-flex min-h-10 items-center gap-1 font-bold uppercase tracking-[0.1em] text-[var(--accent-red)]"
+              className="inline-flex min-h-10 items-center gap-1 font-bold text-[var(--ink)]"
             >
               {L(lang, 'Analisar o confronto', 'Analyze the matchup', 'Analyser le duel', 'Analizar el cruce')}
               <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -271,8 +271,8 @@ function FighterOption({ fighter, selected, onChoose }: { fighter: CancelledFigh
       onClick={onChoose}
       className={`flex min-h-20 items-center gap-3 border-2 p-3 text-left transition ${
         selected
-          ? 'border-[var(--accent-red)] bg-[var(--accent-red)]/10'
-          : 'border-[var(--rule)] hover:border-[var(--accent-red)] hover:bg-[var(--bg-surface-subtle)]'
+          ? 'border-[var(--ink)] bg-[var(--panel)]'
+          : 'border-[var(--rule)] hover:border-[var(--ink)] hover:bg-[var(--bg-surface-subtle)]'
       }`}
     >
       <FighterAvatar name={fighter.name} imageUrl={fighter.image_url} className="h-16 w-16" highlight={selected} />
@@ -289,9 +289,9 @@ function FighterOption({ fighter, selected, onChoose }: { fighter: CancelledFigh
       </span>
       <span
         aria-hidden="true"
-        className={`grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 ${selected ? 'border-[var(--accent-red)] bg-[var(--accent-red)]' : 'border-[var(--rule)]'}`}
+        className={`grid h-5 w-5 shrink-0 place-items-center rounded-sm border-2 ${selected ? 'border-[var(--ink)] bg-[var(--ink)]' : 'border-[var(--rule)]'}`}
       >
-        {selected ? <span className="h-1.5 w-1.5 rounded-full bg-white" /> : null}
+        {selected ? <span className="h-1.5 w-1.5 rounded-sm bg-white" /> : null}
       </span>
     </button>
   )
@@ -306,7 +306,7 @@ function ModelView({ fight, winner }: { fight: CancelledFight; winner: string })
     const retired = [fight.fighter_1, fight.fighter_2].filter((fighter) => fighter.ufc_status !== 'active').map((fighter) => fighter.name)
     const many = retired.length > 1
     return (
-      <p className="rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3 py-2 text-xs leading-5 text-[var(--text-secondary)]">
+      <p className="rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3 py-2 text-xs leading-5 text-[var(--text-secondary)]">
         {retired.length
           ? L(
               lang,
@@ -323,8 +323,8 @@ function ModelView({ fight, winner }: { fight: CancelledFight; winner: string })
   const model = fight.model
   const same = model.predicted_winner === winner
   return (
-    <div className="space-y-3 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3 py-3">
-      <p className="text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+    <div className="space-y-3 rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-3 py-3">
+      <p className="text-xs font-bold text-[var(--text-muted)]">
         {L(lang, 'O modelo, se lutassem hoje', 'The model, if they fought today', 'Le modèle, s’ils combattaient aujourd’hui', 'El modelo, si pelearan hoy')}
       </p>
       <WinProbabilityBar

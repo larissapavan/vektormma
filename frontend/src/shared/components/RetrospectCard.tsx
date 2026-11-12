@@ -96,7 +96,7 @@ export function RetrospectCard({ card, actions = true }: { card: Retrospect; act
     { name: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${encoded}` },
   ]
   const button =
-    'inline-flex min-h-11 items-center justify-center gap-2 border-2 border-[var(--rule)] px-4 text-xs font-bold uppercase tracking-[0.1em] text-[var(--text-main)] transition hover:border-[var(--accent-red)]'
+    'inline-flex min-h-11 items-center justify-center gap-2 border-2 border-[var(--rule)] px-4 text-xs font-bold text-[var(--text-main)] transition hover:border-[var(--ink)]'
 
   return (
     <div className="space-y-4">
@@ -106,12 +106,12 @@ export function RetrospectCard({ card, actions = true }: { card: Retrospect; act
         aria-label={alt}
         width={CARD_WIDTH}
         height={CARD_HEIGHT}
-        className={`mx-auto w-full max-w-md rounded-xl border border-[var(--border-subtle)] ${drawn ? '' : 'hidden'}`}
+        className={`mx-auto w-full max-w-md rounded-sm border border-[var(--border-subtle)] ${drawn ? '' : 'hidden'}`}
       />
       {!drawn ? (
-        <div className="mx-auto max-w-md rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] p-5 text-center" data-testid="card-fallback">
-          <p className="font-display text-2xl font-extrabold uppercase text-[var(--text-main)]">{card.n}</p>
-          <p className="data-value mt-1 text-4xl font-bold text-[var(--accent-red)]">{labels.record}</p>
+        <div className="mx-auto max-w-md rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] p-5 text-center" data-testid="card-fallback">
+          <p className="font-display text-2xl font-extrabold text-[var(--text-main)]">{card.n}</p>
+          <p className="data-value mt-1 text-4xl font-bold text-[var(--ink)]">{labels.record}</p>
           <p className="mt-2 text-sm text-[var(--text-secondary)]">{labels.ending}</p>
         </div>
       ) : null}
@@ -119,7 +119,7 @@ export function RetrospectCard({ card, actions = true }: { card: Retrospect; act
       {actions ? (
         <div className="mx-auto flex max-w-md flex-wrap justify-center gap-2">
           {drawn ? (
-            <button type="button" onClick={save} className={`${button} bg-[var(--accent-red-solid)] !border-[var(--accent-red-solid)] text-white`}>
+            <button type="button" onClick={save} className={`${button} bg-[var(--ink)] !border-[var(--ink)] text-[var(--on-ink)]`}>
               <Download className="h-4 w-4" aria-hidden="true" />
               {L(lang, 'Salvar imagem', 'Save image', 'Enregistrer l’image', 'Guardar imagen')}
             </button>

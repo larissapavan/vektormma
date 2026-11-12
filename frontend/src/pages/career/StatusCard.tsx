@@ -18,12 +18,12 @@ export function StatusCard({ career }: { career: Career }) {
   const age = Math.floor(career.age)
 
   return (
-    <section aria-label={L(lang, 'Seu lutador', 'Your fighter', 'Votre combattant', 'Tu peleador')} className="surface-card rounded-2xl overflow-hidden">
+    <section aria-label={L(lang, 'Seu lutador', 'Your fighter', 'Votre combattant', 'Tu peleador')} className="surface-card rounded-sm overflow-hidden">
       <div className="flex flex-wrap items-center gap-4 p-4 sm:p-5">
         <Emblem name={career.name} className="h-16 w-16 text-2xl sm:h-20 sm:w-20" />
         <div className="min-w-[8.5rem] flex-1">
           <h2 className="game-title break-words text-xl sm:text-2xl">{career.name}</h2>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-secondary)]">
+          <p className="mt-1 text-xs font-semibold text-[var(--text-secondary)]">
             {getDivisionName(career.division, lang)} · {L(lang, `${age} anos`, `age ${age}`, `${age} ans`, `${age} años`)}
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
@@ -43,7 +43,7 @@ export function StatusCard({ career }: { career: Career }) {
             <ol className="mt-2 flex flex-wrap items-center gap-1.5" aria-label={L(lang, 'Últimas lutas', 'Recent fights', 'Derniers combats', 'Últimas peleas')}>
               {career.history.slice(-5).map((entry, index) => (
                 <li key={`${entry.opponent}-${index}`} title={`${entry.opponent} · ${SHORT_METHOD[entry.method]}${entry.method === 'dec' ? '' : ` R${entry.round}`}`}>
-                  <span className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] ring-1 ${entry.won ? 'bg-[var(--accent-green)]/12 text-[var(--text-green)] ring-[var(--accent-green)]/40' : 'bg-[var(--accent-red)]/12 text-[var(--text-red)] ring-[var(--accent-red)]/40'}`}>
+                  <span className={`inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-label font-bold ring-1 ${entry.won ? 'bg-[var(--accent-green)]/12 text-[var(--text-green)] ring-[var(--accent-green)]/40' : 'bg-[var(--panel)] text-[var(--text-red)] ring-[var(--ink)]'}`}>
                     {entry.won ? L(lang, 'V', 'W', 'V', 'V') : L(lang, 'D', 'L', 'D', 'D')}
                     <span className="font-semibold opacity-80">{SHORT_METHOD[entry.method]}</span>
                   </span>
@@ -53,7 +53,7 @@ export function StatusCard({ career }: { career: Career }) {
           ) : null}
         </div>
         <div className="ml-auto text-right">
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--text-muted)]">{L(lang, 'Cartel', 'Record', 'Bilan', 'Récord')}</p>
+          <p className="text-label font-bold text-[var(--text-muted)]">{L(lang, 'Cartel', 'Record', 'Bilan', 'Récord')}</p>
           <p className="data-value text-4xl font-bold leading-none text-[var(--text-main)] sm:text-5xl" data-testid="record">
             {recordText(career)}
           </p>
@@ -62,12 +62,12 @@ export function StatusCard({ career }: { career: Career }) {
 
       {!career.champion ? (
         <div className="px-4 pb-1 sm:px-5">
-          <div className="flex justify-between text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-muted)]">
+          <div className="flex justify-between text-label font-bold text-[var(--text-muted)]">
             <span>{L(lang, 'Rumo ao cinturão', 'Road to the title', 'Vers la ceinture', 'Rumbo al cinturón')}</span>
             <span className="data-value">{Math.min(career.points, TITLE_SHOT_POINTS)}/{TITLE_SHOT_POINTS}</span>
           </div>
-          <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[var(--border-subtle)]" role="img" aria-label={`${Math.min(career.points, TITLE_SHOT_POINTS)}/${TITLE_SHOT_POINTS}`}>
-            <div className="h-full rounded-full bg-[var(--accent-gold)] transition-all duration-700" style={{ width: `${progress}%` }} />
+          <div className="mt-1.5 h-1.5 overflow-hidden rounded-sm bg-[var(--border-subtle)]" role="img" aria-label={`${Math.min(career.points, TITLE_SHOT_POINTS)}/${TITLE_SHOT_POINTS}`}>
+            <div className="h-full rounded-sm bg-[var(--accent-gold)] transition-all duration-700" style={{ width: `${progress}%` }} />
           </div>
         </div>
       ) : null}

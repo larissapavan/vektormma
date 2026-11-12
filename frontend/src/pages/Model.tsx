@@ -153,8 +153,8 @@ function MetricCard({ label, value, compact = false }: { label: string; value: s
   // Long values get a smaller size so they stay inside the card; the break opportunities above do the rest.
   const size = compact ? 'text-xl' : value.length > 16 ? 'text-lg sm:text-xl' : 'text-2xl'
   return (
-    <article className="metric-tile min-w-0 rounded-2xl p-3">
-      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{label}</p>
+    <article className="metric-tile min-w-0 rounded-sm p-3">
+      <p className="broadcast-label text-label text-[var(--text-muted)]">{label}</p>
       <p className={`data-value mt-1.5 break-words font-bold text-[var(--ink)] ${size}`}>{breakCamelCase(value)}</p>
     </article>
   )

@@ -98,11 +98,11 @@ export function MatchupRadarChart({
   }))
 
   return (
-    <article className="surface-card rounded-[20px] p-3 sm:p-4">
-      <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{L(i18n.language, 'Comparativo de estilos', 'Style comparison', 'Comparaison de styles', 'Comparación de estilos')}</p>
-      <h2 className="mt-0.5 text-lg font-bold uppercase tracking-[0.03em] text-[var(--text-main)]">{L(i18n.language, 'Radar de habilidades', 'Radar', 'Radar', 'Radar')}</h2>
+    <article className="surface-card rounded-sm p-3 sm:p-4">
+      <p className="broadcast-label text-label text-[var(--text-muted)]">{L(i18n.language, 'Comparativo de estilos', 'Style comparison', 'Comparaison de styles', 'Comparación de estilos')}</p>
+      <h2 className="mt-0.5 text-lg font-bold text-[var(--text-main)]">{L(i18n.language, 'Radar de habilidades', 'Radar', 'Radar', 'Radar')}</h2>
       {loading ? (
-        <LoadingSkeleton className="mt-3 h-[280px] rounded-2xl sm:h-[320px]" label={L(i18n.language, 'Carregando comparativo...', 'Loading style comparison', 'Chargement de la comparaison...', 'Cargando la comparación de estilos')} />
+        <LoadingSkeleton className="mt-3 h-[280px] rounded-sm sm:h-[320px]" label={L(i18n.language, 'Carregando comparativo...', 'Loading style comparison', 'Chargement de la comparaison...', 'Cargando la comparación de estilos')} />
       ) : (
         <div className="mt-1 h-[300px] sm:h-[340px]">
           {/* initialDimension is only what the first render uses before the container is measured; without it Recharts warns "width(-1) and height(-1)" */}
@@ -122,7 +122,7 @@ export function MatchupRadarChart({
           </ResponsiveContainer>
         </div>
       )}
-      <p className="mt-1 text-center text-[11px] leading-4 text-[var(--text-muted)]">
+      <p className="mt-1 text-center text-label leading-4 text-[var(--text-muted)]">
         {L(
           i18n.language,
           'Volume de golpes e média de quedas calibrados nas escalas do UFC (0 a 100) para comparação direta entre os atletas.',

@@ -27,7 +27,7 @@ export function FighterAvatar({ name, imageUrl, className = 'h-14 w-14', highlig
   return (
     <span
       title={credit && imageUrl && failedUrl !== imageUrl ? photoRightsText(credit, i18n.language) : undefined}
-      className={`relative grid ${className} shrink-0 place-items-center overflow-hidden rounded-lg border-2 bg-[var(--avatar-bg)] ${
+      className={`relative grid ${className} shrink-0 place-items-center overflow-hidden rounded-sm border-2 bg-[var(--avatar-bg)] ${
         highlight
           ? 'border-[var(--gold)]'
           : 'border-[var(--rule)]'
@@ -44,7 +44,7 @@ export function FighterAvatar({ name, imageUrl, className = 'h-14 w-14', highlig
           className="absolute inset-0 h-full w-full object-cover object-top"
         />
       ) : (
-        <span className="type-display text-sm font-bold uppercase text-[var(--accent-red)]" aria-hidden="true">
+        <span className="type-display text-sm font-bold text-[var(--ink)]" aria-hidden="true">
           {initials}
         </span>
       )}

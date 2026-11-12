@@ -184,8 +184,8 @@ export function About() {
   return (
     <div className="space-y-3 sm:space-y-4">
       <section className="" aria-labelledby="about-title">
-        <p className="broadcast-label text-[11px] text-[var(--text-muted)]">{t('about.eyebrow')}</p>
-        <h1 id="about-title" className="mt-1.5 text-2xl font-bold uppercase tracking-[0.03em] text-[var(--text-main)] min-[390px]:text-3xl md:text-4xl">
+        <p className="broadcast-label text-label text-[var(--text-muted)]">{t('about.eyebrow')}</p>
+        <h1 id="about-title" className="mt-1.5 text-2xl font-bold text-[var(--text-main)] min-[390px]:text-3xl md:text-4xl">
           {t('about.title')}
         </h1>
         <p className="mt-2 max-w-3xl text-base leading-7">
@@ -235,8 +235,8 @@ export function About() {
           <ExternalAnchor href={LINKEDIN_PROFILE}>LinkedIn</ExternalAnchor>.
         </p>
 
-        <div className="mt-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-3.5">
-          <p className="font-mono text-xs uppercase tracking-wider text-[var(--text-main)] font-bold mb-2.5">
+        <div className="mt-4 rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-3.5">
+          <p className="text-xs text-[var(--text-main)] font-bold mb-2.5">
             {L(i18n.language, 'Canais oficiais', 'Official channels', 'Canaux officiels', 'Canales oficiales')}
           </p>
           <div className="flex flex-wrap gap-4 text-xs font-medium">
@@ -273,7 +273,7 @@ export function About() {
         <h3 className="mt-5 font-display text-2xl font-extrabold">{t('about.sources')}</h3>
         <ul className="mt-2 grid gap-2 sm:grid-cols-2">
           {sources.map((source) => (
-            <li key={source.name} className="metric-tile rounded-xl px-3 py-2.5">
+            <li key={source.name} className="metric-tile rounded-sm px-3 py-2.5">
               <p className="text-sm font-semibold text-[var(--text-main)]">
                 {source.href ? <ExternalAnchor href={source.href}>{sourceName(source.name, i18n.language)}</ExternalAnchor> : sourceName(source.name, i18n.language)}
               </p>
@@ -310,7 +310,7 @@ function AboutSection({
   return (
     <section className="border-t-[3px] border-[var(--ink)] pt-5" aria-labelledby={`about-${id}`}>
       <div className="flex items-center gap-2.5">
-        <div className="rounded-xl bg-[var(--panel)] p-2 text-[var(--ink)]">
+        <div className="rounded-sm bg-[var(--panel)] p-2 text-[var(--ink)]">
           <Icon className="h-4 w-4" aria-hidden />
         </div>
         <h2 id={`about-${id}`} className="section-title ">

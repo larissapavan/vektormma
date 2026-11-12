@@ -9,20 +9,20 @@ function ResultChip({ result }: { result: FightRecord['result'] }) {
 
   if (result === 'win') {
     return (
-      <span className="type-tech rounded-full border border-[var(--ink)] bg-[var(--panel)] px-2 py-0.5 text-label font-bold text-[var(--ink)]">
+      <span className="type-tech rounded-sm border border-[var(--ink)] bg-[var(--panel)] px-2 py-0.5 text-label font-bold text-[var(--ink)]">
         {L(i18n.language, 'Vitória', 'Win', 'Victoire', 'Victoria')}
       </span>
     )
   }
   if (result === 'loss') {
     return (
-      <span className="type-tech rounded-full border border-[var(--border-subtle)] px-2 py-0.5 text-label font-bold text-[var(--text-muted)]">
+      <span className="type-tech rounded-sm border border-[var(--border-subtle)] px-2 py-0.5 text-label font-bold text-[var(--text-muted)]">
         {L(i18n.language, 'Derrota', 'Loss', 'Défaite', 'Derrota')}
       </span>
     )
   }
   return (
-    <span className="type-tech rounded-full border border-[var(--border-subtle)] px-2 py-0.5 text-label font-bold text-[var(--text-muted)]">
+    <span className="type-tech rounded-sm border border-[var(--border-subtle)] px-2 py-0.5 text-label font-bold text-[var(--text-muted)]">
       N/C
     </span>
   )
@@ -74,7 +74,7 @@ function Column({
   return (
     <div>
       <div className="flex items-center gap-2">
-        <span className={`h-2.5 w-2.5 rounded-full ${dotColor}`} />
+        <span className={`h-2.5 w-2.5 rounded-sm ${dotColor}`} />
         <h3 className="type-tech truncate text-xs font-bold text-[var(--text-main)]">{name}</h3>
       </div>
       {loading ? (

@@ -240,14 +240,14 @@ function CompactChampionCard({
 function RankBadge({ rank, goat = false }: { rank: number; goat?: boolean }) {
   if (goat) {
     return (
-      <span className="type-num absolute -bottom-1 -left-1 grid h-5 place-items-center rounded-md border border-[var(--rule)] bg-[var(--gold-fill)] px-1 text-[11px] font-bold leading-none tracking-[0.04em] text-[#10151d]">
+      <span className="type-num absolute -bottom-1 -left-1 grid h-5 place-items-center rounded-sm border border-[var(--rule)] bg-[var(--gold-fill)] px-1 text-label font-bold leading-none text-[#10151d]">
         GOAT
       </span>
     )
   }
   return (
     <span
-      className={`type-num absolute -bottom-1 -left-1 grid h-5 min-w-5 place-items-center rounded-md border px-1 text-[11px] leading-none ${
+      className={`type-num absolute -bottom-1 -left-1 grid h-5 min-w-5 place-items-center rounded-sm border px-1 text-label leading-none ${
         rank === 1 ? 'border-[var(--gold-fill)] bg-[var(--gold-fill)] text-[#10151d]' : 'border-[var(--ink)] bg-[var(--ink)] text-[var(--on-ink)]'
       }`}
     >
@@ -495,7 +495,7 @@ function ReignRow({ reign, onOpen }: { reign: TitleReign; onOpen: (name: string)
     <li className="grid grid-cols-[3.25rem_minmax(0,1fr)] gap-x-2.5 border-l-2 border-[var(--rule)] py-1.5 pl-2.5 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:gap-x-3.5">
       <div className="pt-0.5">
         <p className="type-display text-lg leading-none text-[var(--text-main)] sm:text-xl">{reign.date_won?.slice(0, 4) ?? '—'}</p>
-        <p className="theme-muted mt-0.5 text-[11px] font-semibold uppercase leading-tight">{date?.replace(/,\s*\d{4}$/, '')}</p>
+        <p className="theme-muted mt-0.5 text-label font-semibold leading-tight">{date?.replace(/,\s*\d{4}$/, '')}</p>
       </div>
 
       <div className="min-w-0">
@@ -508,25 +508,25 @@ function ReignRow({ reign, onOpen }: { reign: TitleReign; onOpen: (name: string)
             {reign.champion}
           </button>
           {reign.is_current ? (
-            <span className="bg-[var(--gold-fill)] px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] text-[#10151d]">
+            <span className="bg-[var(--gold-fill)] px-1.5 py-0.5 text-label font-bold text-[#10151d]">
               {L(i18n.language, 'Atual', 'Current', 'Actuel', 'Actual')}
             </span>
           ) : null}
           {interim ? (
-            <span className="border border-[var(--rule)] px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-main)]">
+            <span className="border border-[var(--rule)] px-1.5 py-0.5 text-label font-bold text-[var(--text-main)]">
               {L(i18n.language, 'Interino', 'Interim', 'Intérimaire', 'Interino')}
             </span>
           ) : null}
           {reign.fighter_reign_index > 1 ? (
-            <span className="theme-muted text-[11px] font-bold uppercase tracking-[0.1em]">
+            <span className="theme-muted text-label font-bold">
               {ordinal(reign.fighter_reign_index, i18n.language)} {L(i18n.language, 'reinado', 'reign', 'règne', 'reinado')}
             </span>
           ) : null}
         </div>
-        <p className="theme-muted mt-0.5 text-[11px] leading-4">
+        <p className="theme-muted mt-0.5 text-label leading-4">
           {[translateWonHow(reign.won_how, i18n.language), reign.event].filter(Boolean).join(' · ') || L(i18n.language, 'Conquista do cinturão', 'Title win', 'Conquête du titre', 'Conquista del título')}
         </p>
-        <p className="theme-muted text-[11px] leading-4">
+        <p className="theme-muted text-label leading-4">
           {[held, defenses, ended].filter(Boolean).join(' · ')}
         </p>
       </div>
@@ -578,7 +578,7 @@ function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="min-w-[48px] text-right">
       <p className="data-value text-sm sm:text-base font-bold text-[var(--text-main)] leading-none">{value}</p>
-      <p className="broadcast-label text-[10px] text-[var(--text-muted)] tracking-wider mt-0.5 whitespace-nowrap">{label}</p>
+      <p className="broadcast-label text-label text-[var(--text-muted)] mt-0.5 whitespace-nowrap">{label}</p>
     </div>
   )
 }
@@ -664,7 +664,7 @@ function RecordCard({ category }: { category: RecordCategory }) {
   const label = getRecordCategoryLabel(category, i18n.language)
 
   return (
-    <section className="surface-card overflow-hidden rounded-[20px]">
+    <section className="surface-card overflow-hidden rounded-sm">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
@@ -708,15 +708,15 @@ function RecordRow({ entry, unit }: { entry: RecordCategory['entries'][number]; 
       type="button"
       onClick={() => openProfile(entry.champion)}
       aria-label={L(i18n.language, `${entry.champion}, ${entry.rank}º lugar. Ver perfil`, `${entry.champion}, rank ${entry.rank}. View profile`, `${entry.champion}, rang ${entry.rank}. Voir le profil`, `${entry.champion}, puesto ${entry.rank}. Ver perfil`)}
-      className="flex w-full cursor-pointer items-center text-left gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-[var(--gold-fill)]/40 focus-visible:bg-[var(--gold-fill)]/40 focus-visible:outline-none"
+      className="flex w-full cursor-pointer items-center text-left gap-2.5 rounded-sm px-2 py-1.5 transition-colors hover:bg-[var(--gold-fill)]/40 focus-visible:bg-[var(--gold-fill)]/40 focus-visible:outline-none"
     >
-      <span className="type-num w-4 shrink-0 text-right text-[11px] text-[var(--text-muted)]">{entry.rank}</span>
+      <span className="type-num w-4 shrink-0 text-right text-label text-[var(--text-muted)]">{entry.rank}</span>
       <div className="min-w-0 flex-1">
         <p className="truncate text-[13px] font-semibold leading-tight text-[var(--text-main)]">{entry.champion}</p>
-        {divisionLabel ? <p className="theme-muted truncate text-[11px] leading-tight">{divisionLabel}</p> : null}
+        {divisionLabel ? <p className="theme-muted truncate text-label leading-tight">{divisionLabel}</p> : null}
       </div>
       <span className="data-value shrink-0 text-sm font-bold text-[var(--text-main)]">
-        {formattedValue} <span className="theme-muted text-[11px] font-normal">{unit}</span>
+        {formattedValue} <span className="theme-muted text-label font-normal">{unit}</span>
       </span>
     </button>
   )
@@ -929,7 +929,7 @@ function ChampionTimeline({ entry }: { entry: RecordEntry }) {
         {stats.map((stat) => (
           <div key={stat.label} className="metric-tile px-3 py-2">
             <dd className="type-display text-2xl leading-none text-[var(--text-main)]">{stat.value}</dd>
-            <dt className="theme-muted mt-1 text-[11px] font-bold uppercase tracking-[0.14em]">{stat.label}</dt>
+            <dt className="theme-muted mt-1 text-label font-bold">{stat.label}</dt>
           </div>
         ))}
       </dl>
@@ -947,7 +947,7 @@ function ChampionTimeline({ entry }: { entry: RecordEntry }) {
       <button
         type="button"
         onClick={() => openProfile(entry.champion)}
-        className="ghost-action mt-4 inline-flex w-full items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-main)] transition hover:!bg-[var(--gold-fill)] hover:text-[#10151d]"
+        className="ghost-action mt-4 inline-flex w-full items-center justify-center px-4 py-2 text-xs font-bold text-[var(--text-main)] transition hover:!bg-[var(--gold-fill)] hover:text-[#10151d]"
       >
         {L(i18n.language, 'Ver perfil completo', 'View full profile', 'Voir le profil complet', 'Ver perfil completo')}
       </button>
@@ -968,37 +968,37 @@ function TitleFightRow({ fight, previous }: { fight: TitleFight; previous: Title
     <>
       {newDivision && divisionLabel ? (
         <li aria-hidden className="mb-1.5 mt-3 flex items-center gap-2 first:mt-0">
-          <span className="broadcast-label shrink-0 text-[11px] text-[var(--text-main)]">{divisionLabel}</span>
+          <span className="broadcast-label shrink-0 text-label text-[var(--text-main)]">{divisionLabel}</span>
           <span className="h-0.5 flex-1 bg-[var(--rule)]" />
         </li>
       ) : null}
       <li className="grid grid-cols-[3.25rem_minmax(0,1fr)] gap-x-2.5 border-l-2 border-[var(--rule)] py-1.5 pl-2.5 sm:grid-cols-[4.5rem_minmax(0,1fr)] sm:gap-x-3.5">
         <div className="pt-0.5">
           <p className="type-display text-lg leading-none text-[var(--text-main)] sm:text-xl">{fight.date?.slice(0, 4) ?? '—'}</p>
-          <p className="theme-muted mt-0.5 text-[11px] font-semibold uppercase leading-tight">{date?.replace(/,\s*\d{4}$/, '')}</p>
+          <p className="theme-muted mt-0.5 text-label font-semibold leading-tight">{date?.replace(/,\s*\d{4}$/, '')}</p>
         </div>
 
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] ${ROLE_STYLES[fight.role]}`}>
+            <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 text-label font-bold ${ROLE_STYLES[fight.role]}`}>
               {fight.role === 'won_title' ? <ChampionBelt className="h-3 w-6" /> : null}
               {fight.role === 'defense' ? <Shield className="h-3 w-3" /> : null}
               {translateFightRole(fight.label, i18n.language)}
             </span>
             {fight.title_type === 'interim' && !/interim/i.test(fight.label) ? (
-              <span className="border border-[var(--rule)] px-1.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--text-main)]">
+              <span className="border border-[var(--rule)] px-1.5 py-0.5 text-label font-bold text-[var(--text-main)]">
                 {L(i18n.language, 'Interino', 'Interim', 'Intérimaire', 'Interino')}
               </span>
             ) : null}
           </div>
           <p className="mt-1 flex min-w-0 items-center gap-2 text-sm font-bold text-[var(--text-main)]">
-            <span className={`type-num grid h-5 min-w-5 shrink-0 place-items-center px-1 text-[11px] leading-none ${result.className}`} title={result.name}>
+            <span className={`type-num grid h-5 min-w-5 shrink-0 place-items-center px-1 text-label leading-none ${result.className}`} title={result.name}>
               <span className="sr-only">{result.name}</span>
               <span aria-hidden>{result.letter}</span>
             </span>
             <span className="min-w-0 break-words">vs. {fight.opponent}</span>
           </p>
-          <p className="theme-muted mt-0.5 text-[11px] leading-4">{[outcome, fight.event].filter(Boolean).join(' · ')}</p>
+          <p className="theme-muted mt-0.5 text-label leading-4">{[outcome, fight.event].filter(Boolean).join(' · ')}</p>
         </div>
       </li>
     </>

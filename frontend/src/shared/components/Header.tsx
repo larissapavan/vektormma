@@ -242,7 +242,7 @@ export function Header() {
               title={apiTitle}
               className="hidden min-h-11 cursor-default items-center gap-2 border-[1.5px] border-[var(--rule)] px-3 text-[15px] font-bold text-[var(--ink)] sm:inline-flex rounded-sm"
             >
-              <span className={`h-2 w-2 rounded-full ${apiDotColor}`} aria-hidden="true" />
+              <span className={`h-2 w-2 rounded-sm ${apiDotColor}`} aria-hidden="true" />
               {apiLabel}
             </div>
             ) : null}

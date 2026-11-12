@@ -102,7 +102,7 @@ export function SeasonFightsPanel({
                   <span className="font-display font-black text-sm sm:text-lg text-[var(--ink)] whitespace-nowrap">
                     {L(lang, 'Temporada', 'Season', 'Saison', 'Temporada')} {era.year}
                   </span>
-                  <span className="text-label sm:text-xs font-bold text-[var(--gold)] bg-[var(--gold-fill)] border border-[var(--gold)] px-1.5 sm:px-2 py-0.5 rounded-full shrink-0">
+                  <span className="text-label sm:text-xs font-bold text-[var(--gold)] bg-[var(--gold-fill)] border border-[var(--gold)] px-1.5 sm:px-2 py-0.5 rounded-sm shrink-0">
                     {era.wins}{L(lang, 'V', 'W', 'V', 'V')} - {era.losses}{L(lang, 'D', 'L', 'D', 'D')}
                   </span>
                 </div>
@@ -114,7 +114,7 @@ export function SeasonFightsPanel({
 
             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               {era.milestone && (
-                <div className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-[var(--gold-fill)] border border-[var(--gold)] px-2.5 py-1 text-label font-bold text-[var(--gold)]">
+                <div className="hidden md:inline-flex items-center gap-1.5 rounded-sm bg-[var(--gold-fill)] border border-[var(--gold)] px-2.5 py-1 text-label font-bold text-[var(--gold)]">
                   <Trophy className="h-3 w-3" />
                   <span>{era.milestone}</span>
                 </div>
@@ -123,7 +123,7 @@ export function SeasonFightsPanel({
               <button
                 type="button"
                 onClick={() => onSelectEra(null)}
-                className="h-7 w-7 sm:h-8 sm:w-8 rounded-full border border-[var(--rule)] bg-[var(--panel)] hover:bg-[var(--panel)] text-[var(--muted)] hover:text-[var(--ink)] transition flex items-center justify-center cursor-pointer"
+                className="h-7 w-7 sm:h-8 sm:w-8 rounded-sm border border-[var(--rule)] bg-[var(--panel)] hover:bg-[var(--panel)] text-[var(--muted)] hover:text-[var(--ink)] transition flex items-center justify-center cursor-pointer"
                 title={L(lang, 'Fechar (Esc)', 'Close (Esc)', 'Fermer (échap)', 'Cerrar (Esc)')}
               >
                 <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />

@@ -9,7 +9,7 @@ import { cleanName, type Stance } from '../../shared/game/career'
 import { challengeBuild, CHALLENGE_FIGHTS, dailySeed, randomSeed, type Challenge, type ChallengeResult } from '../../shared/game/challenge'
 import { Chip, GhostButton, PrimaryButton, SkillMeter } from './ui'
 
-const field = 'mt-1.5 block min-h-12 w-full rounded-xl border border-[var(--border-default)] bg-[var(--bg-surface-subtle)] px-3.5 text-base font-semibold normal-case tracking-normal text-[var(--text-main)] transition focus:border-[var(--accent-red)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-red)]/30'
+const field = 'mt-1.5 block min-h-12 w-full rounded-sm border border-[var(--border-default)] bg-[var(--bg-surface-subtle)] px-3.5 text-base font-semibold normal-case text-[var(--text-main)] transition focus:border-[var(--ink)] focus:outline-none focus:ring-2 focus:ring-[var(--ink)]'
 
 /** The challenge's code, short enough to say out loud. */
 export const challengeCode = (seed: number) => seed.toString(36).toUpperCase()
@@ -35,9 +35,9 @@ export function ChallengeEntry({ onPick }: { onPick: (challenge: Challenge) => v
   const { i18n } = useTranslation()
   const lang = i18n.language
   return (
-    <section aria-label={L(lang, 'Desafio', 'Challenge', 'Défi', 'Desafío')} className="surface-card rounded-2xl space-y-4 p-4 sm:p-5">
+    <section aria-label={L(lang, 'Desafio', 'Challenge', 'Défi', 'Desafío')} className="surface-card rounded-sm space-y-4 p-4 sm:p-5">
       <div>
-        <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[var(--accent-red)]">
+        <h3 className="flex items-center gap-2 text-xs font-bold text-[var(--ink)]">
           <Flag className="h-4 w-4" aria-hidden="true" />
           {L(lang, 'Desafio', 'Challenge', 'Défi', 'Desafío')}
         </h3>
@@ -83,14 +83,14 @@ export function ChallengeIntro({ challenge, fromLink, onStart, onBack }: { chall
 
   return (
     <form
-      className="surface-card rounded-2xl space-y-6 p-5 sm:p-7"
+      className="surface-card rounded-sm space-y-6 p-5 sm:p-7"
       onSubmit={(event) => {
         event.preventDefault()
         if (ready) onStart(cleanName(name))
       }}
     >
       <div>
-        <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--accent-red)]">
+        <p className="text-xs font-bold text-[var(--ink)]">
           {L(lang, 'Desafio', 'Challenge', 'Défi', 'Desafío')} <span className="data-value text-[var(--text-secondary)]" data-testid="challenge-code">#{challengeCode(challenge.seed)}</span>
         </p>
         <h2 className="game-title mt-1 text-xl sm:text-3xl">
@@ -101,8 +101,8 @@ export function ChallengeIntro({ challenge, fromLink, onStart, onBack }: { chall
       </div>
 
       {target ? (
-        <div role="note" className="space-y-1 rounded-xl border border-[var(--accent-gold)]/40 bg-[var(--accent-gold)]/10 px-4 py-3 text-sm text-[var(--text-main)]" data-testid="challenge-target">
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-gold)]">{L(lang, 'Para bater', 'To beat', 'À battre', 'Para superar')}</p>
+        <div role="note" className="space-y-1 rounded-sm border border-[var(--accent-gold)]/40 bg-[var(--accent-gold)]/10 px-4 py-3 text-sm text-[var(--text-main)]" data-testid="challenge-target">
+          <p className="text-xs font-bold text-[var(--text-gold)]">{L(lang, 'Para bater', 'To beat', 'À battre', 'Para superar')}</p>
           <p>
             <strong>{target.n}</strong>: <ResultLine result={target} />
           </p>
@@ -110,7 +110,7 @@ export function ChallengeIntro({ challenge, fromLink, onStart, onBack }: { chall
         </div>
       ) : null}
 
-      <div className="space-y-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]/60 p-4" data-testid="challenge-fighter">
+      <div className="space-y-3 rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]/60 p-4" data-testid="challenge-fighter">
         <div className="flex flex-wrap items-center gap-2">
           <Chip tone="red">{getDivisionName(fighter.division, lang)}</Chip>
           <Chip>{L(lang, stance[0], stance[1], stance[2], stance[3])}</Chip>
@@ -129,7 +129,7 @@ export function ChallengeIntro({ challenge, fromLink, onStart, onBack }: { chall
         <li>{L(lang, `São ${challenge.fights} lutas, sem aposentar antes. Vale quem terminar com mais pontos de ranking; no empate, quem tiver mais vitórias.`, `${challenge.fights} fights, with no retiring early. Whoever finishes with more ranking points wins; on a tie, more wins.`, `${challenge.fights} combats, sans retraite anticipée. Gagne celui qui finit avec le plus de points de classement ; à égalité, le plus de victoires.`, `${challenge.fights} peleas, sin retirarse antes. Gana quien termine con más puntos de ranking; en caso de empate, más victorias.`)}</li>
       </ul>
 
-      <label className="block max-w-sm text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-secondary)]">
+      <label className="block max-w-sm text-xs font-bold text-[var(--text-secondary)]">
         {L(lang, 'Seu nome', 'Your name', 'Votre nom', 'Tu nombre')}
         <input value={name} maxLength={24} onChange={(event) => setName(event.target.value)} className={field} />
       </label>
@@ -140,7 +140,7 @@ export function ChallengeIntro({ challenge, fromLink, onStart, onBack }: { chall
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </PrimaryButton>
         {fromLink ? (
-          <Link to="/career" className="inline-flex min-h-12 items-center text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-secondary)] hover:text-[var(--accent-red)]">
+          <Link to="/career" className="inline-flex min-h-12 items-center text-xs font-bold text-[var(--text-secondary)] hover:text-[var(--ink)]">
             {L(lang, 'Criar a minha carreira', 'Build my own career', 'Créer ma carrière', 'Crear mi carrera')}
           </Link>
         ) : (

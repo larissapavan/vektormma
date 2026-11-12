@@ -23,11 +23,11 @@ export function OrgFightLine({ fight, knownOpponent, onSelect }: { fight: FightR
           : L(i18n.language, 'Sem resultado', 'No result', 'Sans résultat', 'Sin resultado')
 
   return (
-    <li className="metric-tile flex items-center gap-3 rounded-xl px-3 py-2">
+    <li className="metric-tile flex items-center gap-3 rounded-sm px-3 py-2">
       <span
         title={label}
         className={`grid h-7 w-7 shrink-0 place-items-center border-2 text-xs font-bold ${
-          win ? 'border-[var(--rule)] bg-[var(--accent-red-solid)] text-white' : loss ? 'border-[var(--rule)] bg-[var(--surface-3)] text-[var(--text-main)]' : 'border-[var(--line-soft)] text-[var(--text-muted)]'
+          win ? 'border-[var(--rule)] bg-[var(--ink)] text-[var(--on-ink)]' : loss ? 'border-[var(--rule)] bg-[var(--surface-3)] text-[var(--text-main)]' : 'border-[var(--line-soft)] text-[var(--text-muted)]'
         }`}
       >
         <span aria-hidden="true">{win ? L(i18n.language, 'V', 'W', 'V', 'V') : loss ? L(i18n.language, 'D', 'L', 'D', 'D') : upcoming ? '·' : '–'}</span>
@@ -49,12 +49,12 @@ export function OrgFightLine({ fight, knownOpponent, onSelect }: { fight: FightR
             fight.opponent
           )}
           {fight.title_fight ? (
-            <span className="ml-1.5 bg-[var(--gold-fill)] px-1 text-[10px] font-bold uppercase text-[#10151d]">
+            <span className="ml-1.5 bg-[var(--gold-fill)] px-1 text-label font-bold text-[#10151d]">
               {L(i18n.language, 'Cinturão', 'Title', 'Titre', 'Título')}
             </span>
           ) : null}
           {nonMmaDiscipline(fight.discipline) ? (
-            <span title={nonMmaHint(i18n.language)} className="ml-1.5 border border-[var(--rule)] px-1 text-[10px] font-bold uppercase text-[var(--text-red)]">
+            <span title={nonMmaHint(i18n.language)} className="ml-1.5 border border-[var(--rule)] px-1 text-label font-bold text-[var(--text-red)]">
               {nonMmaDiscipline(fight.discipline)}
             </span>
           ) : null}

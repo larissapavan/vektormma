@@ -79,7 +79,7 @@ export function Home() {
   return (
     <div className="space-y-8 sm:space-y-10">
       {systemError ? (
-        <p className="flex items-center gap-2 rounded-card border border-[var(--accent-red)]/30 bg-[var(--accent-red)]/10 px-3 py-2 text-sm text-[var(--text-primary)]">
+        <p className="flex items-center gap-2 rounded-sm border border-[var(--rule)] bg-[var(--panel)] px-3 py-2 text-sm text-[var(--text-primary)]">
           <ShieldAlert className="h-4 w-4 shrink-0 text-[var(--text-red)]" />
           {systemError}
         </p>
@@ -315,7 +315,7 @@ function TrendingCard({
 }
 
 /** A row of a list that sits on the page background; the hover fill bleeds a little past the text column. */
-const ROW = '-mx-2 flex w-[calc(100%+1rem)] items-center gap-3 rounded-control px-2 py-2.5 text-left'
+const ROW = '-mx-2 flex w-[calc(100%+1rem)] items-center gap-3 rounded-sm px-2 py-2.5 text-left'
 const CLICKABLE_ROW = 'cursor-pointer transition-colors hover:bg-[var(--bg-surface-hover)]'
 
 function TrendRow({

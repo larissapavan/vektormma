@@ -123,7 +123,7 @@ export function OrgHome() {
               {org.hasPredictions ? (
                 <Link
                   to={orgPath(org, 'predictor')}
-                  className="primary-action inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 text-xs uppercase"
+                  className="primary-action inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-5 text-xs"
                 >
                   {L(i18n.language, 'Simular combate', 'Predict a fight', 'Prédire un combat', 'Pronosticar una pelea')}
                   <ArrowRight className="h-4 w-4" />
@@ -131,7 +131,7 @@ export function OrgHome() {
               ) : null}
               <Link
                 to={orgPath(org, 'events')}
-                className="ghost-action inline-flex min-h-11 items-center justify-center rounded-full px-5 text-xs uppercase"
+                className="ghost-action inline-flex min-h-11 items-center justify-center rounded-sm px-5 text-xs"
               >
                 {L(i18n.language, 'Ver eventos', 'See fight cards', 'Voir les événements', 'Ver carteleras')}
               </Link>
@@ -192,7 +192,7 @@ export function OrgHome() {
       ) : null}
 
       {isArchived ? (
-        <p role="note" className="rounded-card border border-[var(--border-subtle)] border-l-4 border-l-[var(--accent-gold)] bg-[var(--bg-surface)] px-4 py-3 text-sm leading-6 text-[var(--text-primary)]">
+        <p role="note" className="rounded-sm border border-[var(--border-subtle)] border-l-4 border-l-[var(--accent-gold)] bg-[var(--bg-surface)] px-4 py-3 text-sm leading-6 text-[var(--text-primary)]">
           {L(
             i18n.language,
             'O Bellator realizou seu último evento em 2023 e foi absorvido pela PFL, portanto este é um arquivo histórico: os dados aqui não são mais atualizados.',
@@ -210,14 +210,14 @@ export function OrgHome() {
             title={L(i18n.language, 'Navegue pelo arquivo histórico', 'Explore the archive', "Explorer l’archive", 'Explora el archivo histórico')}
           />
           <div className="grid gap-3 sm:grid-cols-3">
-            <Link to={orgPath(org, 'events')} className="surface-card !rounded-card p-4 hover:bg-[var(--bg-surface-hover)]">
+            <Link to={orgPath(org, 'events')} className="surface-card rounded-sm p-4 hover:bg-[var(--bg-surface-hover)]">
               <span className="text-sm font-bold">{L(i18n.language, 'Eventos', 'Events', 'Événements', 'Eventos')}</span>
             </Link>
-            <Link to={orgPath(org, 'fighters')} className="surface-card !rounded-card p-4 hover:bg-[var(--bg-surface-hover)]">
+            <Link to={orgPath(org, 'fighters')} className="surface-card rounded-sm p-4 hover:bg-[var(--bg-surface-hover)]">
               <span className="text-sm font-bold">{L(i18n.language, 'Lutadores', 'Fighters', 'Combattants', 'Peleadores')}</span>
             </Link>
             {org.hasChampions ? (
-              <Link to={orgPath(org, 'champions')} className="surface-card !rounded-card p-4 hover:bg-[var(--bg-surface-hover)]">
+              <Link to={orgPath(org, 'champions')} className="surface-card rounded-sm p-4 hover:bg-[var(--bg-surface-hover)]">
                 <span className="text-sm font-bold">{L(i18n.language, 'Campeões', 'Champions', 'Champions', 'Campeones')}</span>
               </Link>
             ) : null}
@@ -266,7 +266,7 @@ export function OrgHome() {
             {org.hasChampions ? (
               <Link
                 to={orgPath(org, 'champions')}
-                className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--text-main)] underline decoration-2 underline-offset-4 hover:bg-[var(--gold-fill)] hover:text-[#10151d]"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--text-main)] underline decoration-2 underline-offset-4 hover:bg-[var(--gold-fill)] hover:text-[#10151d]"
               >
                 {L(i18n.language, 'Seção completa de campeões', 'Full champions section', 'Section complète des champions', 'Sección completa de campeones')}
                 <ArrowRight className="h-3.5 w-3.5" />
@@ -334,7 +334,7 @@ export function OrgHome() {
                     type="button"
                     aria-pressed={isSelected}
                     onClick={() => setSelectedDivision(div)}
-                    className={`shrink-0 rounded-lg px-3.5 py-2 text-xs font-black uppercase tracking-[0.08em] transition-all duration-150 ${
+                    className={`shrink-0 rounded-sm px-3.5 py-2 text-xs font-black transition-all duration-150 ${
                       isSelected
                         ? 'bg-[var(--gold-fill)] text-[#10151d] ring-2 ring-[var(--gold)] scale-[1.02]'
                         : 'border border-[var(--border-subtle)] bg-[var(--surface-3)] text-[var(--text-secondary)] hover:border-[var(--text-main)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-main)]'
@@ -498,10 +498,10 @@ function ChampionTile({
   const record = profile ? formatRecord(profile) : null
 
   return (
-    <div className="surface-card flex h-full items-center gap-3.5 !rounded-card p-3.5 hover:border-[var(--border-default)]">
+    <div className="surface-card flex h-full items-center gap-3.5 rounded-sm p-3.5 hover:border-[var(--border-default)]">
       <FighterAvatar name={champion?.fighter ?? division} imageUrl={profile?.image_url ?? null} highlight={Boolean(champion)} className="h-14 w-12" />
       <div className="min-w-0 flex-1">
-        <p className="font-mono text-label font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]">{getDivisionName(division, i18n.language)}</p>
+        <p className="text-label font-semibold text-[var(--text-muted)]">{getDivisionName(division, i18n.language)}</p>
         {champion ? (
           <>
             <button type="button" onClick={() => onOpen(champion.fighter)} className="mt-0.5 flex max-w-full items-center gap-1.5 text-left text-base font-bold text-[var(--text-main)] hover:underline">

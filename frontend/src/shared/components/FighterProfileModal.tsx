@@ -321,7 +321,7 @@ export function FighterProfileModal({
               onClose()
               navigate(athletePath(name))
             }}
-            className="group inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-[var(--rule)] bg-[var(--panel)] hover:bg-[var(--panel)] hover:border-[var(--rule)] px-3 sm:px-4 py-1.5 sm:py-2 text-label font-semibold text-[var(--ink)] hover:text-[var(--ink)] transition-all cursor-pointer"
+            className="group inline-flex items-center gap-1.5 sm:gap-2 rounded-sm border border-[var(--rule)] bg-[var(--panel)] hover:bg-[var(--panel)] hover:border-[var(--rule)] px-3 sm:px-4 py-1.5 sm:py-2 text-label font-semibold text-[var(--ink)] hover:text-[var(--ink)] transition-all cursor-pointer"
             title={L(i18n.language, 'Abrir dossiê completo', 'Open full dossier', 'Ouvrir le dossier', 'Abrir dosier completo')}
           >
             <Sparkles className="h-3.5 w-3.5 text-[var(--gold)] transition-transform group-hover:scale-110" />
@@ -330,7 +330,7 @@ export function FighterProfileModal({
           <button
             type="button"
             onClick={onClose}
-            className="grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-full border border-[var(--rule)] bg-[var(--panel)] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--panel)] hover:border-[var(--rule)] transition cursor-pointer"
+            className="grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-sm border border-[var(--rule)] bg-[var(--panel)] text-[var(--muted)] hover:text-[var(--ink)] hover:bg-[var(--panel)] hover:border-[var(--rule)] transition cursor-pointer"
             aria-label={L(i18n.language, 'Fechar perfil de desempenho', "Close performance profile", 'Fermer le profil de performance', 'Cerrar perfil de rendimiento')}
           >
             <X className="h-4 w-4" />
@@ -372,7 +372,7 @@ export function FighterProfileModal({
             {/* Tipografia Display Monumental, Badges Oficiais e Assinatura */}
             <div className="relative z-10 space-y-2.5 pb-1">
               <div className="inline-flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-[var(--positive)]" />
+                <span className="h-1.5 w-1.5 rounded-sm bg-[var(--positive)]" />
                 <span className="text-label text-[var(--muted)] font-semibold">
                   {L(i18n.language, 'Atleta ativo', 'Active fighter', 'Combattant actif', 'Peleador activo')}
                 </span>
@@ -385,7 +385,7 @@ export function FighterProfileModal({
               {/* BADGES OFICIAIS DE CAMPEÃO E HONRAS (Destaque Dourado e Ex-BMF) */}
               <div className="flex flex-wrap items-center gap-2 pt-0.5">
                 {isCurrentDivisionChamp && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--gold)] px-3 py-1 text-xs font-bold text-[var(--gold)]">
+                  <span className="inline-flex items-center gap-1.5 rounded-sm border border-[var(--gold)] px-3 py-1 text-xs font-bold text-[var(--gold)]">
                     <Trophy className="h-3.5 w-3.5 text-[var(--gold)]" />
                     <span>
                       {L(
@@ -400,14 +400,14 @@ export function FighterProfileModal({
                 )}
 
                 {isCurrentBmf && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--gold)] bg-[var(--gold-fill)] px-2.5 py-1 text-label font-bold text-[var(--gold)]">
+                  <span className="inline-flex items-center gap-1.5 rounded-sm border border-[var(--gold)] bg-[var(--gold-fill)] px-2.5 py-1 text-label font-bold text-[var(--gold)]">
                     <Sparkles className="h-3 w-3 text-[var(--gold)]" />
                     <span>{L(i18n.language, 'Campeão BMF atual', 'Current BMF champion', 'Champion BMF actuel', 'Campeón BMF actual')}</span>
                   </span>
                 )}
 
                 {isFormerBmf && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--rule)] bg-[var(--panel)] px-2.5 py-1 text-label font-bold text-[var(--ink)]">
+                  <span className="inline-flex items-center gap-1.5 rounded-sm border border-[var(--rule)] bg-[var(--panel)] px-2.5 py-1 text-label font-bold text-[var(--ink)]">
                     <span>{L(i18n.language, 'Ex-Campeão BMF', 'Former BMF champion', 'Ancien champion BMF', 'Excampeón BMF')}</span>
                   </span>
                 )}
@@ -415,7 +415,7 @@ export function FighterProfileModal({
                 {formerDivisionTitles.map((title) => (
                   <span
                     key={`former-${title}`}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-[var(--rule)] bg-[var(--panel)] px-2.5 py-1 text-label font-bold text-[var(--ink)]"
+                    className="inline-flex items-center gap-1.5 rounded-sm border border-[var(--rule)] bg-[var(--panel)] px-2.5 py-1 text-label font-bold text-[var(--ink)]"
                   >
                     <span>
                       {L(
@@ -432,7 +432,7 @@ export function FighterProfileModal({
                 {formerInterimTitles.map((title) => (
                   <span
                     key={`interim-${title}`}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-[var(--rule)] bg-[var(--panel)] px-2.5 py-1 text-label font-bold text-[var(--ink)]"
+                    className="inline-flex items-center gap-1.5 rounded-sm border border-[var(--rule)] bg-[var(--panel)] px-2.5 py-1 text-label font-bold text-[var(--ink)]"
                   >
                     <span>
                       {L(
@@ -475,7 +475,7 @@ export function FighterProfileModal({
                   {/* Cartel no UFC em Destaque Monumental */}
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--ink)]" />
+                      <span className="h-1.5 w-1.5 rounded-sm bg-[var(--ink)]" />
                       <p className="text-label text-[var(--muted)] font-bold">
                         {L(i18n.language, 'Cartel no octógono (UFC)', 'UFC Octagon record', 'Palmarès dans l’octogone (UFC)', 'Récord en el octágono (UFC)')}
                       </p>
@@ -667,7 +667,7 @@ export function FighterProfileModal({
 
                           {/* Scale prediction bar ou breathing bar se oponente indefinido */}
                           {isOpponentTbd ? (
-                            <div className="h-[3px] w-full rounded-full bg-[var(--gold-fill)] overflow-hidden">
+                            <div className="h-[3px] w-full rounded-sm bg-[var(--gold-fill)] overflow-hidden">
                               <div className="h-full w-full" />
                             </div>
                           ) : (

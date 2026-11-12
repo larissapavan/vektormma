@@ -260,7 +260,7 @@ export function EditorialFighterDossier({
         {/* Top Editorial Nav / Stamp Bar */}
         <header className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-2.5 w-2.5 rounded-full bg-[var(--ink)]" />
+            <span className="flex h-2.5 w-2.5 rounded-sm bg-[var(--ink)]" />
             <div className="flex flex-col">
               <span className="text-label font-bold text-[var(--muted)]">
                 {L(i18n.language, 'Dossiê do lutador', 'Fighter dossier', 'Dossier du combattant', 'Dosier del peleador')}
@@ -273,7 +273,7 @@ export function EditorialFighterDossier({
 
           <div className="flex items-center gap-2">
             {/* View Mode Toggle: Solo vs Comparison */}
-            <div className="inline-flex rounded-full border border-[var(--rule)] bg-[var(--panel)] p-1">
+            <div className="inline-flex rounded-sm border border-[var(--rule)] bg-[var(--panel)] p-1">
               <button
                 type="button"
                 onClick={() => setComparisonMode(false)}
@@ -306,7 +306,7 @@ export function EditorialFighterDossier({
               <button
                 type="button"
                 onClick={onClose}
-                className="grid h-8 w-8 place-items-center rounded-full border border-[var(--rule)] bg-[var(--panel)] text-[var(--muted)] hover:bg-[var(--panel)] hover:text-[var(--ink)] transition cursor-pointer"
+                className="grid h-8 w-8 place-items-center rounded-sm border border-[var(--rule)] bg-[var(--panel)] text-[var(--muted)] hover:bg-[var(--panel)] hover:text-[var(--ink)] transition cursor-pointer"
                 aria-label={L(i18n.language, 'Fechar', 'Close', 'Fermer', 'Cerrar')}
               >
                 <X className="h-4 w-4" />
@@ -340,12 +340,12 @@ export function EditorialFighterDossier({
                     {L(i18n.language, 'Campeão indiscutível', 'Undisputed champion', 'Champion incontesté', 'Campeón indiscutido')}
                   </span>
                 ) : profile?.ranking ? (
-                  <span className="inline-flex items-center gap-1 rounded-full border border-[var(--rule)] bg-[var(--panel)] px-3 py-1 text-xs font-bold text-[var(--ink)]">
+                  <span className="inline-flex items-center gap-1 rounded-sm border border-[var(--rule)] bg-[var(--panel)] px-3 py-1 text-xs font-bold text-[var(--ink)]">
                     <Award className="h-3.5 w-3.5 text-[var(--ink)]" />
                     {profile.ranking} • {getDivisionName(profile.division, i18n.language)}
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 rounded-full border border-[var(--rule)] bg-[var(--panel)] px-3 py-1 text-xs font-semibold text-[var(--ink)]">
+                  <span className="inline-flex items-center gap-1 rounded-sm border border-[var(--rule)] bg-[var(--panel)] px-3 py-1 text-xs font-semibold text-[var(--ink)]">
                     {getDivisionName(profile?.division, i18n.language) || L(i18n.language, 'Lutador do UFC', 'UFC fighter', 'Combattant de l’UFC', 'Peleador de la UFC')}
                   </span>
                 )}
@@ -401,7 +401,7 @@ export function EditorialFighterDossier({
                     <span className="text-[var(--muted)] font-normal">{L(i18n.language, 'D', 'L', 'D', 'D')}</span>
                     {profile?.draws ? ` — ${profile.draws}${L(i18n.language, 'E', 'D', 'N', 'E')}` : ''}
                   </span>
-                  <span className="ml-2 rounded-md border-[1.5px] border-[var(--positive)] px-2 py-0.5 text-xs font-bold text-[var(--positive)]">
+                  <span className="ml-2 rounded-sm border-[1.5px] border-[var(--positive)] px-2 py-0.5 text-xs font-bold text-[var(--positive)]">
                     {Math.round((profile?.win_rate ?? 0) * 100)}% {L(i18n.language, 'vitórias', 'wins', 'victoires', 'victorias')}
                   </span>
                 </div>
@@ -429,7 +429,7 @@ export function EditorialFighterDossier({
             >
               <div className="relative h-72 w-72 sm:h-96 sm:w-96 lg:h-[440px] lg:w-[440px]">
                 {/* Visual Halo / Glow */}
-                <div className="absolute inset-0 rounded-full opacity-60" />
+                <div className="absolute inset-0 rounded-sm opacity-60" />
 
                 <PhotoCredit imageUrl={primaryImageUrl} className="right-0 bottom-6" />
                 {primaryImageUrl ? (
@@ -477,7 +477,7 @@ export function EditorialFighterDossier({
 
               {/* VS Badge & AI Prediction */}
               <div className="flex flex-col items-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--rule)] bg-[var(--panel)] font-black text-lg text-[var(--ink)]">
+                <div className="flex h-12 w-12 items-center justify-center rounded-sm border border-[var(--rule)] bg-[var(--panel)] font-black text-lg text-[var(--ink)]">
                   VS
                 </div>
                 {prediction && (
@@ -728,7 +728,7 @@ export function EditorialFighterDossier({
                     </div>
 
                     {phase.highlightBadge && (
-                      <span className="mt-2 inline-flex items-center rounded-full border border-[var(--rule)] bg-[var(--panel)] px-2.5 py-0.5 text-label font-bold text-[var(--ink)]">
+                      <span className="mt-2 inline-flex items-center rounded-sm border border-[var(--rule)] bg-[var(--panel)] px-2.5 py-0.5 text-label font-bold text-[var(--ink)]">
                         {translateBadge(phase.highlightBadge, i18n.language)}
                       </span>
                     )}
@@ -824,7 +824,7 @@ export function EditorialFighterDossier({
                 <button
                   type="button"
                   onClick={() => setSelectingCorner(null)}
-                  className="rounded-full p-1 text-[var(--muted)] hover:text-[var(--ink)] cursor-pointer"
+                  className="rounded-sm p-1 text-[var(--muted)] hover:text-[var(--ink)] cursor-pointer"
                 >
                   <X className="h-5 w-5" />
                 </button>

@@ -19,8 +19,8 @@ export function ChallengeBar({ challenge, career }: { challenge: Challenge; care
   const lang = i18n.language
   const fight = Math.min(career.ufcFights + 1, challenge.fights)
   return (
-    <section aria-label={L(lang, 'Desafio', 'Challenge', 'Défi', 'Desafío')} className="flex flex-wrap items-center gap-2 rounded-2xl border border-[var(--accent-gold)]/40 bg-[var(--accent-gold)]/10 px-4 py-2.5" data-testid="challenge-bar">
-      <span className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--text-gold)]">
+    <section aria-label={L(lang, 'Desafio', 'Challenge', 'Défi', 'Desafío')} className="flex flex-wrap items-center gap-2 rounded-sm border border-[var(--accent-gold)]/40 bg-[var(--accent-gold)]/10 px-4 py-2.5" data-testid="challenge-bar">
+      <span className="text-xs font-bold text-[var(--text-gold)]">
         {L(lang, 'Desafio', 'Challenge', 'Défi', 'Desafío')} #{challengeCode(challenge.seed)}
       </span>
       <Chip tone="gold">{L(lang, `Luta ${fight} de ${challenge.fights}`, `Fight ${fight} of ${challenge.fights}`, `Combat ${fight} sur ${challenge.fights}`, `Pelea ${fight} de ${challenge.fights}`)}</Chip>
@@ -70,16 +70,16 @@ export function ChallengeEnd({ challenge, career }: { challenge: Challenge; care
     { name: 'X', href: `https://twitter.com/intent/tweet?text=${text}&url=${encoded}` },
     { name: 'WhatsApp', href: `https://wa.me/?text=${text}%20${encoded}` },
   ]
-  const button = 'inline-flex min-h-11 items-center justify-center gap-2 border-2 border-[var(--rule)] px-4 text-xs font-bold uppercase tracking-[0.1em] text-[var(--text-main)] transition hover:border-[var(--accent-red)]'
-  const tone = outcome === 'win' ? 'border-[var(--accent-green)]/50 bg-[var(--accent-green)]/10' : outcome === 'loss' ? 'border-[var(--accent-red)]/50 bg-[var(--accent-red)]/10' : 'border-[var(--accent-gold)]/50 bg-[var(--accent-gold)]/10'
+  const button = 'inline-flex min-h-11 items-center justify-center gap-2 border-2 border-[var(--rule)] px-4 text-xs font-bold text-[var(--text-main)] transition hover:border-[var(--ink)]'
+  const tone = outcome === 'win' ? 'border-[var(--accent-green)]/50 bg-[var(--accent-green)]/10' : outcome === 'loss' ? 'border-[var(--rule)] bg-[var(--panel)]' : 'border-[var(--accent-gold)]/50 bg-[var(--accent-gold)]/10'
 
   return (
-    <section aria-label={L(lang, 'Resultado do desafio', 'Challenge result', 'Résultat du défi', 'Resultado del desafío')} className={`space-y-4 rounded-2xl border p-5 text-center ${tone}`} data-testid="challenge-end">
-      <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--text-gold)]">
+    <section aria-label={L(lang, 'Resultado do desafio', 'Challenge result', 'Résultat du défi', 'Resultado del desafío')} className={`space-y-4 rounded-sm border p-5 text-center ${tone}`} data-testid="challenge-end">
+      <p className="text-xs font-bold text-[var(--text-gold)]">
         {L(lang, 'Desafio', 'Challenge', 'Défi', 'Desafío')} #{challengeCode(challenge.seed)}
       </p>
       <p className="game-title text-5xl sm:text-6xl" data-testid="challenge-score">
-        {result.p} <span className="text-lg tracking-[0.1em] text-[var(--text-secondary)]">{L(lang, 'pontos', 'points', 'points', 'puntos')}</span>
+        {result.p} <span className="text-lg text-[var(--text-secondary)]">{L(lang, 'pontos', 'points', 'points', 'puntos')}</span>
       </p>
       <p className="text-sm text-[var(--text-secondary)]">
         <ResultLine result={result} points={false} />
