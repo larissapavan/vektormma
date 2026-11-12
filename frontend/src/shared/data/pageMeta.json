@@ -288,10 +288,6 @@
         "title": "Academias do Invicta FC",
         "description": "Academias e equipes dos atletas do Invicta FC."
       },
-      "/about-model": {
-        "title": "Sobre o modelo",
-        "description": "Um projeto de ciência de dados aplicada ao MMA: coleta de dados, modelo de previsão e API."
-      },
       "/guide": {
         "title": "Como ler as previsões",
         "description": "O que significa a chance de vitória estimada pelo modelo, o que ele analisa, quanto acerta e o que não sabe."
@@ -561,10 +557,6 @@
       "/invicta/gyms": {
         "title": "Invicta FC gyms",
         "description": "Where Invicta FC fighters train: gyms and teams with their fighters."
-      },
-      "/about-model": {
-        "title": "About the model",
-        "description": "An applied data science project on MMA: data collection, prediction model and API."
       },
       "/guide": {
         "title": "How to read the predictions",
@@ -836,10 +828,6 @@
         "title": "Salles Invicta FC",
         "description": "Où s’entraînent les combattants Invicta FC : salles et équipes, avec leurs combattants."
       },
-      "/about-model": {
-        "title": "À propos du modèle",
-        "description": "Un projet de science des données appliquée au MMA : collecte des données, modèle de pronostic et API."
-      },
       "/guide": {
         "title": "Comment lire les prévisions",
         "description": "Ce que signifie la chance de victoire estimée par le modèle, ce qu’il regarde, son taux de réussite et ce qu’il ne sait pas."
@@ -1109,10 +1097,6 @@
       "/invicta/gyms": {
         "title": "Gimnasios de Invicta FC",
         "description": "Dónde entrenan los peleadores de Invicta FC: gimnasios y equipos con sus peleadores."
-      },
-      "/about-model": {
-        "title": "Acerca del modelo",
-        "description": "Un proyecto de ciencia de datos aplicada al MMA: recolección de datos, modelo de pronóstico y API."
       },
       "/guide": {
         "title": "Cómo leer los pronósticos",

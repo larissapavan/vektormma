@@ -6,9 +6,10 @@ import { configDefaults, defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-import { UI_LANGS, langPath, type UiLang } from './src/i18n/lang'
-import { athleteBody, athleteText, fightBody, fightText, fightersListBody, type SeoData } from './src/seo/athletes'
+import { UI_LANGS, langPath, localeTag, type UiLang } from './src/i18n/lang'
+import { athleteBody, athleteText, fightBody, fightText, fightersListBody, homeBody, type AthleteDetails, type SeoData } from './src/seo/athletes'
 import { bodyHtml, routeHtml, sitemapXml, type BodyLink, type RouteText, type SiteInfo } from './src/seo/htmlMeta'
+import { aboutBody, dataBody, listPageBody, modelBody, type PagesData } from './src/seo/pages'
 import { athleteJsonLd, fightJsonLd, type Trail } from './src/seo/structuredData'
 import { CONTACT_EMAIL, infoPage, INFO_PATHS, type InfoPageId } from './src/shared/data/legal'
 
@@ -46,6 +47,12 @@ function seoPages(): Plugin {
       const template = readFileSync(join(distDir, 'index.html'), 'utf8')
       const data = JSON.parse(readFileSync(resolve(root, 'src/shared/data/pageMeta.json'), 'utf8')) as PageMetaFile
       const seo = JSON.parse(readFileSync(resolve(root, 'src/seo/athletes.json'), 'utf8')) as SeoData
+      // Stats and fight history of each athlete: only the static pages read it, so the app never downloads it.
+      const details = JSON.parse(readFileSync(resolve(root, 'src/seo/athleteDetails.json'), 'utf8')) as AthleteDetails
+      const athleteSlugs = new Set(seo.athletes.map((athlete) => athlete.slug))
+      // Rankings, champions, cards, results and rosters for the list pages (scripts/build_seo_pages.py).
+      const pages = JSON.parse(readFileSync(resolve(root, 'src/seo/pages.json'), 'utf8')) as PagesData
+      const pageContext = { athleteSlugs, fights: seo.fights }
       const email = process.env.VITE_CONTACT_EMAIL?.trim() || CONTACT_EMAIL
       const paths = Object.keys(data.pages.pt)
 
@@ -65,6 +72,9 @@ function seoPages(): Plugin {
         const nav: BodyLink[] = NAV_PATHS.filter((path) => data.pages.pt[path]).map((path) => ({ label: table(path).title, href: langPath(lang, path) }))
         const siteDescription = data.defaultDescription[lang]
 
+        // The headings and descriptions of the About, Data and Model pages live in the translation file of each language.
+        const locale = JSON.parse(readFileSync(resolve(root, `src/i18n/locales/${localeTag(lang)}.json`), 'utf8')) as Record<'about' | 'dataIntelligence' | 'model', Record<string, string>>
+
         for (const path of paths) {
           const text = table(path)
           const info = INFO_BY_PATH[path]
@@ -73,12 +83,18 @@ function seoPages(): Plugin {
             ? bodyHtml(infoPage(info, lang, email), nav)
             : path === '/fighters'
               ? bodyHtml(fightersListBody(lang, text, seo.athletes), nav)
-              : bodyHtml({ title: text.title, intro: text.description }, nav)
+              : path === '/about'
+                ? bodyHtml(aboutBody(lang, locale.about), nav)
+                : path === '/data'
+                  ? bodyHtml(dataBody(lang, locale.dataIntelligence, pages), nav)
+                  : path === '/model'
+                    ? bodyHtml(modelBody(lang, locale.model, pages.model), nav)
+                : bodyHtml(listPageBody(lang, path, text, pages, pageContext) ?? { title: text.title, intro: text.description }, nav)
           write(lang, path, routeHtml(template, data.site, path, text, body, { lang, siteDescription }))
         }
 
         // The home page: Portuguese keeps the text of the template, the other languages get their own title and description.
-        const home = bodyHtml({ title: data.site.name, intro: siteDescription }, nav)
+        const home = bodyHtml(homeBody(lang, data.site.name, siteDescription, seo.fights), nav)
         const homeMeta = lang === 'pt' ? null : { title: data.homeTitle[lang], description: siteDescription }
         write(lang, '/', routeHtml(template, data.site, '/', homeMeta, home, { lang, siteDescription, rawTitle: true }))
 
@@ -90,13 +106,13 @@ function seoPages(): Plugin {
           const image = imageFor('athletes', athlete.slug)
           const text = athleteText(lang, athlete)
           const jsonLd = athleteJsonLd(data.site.url, lang, athlete, text, athleteTrail)
-          write(lang, path, routeHtml(template, data.site, path, text, bodyHtml(athleteBody(lang, athlete, seo.fights), nav), { lang, siteDescription, image, jsonLd }))
+          write(lang, path, routeHtml(template, data.site, path, text, bodyHtml(athleteBody(lang, athlete, seo.fights, details[athlete.slug], athleteSlugs), nav), { lang, siteDescription, image, jsonLd }))
         }
         for (const fight of seo.fights) {
           const path = `/fight/${fight.slug}`
           const image = imageFor('fights', fight.slug)
           const jsonLd = fightJsonLd(data.site.url, lang, fight, fightTrail, image)
-          write(lang, path, routeHtml(template, data.site, path, fightText(lang, fight), bodyHtml(fightBody(lang, fight), nav), { lang, siteDescription, image, jsonLd }))
+          write(lang, path, routeHtml(template, data.site, path, fightText(lang, fight), bodyHtml(fightBody(lang, fight, { a: details[fight.a.slug], b: details[fight.b.slug], ...pages.fights?.[fight.slug] }), nav), { lang, siteDescription, image, jsonLd }))
         }
       }
 

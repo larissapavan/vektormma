@@ -7,7 +7,9 @@
       "permanent": true
     },
     { "source": "/matchup-intelligence", "destination": "/predictor", "permanent": true },
-    { "source": "/:lang(en|fr|es)/matchup-intelligence", "destination": "/:lang/predictor", "permanent": true }
+    { "source": "/:lang(en|fr|es)/matchup-intelligence", "destination": "/:lang/predictor", "permanent": true },
+    { "source": "/about-model", "destination": "/model", "permanent": true },
+    { "source": "/:lang(en|fr|es)/about-model", "destination": "/:lang/model", "permanent": true }
   ],
   "headers": [
     {

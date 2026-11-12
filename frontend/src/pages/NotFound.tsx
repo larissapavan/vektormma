@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Compass } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -6,6 +7,15 @@ import { L } from '../i18n/lang'
 
 export function NotFound() {
   const { i18n } = useTranslation()
+
+  // The server answers 200 for every address (the app decides what exists), so this page asks search engines not to index it.
+  useEffect(() => {
+    const meta = document.createElement('meta')
+    meta.name = 'robots'
+    meta.content = 'noindex'
+    document.head.appendChild(meta)
+    return () => meta.remove()
+  }, [])
 
   return (
     <div className="flex min-h-[60vh] items-center justify-center px-3 py-8">

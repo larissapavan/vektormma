@@ -28,9 +28,14 @@ if __package__ in (None, ""):
 
 from backend.app.services.catalog_service import get_fighter_profile, list_fighters
 from backend.app.services.events_service import get_upcoming_events
+from backend.app.services.fight_history_service import get_fights_for_fighter
 from backend.app.services.track_record_service import load_log
+from scripts.build_seo_pages import write_pages
 
 OUTPUT_PATH = Path(__file__).resolve().parent.parent / "frontend" / "src" / "seo" / "athletes.json"
+# Stats and UFC fight history of each athlete, by slug. Only the build reads it (the static text of each athlete page);
+# it is kept out of athletes.json because the app downloads that file.
+DETAILS_PATH = OUTPUT_PATH.with_name("athleteDetails.json")
 PHOTO_PREFIX = "/fighter-photos/"
 
 # Same letters as NON_DECOMPOSING_LETTERS in frontend/src/shared/hooks/useFighterImages.ts: they do not decompose with NFD.
@@ -71,6 +76,54 @@ def _athlete(fighter: dict) -> dict:
         "countryCode": fighter.get("country_code"),
         "photo": _photo(fighter.get("image_url")),
     }
+
+
+def _number(value, digits: int = 2) -> float | None:
+    """A finite number rounded for the page, or None (the catalog uses NaN for a missing stat)."""
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    return round(number, digits) if number == number else None
+
+
+def _detail(fighter: dict) -> dict:
+    """What the athlete page says beyond the record: body, career stats and every UFC fight on file, newest first."""
+    stats = {
+        "heightCm": _number(fighter.get("height_cm"), 0),
+        "reachCm": _number(fighter.get("reach_cm"), 0),
+        "stance": fighter.get("stance") or None,
+        "hometown": fighter.get("hometown") or None,
+        "debut": fighter.get("ufc_debut") or None,
+        "strikesLanded": _number(fighter.get("sig_strikes_landed_per_min")),
+        "strikesAbsorbed": _number(fighter.get("sig_strikes_absorbed_per_min")),
+        "strikeAccuracy": _number(fighter.get("sig_str_acc")),
+        "strikeDefense": _number(fighter.get("striking_defense")),
+        "takedowns": _number(fighter.get("takedown_avg_per_15min")),
+        "takedownAccuracy": _number(fighter.get("takedown_acc")),
+        "takedownDefense": _number(fighter.get("takedown_defense")),
+        "submissions": _number(fighter.get("submission_avg_per_15min")),
+    }
+    history = [
+        {
+            "date": str(fight["date"])[:10],
+            "opponent": fight["opponent"],
+            "result": fight.get("result"),
+            "method": fight.get("method"),
+            "round": fight.get("round"),
+            "time": fight.get("time"),
+            "event": fight.get("event_name"),
+            "title": bool(fight.get("title_fight")),
+        }
+        for fight in get_fights_for_fighter(fighter["name"])
+        if fight.get("date") and fight.get("opponent")
+    ]
+    return {"stats": {key: value for key, value in stats.items() if value is not None}, "history": history}
+
+
+def build_details() -> dict[str, dict]:
+    active = [f for f in list_fighters(ufc_only=True) if f.get("ufc_status") == "active"]
+    return {athlete_slug(f["name"]): _detail(f) for f in sorted(active, key=lambda f: athlete_slug(f["name"]))}
 
 
 def build_athletes() -> list[dict]:
@@ -126,7 +179,11 @@ def main() -> bool:
     fights = build_fights(date.today().isoformat())
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(json.dumps({"athletes": athletes, "fights": fights}, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    details = build_details()
+    DETAILS_PATH.write_text(json.dumps(details, ensure_ascii=False, separators=(",", ":")) + chr(10), encoding="utf-8")
     print(f"Wrote {len(athletes)} athletes and {len(fights)} fights to {OUTPUT_PATH}")
+    print(f"Wrote the stats and fight history of {len(details)} athletes to {DETAILS_PATH}")
+    print(f"Wrote the data of the list pages to {write_pages(fights)}")
     return True
 
 

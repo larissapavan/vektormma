@@ -30,7 +30,6 @@ const Privacy = lazy(() => import('./pages/InfoPage').then((module) => ({ defaul
 const Terms = lazy(() => import('./pages/InfoPage').then((module) => ({ default: module.Terms })))
 const Contact = lazy(() => import('./pages/InfoPage').then((module) => ({ default: module.Contact })))
 const Guide = lazy(() => import('./pages/InfoPage').then((module) => ({ default: module.Guide })))
-const AboutModel = lazy(() => import('./pages/AboutModel').then((module) => ({ default: module.AboutModel })))
 const DataIntelligence = lazy(() =>
   import('./pages/DataIntelligence').then((module) => ({ default: module.DataIntelligence })),
 )
@@ -92,7 +91,6 @@ function App() {
                 <Route path="/model" element={<Model />} />
                 <Route path="/track-record" element={<TrackRecord />} />
               </Route>
-              <Route path="/about-model" element={<AboutModel />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/contact" element={<Contact />} />
