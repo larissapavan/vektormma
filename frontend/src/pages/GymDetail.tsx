@@ -83,7 +83,7 @@ export function GymDetail() {
             title={gym.name}
             description={L(i18n.language, 'Lutadores cuja última luta teve origem nesta academia, segundo o FightHub.', 'Fighters whose last fight came out of this gym, as listed by FightHub.', 'Combattants dont le dernier combat est sorti de cette salle, selon FightHub.', 'Peleadores cuya última pelea salió de este gimnasio, según FightHub.')}
           />
-          <div className="grid gap-2 sm:grid-cols-3">
+          <div className="grid grid-cols-3 gap-x-6 border-t-[3px] border-[var(--ink)] pt-3">
             <Tile label={L(i18n.language, 'Total de atletas', 'Fighters listed', 'Combattants inscrits', 'Peleadores registrados')} value={gym.fighters_count.toLocaleString(localeTag(i18n.language))} />
             <Tile label={`${org.shortName} (${L(i18n.language, 'atletas', 'fighters', 'combattants', 'peleadores')})`} value={(gym.orgs[org.id] ?? 0).toLocaleString(localeTag(i18n.language))} />
             <Tile label={L(i18n.language, 'Cinturões / campeões', 'Champions', 'Champions', 'Campeones')} value={gym.champions.toLocaleString(localeTag(i18n.language))} />
@@ -115,7 +115,7 @@ export function GymDetail() {
       </section>
 
       {fighters.length ? (
-        <ul aria-label={L(i18n.language, 'Lutadores', 'Fighters', 'Combattants', 'Peleadores')} className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
+        <ul aria-label={L(i18n.language, 'Lutadores', 'Fighters', 'Combattants', 'Peleadores')} className="grid border-t-[3px] border-[var(--ink)] sm:grid-cols-2 sm:gap-x-8 xl:grid-cols-3">
           {fighters.map((fighter) => (
             <li key={`${fighter.name}-${fighter.record}`}>
               <FighterCard fighter={fighter} onOpen={openProfile} />
@@ -123,7 +123,7 @@ export function GymDetail() {
           ))}
         </ul>
       ) : (
-        <div className="surface-card px-4 py-7 text-center text-sm text-[var(--text-muted)]">
+        <div className="border-t-[3px] border-[var(--ink)] py-6 text-base text-[var(--muted)]">
           {L(i18n.language, 'Nenhum atleta encontrado para esta academia.', 'No fighters listed for this gym.', 'Aucun combattant n’est inscrit dans cette salle.', 'No hay peleadores registrados en este gimnasio.')}
         </div>
       )}
@@ -146,9 +146,9 @@ export function GymDetail() {
 
 function Tile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="metric-tile px-3 py-2.5">
-      <p className="broadcast-label text-label text-[var(--text-muted)]">{label}</p>
-      <p className="data-value mt-1 text-2xl font-bold text-[var(--text-main)]">{value}</p>
+    <div className="min-w-0">
+      <p className="font-display text-[32px] font-extrabold leading-none tabular-nums text-[var(--ink)] sm:text-4xl">{value}</p>
+      <p className="mt-1 text-sm text-[var(--muted)]">{label}</p>
     </div>
   )
 }
@@ -161,22 +161,22 @@ function FighterCard({ fighter, onOpen }: { fighter: GymFighter; onOpen: (fighte
       <span className="min-w-0 flex-1">
         <span className="flex min-w-0 items-center gap-2">
           {fighter.country_code ? <FlagIcon code={fighter.country_code} /> : null}
-          <span className="truncate text-base font-bold text-[var(--text-main)]">{fighter.name}</span>
+          <span className="truncate text-base font-bold text-[var(--ink)]">{fighter.name}</span>
         </span>
-        {fighter.nickname ? <span className="block truncate text-xs italic text-[var(--text-muted)]">“{fighter.nickname}”</span> : null}
-        <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[var(--text-muted)]">
-          {fighter.record ? <span className="font-semibold text-[var(--text-main)]">{fighter.record}</span> : null}
+        {fighter.nickname ? <span className="block truncate text-sm italic text-[var(--muted)]">“{fighter.nickname}”</span> : null}
+        <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-[var(--muted)]">
+          {fighter.record ? <span className="font-semibold text-[var(--ink)]">{fighter.record}</span> : null}
           {fighter.division ? <span>{getDivisionName(fighter.division, i18n.language)}</span> : null}
         </span>
         <span className="mt-1.5 flex flex-wrap items-center gap-1">
           {fighter.belt ? (
-            <span className="inline-flex items-center gap-1 border-2 border-[var(--rule)] bg-[var(--gold-fill)] px-1.5 py-px text-label font-bold leading-4 text-[#10151d]">
+            <span className="inline-flex items-center gap-1 bg-[var(--gold-fill)] px-1.5 py-px text-label font-bold leading-5 text-[#10151d]">
               <Crown className="h-3 w-3" aria-hidden="true" />
               {L(i18n.language, 'Campeão', 'Champion', 'Champion', 'Campeón')}
             </span>
           ) : null}
           {fighter.orgs.map((orgId) => (
-            <span key={orgId} className="border-2 border-[var(--rule)] bg-[var(--surface-3)] px-1.5 py-px text-label font-bold leading-4 text-[var(--text-main)]">
+            <span key={orgId} className="border border-[var(--rule)] px-1.5 py-px text-label font-semibold leading-5 text-[var(--ink)]">
               {ORGS[orgId as OrgId]?.shortName ?? orgId.toUpperCase()}
             </span>
           ))}
@@ -185,17 +185,18 @@ function FighterCard({ fighter, onOpen }: { fighter: GymFighter; onOpen: (fighte
     </>
   )
 
-  const base = 'metric-tile flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left'
+  // A row, not a card: a rule underneath, the panel colour on hover.
+  const base = 'flex h-full w-full items-center gap-3 border-b border-[var(--rule)] py-3 text-left transition-colors'
   return fighter.orgs.length ? (
     <button
       type="button"
       onClick={() => onOpen(fighter)}
       aria-label={L(i18n.language, `${fighter.name}. Ver perfil`, `${fighter.name}. View profile`, `${fighter.name}. Voir le profil`, `${fighter.name}. Ver perfil`)}
-      className={`${base} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--gold)]`}
+      className={`${base} cursor-pointer hover:bg-[var(--panel)]`}
     >
       {body}
     </button>
   ) : (
-    <article className={`${base} opacity-80`}>{body}</article>
+    <article className={base}>{body}</article>
   )
 }
