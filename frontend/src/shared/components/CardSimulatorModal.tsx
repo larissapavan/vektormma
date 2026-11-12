@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Swords, Bot, User, Share2, Check, RotateCcw, X } from 'lucide-react'
 import { L } from '../../i18n/lang'
+import { formatProbability } from '../data/probability'
 import { getDivisionName } from '../data/divisions'
 import type { EventSummary, UpcomingPick } from '../types/api'
 
@@ -76,10 +77,10 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
   const handleShare = () => {
     let text = L(
       i18n.language,
-      `🥊 MEUS palpites VS IA • ${event.name}\n`,
-      `🥊 MY PICKS VS AI • ${event.name}\n`,
-      `🥊 MES pronostics contre L’IA • ${event.name}\n`,
-      `🥊 MIS PRONÓSTICOS VS. LA IA • ${event.name}\n`,
+      `🥊 Meus palpites vs. o modelo • ${event.name}\n`,
+      `🥊 My picks vs. the model • ${event.name}\n`,
+      `🥊 Mes pronostics contre le modèle • ${event.name}\n`,
+      `🥊 Mis pronósticos vs. el modelo • ${event.name}\n`,
     )
     
     if (event.date) {
@@ -95,7 +96,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
 
       if (userChoice) {
         const matchesAi = aiPick && aiPick.predicted_winner.toLowerCase() === userChoice.toLowerCase()
-        const aiInfo = aiPick ? `🤖 IA: ${aiPick.predicted_winner} (${Math.round(aiPick.probability * 100)}%)` : ''
+        const aiInfo = aiPick ? `🤖 ${L(i18n.language, 'Modelo', 'Model', 'Modèle', 'Modelo')}: ${aiPick.predicted_winner} (${formatProbability(aiPick.probability)})` : ''
         const verdict = matchesAi
           ? L(i18n.language, '🤝 [CONCORDO]', '🤝 [AGREE]', '🤝 [D’ACCORD]', '🤝 [COINCIDO]')
           : L(i18n.language, '[Zebra/divergência]', '[Upset/disagree]', '[Surprise/désaccord]', '[Sorpresa/desacuerdo]')
@@ -106,10 +107,10 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
     if (stats.totalWithAi > 0) {
       text += L(
         i18n.language,
-        `📊 Concordância com o Modelo de IA: ${stats.agreementPct}% (${stats.agreedWithAi}/${stats.totalWithAi} lutas)\n`,
-        `📊 Agreement with AI Model: ${stats.agreementPct}% (${stats.agreedWithAi}/${stats.totalWithAi} fights)\n`,
-        `📊 Accord avec le modèle d’IA : ${stats.agreementPct} % (${stats.agreedWithAi}/${stats.totalWithAi} combats)\n`,
-        `📊 Coincidencia con el modelo de IA: ${stats.agreementPct} % (${stats.agreedWithAi}/${stats.totalWithAi} peleas)\n`,
+        `📊 Iguais aos do modelo: ${stats.agreementPct}% (${stats.agreedWithAi}/${stats.totalWithAi} lutas)\n`,
+        `📊 Same as the model: ${stats.agreementPct}% (${stats.agreedWithAi}/${stats.totalWithAi} fights)\n`,
+        `📊 Comme le modèle : ${stats.agreementPct} % (${stats.agreedWithAi}/${stats.totalWithAi} combats)\n`,
+        `📊 Iguales al modelo: ${stats.agreementPct} % (${stats.agreedWithAi}/${stats.totalWithAi} peleas)\n`,
       )
     }
     text += L(i18n.language, `Faça seus palpites no site: https://www.vektormma.com/`, `Make your picks at: https://www.vektormma.com/`, `Faites vos pronostics sur le site : https://www.vektormma.com/`, 'Haz tus pronósticos en: https://www.vektormma.com/')
@@ -240,7 +241,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
                   {aiPick ? (
                     <span className="inline-flex items-center gap-1 rounded-sm border border-[var(--line-soft)] bg-[var(--surface-3)] px-2 py-0.5 text-label text-[var(--text-main)]">
                       <Bot className="h-3 w-3 text-[var(--ink)]" />
-                      IA: <span className="font-bold text-[var(--gold)]">{aiPick.predicted_winner}</span> ({Math.round(aiPick.probability * 100)}%)
+                      {L(i18n.language, 'Modelo', 'Model', 'Modèle', 'Modelo')}: <span className="font-bold text-[var(--ink)]">{aiPick.predicted_winner}</span> ({formatProbability(aiPick.probability)})
                     </span>
                   ) : null}
                 </div>

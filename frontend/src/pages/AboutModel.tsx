@@ -89,7 +89,7 @@ export function AboutModel() {
           title={L(i18n.language, 'Ciência de dados aplicada ao MMA', 'A UFC analytics project built to learn', 'Un projet d’analyse UFC conçu pour apprendre', 'Ciencia de datos aplicada al MMA')}
           description={L(
             i18n.language,
-            'Desenvolvido para aplicar aprendizado de máquina do dado bruto ao produto interativo na web.',
+            'Construído para aprender a levar um modelo do dado bruto até um site que funciona.',
             'I built this to learn how to take a model from raw data to a working website.',
             'Je l’ai construit pour apprendre à faire passer un modèle des données brutes à un site qui fonctionne.',
             'Lo construí para aprender a llevar un modelo desde los datos en bruto hasta un sitio web que funciona.',
@@ -116,7 +116,7 @@ export function AboutModel() {
           title={L(i18n.language, 'Como a previsão funciona', 'How a pick is made', 'Comment un choix est fait', 'Cómo se hace un pronóstico')}
           description={L(
             i18n.language,
-            'O modelo calcula o diferencial estatístico entre os atletas e a API retorna as probabilidades com os fatores SHAP.',
+            'O modelo compara os números dos dois lutadores antes da luta, e a API devolve a chance de vitória com os fatores que mais pesaram.',
             "The model compares the two fighters' stats before the fight, and the API returns the pick with the factors behind it.",
             'Le modèle compare les statistiques des deux combattants avant le combat, et l’API renvoie le choix avec les facteurs qui l’expliquent.',
             'El modelo compara las estadísticas de los dos peleadores antes de la pelea, y la API devuelve el pronóstico con los factores que lo explican.',
@@ -156,7 +156,7 @@ export function AboutModel() {
             {[
               'FastAPI (Python)',
               'React + Vite + TypeScript',
-              'Gradient Boosting (LightGBM/XGBoost)',
+              'Gradient boosting (scikit-learn)',
               L(i18n.language, 'Engenharia de variáveis', 'Feature engineering', 'Ingénierie des variables', 'Ingeniería de variables'),
               L(i18n.language, 'Por que o modelo decide assim', 'Why the model decides as it does', 'Pourquoi le modèle décide ainsi', 'Por qué el modelo decide así'),
               'Tailwind CSS & Framer Motion',

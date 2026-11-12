@@ -17,10 +17,10 @@
     "career": "Jogo"
   },
   "header": {
-    "apiLive": "Ao vivo",
+    "apiLive": "Online",
     "apiOffline": "Desconectado",
     "apiWaking": "Iniciando",
-    "apiLiveTitle": "API no ar e modelo carregado",
+    "apiLiveTitle": "Servidor respondendo e modelo carregado",
     "apiOfflineTitle": "API offline",
     "apiWakingTitle": "Iniciando servidor API...",
     "themeLight": "claro",
@@ -57,7 +57,7 @@
   "common": {
     "pageLoading": "Carregando dados...",
     "pageLoadingLabel": "Carregando dados",
-    "serverFast": "O servidor agora é dedicado, então isso não deve demorar.",
+    "serverFast": "Isso costuma levar poucos segundos.",
     "serverSlow": "Está demorando mais que o normal. O servidor pode estar fora do ar no momento; tente recarregar a página em instantes.",
     "serverDown": "Servidor fora do ar no momento. Já deve voltar, tente recarregar a página em instantes.",
     "skipToContent": "Ir para o conteúdo",
@@ -81,7 +81,7 @@
     "fighters": "Lutadores",
     "modelAccuracy": "Acerto do modelo",
     "backend": "Servidor",
-    "onAir": "Ao vivo",
+    "onAir": "Online",
     "active": "ativo",
     "redCorner": "Canto vermelho",
     "blueCorner": "Canto azul",
@@ -199,7 +199,7 @@
     "whoText3": "Todas as marcas registradas, fotos e nomes de atletas pertencem aos seus respectivos proprietários, sendo aqui utilizados exclusivamente para fins informativos, analíticos e de estudo esportivo.",
     "name": "Por que Vektor?",
     "nameText1": "O nome vem de vetor, o termo da matemática e da ciência de dados para uma lista de números. É assim que o modelo enxerga cada luta: dois lutadores viram duas listas de números (idade, envergadura, cartel, precisão de golpes), e o que pesa na previsão são as diferenças entre elas.",
-    "nameText2": "A seta no logo, dentro do octógono, também é um vetor. “Vektor” é a grafia com K de “vetor”.",
+    "nameText2": "O V do logo junta as duas cores de uma luta: vermelho para um canto, azul para o outro. “Vektor” é a grafia com K de “vetor”.",
     "dataAndSystem": "Dados & metodologia",
     "disclaimer": "Aviso legal importante",
     "disclaimerText1": "As previsões aqui geradas são estimativas estatísticas probabilísticas produzidas como projeto de estudo e entretenimento. Não representam garantia de resultado nem recomendação de apostas financeiras.",
@@ -220,7 +220,7 @@
   },
   "model": {
     "title": "Como o modelo funciona",
-    "description": "A arquitetura do algoritmo, calibração estatística, comparação com métodos simplificados e o peso de cada variável na decisão.",
+    "description": "Como o modelo funciona, quanto ele acerta, como se compara com regras simples e o que mais pesa em cada previsão.",
     "modelCard": "Ficha técnica do modelo",
     "rocAuc": "ROC AUC (discriminação)",
     "baselines": "Comparação com métodos tradicionais",

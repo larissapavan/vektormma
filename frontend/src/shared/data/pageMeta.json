@@ -58,7 +58,7 @@
       },
       "/results": {
         "title": "Resultados recentes",
-        "description": "Os eventos mais recentes de todas as organizações, com o palpite que o modelo deu antes de cada luta."
+        "description": "Os eventos mais recentes do UFC, com o palpite que o modelo deu antes de cada luta."
       },
       "/rankings": {
         "title": "Rankings",
@@ -332,7 +332,7 @@
       },
       "/results": {
         "title": "Recent results",
-        "description": "The latest events from every organization, with the pick the model made before each fight."
+        "description": "The latest UFC events, with the pick the model made before each fight."
       },
       "/rankings": {
         "title": "Rankings",
@@ -606,7 +606,7 @@
       },
       "/results": {
         "title": "Résultats récents",
-        "description": "Les derniers événements de toutes les organisations, avec le pronostic du modèle avant chaque combat."
+        "description": "Les derniers événements de l’UFC, avec le pronostic fait par le modèle avant chaque combat."
       },
       "/rankings": {
         "title": "Classements",
@@ -880,7 +880,7 @@
       },
       "/results": {
         "title": "Resultados recientes",
-        "description": "Los eventos más recientes de todas las organizaciones, con el pronóstico del modelo antes de cada pelea."
+        "description": "Los eventos más recientes de la UFC, con el pronóstico que dio el modelo antes de cada pelea."
       },
       "/rankings": {
         "title": "Ranking",

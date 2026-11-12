@@ -678,10 +678,10 @@ const GUIDE: ByLang<InfoPage> = {
   pt: {
     eyebrow: 'Guia',
     title: 'Como ler as previsões',
-    intro: 'Cada confronto do simulador vem com uma probabilidade de vitória e uma lista de fatores. Este guia explica o que esses números significam e o que não significam.',
+    intro: 'Cada luta da Simulação traz a chance de vitória estimada pelo modelo e os fatores que mais pesaram nela. Este guia explica o que esses números significam e o que não significam.',
     sections: [
       {
-        heading: 'O que uma probabilidade quer dizer',
+        heading: 'O que essa chance quer dizer',
         paragraphs: [
           'Se o modelo dá 65% de chance a um lutador, isso não é uma promessa de que ele vai vencer. Significa que, em 100 lutas parecidas, o favorito venceu cerca de 65. Em outras palavras, o azarão ainda ganha em mais de uma a cada três vezes. Probabilidades perto de 50% indicam um confronto equilibrado.',
         ],
@@ -720,10 +720,10 @@ const GUIDE: ByLang<InfoPage> = {
       {
         heading: 'Como usar',
         paragraphs: [
-          'Trate a previsão como ponto de partida para pensar o confronto, não como palpite pronto. Compare com o histórico direto, a análise de confronto e os rankings. O projeto é feito para estudo e entretenimento; não é conselho de apostas.',
+          'Trate a previsão como ponto de partida para pensar o confronto, não como palpite pronto. Compare com o histórico entre os dois, as lutas recentes de cada um e os rankings. O projeto é feito para estudo e entretenimento; não é conselho de apostas.',
         ],
         links: [
-          { label: 'Abrir o simulador', href: '/predictor' },
+          { label: 'Abrir a simulação', href: '/predictor' },
           { label: 'Ver o confronto direto', href: '/head-to-head' },
         ],
       },
@@ -732,10 +732,10 @@ const GUIDE: ByLang<InfoPage> = {
   en: {
     eyebrow: 'Guide',
     title: 'How to read the predictions',
-    intro: 'Every matchup in the predictor comes with a win probability and a list of factors. This guide explains what those numbers mean and what they do not.',
+    intro: 'Every fight in Predict comes with the model’s estimated win chance and the factors that weighed most on it. This guide explains what those numbers mean and what they do not.',
     sections: [
       {
-        heading: 'What a probability means',
+        heading: 'What that chance means',
         paragraphs: [
           'If the model gives a fighter a 65% chance, that is not a promise that he or she will win. It means that out of 100 similar fights, the favorite won about 65. Put differently, the underdog still wins more than one time in three. Probabilities near 50% point to an evenly matched fight.',
         ],
@@ -774,7 +774,7 @@ const GUIDE: ByLang<InfoPage> = {
       {
         heading: 'How to use it',
         paragraphs: [
-          'Treat the prediction as a starting point for thinking about the matchup, not a ready-made pick. Compare it with the head-to-head history, the matchup analysis and the rankings. The project is made for learning and entertainment; it is not betting advice.',
+          'Treat the prediction as a starting point for thinking about the matchup, not a ready-made pick. Compare it with the history between the two, each one’s recent fights and the rankings. The project is made for learning and entertainment; it is not betting advice.',
         ],
         links: [
           { label: 'Open the predictor', href: '/predictor' },
@@ -786,10 +786,10 @@ const GUIDE: ByLang<InfoPage> = {
   fr: {
     eyebrow: 'Guide',
     title: 'Comment lire les prévisions',
-    intro: 'Chaque affrontement du simulateur s’accompagne d’une probabilité de victoire et d’une liste de facteurs. Ce guide explique ce que ces chiffres signifient et ce qu’ils ne signifient pas.',
+    intro: 'Chaque combat des Pronostics s’accompagne de la chance de victoire estimée par le modèle et des facteurs qui ont le plus pesé. Ce guide explique ce que ces chiffres signifient et ce qu’ils ne signifient pas.',
     sections: [
       {
-        heading: 'Ce que signifie une probabilité',
+        heading: 'Ce que signifie cette chance',
         paragraphs: [
           'Si le modèle donne 65 % de chances à un combattant, ce n’est pas la promesse qu’il va gagner. Cela veut dire que, sur 100 combats semblables, le favori en a gagné environ 65. Autrement dit, l’outsider l’emporte encore plus d’une fois sur trois. Une probabilité proche de 50 % annonce un combat équilibré.',
         ],
@@ -828,10 +828,10 @@ const GUIDE: ByLang<InfoPage> = {
       {
         heading: 'Comment l’utiliser',
         paragraphs: [
-          'Considérez la prévision comme un point de départ pour réfléchir à l’affrontement, pas comme un pronostic tout fait. Comparez-la à l’historique direct, à l’analyse de l’affrontement et aux classements. Le projet est fait pour apprendre et se divertir ; ce n’est pas un conseil de pari.',
+          'Considérez la prévision comme un point de départ pour réfléchir à l’affrontement, pas comme un pronostic tout fait. Comparez-la à l’historique entre les deux, aux combats récents de chacun et aux classements. Le projet est fait pour apprendre et se divertir ; ce n’est pas un conseil de pari.',
         ],
         links: [
-          { label: 'Ouvrir le simulateur', href: '/predictor' },
+          { label: 'Ouvrir les pronostics', href: '/predictor' },
           { label: 'Voir le face-à-face', href: '/head-to-head' },
         ],
       },
@@ -840,7 +840,7 @@ const GUIDE: ByLang<InfoPage> = {
   es: {
     eyebrow: 'Guía',
     title: 'Cómo leer los pronósticos',
-    intro: 'Cada enfrentamiento del simulador viene con una probabilidad de victoria y una lista de factores. Esta guía explica qué significan esos números y qué no significan.',
+    intro: 'Cada pelea del Pronóstico trae la probabilidad de victoria estimada por el modelo y los factores que más pesaron en ella. Esta guía explica qué significan esos números y qué no significan.',
     sections: [
       {
         heading: 'Qué quiere decir una probabilidad',
@@ -882,10 +882,10 @@ const GUIDE: ByLang<InfoPage> = {
       {
         heading: 'Cómo usarlo',
         paragraphs: [
-          'Toma el pronóstico como punto de partida para pensar el enfrentamiento, no como un pronóstico ya hecho. Compáralo con el historial directo, el análisis del enfrentamiento y el ranking. El proyecto está hecho para aprender y entretener; no es consejo de apuestas.',
+          'Toma el pronóstico como punto de partida para pensar el enfrentamiento, no como un pronóstico ya hecho. Compáralo con el historial entre los dos, las peleas recientes de cada uno y el ranking. El proyecto está hecho para aprender y entretener; no es consejo de apuestas.',
         ],
         links: [
-          { label: 'Abrir el simulador', href: '/predictor' },
+          { label: 'Abrir el pronóstico', href: '/predictor' },
           { label: 'Ver el cara a cara', href: '/head-to-head' },
         ],
       },
