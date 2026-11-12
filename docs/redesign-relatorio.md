@@ -61,7 +61,7 @@ Contraste (WCAG AA, 4,5:1) e estouro horizontal medidos nos dois temas, em 390 p
 
 ## Mantido de propósito
 
-- **Metadescrições e rotas**: as descrições de cada página em `pageMeta.json` e as páginas estáticas em `src/seo/` não mudaram. Os títulos das abas e as imagens de compartilhamento mudaram depois, a seu pedido (veja "Depois da publicação").
+- **Rotas e páginas estáticas**: as rotas e as páginas estáticas em `src/seo/` não mudaram. Os títulos, as descrições para busca e as imagens de compartilhamento mudaram depois, a seu pedido (veja "Depois da publicação").
 - **Narração do jogo Carreira** com exclamações ("Nocaute no round 2!"): é a voz do jogo, não a da interface.
 - **Texto de compartilhamento do simulador de card**, com emoji (vai para WhatsApp/X, fora do site).
 - **Dourado** para cinturão e lutas de título (texto `--gold` com 4,9:1 de contraste, fundo `--gold-fill` com texto escuro).
@@ -117,4 +117,4 @@ Tudo isto está na `main` e no ar, com os testes passando (516/516 no site, 487/
 6. **Títulos das abas:** só a primeira letra maiúscula, sem "IA", e com o mesmo nome do menu ou do cabeçalho da página. Por exemplo, "Sistema e IA" virou "Como o modelo funciona", "Confronto Direto" virou "Confronto direto" e "Sobre o Modelo de IA" virou "Sobre o modelo". A troca vale nos 4 idiomas onde era preciso.
 7. **Imagem de compartilhamento:** o endereço passou de `og-image.jpg?v=5` para `?v=6`, para que WhatsApp, X e outros busquem a imagem nova em vez da guardada.
 
-**Ainda em aberto:** as metadescrições de algumas páginas (`pageMeta.json`) ainda falam em "previsões da IA" e "probabilidade de vitória". Elas aparecem nos resultados de busca, não na tela.
+8. **Descrições para busca:** as descrições de página (`pageMeta.json` e a descrição padrão em `index.html`) seguem as mesmas regras de texto: "chance de vitória estimada pelo modelo" no lugar de "probabilidade de vitória", "o modelo" no lugar de "IA", sem "aprendizado de máquina". Foram 10 descrições, nos 4 idiomas onde era preciso.
