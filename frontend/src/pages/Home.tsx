@@ -77,7 +77,7 @@ export function Home() {
   const metrics = shownMetrics(modelInfo, i18n.language)
 
   return (
-    <div className="space-y-8 sm:space-y-10">
+    <div className="space-y-6 sm:space-y-8">
       {systemError ? (
         <p className="flex items-center gap-2 rounded-sm border border-[var(--rule)] bg-[var(--panel)] px-3 py-2 text-sm text-[var(--text-primary)]">
           <ShieldAlert className="h-4 w-4 shrink-0 text-[var(--text-red)]" />

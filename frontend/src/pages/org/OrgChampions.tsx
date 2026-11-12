@@ -137,13 +137,8 @@ export function OrgChampions() {
   const isLoading = rankingsLoading || past.loading
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-5 sm:space-y-6">
       <PageHeader
-              eyebrow={
-                isArchived
-                  ? L(i18n.language, `${org.shortName} • Galeria de cinturões (2009–2023)`, `${org.shortName} • Title gallery (2009–2023)`, `${org.shortName} • Galerie des titres (2009–2023)`, `${org.shortName} • Galería de cinturones (2009–2023)`)
-                  : L(i18n.language, `${org.shortName} • Galeria de cinturões`, `${org.shortName} • Champions & lineage`, `${org.shortName} • Champions et lignée`, `${org.shortName} • Campeones y linaje`)
-              }
               title={
                 L(i18n.language, `Campeões ${orgPt(org, 'de')}`, `${org.shortName} champions`, `Champions ${orgFr(org, 'de')}`, `Campeones de ${orgEs(org)}`)
               }

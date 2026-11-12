@@ -86,7 +86,6 @@ export function AboutModel() {
       <section>
         <SectionHeading
           level={1}
-          eyebrow={L(i18n.language, 'Sobre o projeto', 'About', 'À propos', 'Acerca del proyecto')}
           title={L(i18n.language, 'Ciência de dados aplicada ao MMA', 'A UFC analytics project built to learn', 'Un projet d’analyse UFC conçu pour apprendre', 'Ciencia de datos aplicada al MMA')}
           description={L(
             i18n.language,

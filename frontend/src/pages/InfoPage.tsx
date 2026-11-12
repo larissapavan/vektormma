@@ -39,7 +39,7 @@ export function InfoPage({ id }: { id: InfoPageId }) {
   const page = infoPage(id, lang, EMAIL)
 
   return (
-    <div className="max-w-[70ch] space-y-10">
+    <div className="max-w-[70ch] space-y-8">
       <header aria-labelledby={`${id}-title`}>
         <p className="text-[15px] font-bold text-[var(--muted)]">{page.eyebrow}</p>
         <h1 id={`${id}-title`} className="mt-1 text-[40px] leading-none sm:text-[52px]">

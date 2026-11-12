@@ -47,9 +47,8 @@ export function Gyms() {
   const reset = () => setShown(PAGE_SIZE)
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <PageHeader
-        eyebrow={t('gyms.eyebrow')}
         title={uiLang(i18n.language) === 'es' ? `${t('gyms.title')} de ${orgEs(org)}` : `${org.shortName} ${t('gyms.title')}`}
         description={t('gyms.description')}
         stats={[

@@ -59,7 +59,7 @@ export function TrackRecord() {
 
   return (
     <div className="space-y-12">
-      <PageHeader eyebrow={t('trackRecord.eyebrow')} title={t('trackRecord.title')} description={t('trackRecord.description')}>
+      <PageHeader title={t('trackRecord.title')} description={t('trackRecord.description')}>
         <button type="button" onClick={handleSync} disabled={syncing} className="ghost-action inline-flex cursor-pointer items-center gap-2 px-5 disabled:cursor-wait disabled:opacity-60">
           <RefreshCw className={`h-4 w-4 ${syncing ? 'animate-spin' : ''}`} aria-hidden="true" />
           {syncing ? t('trackRecord.syncing') : t('trackRecord.syncButton')}

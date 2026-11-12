@@ -103,9 +103,8 @@ export function OrgPredictor() {
   const lang = i18n.language
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-5 sm:space-y-6">
       <PageHeader
-        eyebrow={L(lang, `Simulador ${orgPt(org, 'de')}`, `${org.shortName} fight predictor`, `Simulateur ${org.shortName}`, `Simulador de ${orgEs(org)}`)}
         title={L(lang, 'Quem vence?', 'Who takes it?', 'Qui gagne ?', '¿Quién gana?')}
         description={L(
           lang,

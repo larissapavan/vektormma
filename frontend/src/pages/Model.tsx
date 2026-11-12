@@ -34,7 +34,6 @@ export function Model() {
       <section>
         <SectionHeading
           level={1}
-          eyebrow={t('model.eyebrow')}
           title={t('model.title')}
           description={t('model.description')}
         />

@@ -95,9 +95,8 @@ export function Predictor() {
   const problem = error ?? predictionError ?? fightersError
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-5 sm:space-y-6">
       <PageHeader
-        eyebrow={t('predictor.question', "Tonight's question")}
         title={t('predictor.whoTakesIt', 'Who takes it?')}
         description={t('predictor.heroSubtitle', 'Pick any two fighters. The model gives you the odds and shows which numbers moved them.')}
       />

@@ -38,7 +38,6 @@ export function CancelledFights() {
       <header>
         <SectionHeading
           level={1}
-          eyebrow={L(lang, 'Palpites', 'Predictions', 'Pronostics', 'Pronósticos')}
           title={L(lang, 'As lutas que nunca aconteceram', 'The fights that never happened', 'Les combats qui n’ont jamais eu lieu', 'Las peleas que nunca ocurrieron')}
           description={L(
             lang,

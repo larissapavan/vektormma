@@ -221,9 +221,8 @@ export function Fighters() {
   const featuredFighters = groupedFighters.get(featuredGroup.key) ?? []
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-5 sm:space-y-6">
       <PageHeader
-        eyebrow={t('fighters.title')}
         title={t('fighters.division')}
         description={t('fighters.subtitle')}
         stats={[

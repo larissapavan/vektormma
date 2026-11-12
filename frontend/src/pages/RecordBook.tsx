@@ -194,7 +194,6 @@ export function RecordBook() {
       <section>
         <SectionHeading
           level={1}
-          eyebrow={t('recordBook.eyebrow')}
           title={t('recordBook.title')}
           description={t('recordBook.description')}
         />

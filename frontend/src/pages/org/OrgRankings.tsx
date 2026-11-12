@@ -8,7 +8,6 @@ import { LoadingSkeleton } from '../../shared/components/LoadingSkeleton'
 import { OrgFighterModal } from '../../shared/components/OrgFighterModal'
 import { PageHeader } from '../../shared/components/ui/PageHeader'
 import { L } from '../../i18n/lang'
-import { orgEs, orgPt } from '../../shared/data/orgs'
 import { getDivisionName, poundForPoundLabel } from '../../shared/data/divisions'
 import { formatDate } from '../../shared/data/orgFormat'
 import { useOrg } from '../../shared/hooks/useOrg'
@@ -33,9 +32,8 @@ export function OrgRankings() {
   const active = tab === 'division' ? activeDivision : activeP4p
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-5 sm:space-y-6">
       <PageHeader
-          eyebrow={L(i18n.language, `Rankings oficiais ${orgPt(org, 'de')}`, `Official ${org.shortName} rankings`, `Classements officiels ${org.shortName}`, `Ranking oficial de ${orgEs(org)}`)}
           title={L(i18n.language, 'Rankings por categoria e peso por peso', 'Divisional & pound-for-pound rankings', 'Classements par catégorie et livre pour livre', 'Ranking por división y libra por libra')}
           description={L(
             i18n.language,

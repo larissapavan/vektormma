@@ -126,9 +126,8 @@ export function OrgFighters() {
   const reset = () => setShown(PAGE_SIZE)
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-5 sm:space-y-6">
       <PageHeader
-            eyebrow={L(i18n.language, `Atletas ${orgPt(org, 'de')}`, `${org.shortName} roster`, `Combattants ${org.shortName}`, `Peleadores de ${orgEs(org)}`)}
             title={L(i18n.language, `Lutadores ${orgPt(org, 'de')}`, `${org.shortName} fighters`, `Combattants ${org.shortName}`, `Peleadores de ${orgEs(org)}`)}
             description={
               isArchived

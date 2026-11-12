@@ -33,8 +33,8 @@ export function Rankings() {
   const activeP4p = p4pCategories.find((category) => category.category === selectedP4p) ?? p4pCategories[0] ?? null
 
   return (
-    <div className="space-y-6 sm:space-y-8">
-      <PageHeader eyebrow={t('rankings.eyebrow')} title={t('rankings.title')} description={t('rankings.description')}>
+    <div className="space-y-5 sm:space-y-6">
+      <PageHeader title={t('rankings.title')} description={t('rankings.description')}>
         <div className="chip-scroll inline-flex max-w-full overflow-x-auto rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-0.5">
           <TabButton active={tab === 'division'} onClick={() => setTab('division')}>
             {t('rankings.categoryRanking')}

@@ -93,7 +93,6 @@ export function DataIntelligence() {
       <section>
         <SectionHeading
           level={1}
-          eyebrow={t('dataIntelligence.eyebrow')}
           title={t('dataIntelligence.title')}
           description={t('dataIntelligence.description')}
         />

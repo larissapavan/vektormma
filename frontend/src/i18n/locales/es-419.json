@@ -77,7 +77,6 @@
     "finishRate": "tasa de finalización"
   },
   "predictor": {
-    "question": "Pelea destacada",
     "whoTakesIt": "¿Quién gana?",
     "heroSubtitle": "Elige a dos peleadores. El modelo estima la probabilidad de victoria de cada uno y muestra los números que más pesan.",
     "fightsOnFile": "Peleas registradas",
@@ -105,7 +104,6 @@
     "division": "Divisiones de peso"
   },
   "events": {
-    "eyebrow": "Archivo de eventos",
     "title": "Carteleras de la UFC",
     "description": "Busca en el historial completo de eventos y abre una cartelera para ver cada pelea, el ganador, el método y el asalto.",
     "eventsCount": "Eventos",
@@ -121,7 +119,6 @@
     "fights": "peleas"
   },
   "rankings": {
-    "eyebrow": "Ranking oficial de la UFC",
     "title": "Ranking por división y libra por libra",
     "description": "Ranking oficial de la UFC con porcentajes de victoria y récord reciente.",
     "categoryRanking": "Divisiones",
@@ -131,7 +128,6 @@
     "rankingsUnavailable": "El ranking no está disponible por ahora."
   },
   "champions": {
-    "eyebrow": "Historial de peleas por el título",
     "title": "Campeones y récords",
     "description": "Todos los reinados, defensas y récords de título, recopilados del historial oficial.",
     "current": "Campeones actuales",
@@ -144,7 +140,6 @@
     "defenses": "defensas"
   },
   "recordBook": {
-    "eyebrow": "Líderes de carrera",
     "title": "Libro de récords",
     "description": "Líderes históricos de carrera en 32 estadísticas oficiales.",
     "blurbs": {
@@ -155,7 +150,6 @@
     }
   },
   "gyms": {
-    "eyebrow": "Campamentos de entrenamiento",
     "title": "Gimnasios y equipos",
     "description": "Abre un gimnasio para ver a sus compañeros de entrenamiento, campeones y presencia en el plantel.",
     "totalGyms": "Gimnasios",
@@ -170,7 +164,6 @@
     "noGymsFound": "No se encontraron gimnasios con esos filtros."
   },
   "trackRecord": {
-    "eyebrow": "Boletín del modelo",
     "title": "Historial de aciertos",
     "description": "Cada pronóstico se guarda antes de la pelea y se verifica con los resultados oficiales. Sin correcciones retroactivas.",
     "picksLogged": "Pronósticos registrados",
@@ -219,7 +212,6 @@
     "sources": "Fuentes y créditos"
   },
   "dataIntelligence": {
-    "eyebrow": "Datos",
     "title": "De dónde vienen los datos",
     "description": "Cómo los números de la UFC, la PFL, ONE Championship y los archivos históricos llegan al sitio, se revisan y se convierten en los datos que usa el modelo.",
     "lastUpdate": "Última actualización",
@@ -230,7 +222,6 @@
     "pipelineDesc": "Cada pronóstico parte de las estadísticas de cada pelea, unificadas entre organizaciones y resumidas en los números que el modelo compara."
   },
   "model": {
-    "eyebrow": "El modelo",
     "title": "Cómo funciona el modelo",
     "description": "El modelo, cómo se compara con otros más simples y qué entra en cada pronóstico.",
     "modelCard": "Modelo",
@@ -239,7 +230,6 @@
     "featureImportance": "Importancia de las variables"
   },
   "matchup": {
-    "eyebrow": "Enfrentamiento",
     "title": "Por qué este enfrentamiento es interesante",
     "description": "Números de golpeo, lucha en el suelo y físicos de ambos peleadores, más los factores decisivos del modelo.",
     "analyze": "Analizar la pelea",

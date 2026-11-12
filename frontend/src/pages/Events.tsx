@@ -122,7 +122,7 @@ export function Events() {
           ))}
         </section>
       ) : visibleEvents.length ? (
-        <div className="space-y-8">
+        <div className="space-y-6">
           {isSearching && numberedEvents.length === 0 ? null : (
             <EventGroup
               groupKey="numbered"
@@ -166,9 +166,8 @@ export function Events() {
 
   return (
     <OpenProfileContext.Provider value={setProfileName}>
-      <div className="space-y-8 sm:space-y-10">
+      <div className="space-y-6 sm:space-y-8">
         <PageHeader
-          eyebrow={t('events.eyebrow')}
           title={t('events.title')}
           description={t('events.description')}
           stats={[
@@ -216,7 +215,7 @@ export function Events() {
           </div>
         </PageHeader>
 
-        {isSearching ? <div className="space-y-8">{results}</div> : null}
+        {isSearching ? <div className="space-y-6">{results}</div> : null}
 
         <UpcomingEventsSection
           events={visibleUpcoming}

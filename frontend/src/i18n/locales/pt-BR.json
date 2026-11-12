@@ -77,7 +77,6 @@
     "finishRate": "taxa de nocaute/finalização"
   },
   "predictor": {
-    "question": "Combate em destaque",
     "whoTakesIt": "Quem vence?",
     "heroSubtitle": "Escolha dois lutadores. O modelo estima a chance de vitória de cada um e mostra os números que mais pesam.",
     "fightsOnFile": "Lutas registradas",
@@ -105,7 +104,6 @@
     "division": "Divisões"
   },
   "events": {
-    "eyebrow": "Arquivo de eventos",
     "title": "Cards de luta do UFC",
     "description": "Histórico completo de eventos. Abra o card para ver todos os confrontos, vencedores, método e round.",
     "eventsCount": "Eventos",
@@ -121,7 +119,6 @@
     "fights": "lutas"
   },
   "rankings": {
-    "eyebrow": "Rankings oficiais",
     "title": "Rankings por divisão & P4P",
     "description": "Rankings oficiais com taxas de vitória e histórico recente.",
     "categoryRanking": "Divisões",
@@ -131,7 +128,6 @@
     "rankingsUnavailable": "Rankings indisponíveis no momento."
   },
   "champions": {
-    "eyebrow": "Histórico de disputas de título",
     "title": "Campeões & recordes",
     "description": "Todos os reinados, defesas de cinturão e recordes da história oficial.",
     "current": "Campeões atuais",
@@ -144,7 +140,6 @@
     "defenses": "defesas"
   },
   "recordBook": {
-    "eyebrow": "Líderes históricos",
     "title": "Livro de recordes",
     "description": "Líderes históricos em 32 estatísticas oficiais de combate.",
     "blurbs": {
@@ -155,7 +150,6 @@
     }
   },
   "gyms": {
-    "eyebrow": "Centros de treinamento",
     "title": "Academias & equipes",
     "description": "Abra uma academia para ver parceiros de treino, campeões e atletas do plantel.",
     "totalGyms": "Academias",
@@ -170,7 +164,6 @@
     "noGymsFound": "Nenhuma academia encontrada."
   },
   "trackRecord": {
-    "eyebrow": "Desempenho do modelo",
     "title": "Acertos e histórico",
     "description": "Cada palpite é salvo antes da luta e auditado com resultados oficiais. Sem ajustes retroativos.",
     "picksLogged": "Palpites registrados",
@@ -219,7 +212,6 @@
     "sources": "Fontes e agradecimentos"
   },
   "dataIntelligence": {
-    "eyebrow": "Dados",
     "title": "De onde vêm os dados",
     "description": "Como os números do UFC, da PFL, do ONE Championship e dos arquivos históricos chegam ao site, são conferidos e viram os dados que o modelo usa.",
     "lastUpdate": "Última atualização",
@@ -230,7 +222,6 @@
     "pipelineDesc": "Cada previsão parte das estatísticas de cada luta, padronizadas entre as organizações e resumidas nos números que o modelo compara."
   },
   "model": {
-    "eyebrow": "Inteligência artificial",
     "title": "Como o modelo funciona",
     "description": "A arquitetura do algoritmo, calibração estatística, comparação com métodos simplificados e o peso de cada variável na decisão.",
     "modelCard": "Ficha técnica do modelo",
@@ -239,7 +230,6 @@
     "featureImportance": "Variáveis mais decisivas"
   },
   "matchup": {
-    "eyebrow": "Análise de combate",
     "title": "Análise de confronto",
     "description": "Trocação, luta no chão e biometria dos dois atletas, mais os fatores determinantes do modelo.",
     "analyze": "Analisar combate",

@@ -46,7 +46,6 @@ export function Results() {
   return (
     <div className="space-y-10">
       <PageHeader
-        eyebrow={L(lang, 'Resultados', 'Results', 'Résultats', 'Resultados')}
         title={L(lang, 'Resultados recentes', 'Recent results', 'Résultats récents', 'Resultados recientes')}
         description={L(
           lang,
@@ -104,7 +103,7 @@ export function Results() {
             </p>
           ) : (
             byDay(data.events).map((day) => (
-              <section key={day.date} className="space-y-8">
+              <section key={day.date} className="space-y-6">
                 <h2 className="section-title">{dayLabel(day.date, lang)}</h2>
                 {day.events.map((event) => (
                   <EventBlock key={`${event.org_id}-${event.name}-${event.date}`} event={event} />

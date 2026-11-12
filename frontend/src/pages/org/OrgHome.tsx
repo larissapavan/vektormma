@@ -106,7 +106,7 @@ export function OrgHome() {
   }, [reignsByDivision])
 
   return (
-    <div className="space-y-8 sm:space-y-10">
+    <div className="space-y-6 sm:space-y-8">
       {featured ? (
         <FeaturedHero org={org} loading={upcoming.loading} event={nextEvent} pickFor={pickFor} onOpenFighter={setProfileName} />
       ) : (
@@ -115,7 +115,6 @@ export function OrgHome() {
           <div>
             <SectionHeading
               level={1}
-              eyebrow={isArchived ? `${org.name} • Archive (2009–2023)` : org.name}
               title={L(i18n.language, `${org.shortName} • Vektor MMA`, `${org.shortName} Vektor MMA`, `${org.shortName} • Vektor MMA`, `${org.shortName} • Vektor MMA`)}
               description={t(`landing.taglines.${org.id}`, { defaultValue: org.tagline })}
             />

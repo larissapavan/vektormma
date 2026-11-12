@@ -77,7 +77,6 @@
     "finishRate": "finish rate"
   },
   "predictor": {
-    "question": "Featured bout",
     "whoTakesIt": "Who takes it?",
     "heroSubtitle": "Pick any two fighters. The model estimates each one’s win chance and shows the numbers that weigh most.",
     "fightsOnFile": "Fights on file",
@@ -105,7 +104,6 @@
     "division": "Weight classes"
   },
   "events": {
-    "eyebrow": "Events archive",
     "title": "UFC fight cards",
     "description": "Search the full event history and open a card to see every fight, the winner, method and round.",
     "eventsCount": "Events",
@@ -121,7 +119,6 @@
     "fights": "fights"
   },
   "rankings": {
-    "eyebrow": "Official UFC rankings",
     "title": "Divisional & pound-for-pound rankings",
     "description": "Official UFC rankings with win rates and recent records.",
     "categoryRanking": "Divisions",
@@ -131,7 +128,6 @@
     "rankingsUnavailable": "Rankings currently unavailable."
   },
   "champions": {
-    "eyebrow": "Title fight history",
     "title": "Champions & records",
     "description": "Every title reign, defense and title record compiled from official history.",
     "current": "Current champions",
@@ -144,7 +140,6 @@
     "defenses": "defenses"
   },
   "recordBook": {
-    "eyebrow": "Career leaders",
     "title": "Record book",
     "description": "All-time career leaders across 32 official statistics.",
     "blurbs": {
@@ -155,7 +150,6 @@
     }
   },
   "gyms": {
-    "eyebrow": "Training camps",
     "title": "gyms and teams",
     "description": "Open a gym to see training partners, champions and roster presence.",
     "totalGyms": "Gyms",
@@ -170,7 +164,6 @@
     "noGymsFound": "No gyms found matching your filters."
   },
   "trackRecord": {
-    "eyebrow": "Model report card",
     "title": "Track record",
     "description": "Every pick is logged before the fight and verified with official results. No back-fills.",
     "picksLogged": "Picks logged",
@@ -219,7 +212,6 @@
     "sources": "Sources and credits"
   },
   "dataIntelligence": {
-    "eyebrow": "Data",
     "title": "Where the data comes from",
     "description": "How the numbers from the UFC, the PFL, ONE Championship and the historical archives reach the site, get checked and become the data the model uses.",
     "lastUpdate": "Last update",
@@ -230,7 +222,6 @@
     "pipelineDesc": "Every prediction starts from fight-by-fight stats, made consistent across organizations and boiled down to the numbers the model compares."
   },
   "model": {
-    "eyebrow": "The model",
     "title": "How the model works",
     "description": "The model, how it compares with simpler ones, and what goes into each prediction.",
     "modelCard": "Model",
@@ -239,7 +230,6 @@
     "featureImportance": "Feature importance"
   },
   "matchup": {
-    "eyebrow": "Matchup",
     "title": "Why this matchup is interesting",
     "description": "Striking, grappling and physical numbers for both fighters, plus model deciding factors.",
     "analyze": "Analyze matchup",

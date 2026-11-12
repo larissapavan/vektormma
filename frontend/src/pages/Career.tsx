@@ -162,7 +162,6 @@ export function Career() {
       <header>
         <SectionHeading
           level={1}
-          eyebrow={L(lang, 'Jogo', 'Game', 'Jeu', 'Juego')}
           title={L(lang, 'Simule sua carreira no UFC', 'Simulate your UFC career', 'Simulez votre carrière à l’UFC', 'Simula tu carrera en la UFC')}
           description={L(
             lang,

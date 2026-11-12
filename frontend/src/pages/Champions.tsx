@@ -47,8 +47,8 @@ export function Champions() {
 
   return (
     <OpenProfileContext.Provider value={setProfileName}>
-      <div className="space-y-8">
-        <PageHeader eyebrow={t('champions.eyebrow')} title={t('champions.title')} description={t('champions.description')}>
+      <div className="space-y-6">
+        <PageHeader title={t('champions.title')} description={t('champions.description')}>
 
           <div
             role="tablist"
@@ -84,7 +84,7 @@ export function Champions() {
             ))}
           </section>
         ) : (
-          <div id="champions-panel" role="tabpanel" aria-labelledby={`champions-tab-${view}`} className="space-y-8">
+          <div id="champions-panel" role="tabpanel" aria-labelledby={`champions-tab-${view}`} className="space-y-6">
             {view === 'current' ? <CurrentChampionsSection reigns={data.current_champions} history={data.reigns ?? []} /> : null}
             {view === 'greatest' ? <GreatestChampionsSection champions={data.greatest_champions} /> : null}
             {view === 'records' ? (

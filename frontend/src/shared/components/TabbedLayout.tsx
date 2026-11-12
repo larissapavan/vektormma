@@ -29,7 +29,7 @@ export function TabbedLayout({ label, tabs }: { label: string; tabs: SectionTab[
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-4 sm:space-y-5">
       <nav aria-label={label} className="border-b border-[var(--rule)]">
         <ul className="no-scrollbar flex max-w-full gap-6 overflow-x-auto">
           {tabs.map((tab) => (

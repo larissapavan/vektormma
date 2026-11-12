@@ -89,9 +89,8 @@ export function OrgEvents() {
   const latestYear = byYear[0]?.[0]
 
   return (
-    <div className="space-y-8 sm:space-y-10">
+    <div className="space-y-6 sm:space-y-8">
       <PageHeader
-            eyebrow={L(i18n.language, 'Histórico de eventos', 'Event archive', 'Historique des événements', 'Archivo de eventos')}
             title={L(i18n.language, `Cards e lutas ${orgPt(org, 'de')}`, `${org.shortName} fight cards`, `Cartes et combats ${org.shortName}`, `Carteleras y peleas de ${orgEs(org)}`)}
             description={L(
               i18n.language,
@@ -167,7 +166,7 @@ export function OrgEvents() {
           ))}
         </section>
       ) : byYear.length ? (
-        <div className="space-y-8">
+        <div className="space-y-6">
           {byYear.map(([year, yearEvents]) => {
             const isOpen = openYears.has(year) !== (isSearching || year === latestYear)
             return (

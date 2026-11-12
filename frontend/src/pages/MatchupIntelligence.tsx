@@ -136,7 +136,7 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
   const showResults = Boolean(fighterA && fighterB && prediction && !analyzing)
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-5 sm:space-y-6">
       {eventName && fighterAName && fighterBName ? (
         <nav aria-label={L(i18n.language, 'Navegação estrutural', 'Breadcrumb', 'Fil d’Ariane', 'Ruta de navegación')}>
           <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold">
@@ -155,7 +155,6 @@ export function MatchupIntelligence({ preset }: { preset?: { a: string; b: strin
       <section>
         <SectionHeading
           level={1}
-          eyebrow={t('matchup.eyebrow')}
           title={t('matchup.title')}
           description={t('matchup.description')}
         />

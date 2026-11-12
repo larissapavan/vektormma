@@ -77,7 +77,6 @@
     "finishRate": "taux de victoires avant la limite"
   },
   "predictor": {
-    "question": "Combat vedette",
     "whoTakesIt": "Qui l’emporte ?",
     "heroSubtitle": "Choisissez deux combattants. Le modèle estime la chance de victoire de chacun et montre les chiffres qui pèsent le plus.",
     "fightsOnFile": "Combats enregistrés",
@@ -105,7 +104,6 @@
     "division": "Divisions"
   },
   "events": {
-    "eyebrow": "Archives des événements",
     "title": "Cartes des combats UFC",
     "description": "Historique complet des événements. Ouvrez une carte pour voir chaque combat, le vainqueur, la méthode et le round.",
     "eventsCount": "Événements",
@@ -121,7 +119,6 @@
     "fights": "combats"
   },
   "rankings": {
-    "eyebrow": "Classements officiels",
     "title": "Classements par division et livre pour livre",
     "description": "Classements officiels avec taux de victoire et historique récent.",
     "categoryRanking": "Divisions",
@@ -131,7 +128,6 @@
     "rankingsUnavailable": "Classements indisponibles actuellement."
   },
   "champions": {
-    "eyebrow": "Historique des combats de titre",
     "title": "Champions & records",
     "description": "Tous les règnes, défenses de titre et records de l’histoire officielle.",
     "current": "Champions actuels",
@@ -144,7 +140,6 @@
     "defenses": "défenses"
   },
   "recordBook": {
-    "eyebrow": "Leaders historiques",
     "title": "Livre des records",
     "description": "Leaders historiques dans 32 statistiques officielles de combat.",
     "blurbs": {
@@ -155,7 +150,6 @@
     }
   },
   "gyms": {
-    "eyebrow": "Centres d’Entraînement",
     "title": "Salles & équipes",
     "description": "Consultez une salle pour voir les partenaires d’entraînement, champions et combattants affiliés.",
     "totalGyms": "Salles",
@@ -170,7 +164,6 @@
     "noGymsFound": "Aucune salle trouvée."
   },
   "trackRecord": {
-    "eyebrow": "Bilan du modèle",
     "title": "Précision & historique",
     "description": "Chaque pronostic est enregistré avant le combat et vérifié avec les résultats officiels. Aucun réajustement.",
     "picksLogged": "Pronostics enregistrés",
@@ -219,7 +212,6 @@
     "sources": "Sources et crédits"
   },
   "dataIntelligence": {
-    "eyebrow": "Données",
     "title": "D’où viennent les données",
     "description": "Comment les chiffres de l’UFC, de la PFL, de ONE Championship et des archives arrivent sur le site, sont vérifiés et deviennent les données du modèle.",
     "lastUpdate": "Dernière mise à jour",
@@ -230,7 +222,6 @@
     "pipelineDesc": "Chaque pronostic part des statistiques de chaque combat, harmonisées entre les organisations et résumées en chiffres que le modèle compare."
   },
   "model": {
-    "eyebrow": "Le modèle",
     "title": "Comment le modèle fonctionne",
     "description": "Le modèle, sa comparaison avec des approches plus simples, et ce qui entre dans chaque pronostic.",
     "modelCard": "Modèle",
@@ -239,7 +230,6 @@
     "featureImportance": "Importance des variables"
   },
   "matchup": {
-    "eyebrow": "Analyse de combat",
     "title": "Analyse du combat",
     "description": "Frappe, lutte au sol et biométrie des deux combattants, plus les facteurs décisifs du modèle.",
     "analyze": "Analyser le combat",

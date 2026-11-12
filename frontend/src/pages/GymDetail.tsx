@@ -79,7 +79,6 @@ export function GymDetail() {
         <div className="grid gap-3 xl:grid-cols-[1fr_0.8fr] xl:items-end">
           <SectionHeading
             level={1}
-            eyebrow={L(i18n.language, 'Academia', 'Gym', 'Salle', 'Gimnasio')}
             title={gym.name}
             description={L(i18n.language, 'Lutadores cuja última luta teve origem nesta academia, segundo o FightHub.', 'Fighters whose last fight came out of this gym, as listed by FightHub.', 'Combattants dont le dernier combat est sorti de cette salle, selon FightHub.', 'Peleadores cuya última pelea salió de este gimnasio, según FightHub.')}
           />
