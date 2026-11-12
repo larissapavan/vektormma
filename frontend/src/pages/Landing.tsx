@@ -8,7 +8,6 @@ import { shownMetrics } from '../shared/data/modelAccuracy'
 import { SocialLinks } from '../shared/components/SocialLinks'
 import { SiteLinks } from '../shared/components/SiteLinks'
 import { FeaturedMatchup } from '../shared/components/FeaturedMatchup'
-import { FightLoop } from '../shared/components/fightScene/FightLoop'
 import { sectionActionClass } from '../shared/components/ui/Section'
 import { useDataInfo } from '../shared/hooks/useDataInfo'
 import { useModelInfo } from '../shared/hooks/useModelInfo'
@@ -72,9 +71,6 @@ export function Landing() {
               </div>
             ))}
           </dl>
-          <div className="mt-8 max-w-[440px]">
-            <FightLoop className="aspect-square w-full" />
-          </div>
         </div>
 
         <div className="self-start bg-[var(--panel)] p-6 sm:p-8">
