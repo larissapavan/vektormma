@@ -37,7 +37,7 @@ function CornerBlock({ corner, side, headingLevel }: { corner: Corner; side: 're
   const fit = `${(100 / (Math.max(surname.length, 3) * 0.54)).toFixed(1)}cqw`
 
   return (
-    <div className={`flex min-w-0 flex-1 basis-0 flex-col justify-between gap-3 p-4 text-white sm:basis-[420px] sm:gap-4 sm:p-6 lg:px-7 ${red ? 'bg-[var(--red)]' : 'bg-[var(--blue)] text-right'}`}>
+    <div className={`flex min-w-0 flex-1 basis-0 flex-col justify-between gap-3 p-4 text-white sm:basis-[420px] sm:gap-3 sm:p-5 lg:px-6 ${red ? 'bg-[var(--red)]' : 'bg-[var(--blue)] text-right'}`}>
       <div className={`flex flex-wrap items-center justify-between gap-3 ${red ? '' : 'flex-row-reverse'}`}>
         <p className="text-sm font-bold sm:text-base">{corner.label}</p>
         {corner.action ? <div className="max-sm:hidden">{corner.action}</div> : null}
@@ -48,12 +48,12 @@ function CornerBlock({ corner, side, headingLevel }: { corner: Corner; side: 're
           <Name className="!leading-none">
             {given ? (
               <>
-                <span className="block !font-sans text-[17px] font-bold leading-tight sm:text-[22px]">{given}</span>{' '}
+                <span className="block !font-sans text-[16px] font-bold leading-tight sm:text-[19px]">{given}</span>{' '}
               </>
             ) : null}
             <span
               className="caps mt-1.5 block whitespace-nowrap font-display font-black leading-[0.8]"
-              style={{ fontSize: `min(clamp(56px, 8.5vw, 112px), ${fit})` }}
+              style={{ fontSize: `min(clamp(44px, 6.5vw, 84px), ${fit})` }}
             >
               {surname}
             </span>
@@ -92,4 +92,4 @@ export function CornerSplit({
 
 /** A corner photo: straight edges, a thin light rule, sized for the block. */
 export const cornerPhotoClass =
-  'h-[120px] w-full sm:h-[170px] sm:w-[124px] lg:h-[190px] lg:w-[138px] !rounded-none !border !border-white/55 !bg-black/20'
+  'h-[110px] w-full sm:h-[130px] sm:w-[96px] lg:h-[150px] lg:w-[110px] !rounded-none !border !border-white/55 !bg-black/20'

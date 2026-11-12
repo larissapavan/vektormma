@@ -110,20 +110,14 @@ export function HeadToHead() {
     }
   }
 
-  // The fights already on a card: the first one opens the page when no fighters are in the address, and the list is
-  // offered as a shortcut while a corner is empty.
+  // The fights already on a card, offered as a shortcut while a corner is empty. The page itself opens empty unless the
+  // address names the fighters.
   const [scheduled, setScheduled] = useState<UpcomingPick[]>([])
   useEffect(() => {
     let cancelled = false
     getUpcomingPicks()
       .then((picks) => {
-        if (cancelled) return
-        setScheduled(picks)
-        const first = picks[0]
-        if (first && !presetA && !presetB) {
-          setFighterAName(first.fighter_1)
-          setFighterBName(first.fighter_2)
-        }
+        if (!cancelled) setScheduled(picks)
       })
       .catch(() => {
         // Without the list the page simply starts empty.
@@ -131,7 +125,6 @@ export function HeadToHead() {
     return () => {
       cancelled = true
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // The pair's shared history follows the two corners.

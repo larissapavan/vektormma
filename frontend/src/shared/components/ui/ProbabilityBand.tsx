@@ -41,22 +41,22 @@ export function ProbabilityBand({
     >
       {/* Phone: numbers above, band below. */}
       <div className="sm:hidden" aria-hidden="true">
-        <div className="mt-5 flex items-end justify-between font-display text-[64px] font-black leading-[0.9] tabular-nums">
+        <div className="mt-4 flex items-end justify-between font-display text-[48px] font-black leading-[0.9] tabular-nums">
           <span className="text-[var(--red-text)]">{labelA}</span>
           <span className="text-[var(--blue-text)]">{labelB}</span>
         </div>
-        <div className="mt-2 flex h-5">
+        <div className="mt-2 flex h-4">
           <div className="bg-[var(--red-deep)]" style={{ flex: `0 0 ${split}` }} />
           <div className="flex-1 bg-[var(--blue-deep)]" />
         </div>
       </div>
 
       {/* Wider screens: the numbers sit inside the band. */}
-      <div className="hidden h-[84px] font-display text-[62px] font-black leading-none tabular-nums text-white sm:flex lg:h-[92px] lg:text-[68px]" aria-hidden="true">
-        <div className="flex items-center whitespace-nowrap bg-[var(--red-deep)] pl-7" style={{ flex: `0 0 ${split}` }}>
+      <div className="hidden h-[60px] font-display text-[44px] font-black leading-none tabular-nums text-white sm:flex lg:h-[68px] lg:text-[52px]" aria-hidden="true">
+        <div className="flex items-center whitespace-nowrap bg-[var(--red-deep)] pl-5 lg:pl-6" style={{ flex: `0 0 ${split}` }}>
           {labelA}
         </div>
-        <div className="flex min-w-0 flex-1 items-center justify-end whitespace-nowrap bg-[var(--blue-deep)] pr-7">{labelB}</div>
+        <div className="flex min-w-0 flex-1 items-center justify-end whitespace-nowrap bg-[var(--blue-deep)] pr-5 lg:pr-6">{labelB}</div>
       </div>
     </div>
   )
