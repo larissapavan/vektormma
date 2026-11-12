@@ -11,10 +11,10 @@
     "es": "Vektor MMA — Estadísticas y pronósticos de MMA"
   },
   "defaultDescription": {
-    "pt": "Compare lutadores e veja a probabilidade de vitória nas lutas de MMA, com os fatores que mais pesam no resultado.",
-    "en": "Compare fighters and see the win probability in MMA fights, with the factors that weigh most on the result.",
-    "fr": "Comparez les combattants et découvrez la probabilité de victoire des combats de MMA, avec les facteurs qui pèsent le plus dans le résultat.",
-    "es": "Compara peleadores y mira la probabilidad de victoria en las peleas de MMA, con los factores que más pesan en el resultado."
+    "pt": "Compare lutadores e veja a chance de vitória estimada pelo modelo nas lutas de MMA, com os fatores que mais pesam no resultado.",
+    "en": "Compare fighters and see the model’s estimated win chance in MMA fights, with the factors that weigh most on the result.",
+    "fr": "Comparez les combattants et voyez la chance de victoire estimée par le modèle pour les combats de MMA, avec les facteurs qui pèsent le plus.",
+    "es": "Compara peleadores y mira la probabilidad de victoria estimada por el modelo en las peleas de MMA, con los factores que más pesan."
   },
   "gymDetail": {
     "pt": {
@@ -38,11 +38,11 @@
     "pt": {
       "/home": {
         "title": "UFC",
-        "description": "Próximos eventos do UFC com previsões da IA, momentos dos atletas e notícias."
+        "description": "O próximo card do UFC com os palpites do modelo, quem está em sequência de vitórias e as últimas notícias."
       },
       "/predictor": {
         "title": "Simulação de luta",
-        "description": "Escolha dois lutadores do UFC e receba a probabilidade de vitória e fatores decisivos."
+        "description": "Escolha dois lutadores do UFC e veja a chance de vitória estimada pelo modelo, com os números que mais pesaram."
       },
       "/head-to-head": {
         "title": "Confronto direto",
@@ -50,7 +50,7 @@
       },
       "/matchup-intelligence": {
         "title": "Análise do confronto",
-        "description": "Números detalhados de trocação, luta no chão e dados físicos, com a explicação da IA."
+        "description": "Números de trocação, luta agarrada e dados físicos de dois lutadores do UFC, e os fatores que mais pesaram para o modelo."
       },
       "/fighters": {
         "title": "Lutadores",
@@ -94,11 +94,11 @@
       },
       "/model": {
         "title": "Como o modelo funciona",
-        "description": "O modelo preditivo de aprendizado de máquina, métricas de precisão e calibração."
+        "description": "O modelo de previsão, como ele foi treinado e como se compara com modelos mais simples."
       },
       "/track-record": {
         "title": "Acertos e histórico",
-        "description": "Desempenho dos palpites da IA em lutas reais: registrados antes do card e checados após o evento."
+        "description": "Como os palpites do modelo se saem em lutas reais: registrados antes do evento e conferidos depois."
       },
       "/pfl": {
         "title": "PFL",
@@ -166,11 +166,11 @@
       },
       "/one/predictor": {
         "title": "Simulação de luta do ONE Championship",
-        "description": "Escolha dois atletas do ONE Championship e receba a probabilidade de vitória e os fatores decisivos."
+        "description": "Escolha dois atletas do ONE Championship e veja a chance de vitória estimada pelo modelo, com os números que mais pesaram."
       },
       "/pfl/predictor": {
         "title": "Simulação de luta da PFL",
-        "description": "Escolha dois atletas da PFL e veja a probabilidade de vitória, com o aviso de que o modelo foi treinado com lutas do UFC."
+        "description": "Escolha dois atletas da PFL e veja a chance de vitória estimada pelo modelo, que é treinado com lutas do UFC."
       },
       "/one/champions": {
         "title": "Campeões do ONE Championship",
@@ -294,11 +294,11 @@
       },
       "/about-model": {
         "title": "Sobre o modelo",
-        "description": "Projeto completo de IA aplicada: fluxo de dados, modelo preditivo e API."
+        "description": "Um projeto de ciência de dados aplicada ao MMA: coleta de dados, modelo de previsão e API."
       },
       "/guide": {
         "title": "Como ler as previsões",
-        "description": "O que significa a probabilidade de vitória, o que o modelo analisa, quanto ele acerta e o que ele não sabe."
+        "description": "O que significa a chance de vitória estimada pelo modelo, o que ele analisa, quanto acerta e o que não sabe."
       },
       "/contact": {
         "title": "Contato",
@@ -320,7 +320,7 @@
       },
       "/predictor": {
         "title": "Predict a fight",
-        "description": "Pick two UFC fighters and get a win probability with the stats that drove it."
+        "description": "Pick two UFC fighters and see the model’s estimated win chance, with the stats that weighed most."
       },
       "/head-to-head": {
         "title": "Head-to-head history",
@@ -444,11 +444,11 @@
       },
       "/one/predictor": {
         "title": "Predict a ONE Championship fight",
-        "description": "Pick two ONE Championship fighters and get a win probability with the stats that drove it."
+        "description": "Pick two ONE Championship fighters and see the model’s estimated win chance, with the stats that weighed most."
       },
       "/pfl/predictor": {
         "title": "Predict a PFL fight",
-        "description": "Pick two PFL fighters and see a win probability, with a note that the model is trained on UFC fights."
+        "description": "Pick two PFL fighters and see the model’s estimated win chance; the model is trained on UFC fights."
       },
       "/one/champions": {
         "title": "ONE Championship champions",
@@ -572,11 +572,11 @@
       },
       "/about-model": {
         "title": "About the model",
-        "description": "A full-stack applied AI project: data pipeline, model and API."
+        "description": "An applied data science project on MMA: data collection, prediction model and API."
       },
       "/guide": {
         "title": "How to read the predictions",
-        "description": "What a win probability means, what the model looks at, how often it is right and what it does not know."
+        "description": "What the model’s estimated win chance means, what it looks at, how often it is right and what it does not know."
       },
       "/contact": {
         "title": "Contact",
@@ -598,7 +598,7 @@
       },
       "/predictor": {
         "title": "Prédire un combat",
-        "description": "Choisissez deux combattants UFC et obtenez une probabilité de victoire avec les stats qui l’ont produite."
+        "description": "Choisissez deux combattants UFC et voyez la chance de victoire estimée par le modèle, avec les chiffres qui ont le plus pesé."
       },
       "/head-to-head": {
         "title": "Historique des face-à-face",
@@ -722,11 +722,11 @@
       },
       "/one/predictor": {
         "title": "Prédire un combat ONE Championship",
-        "description": "Choisissez deux combattants ONE Championship et obtenez une probabilité de victoire avec les stats qui l’ont produite."
+        "description": "Choisissez deux combattants ONE Championship et voyez la chance de victoire estimée par le modèle, avec les chiffres qui ont le plus pesé."
       },
       "/pfl/predictor": {
         "title": "Prédire un combat PFL",
-        "description": "Choisissez deux combattants PFL et voyez une probabilité de victoire, en précisant que le modèle est entraîné sur des combats UFC."
+        "description": "Choisissez deux combattants PFL et voyez la chance de victoire estimée par le modèle, entraîné sur des combats UFC."
       },
       "/one/champions": {
         "title": "Champions ONE Championship",
@@ -850,11 +850,11 @@
       },
       "/about-model": {
         "title": "À propos du modèle",
-        "description": "Un projet complet d’IA appliquée : chaîne de données, modèle et API."
+        "description": "Un projet de science des données appliquée au MMA : collecte des données, modèle de pronostic et API."
       },
       "/guide": {
         "title": "Comment lire les prévisions",
-        "description": "Ce que signifie une probabilité de victoire, ce que regarde le modèle, son taux de réussite et ce qu’il ne sait pas."
+        "description": "Ce que signifie la chance de victoire estimée par le modèle, ce qu’il regarde, son taux de réussite et ce qu’il ne sait pas."
       },
       "/contact": {
         "title": "Contact",
@@ -876,7 +876,7 @@
       },
       "/predictor": {
         "title": "Pronosticar una pelea",
-        "description": "Elige a dos peleadores de la UFC y obtén una probabilidad de victoria con las estadísticas que la explican."
+        "description": "Elige a dos peleadores de la UFC y mira la probabilidad de victoria estimada por el modelo, con los números que más pesaron."
       },
       "/head-to-head": {
         "title": "Historial cara a cara",
@@ -1000,11 +1000,11 @@
       },
       "/one/predictor": {
         "title": "Pronosticar una pelea de ONE Championship",
-        "description": "Elige a dos peleadores de ONE Championship y obtén una probabilidad de victoria con las estadísticas que la explican."
+        "description": "Elige a dos peleadores de ONE Championship y mira la probabilidad de victoria estimada por el modelo, con los números que más pesaron."
       },
       "/pfl/predictor": {
         "title": "Pronosticar una pelea de la PFL",
-        "description": "Elige a dos peleadores de la PFL y mira una probabilidad de victoria, con el aviso de que el modelo se entrena con peleas de la UFC."
+        "description": "Elige a dos peleadores de la PFL y mira la probabilidad de victoria estimada por el modelo, entrenado con peleas de la UFC."
       },
       "/one/champions": {
         "title": "Campeones de ONE Championship",
@@ -1128,11 +1128,11 @@
       },
       "/about-model": {
         "title": "Acerca del modelo",
-        "description": "Un proyecto completo de IA aplicada: flujo de datos, modelo y API."
+        "description": "Un proyecto de ciencia de datos aplicada al MMA: recolección de datos, modelo de pronóstico y API."
       },
       "/guide": {
         "title": "Cómo leer los pronósticos",
-        "description": "Qué significa la probabilidad de victoria, qué mira el modelo, cuánto acierta y qué no sabe."
+        "description": "Qué significa la probabilidad de victoria estimada por el modelo, qué mira, cuánto acierta y qué no sabe."
       },
       "/contact": {
         "title": "Contacto",

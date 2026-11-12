@@ -37,7 +37,7 @@ describe('PageMeta', () => {
     renderAt('/predictor')
 
     expect(document.title).toBe('Predict a fight · Vektor MMA')
-    expect(meta('meta[name="description"]')).toMatch(/win probability/)
+    expect(meta('meta[name="description"]')).toMatch(/estimated win chance/)
     // The tests run in English: the address of an English page has the /en prefix.
     expect(canonical()).toBe('https://www.vektormma.com/en/predictor')
     expect(meta('meta[property="og:url"]')).toBe('https://www.vektormma.com/en/predictor')
