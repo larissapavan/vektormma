@@ -227,7 +227,7 @@ function FightCard({ fight, pick: current, picks }: { fight: CancelledFight; pic
         <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-xs">
           {canAnalyze ? (
             <Link
-              to={`/matchup-intelligence?a=${encodeURIComponent(fight.fighter_1.name)}&b=${encodeURIComponent(fight.fighter_2.name)}`}
+              to={`/predictor?a=${encodeURIComponent(fight.fighter_1.name)}&b=${encodeURIComponent(fight.fighter_2.name)}`}
               className="inline-flex min-h-10 items-center gap-1 font-bold text-[var(--ink)]"
             >
               {L(lang, 'Analisar o confronto', 'Analyze the matchup', 'Analyser le duel', 'Analizar el cruce')}

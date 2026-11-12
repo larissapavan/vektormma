@@ -230,7 +230,7 @@ export function fightBody(lang: UiLang, fight: FightSeo): BodyPage {
         links: [
           { label: fight.a.name, href: langPath(lang, `/athlete/${fight.a.slug}`) },
           { label: fight.b.name, href: langPath(lang, `/athlete/${fight.b.slug}`) },
-          { label: t.analysis, href: `${langPath(lang, '/matchup-intelligence')}?${query}` },
+          { label: t.analysis, href: `${langPath(lang, '/predictor')}?${query}` },
         ],
       },
     ],

@@ -113,7 +113,8 @@ export function MatchupRadarChart({
               <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
               <Radar name={fighterA.name} dataKey="red" stroke={RED} fill={RED} fillOpacity={0.28} />
               <Radar name={fighterB.name} dataKey="blue" stroke={BLUE} fill={BLUE} fillOpacity={0.22} />
-              <Legend wrapperStyle={{ fontSize: 12, color: 'var(--text-main)' }} />
+              {/* The swatch carries the corner colour; the name stays in ink so it reads on both themes. */}
+              <Legend wrapperStyle={{ fontSize: 14 }} formatter={(value) => <span style={{ color: 'var(--ink)', fontWeight: 600 }}>{value}</span>} />
               <Tooltip
                 contentStyle={{ background: 'var(--panel)', border: '1.5px solid var(--ink)', borderRadius: 4, color: 'var(--ink)' }}
                 formatter={(value, name) => [`${value ?? 0}`, String(name)]}

@@ -13,7 +13,6 @@
     "data": "Données",
     "system": "Système",
     "trackRecord": "Bilan",
-    "matchup": "Duel",
     "cancelled": "Jamais disputés",
     "career": "Jeu"
   },
@@ -90,8 +89,7 @@
     "predictMatchup": "Prédire le combat",
     "predicting": "Prédiction en cours...",
     "pickTwoPrompt": "Choisissez deux combattants pour simuler le combat.",
-    "selectTwoDifferent": "Sélectionnez deux combattants différents",
-    "winningChance": "Chance de victoire estimée par le modèle"
+    "selectTwoDifferent": "Sélectionnez deux combattants différents"
   },
   "fighters": {
     "title": "Combattants",
@@ -227,11 +225,5 @@
     "rocAuc": "ROC AUC",
     "baselines": "Comparaison des références",
     "featureImportance": "Importance des variables"
-  },
-  "matchup": {
-    "title": "Analyse du combat",
-    "description": "Frappe, lutte au sol et biométrie des deux combattants, plus les facteurs décisifs du modèle.",
-    "analyze": "Analyser le combat",
-    "analyzing": "Analyse en cours..."
   }
 }

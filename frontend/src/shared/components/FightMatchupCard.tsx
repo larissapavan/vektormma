@@ -15,7 +15,7 @@ import { PickChip } from './PickChip'
 function matchupPath(fight: FightResult, eventName?: string) {
   const params = new URLSearchParams({ a: fight.fighter_1, b: fight.fighter_2 })
   if (eventName) params.set('event', eventName)
-  return `/matchup-intelligence?${params.toString()}`
+  return `/predictor?${params.toString()}`
 }
 
 /** Shared fight row: names and photos on the corners, model reading centered underneath. */

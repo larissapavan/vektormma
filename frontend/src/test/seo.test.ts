@@ -84,7 +84,7 @@ describe('the text of the athlete and fight pages', () => {
   it('keeps every link inside the language of the page', () => {
     const html = bodyHtml(fightBody('fr', fight), [])
     expect(html).toContain(`href="/fr/athlete/${fight.a.slug}"`)
-    expect(html).toContain('href="/fr/matchup-intelligence?')
+    expect(html).toContain('href="/fr/predictor?')
     expect(bodyHtml(athleteBody('en', athlete, data.fights), [])).toContain('href="/en/fighters"')
     expect(bodyHtml(athleteBody('pt', athlete, data.fights), [])).toContain('href="/fighters"')
   })

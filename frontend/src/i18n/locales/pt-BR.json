@@ -13,7 +13,6 @@
     "data": "Dados",
     "system": "Sistema",
     "trackRecord": "Desempenho",
-    "matchup": "Análise",
     "cancelled": "Lutas canceladas",
     "career": "Jogo"
   },
@@ -90,8 +89,7 @@
     "predictMatchup": "Simular combate",
     "predicting": "Simulando...",
     "pickTwoPrompt": "Escolha dois lutadores para simular o combate.",
-    "selectTwoDifferent": "Selecione dois lutadores diferentes",
-    "winningChance": "Chance de vitória estimada pelo modelo"
+    "selectTwoDifferent": "Selecione dois lutadores diferentes"
   },
   "fighters": {
     "title": "Lutadores",
@@ -227,11 +225,5 @@
     "rocAuc": "ROC AUC (discriminação)",
     "baselines": "Comparação com métodos tradicionais",
     "featureImportance": "Variáveis mais decisivas"
-  },
-  "matchup": {
-    "title": "Análise de confronto",
-    "description": "Trocação, luta no chão e biometria dos dois atletas, mais os fatores determinantes do modelo.",
-    "analyze": "Analisar combate",
-    "analyzing": "Analisando..."
   }
 }

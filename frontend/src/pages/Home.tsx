@@ -204,7 +204,7 @@ function NextFightHero({
         <div className="flex flex-wrap gap-3 max-xs:w-full">
           {fight && nextEvent ? (
             <Link
-              to={`/matchup-intelligence?a=${encodeURIComponent(fight.fighter_1)}&b=${encodeURIComponent(fight.fighter_2)}&event=${encodeURIComponent(nextEvent.name)}`}
+              to={`/predictor?a=${encodeURIComponent(fight.fighter_1)}&b=${encodeURIComponent(fight.fighter_2)}&event=${encodeURIComponent(nextEvent.name)}`}
               className="primary-action inline-flex min-h-[52px] items-center justify-center px-7 !text-[17px] max-xs:w-full"
             >
               {L(lang, 'Ver a análise da luta', 'See the fight analysis', 'Voir l’analyse du combat', 'Ver el análisis de la pelea')}

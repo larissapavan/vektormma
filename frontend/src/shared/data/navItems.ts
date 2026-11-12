@@ -16,7 +16,6 @@ export const NAV_I18N_KEYS: Record<string, string> = {
   Game: 'nav.career',
   About: 'nav.about',
   RecordBook: 'nav.recordBook',
-  Analysis: 'nav.matchup',
   Cancelled: 'nav.cancelled',
 }
 
@@ -31,7 +30,6 @@ const ufcNavItems: NavItem[] = [
   { to: '/champions', label: 'Champions' },
   { to: '/record-book', label: 'RecordBook' },
   { to: '/gyms', label: 'Gyms', section: true },
-  { to: '/matchup-intelligence', label: 'Analysis' },
   { to: '/cancelled-fights', label: 'Cancelled' },
   { to: '/career', label: 'Game' },
 ]

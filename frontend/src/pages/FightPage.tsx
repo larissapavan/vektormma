@@ -4,12 +4,12 @@ import { useParams } from 'react-router-dom'
 import { athleteSlug, splitFightSlug } from '../seo/athletes'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { useFighters } from '../shared/hooks/useFighters'
-import { MatchupIntelligence } from './MatchupIntelligence'
+import { Predictor } from './Predictor'
 import { NotFound } from './NotFound'
 
 /**
  * /fight/jon-jones-vs-tom-aspinall: a fight with an address of its own, so it can be linked, shared and found. It is the
- * matchup analysis page with the two corners already chosen from the slugs.
+ * predictor with the two corners already chosen from the slugs.
  */
 export function FightPage() {
   const { pair } = useParams<{ pair: string }>()
@@ -22,7 +22,7 @@ export function FightPage() {
     return a && b ? { a, b } : null
   }, [fighters, pair])
 
-  if (names) return <MatchupIntelligence preset={names} />
+  if (names) return <Predictor preset={names} />
   if (loading) return <LoadingSkeleton className="h-96 w-full" label="Loading" />
   return <NotFound />
 }

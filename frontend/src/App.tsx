@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
 import { ServerLoadingState } from './shared/components/ServerLoadingState'
 import { TabbedLayout, type SectionTab } from './shared/components/TabbedLayout'
@@ -34,9 +34,6 @@ const AboutModel = lazy(() => import('./pages/AboutModel').then((module) => ({ d
 const DataIntelligence = lazy(() =>
   import('./pages/DataIntelligence').then((module) => ({ default: module.DataIntelligence })),
 )
-const MatchupIntelligence = lazy(() =>
-  import('./pages/MatchupIntelligence').then((module) => ({ default: module.MatchupIntelligence })),
-)
 const AthleteDossier = lazy(() =>
   import('./pages/AthleteDossier').then((module) => ({ default: module.AthleteDossier })),
 )
@@ -58,6 +55,12 @@ const aboutTabs: SectionTab[] = [
   { to: '/track-record', label: 'Track record', labelKey: 'nav.trackRecord' },
 ]
 
+/** The old matchup analysis page now lives in the predictor: keep its links working, with the same fighters. */
+function MatchupRedirect() {
+  const { search, hash } = useLocation()
+  return <Navigate to={{ pathname: '/predictor', search, hash }} replace />
+}
+
 function App() {
   return (
     <ThemeProvider>
@@ -69,7 +72,7 @@ function App() {
               <Route path="/home" element={<Home />} />
               <Route path="/predictor" element={<Predictor />} />
               <Route path="/head-to-head" element={<HeadToHead />} />
-              <Route path="/matchup-intelligence" element={<MatchupIntelligence />} />
+              <Route path="/matchup-intelligence" element={<MatchupRedirect />} />
               <Route path="/cancelled-fights" element={<CancelledFights />} />
               <Route path="/career" element={<Career />} />
               <Route path="/fighters" element={<Fighters />} />

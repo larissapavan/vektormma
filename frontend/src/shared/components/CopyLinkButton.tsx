@@ -27,7 +27,7 @@ async function copyText(text: string) {
   }
 }
 
-/** Copies a link to the clipboard; `href` is relative to the site (e.g. "/matchup-intelligence?a=..."). */
+/** Copies a link to the clipboard; `href` is relative to the site (e.g. "/predictor?a=..."). */
 export function CopyLinkButton({ href, label, className = '' }: { href: string; label?: string; className?: string }) {
   const { i18n } = useTranslation()
   const [state, setState] = useState<'idle' | 'copied' | 'failed'>('idle')

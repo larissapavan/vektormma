@@ -13,7 +13,6 @@
     "data": "Data",
     "system": "System",
     "trackRecord": "Track record",
-    "matchup": "Matchup",
     "cancelled": "Never happened",
     "career": "Game"
   },
@@ -90,8 +89,7 @@
     "predictMatchup": "Predict matchup",
     "predicting": "Predicting...",
     "pickTwoPrompt": "Pick two fighters to predict the fight.",
-    "selectTwoDifferent": "Select two different fighters",
-    "winningChance": "Win chance estimated by the model"
+    "selectTwoDifferent": "Select two different fighters"
   },
   "fighters": {
     "title": "Fighters",
@@ -227,11 +225,5 @@
     "rocAuc": "ROC AUC",
     "baselines": "Baselines comparison",
     "featureImportance": "Feature importance"
-  },
-  "matchup": {
-    "title": "Why this matchup is interesting",
-    "description": "Striking, grappling and physical numbers for both fighters, plus model deciding factors.",
-    "analyze": "Analyze matchup",
-    "analyzing": "Analyzing..."
   }
 }

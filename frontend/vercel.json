@@ -5,7 +5,9 @@
       "has": [{ "type": "host", "value": "fight-intelligence.vercel.app" }],
       "destination": "https://www.vektormma.com/$1",
       "permanent": true
-    }
+    },
+    { "source": "/matchup-intelligence", "destination": "/predictor", "permanent": true },
+    { "source": "/:lang(en|fr|es)/matchup-intelligence", "destination": "/:lang/predictor", "permanent": true }
   ],
   "headers": [
     {

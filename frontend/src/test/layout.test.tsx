@@ -95,7 +95,7 @@ describe('one h1 per page', () => {
     ['Track record', '/track-record', /waiting for the first results/i],
     ['Head-to-head', '/head-to-head', /^head-to-head$/i],
     ['Predict', '/predictor', /fighter/i],
-    ['Matchup', '/matchup-intelligence', /why this matchup is interesting/i],
+    ['Matchup (now the predictor)', '/matchup-intelligence', /tale of the tape/i],
     ['About', '/about', /sources and credits/i],
     ['Data', '/data', /from the official site to the prediction/i],
     ['System', '/model', /how the model works/i],
@@ -199,7 +199,7 @@ describe('sharing a matchup', () => {
     await waitFor(() => expect(writeText).toHaveBeenCalledTimes(1))
     const link = new URL(writeText.mock.calls[0][0])
     // The tests run in English, so the copied link has the /en prefix.
-    expect(link.pathname).toBe('/en/matchup-intelligence')
+    expect(link.pathname).toBe('/en/predictor')
     expect(link.searchParams.get('a')).toBe('Alpha One')
     expect(link.searchParams.get('b')).toBe('Beta Two')
     expect(within(screen.getByRole('button', { name: /link copied/i })).getByRole('status')).toHaveTextContent('Link copied')

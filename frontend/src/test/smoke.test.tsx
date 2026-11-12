@@ -38,7 +38,7 @@ const pages: [string, string, string | RegExp][] = [
   ['Track record', '/track-record', /waiting for the first results/i],
   ['Head-to-head', '/head-to-head', /^head-to-head$/i],
   ['Predict', '/predictor', /fighter/i],
-  ['Matchup', '/matchup-intelligence', /why this matchup is interesting/i],
+  ['Matchup (now the predictor)', '/matchup-intelligence', /tale of the tape/i],
   ['About', '/about', /sources and credits/i],
   ['Data', '/data', /from the official site to the prediction/i],
   ['System', '/model', /how the model works/i],

@@ -7,7 +7,7 @@ export interface SectionTab {
   labelKey?: string
 }
 
-const MATCHUP_PATHS = new Set(['/predictor', '/head-to-head', '/matchup-intelligence'])
+const MATCHUP_PATHS = new Set(['/predictor', '/head-to-head'])
 
 /** Tab bar shared by a group of related pages; every tab keeps its own URL, so deep links still work. */
 export function TabbedLayout({ label, tabs }: { label: string; tabs: SectionTab[] }) {

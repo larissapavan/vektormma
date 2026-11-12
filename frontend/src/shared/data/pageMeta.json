@@ -48,10 +48,6 @@
         "title": "Confronto direto",
         "description": "Histórico de combates entre atletas do UFC, métodos de vitória e oponentes em comum."
       },
-      "/matchup-intelligence": {
-        "title": "Análise do confronto",
-        "description": "Números de trocação, luta agarrada e dados físicos de dois lutadores do UFC, e os fatores que mais pesaram para o modelo."
-      },
       "/fighters": {
         "title": "Lutadores",
         "description": "Perfis completos de atletas do UFC por categoria: cartel, histórico e lutadores similares."
@@ -325,10 +321,6 @@
       "/head-to-head": {
         "title": "Head-to-head history",
         "description": "Every time two UFC fighters have met, who won and how, plus their common opponents."
-      },
-      "/matchup-intelligence": {
-        "title": "Matchup analysis",
-        "description": "Striking, grappling and physical numbers for any two UFC fighters, and the factors the model weighed most."
       },
       "/fighters": {
         "title": "Fighters",
@@ -604,10 +596,6 @@
         "title": "Historique des face-à-face",
         "description": "Chaque fois que deux combattants UFC se sont affrontés, qui a gagné et comment, plus leurs adversaires communs."
       },
-      "/matchup-intelligence": {
-        "title": "Analyse de confrontation",
-        "description": "Chiffres de frappe, de lutte au sol et physiques pour deux combattants UFC, et les facteurs que le modèle a le plus pesés."
-      },
       "/fighters": {
         "title": "Combattants",
         "description": "Profils des combattants UFC par catégorie : palmarès, chronologie, origines et combattants similaires."
@@ -881,10 +869,6 @@
       "/head-to-head": {
         "title": "Historial cara a cara",
         "description": "Cada vez que dos peleadores de la UFC se han enfrentado, quién ganó y cómo, más sus rivales en común."
-      },
-      "/matchup-intelligence": {
-        "title": "Análisis del enfrentamiento",
-        "description": "Números de golpeo, lucha en el suelo y físicos de dos peleadores de la UFC, y los factores a los que el modelo dio más peso."
       },
       "/fighters": {
         "title": "Peleadores",

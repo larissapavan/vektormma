@@ -1,16 +1,20 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { ArrowLeftRight, ArrowRight, LoaderCircle } from 'lucide-react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { L, localeTag } from '../i18n/lang'
 import { getDivisionName } from '../shared/data/divisions'
 import { translateHometown } from '../shared/data/fightLabels'
 import { ChampionBelt } from '../shared/components/ChampionBelt'
+import { CopyLinkButton } from '../shared/components/CopyLinkButton'
 import { FighterAvatar } from '../shared/components/FighterAvatar'
 import { FighterProfileModal } from '../shared/components/FighterProfileModal'
 import { FighterSelect } from '../shared/components/FighterSelect'
 import { FighterBadges, FlagList, TitleFightBadge } from '../shared/components/FighterBadges'
+import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
+import { MatchupRadarChart } from '../shared/components/MatchupRadarChart'
+import { RecentFightsPanel } from '../shared/components/RecentFightsPanel'
 import { getFighterImageUrl, useFighterImages } from '../shared/hooks/useFighterImages'
 import { useFighters } from '../shared/hooks/useFighters'
 import { localizePredictionMessage } from '../shared/data/probability'
@@ -22,13 +26,20 @@ import { usePrediction } from '../shared/hooks/usePrediction'
 import { PageHeader } from '../shared/components/ui/PageHeader'
 import { predictionSentence, ProbabilityBand } from '../shared/components/ui/ProbabilityBand'
 import { getMatchupTitleFight } from '../shared/data/titleFights'
-import type { FighterProfile, MainFactor, PredictionResponse } from '../shared/types/api'
+import { getFighterPerformance } from '../shared/services/api'
+import type { FighterPerformance, FighterProfile, MainFactor, PredictionResponse } from '../shared/types/api'
 
-export function Predictor() {
+/**
+ * Pick two fighters and see the model's estimated win chance, what weighs on it, the numbers side by side, a radar of
+ * their styles and each one's recent fights. It also absorbed the old matchup analysis page (/matchup-intelligence
+ * redirects here). `preset` chooses the corners from a fight's own address (/fight/a-vs-b); ?a= and ?b= still win.
+ */
+export function Predictor({ preset }: { preset?: { a: string; b: string } } = {}) {
   const { t, i18n } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
-  const presetA = searchParams.get('a') || searchParams.get('fighter_a') || ''
-  const presetB = searchParams.get('b') || searchParams.get('fighter_b') || ''
+  const presetA = searchParams.get('a') || searchParams.get('fighter_a') || preset?.a || ''
+  const presetB = searchParams.get('b') || searchParams.get('fighter_b') || preset?.b || ''
+  const eventName = searchParams.get('event')
   const [nameA, setNameA] = useState(() => presetA)
   const [nameB, setNameB] = useState(() => presetB)
   const [profileName, setProfileName] = useState<string | null>(null)
@@ -89,6 +100,27 @@ export function Predictor() {
     }
   }
 
+  // Each fighter's recent form, for the radar and the recent fights, once the model has scored the pair.
+  const performanceKey = prediction ? `${prediction.fighter_a_profile.name}|${prediction.fighter_b_profile.name}` : ''
+  const [performance, setPerformance] = useState<{ key: string; a: FighterPerformance | null; b: FighterPerformance | null } | null>(null)
+  useEffect(() => {
+    if (!performanceKey) return
+    const [first, second] = performanceKey.split('|')
+    let cancelled = false
+    Promise.all([getFighterPerformance(first), getFighterPerformance(second)])
+      .then(([a, b]) => {
+        if (!cancelled) setPerformance({ key: performanceKey, a, b })
+      })
+      .catch(() => {
+        if (!cancelled) setPerformance({ key: performanceKey, a: null, b: null })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [performanceKey])
+  const performanceReady = performance?.key === performanceKey ? performance : null
+  const performanceLoading = Boolean(performanceKey) && performanceReady == null
+
   const activeFighters = useMemo(() => fighters.filter((fighter) => fighter.is_active).length, [fighters])
   const shown = shownMetrics(modelInfo, i18n.language)
   const isOnline = Boolean(health?.model_loaded)
@@ -96,6 +128,21 @@ export function Predictor() {
 
   return (
     <div className="space-y-5 sm:space-y-6">
+      {eventName && nameA && nameB ? (
+        <nav aria-label={L(i18n.language, 'Navegação estrutural', 'Breadcrumb', 'Fil d’Ariane', 'Ruta de navegación')}>
+          <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold">
+            <li>
+              <Link to={`/events?q=${encodeURIComponent(eventName)}`} className="text-[var(--ink)] underline decoration-[var(--rule)] underline-offset-4 hover:decoration-[var(--ink)]">
+                {eventName}
+              </Link>
+            </li>
+            <li aria-hidden="true" className="text-[var(--muted)]">/</li>
+            <li className="text-[var(--ink)]">
+              {nameA} vs {nameB}
+            </li>
+          </ol>
+        </nav>
+      ) : null}
       <PageHeader
         title={t('predictor.whoTakesIt', 'Who takes it?')}
         description={t('predictor.heroSubtitle', 'Pick any two fighters. The model gives you the odds and shows which numbers moved them.')}
@@ -194,6 +241,33 @@ export function Predictor() {
         </div>
 
         <TaleOfTape fighterA={fighterA} fighterB={fighterB} />
+
+        {prediction && !predicting ? (
+          <>
+            <div className="flex justify-end">
+              <CopyLinkButton
+                href={`/predictor?a=${encodeURIComponent(prediction.fighter_a_profile.name)}&b=${encodeURIComponent(prediction.fighter_b_profile.name)}`}
+                label={L(i18n.language, 'Copiar link do combate', 'Copy matchup link', 'Copier le lien du combat', 'Copiar enlace del enfrentamiento')}
+              />
+            </div>
+            <MatchupRadarChart
+              fighterA={prediction.fighter_a_profile}
+              fighterB={prediction.fighter_b_profile}
+              performanceA={performanceReady?.a ?? null}
+              performanceB={performanceReady?.b ?? null}
+              loading={performanceLoading}
+            />
+            <RecentFightsPanel
+              nameA={prediction.fighter_a_profile.name}
+              nameB={prediction.fighter_b_profile.name}
+              performanceA={performanceReady?.a ?? null}
+              performanceB={performanceReady?.b ?? null}
+              loading={performanceLoading}
+            />
+          </>
+        ) : predicting ? (
+          <LoadingSkeleton className="h-[340px]" label={L(i18n.language, 'Carregando gráfico de radar', 'Loading radar chart', 'Chargement du graphique radar', 'Cargando el gráfico de radar')} />
+        ) : null}
       </div>
 
       {profileName ? (
@@ -453,7 +527,11 @@ function TaleOfTape({ fighterA, fighterB }: { fighterA: FighterProfile | null; f
     { label: L(i18n.language, 'Derrotas', 'Losses', 'Défaites', 'Derrotas'), a: fighterA?.losses ?? null, b: fighterB?.losses ?? null, better: 'low' },
     { label: L(i18n.language, 'Taxa de vitória', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias'), a: fighterA?.win_rate ?? null, b: fighterB?.win_rate ?? null, better: 'high', pct: true },
     { label: L(i18n.language, 'Precisão de golpes', 'Striking accuracy', 'Précision des coups', 'Precisión de golpes'), a: fighterA?.sig_str_acc ?? null, b: fighterB?.sig_str_acc ?? null, better: 'high', pct: true },
+    { label: L(i18n.language, 'Golpes por minuto', 'Strikes per minute', 'Frappes par minute', 'Golpes por minuto'), a: fighterA?.sig_strikes_landed_per_min ?? null, b: fighterB?.sig_strikes_landed_per_min ?? null, better: 'high' },
+    { label: L(i18n.language, 'Defesa de golpes', 'Striking defense', 'Défense des frappes', 'Defensa de golpes'), a: fighterA?.striking_defense ?? null, b: fighterB?.striking_defense ?? null, better: 'high', pct: true },
     { label: L(i18n.language, 'Precisão de quedas', 'Takedown accuracy', 'Précision des amenées', 'Precisión de derribos'), a: fighterA?.takedown_acc ?? null, b: fighterB?.takedown_acc ?? null, better: 'high', pct: true },
+    { label: L(i18n.language, 'Defesa de quedas', 'Takedown defense', 'Défense des amenées', 'Defensa de derribos'), a: fighterA?.takedown_defense ?? null, b: fighterB?.takedown_defense ?? null, better: 'high', pct: true },
+    { label: L(i18n.language, 'Finalizações por 15 min', 'Submissions per 15 min', 'Soumissions par 15 min', 'Sumisiones por 15 min'), a: fighterA?.submission_avg_per_15min ?? null, b: fighterB?.submission_avg_per_15min ?? null, better: 'high' },
   ]
   const ready = Boolean(fighterA && fighterB)
 

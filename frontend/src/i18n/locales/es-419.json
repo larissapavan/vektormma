@@ -13,7 +13,6 @@
     "data": "Datos",
     "system": "Sistema",
     "trackRecord": "Historial",
-    "matchup": "Análisis",
     "cancelled": "Nunca ocurrieron",
     "career": "Juego"
   },
@@ -90,8 +89,7 @@
     "predictMatchup": "Pronosticar la pelea",
     "predicting": "Pronosticando...",
     "pickTwoPrompt": "Elige a dos peleadores para pronosticar la pelea.",
-    "selectTwoDifferent": "Selecciona a dos peleadores distintos",
-    "winningChance": "Probabilidad de victoria estimada por el modelo"
+    "selectTwoDifferent": "Selecciona a dos peleadores distintos"
   },
   "fighters": {
     "title": "Peleadores",
@@ -227,11 +225,5 @@
     "rocAuc": "ROC AUC",
     "baselines": "Comparación con referencias",
     "featureImportance": "Importancia de las variables"
-  },
-  "matchup": {
-    "title": "Por qué este enfrentamiento es interesante",
-    "description": "Números de golpeo, lucha en el suelo y físicos de ambos peleadores, más los factores decisivos del modelo.",
-    "analyze": "Analizar la pelea",
-    "analyzing": "Analizando..."
   }
 }
