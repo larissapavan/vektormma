@@ -116,7 +116,7 @@ export function FighterSearch() {
       </button>
 
       {open ? (
-        <div className="surface-card-elevated fixed! inset-x-2 top-2 z-50 sm:absolute! sm:inset-auto sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-[26rem] max-w-[calc(100vw-1rem)] p-2 backdrop-blur-xl animate-in fade-in-0 zoom-in-95 shadow-2xl">
+        <div className="surface-card-elevated fixed! inset-x-2 top-2 z-50 sm:absolute! sm:inset-auto sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-[26rem] max-w-[calc(100vw-1rem)] p-2 animate-in fade-in-0 zoom-in-95">
           <div className="soft-input flex items-center gap-2 rounded-lg px-2.5">
             <Search className="h-4 w-4 shrink-0 text-[var(--text-muted)]" aria-hidden />
             <input

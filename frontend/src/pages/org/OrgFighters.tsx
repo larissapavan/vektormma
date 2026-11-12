@@ -499,7 +499,7 @@ function EdgeFade({ side, visible }: { side: 'left' | 'right'; visible: boolean 
     <div
       aria-hidden="true"
       className={`pointer-events-none absolute inset-y-0 z-10 w-8 transition-opacity duration-200 ${
-        side === 'left' ? 'left-0 bg-gradient-to-r from-[var(--canvas-bg)] to-transparent' : 'right-0 bg-gradient-to-l from-[var(--canvas-bg)] to-transparent'
+        side === 'left' ? 'left-0' : 'right-0'
       } ${visible ? 'opacity-100' : 'opacity-0'}`}
     />
   )
@@ -521,7 +521,7 @@ function ScrollButton({
       onClick={onClick}
       disabled={!visible}
       tabIndex={visible ? 0 : -1}
-      className={`absolute top-1/2 z-20 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] backdrop-blur-sm transition hover:text-[#F2C230] ${
+      className={`absolute top-1/2 z-20 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] transition hover:text-[#F2C230] ${
         direction === 'left' ? 'left-0.5' : 'right-0.5'
       } ${visible ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
     >

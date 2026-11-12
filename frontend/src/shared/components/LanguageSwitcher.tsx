@@ -76,7 +76,7 @@ export function LanguageSwitcher({ className = '' }: LanguageSwitcherProps) {
         <div
           role="group"
           aria-label={t('language.switch', 'Mudar idioma')}
-          className="surface-card-elevated absolute! right-0 top-full z-50 mt-1.5 w-36 p-1 backdrop-blur-xl animate-in fade-in-0 zoom-in-95"
+          className="surface-card-elevated absolute! right-0 top-full z-50 mt-1.5 w-36 p-1 animate-in fade-in-0 zoom-in-95"
         >
           <div className="space-y-0.5">
             {LANGUAGES.map((language) => {

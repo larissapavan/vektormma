@@ -500,7 +500,7 @@ function ScrollArrow({
           ? L(i18n.language, 'Rolar categorias para a esquerda', 'Scroll weight classes left', 'Faire défiler les catégories vers la gauche', 'Desplazar divisiones a la izquierda')
           : L(i18n.language, 'Rolar categorias para a direita', 'Scroll weight classes right', 'Faire défiler les catégories vers la droite', 'Desplazar divisiones a la derecha')
       }
-      className={`absolute top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] backdrop-blur-sm transition hover:text-[#FF1E27] focus-visible:text-[#FF1E27] focus-visible:outline-none ${
+      className={`absolute top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] transition hover:text-[#FF1E27] focus-visible:text-[#FF1E27] focus-visible:outline-none ${
         direction === 'left' ? 'left-1' : 'right-1'
       } ${visible ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
     >

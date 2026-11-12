@@ -200,7 +200,7 @@ export function Career() {
           </p>
           <RetrospectCard card={shared} actions={false} />
           <div className="text-center">
-            <Link to="/career" className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[var(--accent-red-solid)] px-7 text-sm font-bold uppercase tracking-[0.12em] text-white shadow-lg shadow-[var(--accent-red)]/25 transition hover:brightness-110">
+            <Link to="/career" className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[var(--accent-red-solid)] px-7 text-sm font-bold uppercase tracking-[0.12em] text-white transition hover:brightness-110">
               {L(lang, 'Criar a minha carreira', 'Build my own career', 'Créer ma carrière', 'Crear mi carrera')}
             </Link>
           </div>

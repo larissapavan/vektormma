@@ -106,7 +106,7 @@ export function RetrospectCard({ card, actions = true }: { card: Retrospect; act
         aria-label={alt}
         width={CARD_WIDTH}
         height={CARD_HEIGHT}
-        className={`mx-auto w-full max-w-md rounded-xl border border-[var(--border-subtle)] shadow-lg ${drawn ? '' : 'hidden'}`}
+        className={`mx-auto w-full max-w-md rounded-xl border border-[var(--border-subtle)] ${drawn ? '' : 'hidden'}`}
       />
       {!drawn ? (
         <div className="mx-auto max-w-md rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] p-5 text-center" data-testid="card-fallback">

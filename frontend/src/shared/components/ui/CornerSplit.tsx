@@ -92,4 +92,4 @@ export function CornerSplit({
 
 /** A corner photo: straight edges, a thin light rule, sized for the block. */
 export const cornerPhotoClass =
-  'h-[120px] w-full sm:h-[170px] sm:w-[124px] lg:h-[190px] lg:w-[138px] !rounded-none !border !border-white/55 !bg-black/20 !shadow-none'
+  'h-[120px] w-full sm:h-[170px] sm:w-[124px] lg:h-[190px] lg:w-[138px] !rounded-none !border !border-white/55 !bg-black/20'

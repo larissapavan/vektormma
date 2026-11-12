@@ -135,7 +135,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-2.5 backdrop-blur-sm sm:p-5"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-2.5 sm:p-5"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose()
       }}
@@ -144,7 +144,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="surface-card flex max-h-[92vh] h-[min(90vh,760px)] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-[var(--line-soft)] shadow-2xl"
+        className="surface-card flex max-h-[92vh] h-[min(90vh,760px)] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-[var(--line-soft)]"
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[var(--line-soft)] px-5 py-4">
@@ -199,7 +199,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
                 type="button"
                 onClick={handleShare}
                 disabled={stats.totalPicked === 0}
-                className="inline-flex items-center gap-1.5 rounded-full bg-[#C8102E] px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-white shadow-lg transition hover:bg-[#a50d26] disabled:opacity-40"
+                className="inline-flex items-center gap-1.5 rounded-full bg-[#C8102E] px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-white transition hover:bg-[#a50d26] disabled:opacity-40"
               >
                 {copied ? <Check className="h-3.5 w-3.5" /> : <Share2 className="h-3.5 w-3.5" />}
                 {copied ? L(i18n.language, 'Copiado', 'Copied', 'Copié', 'Copiado') : L(i18n.language, 'Compartilhar', 'Share', 'Partager', 'Compartir')}
@@ -210,7 +210,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
           {/* Progress bar */}
           <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-[var(--line-soft)]">
             <div
-              className="h-full bg-gradient-to-r from-[#C8102E] to-[#F2C230] transition-all duration-300"
+              className="h-full bg-[var(--ink)] transition-all duration-300"
               style={{ width: `${(stats.totalPicked / (fights.length || 1)) * 100}%` }}
             />
           </div>
@@ -253,7 +253,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
                     onClick={() => handlePick(fightId, fight.fighter_1)}
                     className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition ${
                       isF1User
-                        ? 'border-[#C8102E] bg-[#C8102E]/20 text-white shadow-md'
+                        ? 'border-[#C8102E] bg-[#C8102E]/20 text-white'
                         : 'border-[var(--line-soft)] bg-[var(--surface-3)] text-[var(--text-muted)] hover:border-[var(--rule)] hover:text-[var(--text-main)]'
                     }`}
                   >
@@ -274,7 +274,7 @@ export function CardSimulatorModal({ event, pickFor, onClose }: CardSimulatorMod
                     onClick={() => handlePick(fightId, fight.fighter_2)}
                     className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition ${
                       isF2User
-                        ? 'border-[#2F5FA8] bg-[#2F5FA8]/20 text-white shadow-md'
+                        ? 'border-[#2F5FA8] bg-[#2F5FA8]/20 text-white'
                         : 'border-[var(--line-soft)] bg-[var(--surface-3)] text-[var(--text-muted)] hover:border-[var(--rule)] hover:text-[var(--text-main)]'
                     }`}
                   >

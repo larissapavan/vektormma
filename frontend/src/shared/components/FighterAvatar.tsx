@@ -29,7 +29,7 @@ export function FighterAvatar({ name, imageUrl, className = 'h-14 w-14', highlig
       title={credit && imageUrl && failedUrl !== imageUrl ? photoRightsText(credit, i18n.language) : undefined}
       className={`relative grid ${className} shrink-0 place-items-center overflow-hidden rounded-lg border-2 bg-[var(--avatar-bg)] ${
         highlight
-          ? 'border-[#F2C230] shadow-[2px_2px_0_#0E0E0E]'
+          ? 'border-[#F2C230]'
           : 'border-[var(--rule)]'
       }`}
     >

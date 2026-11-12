@@ -336,7 +336,7 @@ export function OrgHome() {
                     onClick={() => setSelectedDivision(div)}
                     className={`shrink-0 rounded-lg px-3.5 py-2 text-xs font-black uppercase tracking-[0.08em] transition-all duration-150 ${
                       isSelected
-                        ? 'bg-[#F2C230] text-[#0E0E0E] shadow-md shadow-[#F2C230]/25 ring-2 ring-[#F2C230] scale-[1.02]'
+                        ? 'bg-[#F2C230] text-[#0E0E0E] ring-2 ring-[#F2C230] scale-[1.02]'
                         : 'border border-[var(--border-subtle)] bg-[var(--surface-3)] text-[var(--text-secondary)] hover:border-[var(--text-main)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-main)]'
                     }`}
                   >

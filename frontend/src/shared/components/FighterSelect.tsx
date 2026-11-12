@@ -195,7 +195,7 @@ export function FighterSelect({
         <AnimatePresence>
         {open ? (
           <motion.div
-            className="selector-backdrop fixed inset-0 z-[90] flex items-center justify-center overflow-hidden px-3 py-3 backdrop-blur-sm sm:px-5 sm:py-5"
+            className="selector-backdrop fixed inset-0 z-[90] flex items-center justify-center overflow-hidden px-3 py-3 sm:px-5 sm:py-5"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -205,7 +205,7 @@ export function FighterSelect({
             }}
           >
             <motion.section
-              className={`surface-card flex h-[min(720px,calc(100vh-1.5rem))] w-full max-w-[760px] flex-col overflow-hidden rounded-[20px] border border-[var(--border-default)] shadow-2xl sm:h-[min(760px,calc(100vh-2.5rem))] sm:rounded-[24px] ${corner === 'blue' ? 'picker-blue' : ''}`}
+              className={`surface-card flex h-[min(720px,calc(100vh-1.5rem))] w-full max-w-[760px] flex-col overflow-hidden rounded-[20px] border border-[var(--border-default)] sm:h-[min(760px,calc(100vh-2.5rem))] sm:rounded-[24px] ${corner === 'blue' ? 'picker-blue' : ''}`}
               initial={{ opacity: 0, y: 18, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 12, scale: 0.98 }}
@@ -429,10 +429,10 @@ function PickerAvatar({
   const loaded = imageState.key === imageKey && imageState.loaded
   const imgUrl = fighter && !failed ? imageUrl : null
   const sizeClass = large ? 'h-14 w-14 sm:h-16 sm:w-16' : 'h-10 w-10'
-  const toneClass = corner === 'red' ? 'from-[#C8102E]/30' : 'from-[#2F5FA8]/30'
+  const toneClass = corner === 'red' ? '' : ''
 
   return (
-    <span title={credit ? photoRightsText(credit, i18n.language) : undefined} className={`relative grid shrink-0 place-items-center overflow-hidden rounded-2xl border border-[var(--line-soft)] bg-gradient-to-br ${toneClass} to-[var(--avatar-bg)] ${sizeClass}`}>
+    <span title={credit ? photoRightsText(credit, i18n.language) : undefined} className={`relative grid shrink-0 place-items-center overflow-hidden rounded-2xl border border-[var(--line-soft)] ${toneClass}${sizeClass}`}>
       {imgUrl && !failed ? (
         <img
           src={imgUrl}

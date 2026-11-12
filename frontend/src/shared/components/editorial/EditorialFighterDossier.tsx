@@ -316,7 +316,7 @@ export function EditorialFighterDossier({
         </header>
 
         {/* HERO SECTION: ATHLETE HEADER */}
-        <section className="relative mt-8 sm:mt-12 overflow-hidden border border-[var(--rule)] dark: dark: dark: p-6 sm:p-10 lg:p-12 shadow-2xl">
+        <section className="relative mt-8 sm:mt-12 overflow-hidden border border-[var(--rule)] p-6 sm:p-10 lg:p-12">
           {/* Gigantic Watermark Name in Background */}
           <div className="pointer-events-none absolute -bottom-4 right-0 select-none overflow-hidden text-right leading-none opacity-5">
             <span className="font-black text-[var(--ink)] text-[120px] sm:text-[180px] lg:text-[240px]">
@@ -429,7 +429,7 @@ export function EditorialFighterDossier({
             >
               <div className="relative h-72 w-72 sm:h-96 sm:w-96 lg:h-[440px] lg:w-[440px]">
                 {/* Visual Halo / Glow */}
-                <div className="absolute inset-0 rounded-full blur-2xl opacity-60" />
+                <div className="absolute inset-0 rounded-full opacity-60" />
 
                 <PhotoCredit imageUrl={primaryImageUrl} className="right-0 bottom-6" />
                 {primaryImageUrl ? (
@@ -455,7 +455,7 @@ export function EditorialFighterDossier({
 
         {/* COMPARISON BAR (IF OPPONENT SELECTED) */}
         {comparisonMode && (
-          <section className="mt-8 border border-[var(--ink)] dark: dark: dark: p-6 shadow-xl">
+          <section className="mt-8 border border-[var(--ink)] p-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               {/* Fighter A */}
               <div className="flex items-center gap-4">
@@ -477,7 +477,7 @@ export function EditorialFighterDossier({
 
               {/* VS Badge & AI Prediction */}
               <div className="flex flex-col items-center">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--rule)] bg-[var(--panel)] shadow-inner font-black text-lg text-[var(--ink)]">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--rule)] bg-[var(--panel)] font-black text-lg text-[var(--ink)]">
                   VS
                 </div>
                 {prediction && (
@@ -544,7 +544,7 @@ export function EditorialFighterDossier({
             <motion.div
               whileHover={{ y: -4 }}
               transition={{ duration: 0.2 }}
-              className="surface-card relative overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] p-5 sm:p-6 shadow-sm"
+              className="surface-card relative overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] p-5 sm:p-6"
             >
               <div className="flex items-center justify-between text-[var(--muted)]">
                 <span className="text-label font-bold text-[var(--gold)]">
@@ -579,7 +579,7 @@ export function EditorialFighterDossier({
             <motion.div
               whileHover={{ y: -4 }}
               transition={{ duration: 0.2 }}
-              className="surface-card relative overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] p-5 sm:p-6 shadow-sm"
+              className="surface-card relative overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] p-5 sm:p-6"
             >
               <div className="flex items-center justify-between text-[var(--muted)]">
                 <span className="text-label font-bold text-[var(--ink)]">
@@ -617,7 +617,7 @@ export function EditorialFighterDossier({
             <motion.div
               whileHover={{ y: -4 }}
               transition={{ duration: 0.2 }}
-              className="surface-card relative overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] p-5 sm:p-6 shadow-sm"
+              className="surface-card relative overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] p-5 sm:p-6"
             >
               <div className="flex items-center justify-between text-[var(--muted)]">
                 <span className="text-label font-bold text-[var(--positive)]">
@@ -652,7 +652,7 @@ export function EditorialFighterDossier({
             <motion.div
               whileHover={{ y: -4 }}
               transition={{ duration: 0.2 }}
-              className="surface-card relative overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] p-5 sm:p-6 shadow-sm"
+              className="surface-card relative overflow-hidden border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] p-5 sm:p-6"
             >
               <div className="flex items-center justify-between text-[var(--muted)]">
                 <span className="text-label font-bold text-[var(--ink)]">
