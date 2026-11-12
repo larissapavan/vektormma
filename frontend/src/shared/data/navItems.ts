@@ -15,17 +15,24 @@ export const NAV_I18N_KEYS: Record<string, string> = {
   Champions: 'nav.champions',
   Game: 'nav.career',
   About: 'nav.about',
+  RecordBook: 'nav.recordBook',
+  Analysis: 'nav.matchup',
+  Cancelled: 'nav.cancelled',
 }
 
+// One entry per page: the matchup and champions pages used to sit under a second row of tabs that repeated this menu.
 const ufcNavItems: NavItem[] = [
-  { to: '/predictor', label: 'Predict', group: ['/predictor', '/matchup-intelligence', '/cancelled-fights'] },
+  { to: '/predictor', label: 'Predict' },
   { to: '/head-to-head', label: 'Compare' },
   { to: '/fighters', label: 'Fighters' },
   { to: '/events', label: 'Events' },
   { to: '/results', label: 'Results' },
   { to: '/rankings', label: 'Rankings' },
+  { to: '/champions', label: 'Champions' },
+  { to: '/record-book', label: 'RecordBook' },
   { to: '/gyms', label: 'Gyms', section: true },
-  { to: '/champions', label: 'Champions', group: ['/champions', '/record-book'] },
+  { to: '/matchup-intelligence', label: 'Analysis' },
+  { to: '/cancelled-fights', label: 'Cancelled' },
   { to: '/career', label: 'Game' },
 ]
 

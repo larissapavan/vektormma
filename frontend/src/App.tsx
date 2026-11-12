@@ -51,18 +51,6 @@ const OrgRankings = lazy(() => import('./pages/org/OrgRankings').then((module) =
 const OrgChampions = lazy(() => import('./pages/org/OrgChampions').then((module) => ({ default: module.OrgChampions })))
 const OrgPredictor = lazy(() => import('./pages/org/OrgPredictor').then((module) => ({ default: module.OrgPredictor })))
 
-const matchupTabs: SectionTab[] = [
-  { to: '/predictor', label: 'Predict', labelKey: 'nav.predict' },
-  { to: '/head-to-head', label: 'Head-to-Head', labelKey: 'nav.headToHead' },
-  { to: '/matchup-intelligence', label: 'Matchup', labelKey: 'nav.matchup' },
-  { to: '/cancelled-fights', label: 'Never happened', labelKey: 'nav.cancelled' },
-]
-
-const championsTabs: SectionTab[] = [
-  { to: '/champions', label: 'Champions', labelKey: 'nav.champions' },
-  { to: '/record-book', label: 'Record book', labelKey: 'nav.recordBook' },
-]
-
 const aboutTabs: SectionTab[] = [
   { to: '/about', label: 'About', labelKey: 'nav.about' },
   { to: '/data', label: 'Data', labelKey: 'nav.data' },
@@ -79,12 +67,10 @@ function App() {
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/home" element={<Home />} />
-              <Route element={<TabbedLayout label="Matchup tools" tabs={matchupTabs} />}>
-                <Route path="/predictor" element={<Predictor />} />
-                <Route path="/head-to-head" element={<HeadToHead />} />
-                <Route path="/matchup-intelligence" element={<MatchupIntelligence />} />
-                <Route path="/cancelled-fights" element={<CancelledFights />} />
-              </Route>
+              <Route path="/predictor" element={<Predictor />} />
+              <Route path="/head-to-head" element={<HeadToHead />} />
+              <Route path="/matchup-intelligence" element={<MatchupIntelligence />} />
+              <Route path="/cancelled-fights" element={<CancelledFights />} />
               <Route path="/career" element={<Career />} />
               <Route path="/fighters" element={<Fighters />} />
               <Route path="/athlete" element={<AthleteDossier />} />
@@ -95,10 +81,8 @@ function App() {
               <Route path="/rankings" element={<Rankings />} />
               <Route path="/gyms" element={<Gyms />} />
               <Route path="/gyms/:slug" element={<GymDetail />} />
-              <Route element={<TabbedLayout label="Champions and records" tabs={championsTabs} />}>
-                <Route path="/champions" element={<Champions />} />
-                <Route path="/record-book" element={<RecordBook />} />
-              </Route>
+              <Route path="/champions" element={<Champions />} />
+              <Route path="/record-book" element={<RecordBook />} />
               <Route element={<TabbedLayout label="About this project" tabs={aboutTabs} />}>
                 <Route path="/about" element={<About />} />
                 <Route path="/data" element={<DataIntelligence />} />

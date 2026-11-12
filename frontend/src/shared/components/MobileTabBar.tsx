@@ -1,4 +1,4 @@
-import { CalendarDays, ClipboardList, Dumbbell, Ellipsis, Gamepad2, ListOrdered, Scale, Swords, Trophy, Users, type LucideIcon } from 'lucide-react'
+import { BarChart3, BookOpen, CalendarDays, CalendarX, ClipboardList, Dumbbell, Ellipsis, Gamepad2, ListOrdered, Scale, Swords, Trophy, Users, type LucideIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -16,11 +16,14 @@ const ICONS: Record<string, LucideIcon> = {
   Rankings: ListOrdered,
   Gyms: Dumbbell,
   Champions: Trophy,
+  RecordBook: BookOpen,
+  Analysis: BarChart3,
+  Cancelled: CalendarX,
   Game: Gamepad2,
 }
 
 /** What the bar shows first on a phone; anything else goes under "More". */
-const PRIMARY_ORDER = ['Predict', 'Compare', 'Fighters', 'Events', 'Rankings', 'Champions', 'Results', 'Gyms', 'Game']
+const PRIMARY_ORDER = ['Predict', 'Compare', 'Fighters', 'Events', 'Rankings', 'Champions', 'Results', 'RecordBook', 'Gyms', 'Analysis', 'Cancelled', 'Game']
 /** Five slots fit a 320px phone with a readable label under each icon. */
 const SLOTS = 5
 
