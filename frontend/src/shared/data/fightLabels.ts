@@ -6,24 +6,24 @@ const METHOD_LABELS: Record<UiLang, Record<string, string>> = {
     'KO/TKO': 'KO/TKO',
     Submission: 'Submission',
     Decision: 'Decision',
-    'U-DEC': 'Unanimous Decision',
-    'S-DEC': 'Split Decision',
-    'M-DEC': 'Majority Decision',
+    'U-DEC': 'Unanimous decision',
+    'S-DEC': 'Split decision',
+    'M-DEC': 'Majority decision',
     Disqualification: 'Disqualification',
     DQ: 'Disqualification',
-    Overturned: 'No Contest (NC)',
+    Overturned: 'No contest (NC)',
     Other: 'Other',
   },
   pt: {
     'KO/TKO': 'Nocaute (KO/TKO)',
     Submission: 'Finalização',
     Decision: 'Decisão',
-    'U-DEC': 'Decisão Unânime',
-    'S-DEC': 'Decisão Dividida',
-    'M-DEC': 'Decisão Majoritária',
+    'U-DEC': 'Decisão unânime',
+    'S-DEC': 'Decisão dividida',
+    'M-DEC': 'Decisão majoritária',
     Disqualification: 'Desqualificação (DQ)',
     DQ: 'Desqualificação (DQ)',
-    Overturned: 'Sem Resultado (NC)',
+    Overturned: 'Sem resultado (NC)',
     Other: 'Outro',
   },
   fr: {
@@ -209,7 +209,7 @@ const TECHNIQUES: Record<UiLang, Record<string, string> | null> = { en: null, pt
 
 /** The words a method is built from ("Submission", "Decision", ...) in each language. */
 export const METHOD_WORDS: Record<Exclude<UiLang, 'en'>, { submission: string; decision: string; unanimous: string; split: string; majority: string; noContest: string; disqualification: string }> = {
-  pt: { submission: 'Finalização', decision: 'Decisão', unanimous: 'Decisão Unânime', split: 'Decisão Dividida', majority: 'Decisão Majoritária', noContest: 'Sem Resultado (NC)', disqualification: 'Desqualificação (DQ)' },
+  pt: { submission: 'Finalização', decision: 'Decisão', unanimous: 'Decisão unânime', split: 'Decisão dividida', majority: 'Decisão majoritária', noContest: 'Sem resultado (NC)', disqualification: 'Desqualificação (DQ)' },
   fr: { submission: 'Soumission', decision: 'Décision', unanimous: 'Décision unanime', split: 'Décision partagée', majority: 'Décision majoritaire', noContest: 'Sans résultat (NC)', disqualification: 'Disqualification (DQ)' },
   es: { submission: 'Sumisión', decision: 'Decisión', unanimous: 'Decisión unánime', split: 'Decisión dividida', majority: 'Decisión mayoritaria', noContest: 'Sin resultado (NC)', disqualification: 'Descalificación (DQ)' },
 }

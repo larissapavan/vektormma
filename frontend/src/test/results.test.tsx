@@ -40,6 +40,15 @@ describe('the recent results page', () => {
     expect(within(summary).getByText('1 of 2')).toBeInTheDocument()
   })
 
+  it('shows UFC events only, and counts only their fights', async () => {
+    renderResults()
+    await screen.findByText('UFC 900: Alpha vs. Beta', undefined, { timeout: 10000 })
+    expect(screen.queryByText('Rizin 99')).toBeNull()
+    const summary = screen.getByRole('heading', { level: 1, name: 'Recent results' }).closest('header')!
+    // The API's own total (2 of 3) includes the RIZIN pick; the page counts the UFC's 1 of 2.
+    expect(within(summary).getByText('1 of 2')).toBeInTheDocument()
+  })
+
   it('marks the model pick as right or wrong once the fight has a winner', async () => {
     renderResults()
     await screen.findByText('UFC 900: Alpha vs. Beta', undefined, { timeout: 10000 })

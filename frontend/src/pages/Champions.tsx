@@ -840,15 +840,15 @@ const FIGHT_ROLES: Record<Exclude<UiLang, 'en'>, {
   noContest: string
 }> = {
   pt: {
-    wonInterim: 'Conquistou o Cinturão Interino',
-    won: 'Conquistou o Cinturão',
-    defense: (num) => `Defesa de Cinturão #${num}`,
-    defended: 'Defesa de Cinturão',
-    lost: 'Perdeu o Cinturão',
-    challengeLost: 'Derrota em Disputa de Cinturão',
-    titleFightWin: 'Vitória em Disputa de Cinturão',
-    draw: 'Empate em Disputa de Cinturão',
-    noContest: 'Sem Resultado em Disputa de Cinturão',
+    wonInterim: 'Conquistou o cinturão interino',
+    won: 'Conquistou o cinturão',
+    defense: (num) => `Defesa de cinturão nº ${num}`,
+    defended: 'Defesa de cinturão',
+    lost: 'Perdeu o cinturão',
+    challengeLost: 'Derrota em disputa de cinturão',
+    titleFightWin: 'Vitória em disputa de cinturão',
+    draw: 'Empate em disputa de cinturão',
+    noContest: 'Sem resultado em disputa de cinturão',
   },
   fr: {
     wonInterim: 'A remporté la ceinture intérimaire',

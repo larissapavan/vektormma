@@ -438,8 +438,8 @@ export const routes: Record<string, unknown> = {
   '/results/recent': {
     since: '2026-11-02',
     until: '2026-11-08',
-    picks_resolved: 2,
-    picks_correct: 1,
+    picks_resolved: 3,
+    picks_correct: 2,
     events: [
       {
         org_id: 'ufc',
@@ -453,6 +453,19 @@ export const routes: Record<string, unknown> = {
           { fighter_1: 'Alpha One', fighter_2: 'Beta Two', winner: 'Alpha One', outcome: 'win', weight_class: 'Lightweight', stage: null, method: 'KO/TKO', method_detail: 'Punches', round: 1, time: '2:10', title_fight: true, discipline: null, pick: { predicted_winner: 'Alpha One', confidence: 0.71, correct: true } },
           { fighter_1: 'Gamma Three', fighter_2: 'Delta Four', winner: 'Delta Four', outcome: 'win', weight_class: 'Welterweight', stage: null, method: 'U-DEC', method_detail: null, round: 3, time: '5:00', title_fight: null, discipline: null, pick: { predicted_winner: 'Gamma Three', confidence: 0.6, correct: false } },
           { fighter_1: 'Eps Five', fighter_2: 'Zeta Six', winner: null, outcome: 'pending', weight_class: null, stage: null, method: null, method_detail: null, round: null, time: null, title_fight: null, discipline: null, pick: null },
+        ],
+      },
+      // Another organization's event: the API returns it, the UFC results page leaves it out of the list and the numbers.
+      {
+        org_id: 'rizin',
+        org_name: 'RIZIN',
+        name: 'Rizin 99',
+        date: '2026-11-08',
+        location: 'Saitama, Japan',
+        decided: 1,
+        total: 1,
+        fights: [
+          { fighter_1: 'Eta Seven', fighter_2: 'Theta Eight', winner: 'Eta Seven', outcome: 'win', weight_class: 'Lightweight', stage: null, method: 'SUB', method_detail: null, round: 2, time: '1:00', title_fight: null, discipline: null, pick: { predicted_winner: 'Eta Seven', confidence: 0.6, correct: true } },
         ],
       },
     ],

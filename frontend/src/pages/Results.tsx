@@ -13,7 +13,8 @@ import { fightSummary } from '../shared/data/orgFormat'
 import { useRecentResults } from '../shared/hooks/useRecentResults'
 import type { ResultEvent, ResultFight } from '../shared/types/api'
 
-const WINDOWS = [3, 7, 14] as const
+// The UFC holds about one event a week, so the shortest window is a week. The API takes up to 31 days.
+const WINDOWS = [7, 14, 30] as const
 
 function dayLabel(date: string, lang: string) {
   const parsed = new Date(`${date}T00:00:00`)
@@ -39,31 +40,35 @@ export function Results() {
   const [days, setDays] = useState<number>(7)
   const { data, loading, error } = useRecentResults(days)
 
-  const decided = data ? data.events.reduce((total, event) => total + event.decided, 0) : 0
-  const accuracy = data && data.picks_resolved ? data.picks_correct / data.picks_resolved : null
+  // The API returns every organization's events; this page is the UFC's, and its numbers count UFC fights only.
+  const events = data ? data.events.filter((event) => event.org_id === 'ufc') : []
+  const decided = events.reduce((total, event) => total + event.decided, 0)
+  const resolved = events.flatMap((event) => event.fights).filter((fight) => fight.pick && fight.pick.correct != null)
+  const correct = resolved.filter((fight) => fight.pick?.correct).length
+  const accuracy = resolved.length ? correct / resolved.length : null
   const number = (value: number) => value.toLocaleString(localeTag(lang))
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6">
       <PageHeader
         title={L(lang, 'Resultados recentes', 'Recent results', 'Résultats récents', 'Resultados recientes')}
         description={L(
           lang,
-          'Os eventos mais recentes de todas as organizações, com o resultado oficial ao lado do palpite que o modelo deu antes de cada luta.',
-          'The latest events from every organization, with the official result next to the pick the model made before each fight.',
-          'Les derniers événements de toutes les organisations, avec le résultat officiel à côté du pronostic fait par le modèle avant chaque combat.',
-          'Los eventos más recientes de todas las organizaciones, con el resultado oficial junto al pronóstico que dio el modelo antes de cada pelea.',
+          'Os eventos mais recentes do UFC, com o resultado oficial ao lado do palpite que o modelo deu antes de cada luta.',
+          'The latest UFC events, with the official result next to the pick the model made before each fight.',
+          'Les derniers événements de l’UFC, avec le résultat officiel à côté du pronostic fait par le modèle avant chaque combat.',
+          'Los eventos más recientes de la UFC, con el resultado oficial junto al pronóstico que dio el modelo antes de cada pelea.',
         )}
         stats={
           data
             ? [
-                { label: L(lang, 'eventos', 'events', 'événements', 'eventos'), value: number(data.events.length) },
+                { label: L(lang, 'eventos', 'events', 'événements', 'eventos'), value: number(events.length) },
                 { label: L(lang, 'lutas com resultado', 'fights with a result', 'combats avec résultat', 'peleas con resultado'), value: number(decided) },
                 {
                   label: L(lang, 'acertos do modelo', 'model picks right', 'pronostics justes', 'aciertos del modelo'),
                   value: accuracy == null ? '—' : new Intl.NumberFormat(localeTag(lang), { style: 'percent' }).format(accuracy),
-                  note: data.picks_resolved
-                    ? L(lang, `${data.picks_correct} de ${data.picks_resolved}`, `${data.picks_correct} of ${data.picks_resolved}`, `${data.picks_correct} sur ${data.picks_resolved}`, `${data.picks_correct} de ${data.picks_resolved}`)
+                  note: resolved.length
+                    ? L(lang, `${correct} de ${resolved.length}`, `${correct} of ${resolved.length}`, `${correct} sur ${resolved.length}`, `${correct} de ${resolved.length}`)
                     : undefined,
                 },
               ]
@@ -91,18 +96,18 @@ export function Results() {
         <LoadingSkeleton className="h-[220px]" />
       ) : data ? (
         <>
-          {data.events.length === 0 ? (
+          {events.length === 0 ? (
             <p className="bg-[var(--panel)] px-6 py-10 text-base text-[var(--muted)]">
               {L(
                 lang,
-                'Nenhum evento com resultado nesse período. Escolha um período maior acima.',
-                'No event with results in this period. Choose a longer period above.',
-                'Aucun événement avec résultats sur cette période. Choisissez une période plus longue ci-dessus.',
-                'Ningún evento con resultados en este período. Elige un período más largo arriba.',
+                'Nenhum evento do UFC com resultado nesse período. Escolha um período maior acima.',
+                'No UFC event with results in this period. Choose a longer period above.',
+                'Aucun événement de l’UFC avec résultats sur cette période. Choisissez une période plus longue ci-dessus.',
+                'Ningún evento de la UFC con resultados en este período. Elige un período más largo arriba.',
               )}
             </p>
           ) : (
-            byDay(data.events).map((day) => (
+            byDay(events).map((day) => (
               <section key={day.date} className="space-y-6">
                 <h2 className="section-title">{dayLabel(day.date, lang)}</h2>
                 {day.events.map((event) => (
@@ -131,7 +136,6 @@ function EventBlock({ event }: { event: ResultEvent }) {
     <article>
       <header className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 pb-3">
         <div className="min-w-0">
-          <p className="text-[15px] font-bold text-[var(--muted)]">{event.org_name}</p>
           <h3 className="font-display text-[28px] font-extrabold leading-none sm:text-[32px]">{event.name}</h3>
           {event.location ? <p className="mt-1 text-[15px] text-[var(--muted)]">{event.location}</p> : null}
         </div>

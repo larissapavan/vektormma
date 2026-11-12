@@ -170,7 +170,7 @@ describe('where a profile link goes', () => {
 
 describe('how an organization’s numbers are written', () => {
   it('method, round and time read like the UFC pages', () => {
-    expect(formatMethod('U-DEC')).toBe('Unanimous Decision')
+    expect(formatMethod('U-DEC')).toBe('Unanimous decision')
     expect(formatMethod('SUB', 'Armbar')).toBe('Submission (Armbar)')
     expect(formatMethod('DEC')).toBe('Decision')
     expect(formatMethod(null)).toBeNull()
