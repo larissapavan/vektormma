@@ -45,7 +45,7 @@ describe('static text of the list pages', () => {
       const page = listPageBody('pt', path, text, data, context)
       for (const section of page?.sections ?? []) expect((section.bullets?.length ?? 0) + (section.paragraphs?.length ?? 0), `${path} ${section.heading}`).toBeGreaterThan(0)
     }
-    expect(listPageBody('pt', '/career', text, data, context)).toBeNull()
+    expect(listPageBody('pt', '/career', text, data, context)!.sections![0].bullets!.length).toBeGreaterThan(5)
   })
 
   it('names the divisions and the result of a fight in the language of the page', () => {

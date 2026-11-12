@@ -23,7 +23,7 @@ from backend.app.services.gyms_service import list_gyms
 from backend.app.services.org_service import get_org_events, get_org_fighters, get_org_rankings, get_org_upcoming_events, list_orgs
 from backend.app.services.rankings_service import get_rankings
 from backend.app.services.record_book_service import get_record_book
-from backend.app.services.track_record_service import get_track_record
+from backend.app.services.track_record_service import get_track_record, load_log
 
 OUTPUT_PATH = Path(__file__).resolve().parent.parent / "frontend" / "src" / "seo" / "pages.json"
 
@@ -81,12 +81,36 @@ def _rankings(rankings: list[dict]) -> list[dict]:
     ]
 
 
+def _picks() -> dict[tuple[str, str, str], dict]:
+    """The model's saved pick of each UFC fight, by day and the two names in alphabetical order."""
+    picks: dict[tuple[str, str, str], dict] = {}
+    for row in load_log().to_dict(orient="records"):
+        try:
+            probability = round(float(row["confidence"]), 4)
+        except (TypeError, ValueError):
+            continue
+        key = (str(row["event_date"])[:10], *sorted([str(row["fighter_1"]), str(row["fighter_2"])]))
+        picks[key] = {"winner": str(row["predicted_winner"]), "probability": probability}
+    return picks
+
+
+def _with_picks(events: list[dict], picks: dict) -> list[dict]:
+    """The events with the saved pick on each fight that has one (UFC cards only)."""
+    for event in events:
+        for fight in event["fights"]:
+            pick = picks.get((event["date"], *sorted([fight["a"], fight["b"]])))
+            if pick:
+                fight["pick"] = pick
+    return events
+
+
 def _ufc(today: str) -> dict:
     champions = [
         {"division": reign["division"], "champion": reign["champion"], "interim": reign.get("title_type") == "interim", "since": str(reign["date_won"])[:10], "defenses": _int(reign.get("defenses_count")) or 0}
         for reign in get_champions_data()["current_champions"]
     ]
     record = get_track_record()
+    saved = _picks()
     picks = [
         {"event": pick["event_name"], "date": str(pick["event_date"])[:10], "a": pick["fighter_1"], "b": pick["fighter_2"], "pick": pick["predicted_winner"], "confidence": round(float(pick["confidence"]), 4), "correct": bool(pick["correct"])}
         for pick in record.get("recent", [])
@@ -96,8 +120,8 @@ def _ufc(today: str) -> dict:
         for fight in get_cancelled_fights()
     ]
     return {
-        "upcoming": _events([event for event in get_upcoming_events() if str(event.get("date") or "") >= today], UPCOMING_EVENTS),
-        "results": _events([event for event in get_events() if str(event.get("date") or "") < today], RESULT_EVENTS),
+        "upcoming": _with_picks(_events([event for event in get_upcoming_events() if str(event.get("date") or "") >= today], UPCOMING_EVENTS), saved),
+        "results": _with_picks(_events([event for event in get_events() if str(event.get("date") or "") < today], RESULT_EVENTS), saved),
         "rankings": _rankings(get_rankings()),
         "champions": champions,
         "trackRecord": {"since": record.get("tracking_since"), "resolved": record.get("resolved"), "correct": record.get("correct"), "accuracy": record.get("accuracy"), "picks": picks},
@@ -130,7 +154,11 @@ def _record(fighter: dict) -> str | None:
 
 def _org(org_id: str, today: str) -> dict:
     fighters = get_org_fighters(org_id)
-    champions = [{"division": f.get("division"), "champion": f["name"], "interim": f.get("title_status") == "interim"} for f in fighters if f.get("belt") and f.get("division")]
+    champions = [
+        {"division": f.get("division"), "champion": f["name"], "interim": f.get("title_status") == "interim", "record": _record(f), "country": f.get("country") or None}
+        for f in fighters
+        if f.get("belt") and f.get("division")
+    ]
     # The roster page lists the busiest active fighters (or, for an archive with nobody active, the busiest of all).
     pool = [f for f in fighters if f.get("is_active")] or fighters
     roster = sorted(pool, key=lambda f: (-(_int(f.get("total_fights")) or 0), f["name"]))[:ROSTER_SIZE]

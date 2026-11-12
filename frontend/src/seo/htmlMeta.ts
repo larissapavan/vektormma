@@ -180,11 +180,24 @@ export interface BodyLink {
   href: string
 }
 
+/** A list item: plain text, or text with links in it ("1. ", {Islam Makhachev → /athlete/islam-makhachev}). */
+export type BodyItem = string | (string | BodyLink)[]
+
 export interface BodySection {
   heading: string
   paragraphs?: string[]
-  bullets?: string[]
+  bullets?: BodyItem[]
   links?: BodyLink[]
+}
+
+/** The text of an item without its links, for code that only needs the words. */
+export function itemText(item: BodyItem): string {
+  return typeof item === 'string' ? item : item.map((part) => (typeof part === 'string' ? part : part.label)).join('')
+}
+
+function itemHtml(item: BodyItem): string {
+  if (typeof item === 'string') return escapeHtml(item)
+  return item.map((part) => (typeof part === 'string' ? escapeHtml(part) : `<a href="${escapeHtml(part.href)}">${escapeHtml(part.label)}</a>`)).join('')
 }
 
 export interface BodyPage {
@@ -204,7 +217,7 @@ export function bodyHtml(page: BodyPage, nav: BodyLink[]): string {
   const sections = (page.sections ?? []).map((section) => {
     const parts = [`<h2>${escapeHtml(section.heading)}</h2>`]
     for (const paragraph of section.paragraphs ?? []) parts.push(`<p>${escapeHtml(paragraph)}</p>`)
-    if (section.bullets?.length) parts.push(`<ul>${section.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join('')}</ul>`)
+    if (section.bullets?.length) parts.push(`<ul>${section.bullets.map((bullet) => `<li>${itemHtml(bullet)}</li>`).join('')}</ul>`)
     if (section.links?.length) parts.push(linkList(section.links))
     return `<section>${parts.join('')}</section>`
   })

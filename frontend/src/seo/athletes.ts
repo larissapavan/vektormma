@@ -11,11 +11,11 @@ import { L, langPath, localeTag, type UiLang } from '../i18n/lang'
 import { cardPositionLabel } from '../shared/data/cardPosition'
 import { divisionOrder, getDivisionName } from '../shared/data/divisions'
 import { getMethodLabel, translateHometown, translateStance } from '../shared/data/fightLabels'
-import { localizeApiText } from '../shared/data/apiText'
+import { translateReason } from '../shared/data/confidenceText'
 import { formatProbability } from '../shared/data/probability'
 import { localizeFeature } from '../shared/utils/localizeFeature'
 import { normalizeFighterName } from '../shared/hooks/useFighterImages'
-import type { BodyLink, BodyPage, BodySection, RouteText } from './htmlMeta'
+import type { BodyItem, BodyLink, BodyPage, BodySection, RouteText } from './htmlMeta'
 
 export interface AthleteSeo {
   name: string
@@ -224,17 +224,19 @@ export function counted(count: number, one: string, many: string): string {
 }
 
 /** One line per fight: the day, the result and opponent, how it ended and the card. */
-function historyLine(lang: UiLang, fight: AthleteFight): string {
-  const who = fight.opponent
+/** The line of one fight; the opponent is a link to their page when `slugs` says they have one. */
+function historyLine(lang: UiLang, fight: AthleteFight, slugs?: ReadonlySet<string>): BodyItem {
+  const slug = athleteSlug(fight.opponent)
+  const who: string | BodyLink = slugs?.has(slug) ? { label: fight.opponent, href: langPath(lang, `/athlete/${slug}`) } : fight.opponent
   const outcome =
     fight.result === 'win'
-      ? L(lang, `vitória sobre ${who}`, `win over ${who}`, `victoire contre ${who}`, `victoria sobre ${who}`)
+      ? L(lang, 'vitória sobre ', 'win over ', 'victoire contre ', 'victoria sobre ')
       : fight.result === 'loss'
-        ? L(lang, `derrota para ${who}`, `loss to ${who}`, `défaite contre ${who}`, `derrota ante ${who}`)
+        ? L(lang, 'derrota para ', 'loss to ', 'défaite contre ', 'derrota ante ')
         : fight.result === 'draw'
-          ? L(lang, `empate com ${who}`, `draw with ${who}`, `match nul contre ${who}`, `empate con ${who}`)
-          : L(lang, `sem resultado contra ${who}`, `no contest against ${who}`, `sans résultat contre ${who}`, `sin resultado ante ${who}`)
-  const parts = [outcome]
+          ? L(lang, 'empate com ', 'draw with ', 'match nul contre ', 'empate con ')
+          : L(lang, 'sem resultado contra ', 'no contest against ', 'sans résultat contre ', 'sin resultado ante ')
+  const parts: string[] = []
   if (fight.result === 'win' || fight.result === 'loss') {
     const method = methodLabel(fight.method, lang)
     if (method) parts.push(method)
@@ -243,7 +245,7 @@ function historyLine(lang: UiLang, fight: AthleteFight): string {
   if (fight.event) parts.push(fight.event)
   if (fight.title) parts.push(L(lang, 'luta pelo cinturão', 'title fight', 'combat pour le titre', 'pelea por el título'))
   const colon = L(lang, ': ', ': ', ' : ', ': ')
-  return `${eventDay(fight.date, lang)}${colon}${parts.join(', ')}.`
+  return [`${eventDay(fight.date, lang)}${colon}${outcome}`, who, `${parts.length ? `, ${parts.join(', ')}` : ''}.`]
 }
 
 /** Two sentences that sum up the UFC fights on file: the tally, then how the wins came. */
@@ -328,16 +330,10 @@ export function athleteBody(lang: UiLang, athlete: AthleteSeo, fights: FightSeo[
   if (bullets.length) sections.push({ heading: t.facts, bullets })
   if (stats.averages.length) sections.push({ heading: L(lang, 'Médias da carreira no UFC', 'UFC career averages', 'Moyennes en carrière à l’UFC', 'Promedios de carrera en la UFC'), bullets: stats.averages })
   if (detail?.history.length) {
-    const opponents = new Map<string, BodyLink>()
-    for (const fight of detail.history) {
-      const slug = athleteSlug(fight.opponent)
-      if (slugs?.has(slug)) opponents.set(slug, { label: fight.opponent, href: langPath(lang, `/athlete/${slug}`) })
-    }
     sections.push({
       heading: L(lang, 'Histórico de lutas no UFC', 'UFC fight history', 'Historique des combats à l’UFC', 'Historial de peleas en la UFC'),
       paragraphs: [historySummary(lang, athlete.name, detail.history)],
-      bullets: detail.history.map((fight) => historyLine(lang, fight)),
-      links: [...opponents.values()],
+      bullets: detail.history.map((fight) => historyLine(lang, fight, slugs)),
     })
   }
 
@@ -399,7 +395,8 @@ function fightAnalysis(lang: UiLang, fight: FightSeo, extra: FightExtra): BodySe
 
   if (extra.factors?.length) {
     const toward = (name: string) => L(lang, `a favor de ${name}`, `in favor of ${name}`, `en faveur de ${name}`, `a favor de ${name}`)
-    const reasons = (extra.reasons ?? []).map((reason) => ({ reason, text: localizeApiText(reason, lang) })).filter(({ reason, text }) => lang === 'en' || text !== reason)
+    // A sentence the tables do not know would stay in English on another language's page: it is left out there.
+    const reasons = (extra.reasons ?? []).map((reason) => ({ reason, text: translateReason(reason, lang) })).filter(({ reason, text }) => lang === 'en' || text !== reason)
     sections.push({
       heading: L(lang, 'O que mais pesa nesta previsão', 'What weighs most on this pick', 'Ce qui pèse le plus dans ce pronostic', 'Lo que más pesa en este pronóstico'),
       paragraphs: [

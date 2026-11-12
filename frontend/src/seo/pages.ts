@@ -10,14 +10,17 @@ import { L, langPath, localeTag, type UiLang } from '../i18n/lang'
 import { ABOUT_SOURCES, sourceName, sourceUse } from '../shared/data/aboutSources'
 import { baselineName, localizeApiText } from '../shared/data/apiText'
 import { DATA_ECOSYSTEM_SOURCES, dataSteps, sourceOrg, sourceScope } from '../shared/data/dataPipeline'
+import { careerRules } from '../shared/data/careerRules'
 import { getDivisionName } from '../shared/data/divisions'
+import { localizeCountryName } from '../shared/data/fightLabels'
+import { eventPreview, eventRecap } from '../shared/data/eventText'
 import { shownMetrics } from '../shared/data/modelAccuracy'
 import { CATEGORY_TABLES, STAT_TITLE_TABLES, localizedLabel } from '../shared/data/recordBookLabels'
 import { GENERIC_ORGS, orgEs, orgFr, orgPt, type OrgConfig } from '../shared/data/orgs'
 import { formatProbability } from '../shared/data/probability'
 import { athleteSlug, counted, eventDay, isDecision, methodLabel, upcomingPicksSection, type FightSeo } from './athletes'
 import type { ModelInfo } from '../shared/types/api'
-import type { BodyLink, BodyPage, BodySection, RouteText } from './htmlMeta'
+import type { BodyItem, BodyLink, BodyPage, BodySection, RouteText } from './htmlMeta'
 
 export interface PageFight {
   a: string
@@ -28,6 +31,8 @@ export interface PageFight {
   time: string | null
   weightClass: string | null
   title: boolean
+  /** The model's pick saved before the fight (UFC cards only). */
+  pick?: { winner: string; probability: number }
 }
 
 export interface PageEvent {
@@ -49,6 +54,9 @@ export interface PageChampion {
   interim: boolean
   since?: string
   defenses?: number
+  /** Other organizations: the champion's record and country (the UFC gives the reign instead). */
+  record?: string | null
+  country?: string | null
 }
 
 export interface PageGym {
@@ -98,51 +106,58 @@ function division(weightClass: string | null, lang: UiLang): string | null {
   return weightClass ? getDivisionName(weightClass, lang) : null
 }
 
-/** "A vs. B, Peso Pesado, luta pelo cinturão" for an announced fight; "A venceu B, Decisão unânime" for one with a winner. */
-function fightLine(lang: UiLang, fight: PageFight): string {
-  const pair = `${fight.a} vs. ${fight.b}`
-  const parts: string[] = []
-  if (fight.winner === fight.a || fight.winner === fight.b) {
-    const loser = fight.winner === fight.a ? fight.b : fight.a
-    parts.push(L(lang, `${fight.winner} venceu ${loser}`, `${fight.winner} def. ${loser}`, `${fight.winner} bat ${loser}`, `${fight.winner} venció a ${loser}`))
-    const method = methodLabel(fight.method, lang)
-    if (method) parts.push(method)
-    if (!isDecision(fight.method) && fight.round) parts.push(`round ${fight.round}${fight.time ? ` (${fight.time})` : ''}`)
-  } else {
-    parts.push(pair)
-    if (fight.method) parts.push(L(lang, 'sem vencedor', 'no winner', 'sans vainqueur', 'sin ganador'))
-  }
-  const weight = division(fight.weightClass, lang)
-  if (weight) parts.push(weight)
-  if (fight.title) parts.push(titleFight(lang))
-  return `${parts.join(', ')}.`
+/** A fighter's name, as a link to their page when they have one. */
+function athleteItem(lang: UiLang, name: string, context?: PageContext): string | BodyLink {
+  const slug = athleteSlug(name)
+  return context?.athleteSlugs.has(slug) ? { label: name, href: langPath(lang, `/athlete/${slug}`) } : name
 }
 
-/** One section per card: its name, the day and place, and a line per fight. The UFC fights that have a page are linked. */
+/**
+ * "A vs. B, Peso Pesado, luta pelo cinturão" for an announced fight (linked to its page when it has one); "A venceu B,
+ * Decisão unânime" for one with a winner, the two names linked to their pages.
+ */
+function fightLine(lang: UiLang, fight: PageFight, context?: PageContext, fightHref?: string): BodyItem {
+  const tail: string[] = []
+  let head: BodyItem
+  if (fight.winner === fight.a || fight.winner === fight.b) {
+    const loser = fight.winner === fight.a ? fight.b : fight.a
+    const w = athleteItem(lang, fight.winner, context)
+    const l = athleteItem(lang, loser, context)
+    head = [w, L(lang, ' venceu ', ' def. ', ' bat ', ' venció a '), l]
+    const method = methodLabel(fight.method, lang)
+    if (method) tail.push(method)
+    if (!isDecision(fight.method) && fight.round) tail.push(`round ${fight.round}${fight.time ? ` (${fight.time})` : ''}`)
+  } else {
+    const pair = `${fight.a} vs. ${fight.b}`
+    head = fightHref ? [{ label: pair, href: fightHref }] : pair
+    if (fight.method) tail.push(L(lang, 'sem vencedor', 'no winner', 'sans vainqueur', 'sin ganador'))
+  }
+  const weight = division(fight.weightClass, lang)
+  if (weight) tail.push(weight)
+  if (fight.title) tail.push(titleFight(lang))
+  const rest = `${tail.length ? `, ${tail.join(', ')}` : ''}.`
+  return typeof head === 'string' ? `${head}${rest}` : [...head, rest]
+}
+
+/**
+ * One section per card: its name, the day and place, a short written read of the card (a preview before it, a recap after
+ * it) and a line per fight. The fights and fighters that have a page are linked in the line itself.
+ */
 function eventSections(lang: UiLang, events: PageEvent[], context?: PageContext): BodySection[] {
   const withPage = new Set(context?.fights.map((fight) => fight.slug))
   return events.map((event) => {
-    const links: BodyLink[] = []
-    for (const fight of event.fights) {
+    const fightHref = (fight: PageFight) => {
       const slug = `${athleteSlug(fight.a)}-vs-${athleteSlug(fight.b)}`
-      if (withPage.has(slug)) links.push({ label: `${fight.a} vs. ${fight.b}`, href: langPath(lang, `/fight/${slug}`) })
+      return withPage.has(slug) ? langPath(lang, `/fight/${slug}`) : undefined
     }
+    const decided = event.fights.some((fight) => fight.winner === fight.a || fight.winner === fight.b)
+    const read = decided ? eventRecap(lang, event.name, event.fights) : eventPreview(lang, event.name, event.fights)
     return {
       heading: event.name,
-      paragraphs: [`${eventDay(event.date, lang)}${event.location ? `, ${event.location}` : ''}.`],
-      bullets: event.fights.map((fight) => fightLine(lang, fight)),
-      links,
+      paragraphs: [`${eventDay(event.date, lang)}${event.location ? `, ${event.location}` : ''}.`, ...(read.length ? [read.join(' ')] : [])],
+      bullets: event.fights.map((fight) => fightLine(lang, fight, context, fightHref(fight))),
     }
   })
-}
-
-function athleteLinks(lang: UiLang, names: string[], context?: PageContext): BodyLink[] {
-  const links = new Map<string, BodyLink>()
-  for (const name of names) {
-    const slug = athleteSlug(name)
-    if (context?.athleteSlugs.has(slug)) links.set(slug, { label: name, href: langPath(lang, `/athlete/${slug}`) })
-  }
-  return [...links.values()]
 }
 
 /** "Pound-for-Pound (Men's)" and the division names, in the language of the page. */
@@ -156,17 +171,19 @@ function categoryName(lang: UiLang, ranking: PageRanking): string {
 function rankingSections(lang: UiLang, rankings: PageRanking[], context?: PageContext): BodySection[] {
   return rankings.map((ranking) => ({
     heading: categoryName(lang, ranking),
-    bullets: ranking.fighters.map((name, index) => `${index + 1}. ${name}`),
-    links: athleteLinks(lang, ranking.fighters, context),
+    bullets: ranking.fighters.map((name, index): BodyItem => [`${index + 1}. `, athleteItem(lang, name, context)]),
   }))
 }
 
 function championsSection(lang: UiLang, champions: PageChampion[], context?: PageContext): BodySection[] {
   if (!champions.length) return []
   const colon = L(lang, ': ', ': ', ' : ', ': ')
-  const line = (entry: PageChampion) => {
-    const parts = [`${getDivisionName(entry.division, lang)}${colon}${entry.champion}`]
-    if (entry.interim) parts[0] += ` (${L(lang, 'cinturão interino', 'interim title', 'ceinture intérimaire', 'título interino')})`
+  const line = (entry: PageChampion): BodyItem => {
+    const parts: string[] = []
+    if (entry.interim) parts.push(` (${L(lang, 'cinturão interino', 'interim title', 'ceinture intérimaire', 'título interino')})`)
+    if (entry.record) parts.push(L(lang, `cartel ${entry.record}`, `${entry.record} record`, `palmarès ${entry.record}`, `récord ${entry.record}`))
+    const country = entry.country ? localizeCountryName(entry.country, lang) : null
+    if (country) parts.push(country)
     if (entry.since) {
       const day = eventDay(entry.since, lang)
       parts.push(L(lang, `com o cinturão desde ${day}`, `title held since ${day}`, `ceinture détenue depuis le ${day}`, `con el título desde el ${day}`))
@@ -174,13 +191,14 @@ function championsSection(lang: UiLang, champions: PageChampion[], context?: Pag
     if (entry.defenses) {
       parts.push(L(lang, counted(entry.defenses, 'defesa de cinturão', 'defesas de cinturão'), counted(entry.defenses, 'title defense', 'title defenses'), counted(entry.defenses, 'défense de titre', 'défenses de titre'), counted(entry.defenses, 'defensa del título', 'defensas del título')))
     }
-    return `${parts.join(', ')}.`
+    // The interim note follows the name directly; the other facts come after a comma.
+    const [interim, ...facts] = entry.interim ? parts : ['', ...parts]
+    return [`${getDivisionName(entry.division, lang)}${colon}`, athleteItem(lang, entry.champion, context), `${interim}${facts.length ? `, ${facts.join(', ')}` : ''}.`]
   }
   return [
     {
       heading: L(lang, 'Campeões atuais', 'Current champions', 'Champions en titre', 'Campeones actuales'),
       bullets: champions.map(line),
-      links: athleteLinks(lang, champions.map((entry) => entry.champion), context),
     },
   ]
 }
@@ -213,20 +231,19 @@ function trackRecordSections(lang: UiLang, record: PagesData['ufc']['trackRecord
 
 function cancelledSection(lang: UiLang, fights: PagesData['ufc']['cancelled'], context?: PageContext): BodySection[] {
   if (!fights.length) return []
-  const line = (fight: PagesData['ufc']['cancelled'][number]) => {
-    const parts = [`${fight.a} vs. ${fight.b}`]
+  const line = (fight: PagesData['ufc']['cancelled'][number]): BodyItem => {
+    const parts: string[] = []
     const weight = division(fight.weightClass, lang)
     if (weight) parts.push(weight)
     if (fight.title) parts.push(titleFight(lang))
     if (fight.event) parts.push(fight.event)
     if (fight.date) parts.push(eventDay(fight.date, lang))
-    return `${parts.join(', ')}.`
+    return [athleteItem(lang, fight.a, context), ' vs. ', athleteItem(lang, fight.b, context), `${parts.length ? `, ${parts.join(', ')}` : ''}.`]
   }
   return [
     {
       heading: L(lang, 'Lutas marcadas que não aconteceram', 'Booked fights that never happened', 'Combats annoncés qui n’ont jamais eu lieu', 'Peleas pactadas que nunca se dieron'),
       bullets: fights.map(line),
-      links: athleteLinks(lang, fights.flatMap((fight) => [fight.a, fight.b]), context),
     },
   ]
 }
@@ -238,8 +255,10 @@ function recordBookSections(lang: UiLang, categories: PagesData['ufc']['recordBo
     .filter((category) => category.stats.length)
     .map((category) => ({
       heading: localizedLabel(lang, category.name, CATEGORY_TABLES, category.name),
-      bullets: category.stats.map((stat) => `${localizedLabel(lang, stat.title, STAT_TITLE_TABLES, stat.key)}${colon}${stat.leaders.map((leader, index) => `${index + 1}. ${leader.fighter} (${leader.value})`).join(', ')}`),
-      links: athleteLinks(lang, category.stats.flatMap((stat) => stat.leaders.map((leader) => leader.fighter)), context),
+      bullets: category.stats.map((stat): BodyItem => [
+        `${localizedLabel(lang, stat.title, STAT_TITLE_TABLES, stat.key)}${colon}`,
+        ...stat.leaders.flatMap((leader, index) => [`${index ? ', ' : ''}${index + 1}. `, athleteItem(lang, leader.fighter, context), ` (${leader.value})`]),
+      ]),
     }))
 }
 
@@ -363,12 +382,50 @@ function orgIntro(lang: UiLang, org: OrgConfig, data: OrgPages): string {
   )
 }
 
+/** The title fights among an organization's latest results: who won the belt or kept it, and how. */
+function titleFightsSection(lang: UiLang, org: OrgConfig, events: PageEvent[]): BodySection[] {
+  const fights = events.flatMap((event) => event.fights.filter((fight) => fight.title && (fight.winner === fight.a || fight.winner === fight.b)).map((fight) => ({ event, fight })))
+  if (!fights.length) return []
+  return [
+    {
+      heading: L(lang, `Lutas de cinturão mais recentes ${orgPt(org, 'de')}`, `Latest ${org.shortName} title fights`, `Derniers combats de titre ${orgFr(org, 'de')}`, `Últimas peleas por el título de ${orgEs(org)}`),
+      bullets: fights.map(({ event, fight }): BodyItem => {
+        const line = fightLine(lang, fight)
+        const where = `${event.name}, ${eventDay(event.date, lang)}: `
+        return typeof line === 'string' ? `${where}${line}` : [where, ...line]
+      }),
+    },
+  ]
+}
+
+/** What a champions page says about the belts of an organization, before the list. */
+function championsIntro(lang: UiLang, org: OrgConfig, champions: PageChampion[]): string {
+  const count = champions.length
+  const interim = champions.filter((entry) => entry.interim).length
+  const divisions = new Set(champions.map((entry) => entry.division)).size
+  const interimPart = interim
+    ? L(lang, `, ${counted(interim, 'deles interino', 'deles interinos')}`, `, ${interim} of them interim`, `, dont ${counted(interim, 'intérimaire', 'intérimaires')}`, `, ${counted(interim, 'de ellos interino', 'de ellos interinos')}`)
+    : ''
+  return L(
+    lang,
+    `${orgPt(org, 'O')} tem hoje ${counted(count, 'campeão', 'campeões')} em ${counted(divisions, 'categoria', 'categorias')}${interimPart}. A lista abaixo traz o cartel e o país de cada um.`,
+    `${org.shortName} currently has ${counted(count, 'champion', 'champions')} across ${counted(divisions, 'division', 'divisions')}${interimPart}. The list below gives each one’s record and country.`,
+    `${orgFr(org, 'Le')} compte aujourd’hui ${counted(count, 'champion', 'champions')} dans ${counted(divisions, 'catégorie', 'catégories')}${interimPart}. La liste ci-dessous donne le palmarès et le pays de chacun.`,
+    `${orgEs(org).charAt(0).toUpperCase()}${orgEs(org).slice(1)} tiene hoy ${counted(count, 'campeón', 'campeones')} en ${counted(divisions, 'categoría', 'categorías')}${interimPart}. La lista de abajo da el récord y el país de cada uno.`,
+  )
+}
+
 function orgSections(lang: UiLang, org: OrgConfig, section: string, data: OrgPages, gyms: PageGym[]): BodySection[] {
-  if (section === '') return [...championsSection(lang, data.champions), ...eventSections(lang, data.upcoming), ...eventSections(lang, data.results.slice(0, 2))]
+  // An organization with no card announced shows more of its latest results, so its home page still says something.
+  if (section === '') return [...championsSection(lang, data.champions), ...eventSections(lang, data.upcoming), ...eventSections(lang, data.results.slice(0, data.upcoming.length ? 2 : 3))]
   if (section === '/events' || section === '/predictor') return [...eventSections(lang, data.upcoming), ...(section === '/events' ? eventSections(lang, data.results) : [])]
   if (section === '/fighters') return rosterSection(lang, org, data)
   if (section === '/rankings') return rankingSections(lang, data.rankings)
-  if (section === '/champions') return championsSection(lang, data.champions)
+  if (section === '/champions') {
+    const list = championsSection(lang, data.champions)
+    if (list.length) list[0].paragraphs = [championsIntro(lang, org, data.champions)]
+    return [...list, ...titleFightsSection(lang, org, data.results)]
+  }
   if (section === '/gyms') return gymsSection(lang, gyms, `${org.basePath}/gyms`)
   return []
 }
@@ -397,6 +454,8 @@ function ufcSections(lang: UiLang, path: string, data: PagesData, context: PageC
     case '/predictor':
     case '/head-to-head':
       return upcomingPicksSection(lang, context.fights)
+    case '/career':
+      return [{ heading: L(lang, 'Como funciona', 'How it works', 'Comment ça marche', 'Cómo funciona'), bullets: careerRules(lang) }]
     default:
       return null
   }

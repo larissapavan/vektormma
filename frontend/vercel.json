@@ -2,33 +2,79 @@
   "redirects": [
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "fight-intelligence.vercel.app" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "fight-intelligence.vercel.app"
+        }
+      ],
       "destination": "https://www.vektormma.com/$1",
       "permanent": true
     },
-    { "source": "/matchup-intelligence", "destination": "/predictor", "permanent": true },
-    { "source": "/:lang(en|fr|es)/matchup-intelligence", "destination": "/:lang/predictor", "permanent": true },
-    { "source": "/about-model", "destination": "/model", "permanent": true },
-    { "source": "/:lang(en|fr|es)/about-model", "destination": "/:lang/model", "permanent": true }
+    {
+      "source": "/matchup-intelligence",
+      "destination": "/predictor",
+      "permanent": true
+    },
+    {
+      "source": "/:lang(en|fr|es)/matchup-intelligence",
+      "destination": "/:lang/predictor",
+      "permanent": true
+    },
+    {
+      "source": "/about-model",
+      "destination": "/model",
+      "permanent": true
+    },
+    {
+      "source": "/:lang(en|fr|es)/about-model",
+      "destination": "/:lang/model",
+      "permanent": true
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-        { "key": "Content-Security-Policy", "value": "frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
+        }
       ]
     },
     {
       "source": "/assets/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     },
     {
       "source": "/(og|fighter-photos)/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, stale-while-revalidate=604800"
+        }
+      ]
     }
   ],
   "rewrites": [
@@ -37,11 +83,43 @@
       "destination": "https://ufc-fight-predictor-api-production.up.railway.app/:path*"
     },
     {
-      "source": "/:lang(en|fr|es)/:path*",
+      "source": "/:lang(en|fr|es)/athlete",
       "destination": "/:lang/index.html"
     },
     {
-      "source": "/(.*)",
+      "source": "/:lang(en|fr|es)/athlete/:name",
+      "destination": "/:lang/index.html"
+    },
+    {
+      "source": "/:lang(en|fr|es)/fight/:pair",
+      "destination": "/:lang/index.html"
+    },
+    {
+      "source": "/:lang(en|fr|es)/gyms/:slug",
+      "destination": "/:lang/index.html"
+    },
+    {
+      "source": "/:lang(en|fr|es)/:org(pfl|one|bellator|rizin|ksw|lfa|cage-warriors|oktagon|jungle-fight|invicta)/gyms/:slug",
+      "destination": "/:lang/index.html"
+    },
+    {
+      "source": "/athlete",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/athlete/:name",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/fight/:pair",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/gyms/:slug",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/:org(pfl|one|bellator|rizin|ksw|lfa|cage-warriors|oktagon|jungle-fight|invicta)/gyms/:slug",
       "destination": "/index.html"
     }
   ]

@@ -8,6 +8,7 @@ import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { PageHeader } from '../shared/components/ui/PageHeader'
 import { sectionActionClass } from '../shared/components/ui/Section'
 import { getDivisionName } from '../shared/data/divisions'
+import { eventRecap } from '../shared/data/eventText'
 import { formatProbability } from '../shared/data/probability'
 import { fightSummary } from '../shared/data/orgFormat'
 import { useRecentResults } from '../shared/hooks/useRecentResults'
@@ -128,10 +129,24 @@ export function Results() {
   )
 }
 
-/** One event: its name and the fights as rows, official result beside the model's pick. */
+/** One event: its name, a short written recap, and the fights as rows, official result beside the model's pick. */
 function EventBlock({ event }: { event: ResultEvent }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
+  const recap = eventRecap(
+    lang,
+    event.name,
+    event.fights.map((fight) => ({
+      a: fight.fighter_1,
+      b: fight.fighter_2,
+      winner: fight.outcome === 'win' ? fight.winner : null,
+      method: fight.method,
+      round: fight.round,
+      weightClass: fight.weight_class,
+      title: fight.title_fight,
+      pick: fight.pick ? { winner: fight.pick.predicted_winner, probability: fight.pick.confidence } : null,
+    })),
+  )
   return (
     <article>
       <header className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 pb-3">
@@ -145,6 +160,7 @@ function EventBlock({ event }: { event: ResultEvent }) {
             : L(lang, `${event.decided} de ${event.total} lutas com resultado`, `${event.decided} of ${event.total} fights decided`, `${event.decided} combats sur ${event.total} terminés`, `${event.decided} de ${event.total} peleas con resultado`)}
         </p>
       </header>
+      {recap.length ? <p className="max-w-[70ch] pb-4 text-base leading-7">{recap.join(' ')}</p> : null}
       <table className="w-full border-t-[3px] border-[var(--ink)] text-left">
         <thead className="max-md:sr-only">
           <tr className="border-b border-[var(--rule)] text-[15px]">

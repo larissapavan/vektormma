@@ -116,7 +116,18 @@ function seoPages(): Plugin {
         }
       }
 
-      const sitemapPaths = ['/', ...paths, ...seo.athletes.map((athlete) => `/athlete/${athlete.slug}`), ...seo.fights.map((fight) => `/fight/${fight.slug}`)]
+      // Vercel answers an address with no file and no rewrite (vercel.json) with this page and a real 404 status. The app
+      // still starts on it and shows its own not-found screen in the visitor's language.
+      const ptNav: BodyLink[] = NAV_PATHS.filter((path) => data.pages.pt[path]).map((path) => ({ label: data.pages.pt[path].title, href: path }))
+      const notFound = template
+        .replace(/<title>[^<]*<\/title>/, () => `<title>Página não encontrada · ${data.site.name}</title>`)
+        .replace(/\s*<link rel="canonical"[^>]*>/, '')
+        .replace('</head>', () => '    <meta name="robots" content="noindex" />\n  </head>')
+        .replace('<div id="root"></div>', () => `<div id="root">${bodyHtml({ title: 'Página não encontrada', intro: 'A página que você procura não existe ou foi movida.' }, ptNav)}</div>`)
+      if (!notFound.includes('noindex') || notFound.includes('<div id="root"></div>')) throw new Error('seo: could not write 404.html')
+      writeFileSync(join(distDir, '404.html'), notFound)
+
+      const sitemapPaths =['/', ...paths, ...seo.athletes.map((athlete) => `/athlete/${athlete.slug}`), ...seo.fights.map((fight) => `/fight/${fight.slug}`)]
       writeFileSync(join(distDir, 'sitemap.xml'), sitemapXml(data.site.url, sitemapPaths, UI_LANGS))
     },
   }

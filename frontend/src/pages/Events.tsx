@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { CalendarClock, CalendarDays, ChevronDown, Gamepad2, Hash, MapPin, Search, Swords } from 'lucide-react'
 
 import { L, localeTag } from '../i18n/lang'
+import { eventPreview } from '../shared/data/eventText'
 import { translateHometown } from '../shared/data/fightLabels'
 import { formatMethod as formatMethodLabel } from '../shared/data/orgFormat'
 import { FighterProfileModal } from '../shared/components/FighterProfileModal'
@@ -371,6 +372,24 @@ function EventCard({
   onSimulate?: (event: EventSummary) => void
 }) {
   const { t, i18n } = useTranslation()
+  // A short written read of the card: only for one that has not happened yet, and only once its fights are listed.
+  const upcoming = event.fights.length > 0 && event.fights.every((fight) => !fight.winner)
+  const preview = upcoming
+    ? eventPreview(
+        i18n.language,
+        event.name,
+        event.fights.map((fight) => {
+          const pick = pickFor?.(event.name, fight.fighter_1, fight.fighter_2)
+          return {
+            a: fight.fighter_1,
+            b: fight.fighter_2,
+            weightClass: fight.weight_class,
+            title: fight.title_fight,
+            pick: pick ? { winner: pick.predicted_winner, probability: pick.probability } : null,
+          }
+        }),
+      )
+    : []
 
   return (
     <li className="border-b border-[var(--rule)]">
@@ -417,6 +436,8 @@ function EventCard({
               </button>
             ) : null}
           </div>
+
+          {preview.length ? <p className="mb-4 max-w-[70ch] text-base leading-7">{preview.join(' ')}</p> : null}
 
           {event.fights.length ? (
             <div className="grid gap-3">

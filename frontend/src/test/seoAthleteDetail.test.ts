@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
 
 import { UI_LANGS } from '../i18n/lang'
-import { athleteBody, fightBody, homeBody, type AthleteDetails, type SeoData } from '../seo/athletes'
+import { athleteBody, athleteSlug, fightBody, homeBody, type AthleteDetails, type SeoData } from '../seo/athletes'
 import type { PagesData } from '../seo/pages'
 import pagesJson from '../seo/pages.json'
 import details from '../seo/athleteDetails.json'
 import seo from '../seo/athletes.json'
-import { bodyHtml } from '../seo/htmlMeta'
+import { bodyHtml, itemText } from '../seo/htmlMeta'
 
 const data = seo as SeoData
 const byslug = details as AthleteDetails
@@ -25,7 +25,7 @@ describe('static athlete page with stats and fight history', () => {
       const page = athleteBody(lang, athlete, data.fights, detail, slugs)
       const history = page.sections!.find((section) => section.heading === headings[lang])!
       expect(history.bullets).toHaveLength(detail.history.length)
-      expect(history.bullets![0]).toContain(detail.history[0].opponent)
+      expect(itemText(history.bullets![0])).toContain(detail.history[0].opponent)
       expect(history.paragraphs![0]).toContain(athlete.name)
       const html = bodyHtml(page, [])
       expect(html).not.toMatch(/undefined|null|NaN/)
@@ -33,12 +33,15 @@ describe('static athlete page with stats and fight history', () => {
     expect(bodyHtml(athleteBody('pt', athlete, data.fights, detail, slugs), [])).toContain('Golpes significativos acertados por minuto: ')
   })
 
-  it('links only the opponents that have a page, inside the language', () => {
-    const athlete = data.athletes.find((entry) => byslug[entry.slug]?.history.some((fight) => slugs.has(fight.opponent.toLowerCase().replace(/ /g, '-'))))!
+  it('links the opponents that have a page in the line itself, inside the language, and lists no name twice', () => {
+    const athlete = data.athletes.find((entry) => byslug[entry.slug]?.history.some((fight) => slugs.has(athleteSlug(fight.opponent))))!
     const page = athleteBody('en', athlete, data.fights, byslug[athlete.slug], slugs)
-    const links = page.sections!.find((section) => section.heading === 'UFC fight history')!.links!
-    expect(links.length).toBeGreaterThan(0)
-    for (const link of links) expect(slugs.has(link.href.replace('/en/athlete/', '')), link.href).toBe(true)
+    const history = page.sections!.find((section) => section.heading === 'UFC fight history')!
+    expect(history.links ?? []).toHaveLength(0)
+    const html = bodyHtml(page, [])
+    const hrefs = [...html.matchAll(/href="\/en\/athlete\/([^"]+)"/g)].map((match) => match[1])
+    expect(hrefs.length).toBeGreaterThan(0)
+    for (const slug of hrefs) expect(slugs.has(slug), slug).toBe(true)
   })
 
   it('stays as before when the build passes no details', () => {
