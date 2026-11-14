@@ -77,7 +77,10 @@ def _build_catalog() -> pd.DataFrame:
         catalog["wins"] + catalog["losses"] + catalog["draws"]
     )
     catalog["total_fights"] = catalog["total_fights"].fillna(0).round().astype(int)
-    catalog["win_rate"] = catalog["wins"] / (catalog["wins"] + catalog["losses"] + catalog["draws"] + 1)
+    # The share of the fighter's record that are wins, as the pages show it (6-1 -> 86%); empty with no fights.
+    # The model computes its own smoothed win rate from wins and losses (src/ufc_predictor/features.py), not this one.
+    decided = catalog["wins"] + catalog["losses"] + catalog["draws"]
+    catalog["win_rate"] = catalog["wins"] / decided.where(decided > 0)
     catalog["rank_signal"] = catalog["belt"].map(lambda value: "Champion" if value else "Contender")
 
     catalog["ranking"] = pd.NA

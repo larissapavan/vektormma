@@ -1,4 +1,5 @@
 import pandas as pd
+import pytest
 
 from backend.app.services.bmf_service import BMF_FIGHTS_SOURCE_PATH
 
@@ -13,6 +14,16 @@ def test_fighters_returns_full_catalog(client):
     assert "name" in first
     assert "wins" in first
     assert "stance" in first
+
+
+def test_fighters_win_rate_is_the_share_of_the_record_won(client):
+    """The pages show win_rate as "% de vitórias": 6-1 must read 86%, not the model's smoothed 6 / (7 + 1)."""
+    for fighter in client.get("/fighters").json():
+        decided = fighter["wins"] + fighter["losses"] + fighter["draws"]
+        if decided:
+            assert fighter["win_rate"] == pytest.approx(fighter["wins"] / decided)
+        else:
+            assert fighter["win_rate"] is None
 
 
 def test_fighters_response_is_cacheable(client):
