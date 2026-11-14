@@ -105,3 +105,11 @@ fight_key,event_name,event_date,fighter_1,fighter_2,prob_fighter_1,predicted_win
 2027-02-06|benoit saint denis|quillan salkilld,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,Quillan Salkilld,Benoit Saint Denis,0.6315,Quillan Salkilld,0.6315,2026-11-06,,,,prefight
 2026-11-07|johnny walker|waldo cortes acosta,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Waldo Cortes Acosta,Johnny Walker,0.5327,Waldo Cortes Acosta,0.5327,2026-11-06,Johnny Walker,False,2026-11-08,prefight
 2027-02-06|bogdan guskov|robert whittaker,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,Bogdan Guskov,Robert Whittaker,0.4928,Robert Whittaker,0.5072,2026-11-06,,,,prefight
+2026-12-05|ian machado garry|yaroslav amosov,UFC Fight Night: Adesanya vs Magomedov,2026-12-05,Ian Machado Garry,Yaroslav Amosov,0.5980,Ian Machado Garry,0.5980,2026-11-14,,,,prefight
+2026-12-05|mario pinto|serghei spivac,UFC Fight Night: Adesanya vs Magomedov,2026-12-05,Serghei Spivac,Mario Pinto,0.2162,Mario Pinto,0.7838,2026-11-14,,,,prefight
+2026-12-05|akbar abdullaev|mairon santos,UFC Fight Night: Adesanya vs Magomedov,2026-12-05,Mairon Santos,Akbar Abdullaev,0.7238,Mairon Santos,0.7238,2026-11-14,,,,prefight
+2026-12-05|ion cutelaba|magomed tuchalov,UFC Fight Night: Adesanya vs Magomedov,2026-12-05,Magomed Tuchalov,Ion Cutelaba,0.7565,Magomed Tuchalov,0.7565,2026-11-14,,,,prefight
+2026-12-05|junyong park|marco tulio,UFC Fight Night: Adesanya vs Magomedov,2026-12-05,Marco Tulio,JunYong Park,0.6318,Marco Tulio,0.6318,2026-11-14,,,,prefight
+2026-12-05|mehemmedeli osmanli|pavel andrusca,UFC Fight Night: Adesanya vs Magomedov,2026-12-05,Pavel Andrusca,Mehemmedeli Osmanli,0.5702,Pavel Andrusca,0.5702,2026-11-14,,,,prefight
+2027-02-06|joanderson brito|kaan ofli,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,Kaan Ofli,Joanderson Brito,0.3358,Joanderson Brito,0.6642,2026-11-14,,,,prefight
+2027-02-06|joosang yoo|marwan rahiki,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,Marwan Rahiki,JooSang Yoo,0.6612,Marwan Rahiki,0.6612,2026-11-14,,,,prefight

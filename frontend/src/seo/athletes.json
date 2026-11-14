@@ -1081,6 +1081,34 @@
    "photo": "billy-ray-goff.webp"
   },
   {
+   "name": "Bo Hyun Park",
+   "slug": "bo-hyun-park",
+   "nickname": "The Witch",
+   "division": "Strawweight",
+   "wins": 10,
+   "losses": 3,
+   "draws": 0,
+   "belt": false,
+   "titles": [],
+   "country": null,
+   "countryCode": null,
+   "photo": null
+  },
+  {
+   "name": "Bo Meng",
+   "slug": "bo-meng",
+   "nickname": null,
+   "division": "Strawweight",
+   "wins": 24,
+   "losses": 8,
+   "draws": 0,
+   "belt": false,
+   "titles": [],
+   "country": null,
+   "countryCode": null,
+   "photo": null
+  },
+  {
    "name": "Bo Nickal",
    "slug": "bo-nickal",
    "nickname": null,
@@ -1407,13 +1435,13 @@
    "slug": "carlos-calderon",
    "nickname": "Chief",
    "division": "Featherweight",
-   "wins": 6,
-   "losses": 3,
+   "wins": 11,
+   "losses": 5,
    "draws": 0,
    "belt": false,
    "titles": [],
-   "country": null,
-   "countryCode": null,
+   "country": "United States",
+   "countryCode": "us",
    "photo": "carlos-calderon.webp?v=4d6c4d0e"
   },
   {
@@ -1812,7 +1840,7 @@
    ],
    "country": "France",
    "countryCode": "fr",
-   "photo": "ciryl-gane-champion.webp?v=a294b02b"
+   "photo": "ciryl-gane-champion.webp?v=fcd50c94"
   },
   {
    "name": "Claudio Puelles",
@@ -2009,6 +2037,20 @@
    "country": "United States",
    "countryCode": "us",
    "photo": "da-mon-blackshear.webp"
+  },
+  {
+   "name": "Dagiisuren Chagnaadorj",
+   "slug": "dagiisuren-chagnaadorj",
+   "nickname": null,
+   "division": "Featherweight",
+   "wins": 12,
+   "losses": 2,
+   "draws": 0,
+   "belt": false,
+   "titles": [],
+   "country": null,
+   "countryCode": null,
+   "photo": null
   },
   {
    "name": "Dakota Hope",
@@ -2828,7 +2870,7 @@
    "nickname": null,
    "division": "Welterweight",
    "wins": 6,
-   "losses": 0,
+   "losses": 1,
    "draws": 0,
    "belt": false,
    "titles": [],
@@ -3075,18 +3117,18 @@
    "photo": "geoff-neal.webp"
   },
   {
-   "name": "Gerald Meerschaert",
-   "slug": "gerald-meerschaert",
-   "nickname": "GM3",
-   "division": "Light Heavyweight",
-   "wins": 37,
-   "losses": 23,
+   "name": "George Mangos",
+   "slug": "george-mangos",
+   "nickname": null,
+   "division": "Featherweight",
+   "wins": 10,
+   "losses": 1,
    "draws": 0,
    "belt": false,
    "titles": [],
-   "country": "United States",
-   "countryCode": "us",
-   "photo": "gerald-meerschaert.webp"
+   "country": null,
+   "countryCode": null,
+   "photo": null
   },
   {
    "name": "Gianni Vazquez",
@@ -4057,6 +4099,20 @@
    "photo": "jimmy-crute.webp"
   },
   {
+   "name": "Jiniushiyue",
+   "slug": "jiniushiyue",
+   "nickname": "Little King Kong",
+   "division": "Flyweight",
+   "wins": 17,
+   "losses": 4,
+   "draws": 0,
+   "belt": false,
+   "titles": [],
+   "country": null,
+   "countryCode": null,
+   "photo": null
+  },
+  {
    "name": "Jiri Prochazka",
    "slug": "jiri-prochazka",
    "nickname": null,
@@ -4535,20 +4591,6 @@
    "photo": "julia-polastri.webp"
   },
   {
-   "name": "Julian Erosa",
-   "slug": "julian-erosa",
-   "nickname": "Juicy J",
-   "division": "Featherweight",
-   "wins": 32,
-   "losses": 14,
-   "draws": 0,
-   "belt": false,
-   "titles": [],
-   "country": "United States",
-   "countryCode": "us",
-   "photo": "julian-erosa.webp"
-  },
-  {
    "name": "Juliana Miller",
    "slug": "juliana-miller",
    "nickname": "Killer",
@@ -4646,7 +4688,7 @@
    ],
    "country": "United States",
    "countryCode": "us",
-   "photo": "justin-gaethje-champion.webp?v=hd2"
+   "photo": "justin-gaethje-champion.webp?v=82c6c02f"
   },
   {
    "name": "Kaan Ofli",
@@ -6965,20 +7007,6 @@
    "photo": "nora-cornolle.webp"
   },
   {
-   "name": "Norma Dumont",
-   "slug": "norma-dumont",
-   "nickname": "The Immortal",
-   "division": "Women's Bantamweight",
-   "wins": 13,
-   "losses": 4,
-   "draws": 0,
-   "belt": false,
-   "titles": [],
-   "country": "Brazil",
-   "countryCode": "br",
-   "photo": "norma-dumont.webp"
-  },
-  {
    "name": "Nursulton Ruziboev",
    "slug": "nursulton-ruziboev",
    "nickname": "Black",
@@ -7315,6 +7343,20 @@
    "country": "Australia",
    "countryCode": "au",
    "photo": "quillan-salkilld.webp"
+  },
+  {
+   "name": "Rabindra Dhant",
+   "slug": "rabindra-dhant",
+   "nickname": null,
+   "division": "Bantamweight",
+   "wins": 11,
+   "losses": 1,
+   "draws": 0,
+   "belt": false,
+   "titles": [],
+   "country": null,
+   "countryCode": null,
+   "photo": null
   },
   {
    "name": "Rafa Garcia",
@@ -7987,6 +8029,20 @@
    "country": "United States",
    "countryCode": "us",
    "photo": "ryan-spann.webp"
+  },
+  {
+   "name": "Ryo Tajima",
+   "slug": "ryo-tajima",
+   "nickname": null,
+   "division": "Bantamweight",
+   "wins": 12,
+   "losses": 3,
+   "draws": 0,
+   "belt": false,
+   "titles": [],
+   "country": null,
+   "countryCode": null,
+   "photo": null
   },
   {
    "name": "Said Nurmagomedov",
@@ -8675,6 +8731,20 @@
    "country": "China",
    "countryCode": "cn",
    "photo": "taiyilake-nueraji.webp"
+  },
+  {
+   "name": "Takaya Suzuki",
+   "slug": "takaya-suzuki",
+   "nickname": null,
+   "division": "Flyweight",
+   "wins": 9,
+   "losses": 1,
+   "draws": 0,
+   "belt": false,
+   "titles": [],
+   "country": null,
+   "countryCode": null,
+   "photo": null
   },
   {
    "name": "Talita Alencar",
@@ -9623,7 +9693,7 @@
     ],
     "country": "France",
     "countryCode": "fr",
-    "photo": "ciryl-gane-champion.webp?v=a294b02b"
+    "photo": "ciryl-gane-champion.webp?v=fcd50c94"
    },
    "b": {
     "name": "Josh Hokit",
@@ -9981,7 +10051,7 @@
    "date": "2026-11-14",
    "position": 10,
    "titleFight": false,
-   "weightClass": "Middleweight",
+   "weightClass": "Catch Weight",
    "a": {
     "name": "Donte Johnson",
     "slug": "donte-johnson",
@@ -10099,25 +10169,25 @@
    }
   },
   {
-   "slug": "adrian-yanez-vs-juan-diaz",
+   "slug": "alatengheili-vs-juan-diaz",
    "event": "UFC 334: Gane vs. Hokit",
    "date": "2026-11-14",
    "position": 13,
    "titleFight": false,
    "weightClass": "Bantamweight",
    "a": {
-    "name": "Adrian Yanez",
-    "slug": "adrian-yanez",
-    "nickname": null,
+    "name": "Alatengheili",
+    "slug": "alatengheili",
+    "nickname": "The Mongolian Knight",
     "division": "Bantamweight",
     "wins": 18,
-    "losses": 6,
-    "draws": 1,
+    "losses": 10,
+    "draws": 2,
     "belt": false,
     "titles": [],
-    "country": "United States",
-    "countryCode": "us",
-    "photo": "adrian-yanez.webp"
+    "country": "China",
+    "countryCode": "cn",
+    "photo": "alatengheili.webp"
    },
    "b": {
     "name": "Juan Diaz",
@@ -10132,11 +10202,6 @@
     "country": "Argentina",
     "countryCode": "ar",
     "photo": "juan-diaz.webp"
-   },
-   "pick": {
-    "winner": "Juan Diaz",
-    "probability": 0.6076,
-    "winnerIsA": false
    }
   },
   {
@@ -10222,51 +10287,10 @@
    }
   },
   {
-   "slug": "nikolas-motta-vs-dom-mar-fan",
-   "event": "UFC Fight Night: Prochazka vs. Stirling",
-   "date": "2026-11-21",
-   "position": 2,
-   "titleFight": false,
-   "weightClass": "Lightweight",
-   "a": {
-    "name": "Nikolas Motta",
-    "slug": "nikolas-motta",
-    "nickname": "Iron",
-    "division": "Lightweight",
-    "wins": 15,
-    "losses": 6,
-    "draws": 0,
-    "belt": false,
-    "titles": [],
-    "country": "Brazil",
-    "countryCode": "br",
-    "photo": "nikolas-motta.webp"
-   },
-   "b": {
-    "name": "Dom Mar Fan",
-    "slug": "dom-mar-fan",
-    "nickname": "Street Buddha",
-    "division": "Lightweight",
-    "wins": 9,
-    "losses": 3,
-    "draws": 0,
-    "belt": false,
-    "titles": [],
-    "country": "Australia",
-    "countryCode": "au",
-    "photo": "dom-mar-fan.webp"
-   },
-   "pick": {
-    "winner": "Dom Mar Fan",
-    "probability": 0.7846,
-    "winnerIsA": false
-   }
-  },
-  {
    "slug": "jacqueline-cavalcanti-vs-michelle-montague",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 3,
+   "position": 2,
    "titleFight": false,
    "weightClass": "Women's Bantamweight",
    "a": {
@@ -10304,51 +10328,10 @@
    }
   },
   {
-   "slug": "diyar-nurgozhay-vs-alik-lorenz",
-   "event": "UFC Fight Night: Prochazka vs. Stirling",
-   "date": "2026-11-21",
-   "position": 4,
-   "titleFight": false,
-   "weightClass": "Light Heavyweight",
-   "a": {
-    "name": "Diyar Nurgozhay",
-    "slug": "diyar-nurgozhay",
-    "nickname": null,
-    "division": "Light Heavyweight",
-    "wins": 12,
-    "losses": 2,
-    "draws": 0,
-    "belt": false,
-    "titles": [],
-    "country": "Kazakhstan",
-    "countryCode": "kz",
-    "photo": "diyar-nurgozhay.webp"
-   },
-   "b": {
-    "name": "Alik Lorenz",
-    "slug": "alik-lorenz",
-    "nickname": null,
-    "division": "Light Heavyweight",
-    "wins": 8,
-    "losses": 2,
-    "draws": 0,
-    "belt": false,
-    "titles": [],
-    "country": "United States",
-    "countryCode": "us",
-    "photo": "alik-lorenz.webp?v=6df398c2"
-   },
-   "pick": {
-    "winner": "Diyar Nurgozhay",
-    "probability": 0.5861,
-    "winnerIsA": true
-   }
-  },
-  {
    "slug": "aljamain-sterling-vs-kevin-vallejos",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 5,
+   "position": 3,
    "titleFight": false,
    "weightClass": "Featherweight",
    "a": {
@@ -10389,7 +10372,7 @@
    "slug": "dan-hooker-vs-brian-ortega",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 6,
+   "position": 4,
    "titleFight": false,
    "weightClass": "Lightweight",
    "a": {
@@ -10430,7 +10413,7 @@
    "slug": "asu-almabayev-vs-kyoji-horiguchi",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 7,
+   "position": 5,
    "titleFight": false,
    "weightClass": "Flyweight",
    "a": {
@@ -10471,7 +10454,7 @@
    "slug": "jared-cannonier-vs-ikram-aliskerov",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 8,
+   "position": 6,
    "titleFight": false,
    "weightClass": "Middleweight",
    "a": {
@@ -10512,7 +10495,7 @@
    "slug": "aleksandre-topuria-vs-santiago-luna",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 9,
+   "position": 7,
    "titleFight": false,
    "weightClass": "Bantamweight",
    "a": {
@@ -10553,7 +10536,7 @@
    "slug": "shamil-gaziev-vs-tallison-teixeira",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 10,
+   "position": 8,
    "titleFight": false,
    "weightClass": "Heavyweight",
    "a": {
@@ -10594,7 +10577,7 @@
    "slug": "amir-albazi-vs-alessandro-costa",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 11,
+   "position": 9,
    "titleFight": false,
    "weightClass": "Flyweight",
    "a": {
@@ -10635,7 +10618,7 @@
    "slug": "jake-matthews-vs-tahir-abdullayev",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 12,
+   "position": 10,
    "titleFight": false,
    "weightClass": "Welterweight",
    "a": {
@@ -10669,6 +10652,88 @@
    "pick": {
     "winner": "Jake Matthews",
     "probability": 0.529,
+    "winnerIsA": true
+   }
+  },
+  {
+   "slug": "nikolas-motta-vs-dom-mar-fan",
+   "event": "UFC Fight Night: Prochazka vs. Stirling",
+   "date": "2026-11-21",
+   "position": 11,
+   "titleFight": false,
+   "weightClass": "Lightweight",
+   "a": {
+    "name": "Nikolas Motta",
+    "slug": "nikolas-motta",
+    "nickname": "Iron",
+    "division": "Lightweight",
+    "wins": 15,
+    "losses": 6,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": "Brazil",
+    "countryCode": "br",
+    "photo": "nikolas-motta.webp"
+   },
+   "b": {
+    "name": "Dom Mar Fan",
+    "slug": "dom-mar-fan",
+    "nickname": "Street Buddha",
+    "division": "Lightweight",
+    "wins": 9,
+    "losses": 3,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": "Australia",
+    "countryCode": "au",
+    "photo": "dom-mar-fan.webp"
+   },
+   "pick": {
+    "winner": "Dom Mar Fan",
+    "probability": 0.7846,
+    "winnerIsA": false
+   }
+  },
+  {
+   "slug": "diyar-nurgozhay-vs-alik-lorenz",
+   "event": "UFC Fight Night: Prochazka vs. Stirling",
+   "date": "2026-11-21",
+   "position": 12,
+   "titleFight": false,
+   "weightClass": "Light Heavyweight",
+   "a": {
+    "name": "Diyar Nurgozhay",
+    "slug": "diyar-nurgozhay",
+    "nickname": null,
+    "division": "Light Heavyweight",
+    "wins": 12,
+    "losses": 2,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": "Kazakhstan",
+    "countryCode": "kz",
+    "photo": "diyar-nurgozhay.webp"
+   },
+   "b": {
+    "name": "Alik Lorenz",
+    "slug": "alik-lorenz",
+    "nickname": null,
+    "division": "Light Heavyweight",
+    "wins": 8,
+    "losses": 2,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": "United States",
+    "countryCode": "us",
+    "photo": "alik-lorenz.webp?v=6df398c2"
+   },
+   "pick": {
+    "winner": "Diyar Nurgozhay",
+    "probability": 0.5861,
     "winnerIsA": true
    }
   },
@@ -10747,6 +10812,11 @@
     "country": "Ukraine",
     "countryCode": "ua",
     "photo": "yaroslav-amosov.webp"
+   },
+   "pick": {
+    "winner": "Ian Machado Garry",
+    "probability": 0.598,
+    "winnerIsA": true
    }
   },
   {
@@ -10783,6 +10853,11 @@
     "country": "United Kingdom",
     "countryCode": "gb",
     "photo": "mario-pinto.webp"
+   },
+   "pick": {
+    "winner": "Mario Pinto",
+    "probability": 0.7838,
+    "winnerIsA": false
    }
   },
   {
@@ -10860,6 +10935,11 @@
     "country": "Kyrgyzstan",
     "countryCode": "kg",
     "photo": "akbar-abdullaev.webp"
+   },
+   "pick": {
+    "winner": "Mairon Santos",
+    "probability": 0.7238,
+    "winnerIsA": true
    }
   },
   {
@@ -10896,6 +10976,11 @@
     "country": "Moldova",
     "countryCode": "md",
     "photo": "ion-cutelaba.webp"
+   },
+   "pick": {
+    "winner": "Magomed Tuchalov",
+    "probability": 0.7565,
+    "winnerIsA": true
    }
   },
   {
@@ -11014,6 +11099,11 @@
     "country": "South Korea",
     "countryCode": "kr",
     "photo": "junyong-park.webp"
+   },
+   "pick": {
+    "winner": "Marco Tulio",
+    "probability": 0.6318,
+    "winnerIsA": true
    }
   },
   {
@@ -11050,6 +11140,11 @@
     "country": "Azerbaijan",
     "countryCode": "az",
     "photo": "mehemmedeli-osmanli-5345640.webp"
+   },
+   "pick": {
+    "winner": "Pavel Andrusca",
+    "probability": 0.5702,
+    "winnerIsA": true
    }
   },
   {
@@ -11713,46 +11808,10 @@
    }
   },
   {
-   "slug": "kaan-ofli-vs-joanderson-brito",
-   "event": "UFC Fight Night: Salkilld vs. Saint Denis",
-   "date": "2027-02-06",
-   "position": 3,
-   "titleFight": false,
-   "weightClass": "Featherweight",
-   "a": {
-    "name": "Kaan Ofli",
-    "slug": "kaan-ofli",
-    "nickname": "Genghis",
-    "division": "Featherweight",
-    "wins": 15,
-    "losses": 4,
-    "draws": 1,
-    "belt": false,
-    "titles": [],
-    "country": "Australia",
-    "countryCode": "au",
-    "photo": "kaan-ofli.webp"
-   },
-   "b": {
-    "name": "Joanderson Brito",
-    "slug": "joanderson-brito",
-    "nickname": "Tubarao",
-    "division": "Featherweight",
-    "wins": 20,
-    "losses": 5,
-    "draws": 1,
-    "belt": false,
-    "titles": [],
-    "country": "Brazil",
-    "countryCode": "br",
-    "photo": "joanderson-brito.webp"
-   }
-  },
-  {
    "slug": "marwan-rahiki-vs-joosang-yoo",
    "event": "UFC Fight Night: Salkilld vs. Saint Denis",
    "date": "2027-02-06",
-   "position": 4,
+   "position": 3,
    "titleFight": false,
    "weightClass": "Featherweight",
    "a": {
@@ -11782,6 +11841,196 @@
     "country": "South Korea",
     "countryCode": "kr",
     "photo": "joosang-yoo.webp"
+   },
+   "pick": {
+    "winner": "Marwan Rahiki",
+    "probability": 0.6612,
+    "winnerIsA": true
+   }
+  },
+  {
+   "slug": "kaan-ofli-vs-joanderson-brito",
+   "event": "UFC Fight Night: Salkilld vs. Saint Denis",
+   "date": "2027-02-06",
+   "position": 4,
+   "titleFight": false,
+   "weightClass": "Featherweight",
+   "a": {
+    "name": "Kaan Ofli",
+    "slug": "kaan-ofli",
+    "nickname": "Genghis",
+    "division": "Featherweight",
+    "wins": 15,
+    "losses": 4,
+    "draws": 1,
+    "belt": false,
+    "titles": [],
+    "country": "Australia",
+    "countryCode": "au",
+    "photo": "kaan-ofli.webp"
+   },
+   "b": {
+    "name": "Joanderson Brito",
+    "slug": "joanderson-brito",
+    "nickname": "Tubarao",
+    "division": "Featherweight",
+    "wins": 20,
+    "losses": 5,
+    "draws": 1,
+    "belt": false,
+    "titles": [],
+    "country": "Brazil",
+    "countryCode": "br",
+    "photo": "joanderson-brito.webp"
+   },
+   "pick": {
+    "winner": "Joanderson Brito",
+    "probability": 0.6642,
+    "winnerIsA": false
+   }
+  },
+  {
+   "slug": "george-mangos-vs-dagiisuren-chagnaadorj",
+   "event": "UFC Fight Night: Salkilld vs. Saint Denis",
+   "date": "2027-02-06",
+   "position": 5,
+   "titleFight": false,
+   "weightClass": "Featherweight",
+   "a": {
+    "name": "George Mangos",
+    "slug": "george-mangos",
+    "nickname": null,
+    "division": "Featherweight",
+    "wins": 10,
+    "losses": 1,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": null,
+    "countryCode": null,
+    "photo": null
+   },
+   "b": {
+    "name": "Dagiisuren Chagnaadorj",
+    "slug": "dagiisuren-chagnaadorj",
+    "nickname": null,
+    "division": "Featherweight",
+    "wins": 12,
+    "losses": 2,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": null,
+    "countryCode": null,
+    "photo": null
+   }
+  },
+  {
+   "slug": "rabindra-dhant-vs-ryo-tajima",
+   "event": "UFC Fight Night: Salkilld vs. Saint Denis",
+   "date": "2027-02-06",
+   "position": 6,
+   "titleFight": false,
+   "weightClass": "Bantamweight",
+   "a": {
+    "name": "Rabindra Dhant",
+    "slug": "rabindra-dhant",
+    "nickname": null,
+    "division": "Bantamweight",
+    "wins": 11,
+    "losses": 1,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": null,
+    "countryCode": null,
+    "photo": null
+   },
+   "b": {
+    "name": "Ryo Tajima",
+    "slug": "ryo-tajima",
+    "nickname": null,
+    "division": "Bantamweight",
+    "wins": 12,
+    "losses": 3,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": null,
+    "countryCode": null,
+    "photo": null
+   }
+  },
+  {
+   "slug": "jiniushiyue-vs-takaya-suzuki",
+   "event": "UFC Fight Night: Salkilld vs. Saint Denis",
+   "date": "2027-02-06",
+   "position": 7,
+   "titleFight": false,
+   "weightClass": "Flyweight",
+   "a": {
+    "name": "Jiniushiyue",
+    "slug": "jiniushiyue",
+    "nickname": "Little King Kong",
+    "division": "Flyweight",
+    "wins": 17,
+    "losses": 4,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": null,
+    "countryCode": null,
+    "photo": null
+   },
+   "b": {
+    "name": "Takaya Suzuki",
+    "slug": "takaya-suzuki",
+    "nickname": null,
+    "division": "Flyweight",
+    "wins": 9,
+    "losses": 1,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": null,
+    "countryCode": null,
+    "photo": null
+   }
+  },
+  {
+   "slug": "bo-meng-vs-bo-hyun-park",
+   "event": "UFC Fight Night: Salkilld vs. Saint Denis",
+   "date": "2027-02-06",
+   "position": 8,
+   "titleFight": false,
+   "weightClass": "Women's Strawweight",
+   "a": {
+    "name": "Bo Meng",
+    "slug": "bo-meng",
+    "nickname": null,
+    "division": "Strawweight",
+    "wins": 24,
+    "losses": 8,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": null,
+    "countryCode": null,
+    "photo": null
+   },
+   "b": {
+    "name": "Bo Hyun Park",
+    "slug": "bo-hyun-park",
+    "nickname": "The Witch",
+    "division": "Strawweight",
+    "wins": 10,
+    "losses": 3,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": null,
+    "countryCode": null,
+    "photo": null
    }
   }
  ]
