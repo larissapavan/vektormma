@@ -29,10 +29,10 @@ export function Landing() {
   const accuracy = shownMetrics(modelInfo, lang)
 
   const figures = [
-    { value: count(dataInfo?.fights_count), label: L(lang, 'lutas catalogadas', 'fights on file', 'combats répertoriés', 'peleas registradas') },
-    { value: count(dataInfo?.fighters_count), label: L(lang, 'lutadores', 'fighters', 'combattants', 'peleadores') },
-    { value: count(modelInfo?.feature_count), label: L(lang, 'dados usados em cada previsão', 'figures behind each prediction', 'données utilisées pour chaque pronostic', 'datos usados en cada pronóstico') },
-    { value: <>{historyDecades()}+</>, label: L(lang, `anos de histórico (${HISTORY_RANGE})`, `years of history (${HISTORY_RANGE})`, `ans d’historique (${HISTORY_RANGE})`, `años de historia (${HISTORY_RANGE})`) },
+    { value: count(dataInfo?.fights_count), label: L(lang, 'Lutas catalogadas', 'Fights on file', 'Combats répertoriés', 'Peleas registradas') },
+    { value: count(dataInfo?.fighters_count), label: L(lang, 'Lutadores', 'Fighters', 'Combattants', 'Peleadores') },
+    { value: count(modelInfo?.feature_count), label: L(lang, 'Dados usados em cada previsão', 'Figures behind each prediction', 'Données utilisées pour chaque pronostic', 'Datos usados en cada pronóstico') },
+    { value: <>{historyDecades()}+</>, label: L(lang, `Anos de histórico (${HISTORY_RANGE})`, `Years of history (${HISTORY_RANGE})`, `Ans d’historique (${HISTORY_RANGE})`, `Años de historia (${HISTORY_RANGE})`) },
   ]
 
   return (
