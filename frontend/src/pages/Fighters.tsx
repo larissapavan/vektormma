@@ -21,16 +21,14 @@ import {
   Target,
   Timer,
   Zap,
-  Trophy,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { L, localeTag, uiLang, type UiLang } from '../i18n/lang'
 import { ChampionBelt } from '../shared/components/ChampionBelt'
-import { FighterOrigin } from '../shared/components/FighterOrigin'
-import { FighterBadges, FlagList } from '../shared/components/FighterBadges'
-import { BADGES, badgesForRankings, getBadgeLabel } from '../shared/data/badges'
+import { FlagList } from '../shared/components/FighterBadges'
+import { BADGES, getBadgeLabel } from '../shared/data/badges'
 import { getDivisionName } from '../shared/data/divisions'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { FighterProfileModal } from '../shared/components/FighterProfileModal'
@@ -38,7 +36,9 @@ import { Eyebrow } from '../shared/components/ui/Eyebrow'
 import { PageHeader } from '../shared/components/ui/PageHeader'
 import { formatPercent } from '../shared/data/fightLabels'
 import { isKnownActive, isKnownRetired } from '../shared/data/fighterStatusOverrides'
+import { compareFighters, divisionalRanks, rankLabel, ranksOf } from '../shared/data/fighterOrder'
 import { useFighters } from '../shared/hooks/useFighters'
+import { useRankings } from '../shared/hooks/useRankings'
 import { getFighterImageUrl, useFighterImages, type FighterImageRecord } from '../shared/hooks/useFighterImages'
 import { photoRightsText, usePhotoCredit } from '../shared/hooks/usePhotoCredit'
 import type { FighterProfile } from '../shared/types/api'
@@ -150,6 +150,8 @@ export function Fighters() {
   const { t, i18n } = useTranslation()
   const { fighters, loading, error } = useFighters()
   const { imageByName } = useFighterImages()
+  const { rankings } = useRankings()
+  const ranks = useMemo(() => divisionalRanks(rankings), [rankings])
   const [query, setQuery] = useState('')
   const [stanceFilter, setStanceFilter] = useState('All stances')
   const [badgeFilter, setBadgeFilter] = useState('')
@@ -194,21 +196,16 @@ export function Fighters() {
 
   const groupedFighters = useMemo(() => {
     const groups = new Map<string, FighterProfile[]>()
+    const isActive = (fighter: FighterProfile) => statusOf(fighter) === 'active'
     for (const group of divisionGroups) {
-      groups.set(
-        group.key,
-        visibleFighters
-          .filter((fighter) => group.match(fighter))
-          .sort(
-            (a, b) =>
-              Number(Boolean(b.belt)) - Number(Boolean(a.belt)) ||
-                            (b.win_rate ?? 0) - (a.win_rate ?? 0) ||
-              a.name.localeCompare(b.name),
-          ),
-      )
+      const groupRanks = ranksOf(ranks, group.label)
+      // A fighter ranked in a division shows there too, even when the record lists another one (Holloway, ranked at
+      // lightweight, is filed at featherweight), so the ranking has no gaps.
+      const inGroup = (fighter: FighterProfile) => group.match(fighter) || groupRanks.has(foldText(fighter.name).trim())
+      groups.set(group.key, visibleFighters.filter(inGroup).sort((a, b) => compareFighters(a, b, groupRanks, isActive)))
     }
     return groups
-  }, [visibleFighters])
+  }, [visibleFighters, ranks, statusOf])
 
   const hasAnyResults = visibleFighters.length > 0
   const isSearching = query.trim() !== '' || stanceFilter !== 'All stances' || badgeFilter !== ''
@@ -328,6 +325,7 @@ export function Fighters() {
                 key={featuredGroup.key}
                 group={featuredGroup}
                 fighters={featuredFighters}
+                ranks={ranksOf(ranks, featuredGroup.label)}
                 imageByName={imageByName}
                 onSelectFighter={setSelectedFighter}
               />
@@ -511,11 +509,13 @@ function ScrollArrow({
 function DivisionPanel({
   group,
   fighters,
+  ranks,
   imageByName,
   onSelectFighter,
 }: {
   group: DivisionGroup
   fighters: FighterProfile[]
+  ranks: Map<string, number>
   imageByName: Map<string, FighterImageRecord>
   onSelectFighter: (name: string) => void
 }) {
@@ -550,12 +550,12 @@ function DivisionPanel({
 
       <div>
         {fighters.length ? (
-          <ul className="border-t-[3px] border-[var(--ink)]">
+          <ul className="grid border-t-[3px] border-[var(--ink)] md:grid-cols-2 md:gap-x-8 xl:grid-cols-3">
             {shown.map((fighter) => (
               <FighterDivisionCard
                 key={fighter.name}
                 fighter={fighter}
-                group={group}
+                rank={rankLabel(fighter, ranks)}
                 imageUrl={getFighterImageUrl(fighter.name, imageByName, fighter.image_url)}
                 onSelect={() => onSelectFighter(fighter.name)}
               />
@@ -643,73 +643,65 @@ function DivisionPill({
   )
 }
 
-/** One fighter as a row: photo, name large, what the record says, the body numbers, and the way into the profile. */
+/** One fighter as a compact row: rank, photo, name, record and the key numbers, opening the profile. Two or three sit
+ * side by side on wider screens so a division fits in a few screens instead of dozens. */
 function FighterDivisionCard({
   fighter,
-  group,
+  rank,
   imageUrl,
   onSelect,
 }: {
   fighter: FighterProfile
-  group: DivisionGroup
+  rank: string | null
   imageUrl?: string | null
   onSelect: () => void
 }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
-  const division = getDivisionName(fighter.division ?? group.label, lang)
+  const facts = [
+    fighter.age ? `${Math.floor(fighter.age)} ${L(lang, 'anos', 'yrs', 'ans', 'años')}` : null,
+    fighter.height_cm ? `${Math.round(fighter.height_cm)} cm` : null,
+    fighter.reach_cm ? `${L(lang, 'envergadura', 'reach', 'allonge', 'alcance')} ${fighter.reach_cm.toFixed(0)} cm` : null,
+  ].filter(Boolean)
+  const record = [
+    formatRecord(fighter, lang),
+    fighter.win_rate !== null && fighter.win_rate !== undefined ? `${formatPercent(fighter.win_rate)} ${L(lang, 'vitórias', 'wins', 'victoires', 'victorias')}` : null,
+    fighter.nickname ? `“${fighter.nickname}”` : null,
+  ].filter(Boolean)
 
   return (
     <li className="border-b border-[var(--rule)]">
-      <div className="flex items-stretch">
+      <div className="flex h-full items-stretch">
         <button
           type="button"
           onClick={onSelect}
           aria-label={L(lang, `${fighter.name}. Ver perfil`, `${fighter.name}. View profile`, `${fighter.name}. Voir le profil`, `${fighter.name}. Ver perfil`)}
-          className="row-link group flex min-w-0 flex-1 cursor-pointer flex-wrap items-center gap-x-6 gap-y-3 px-3 py-5 text-left hover:bg-[var(--panel)] sm:flex-nowrap"
+          className="row-link group flex min-w-0 flex-1 cursor-pointer items-center gap-3 px-2 py-3 text-left hover:bg-[var(--panel)]"
         >
+          <span
+            className={`w-6 shrink-0 text-center font-display text-lg sm:w-8 font-black tabular-nums ${rank ? 'text-[var(--ink)]' : 'text-[var(--muted)]'}`}
+            title={rank === 'C' ? L(lang, 'Campeão', 'Champion', 'Champion', 'Campeón') : undefined}
+          >
+            {rank ?? '–'}
+          </span>
           <FighterPortrait fighter={fighter} imageUrl={imageUrl ?? undefined} />
-          <span className="min-w-0 flex-[1_1_240px]">
-            <span className="block text-[15px] text-[var(--muted)]">{division}</span>
-            <span className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span className="min-w-0 flex-1">
+            <span className="flex min-w-0 flex-wrap items-center gap-x-1.5">
               <FlagList fighter={fighter} />
-              <span className="min-w-0 break-words font-display text-[32px] font-black leading-[0.95] sm:text-[40px]">{fighter.name}</span>
+              <span className="min-w-0 break-words font-display text-xl font-black leading-tight sm:text-[22px]">{fighter.name}</span>
               {fighter.belt ? <ChampionBelt /> : null}
             </span>
-            <span className="mt-1 block text-base">
-              {formatRecord(fighter, lang)}
-              {fighter.nickname ? ` · “${fighter.nickname}”` : ''}
+            <span className="block truncate text-sm">
+              {record.join(' · ')}
             </span>
-            {fighter.belt || fighter.next_fight ? (
-              <span className="mt-2 flex flex-wrap gap-2">
-                {fighter.belt ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-sm border-[1.5px] border-[var(--ink)] px-2.5 py-1 text-[13px] font-bold">
-                    <Trophy className="h-3.5 w-3.5 text-[var(--gold)]" aria-hidden="true" />
-                    {L(lang, `Campeão ${division}`, `${division} champion`, `Champion ${division}`, `Campeón de ${division}`)}
-                  </span>
-                ) : null}
-                {fighter.next_fight ? (
-                  <span title={`${fighter.next_fight.event_name}: vs ${fighter.next_fight.opponent}`} className="inline-flex items-center gap-1.5 rounded-sm border-[1.5px] border-[var(--ink)] px-2.5 py-1 text-[13px] font-bold">
-                    <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
-                    {L(lang, 'Luta marcada', 'Fight booked', 'Combat prévu', 'Pelea confirmada')}
-                  </span>
-                ) : null}
+            {facts.length ? <span className="block truncate text-sm text-[var(--muted)]">{facts.join(' · ')}</span> : null}
+            {fighter.next_fight ? (
+              <span title={`${fighter.next_fight.event_name}: vs ${fighter.next_fight.opponent}`} className="mt-1 inline-flex items-center gap-1 text-[13px] font-bold">
+                <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
+                {L(lang, 'Luta marcada', 'Fight booked', 'Combat prévu', 'Pelea confirmada')}
               </span>
             ) : null}
-            <FighterOrigin fighter={fighter} className="mt-2" />
-            <FighterBadges badges={badgesForRankings(fighter.badges)} className="mt-2" />
           </span>
-          <dl className="grid w-full grid-cols-3 gap-x-5 gap-y-3 sm:w-auto sm:flex-[0_1_360px]">
-            <CardFact label={L(lang, 'Altura', 'Height', 'Taille', 'Estatura')} value={fighter.height_cm ? `${Math.round(fighter.height_cm)} cm` : '—'} />
-            <CardFact label={L(lang, 'Peso', 'Weight', 'Poids', 'Peso')} value={fighter.weight_lbs ? `${fighter.weight_lbs.toFixed(0)} lb` : '—'} />
-            <CardFact label={L(lang, 'Envergadura', 'Reach', 'Allonge', 'Alcance')} value={fighter.reach_cm ? `${fighter.reach_cm.toFixed(0)} cm` : '—'} />
-            <CardFact label={L(lang, 'Idade', 'Age', 'Âge', 'Edad')} value={fighter.age ? `${Math.floor(fighter.age)} ${L(lang, 'anos', 'yrs', 'ans', 'años')}` : '—'} />
-            <CardFact label={L(lang, 'Base', 'Stance', 'Garde', 'Guardia')} value={fighter.stance ? stanceLabel(fighter.stance, lang) : '—'} />
-            <CardFact label={L(lang, 'Vitórias', 'Win rate', 'Victoires', 'Victorias')} value={formatPercent(fighter.win_rate)} />
-          </dl>
-          <svg className="row-arrow h-8 w-8 shrink-0 max-sm:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" aria-hidden="true">
-            <path d="M4 12h16M14 6l6 6-6 6" />
-          </svg>
         </button>
         {fighter.fighter_url ? (
           <a
@@ -718,7 +710,7 @@ function FighterDivisionCard({
             rel="noreferrer"
             aria-label={L(lang, `${fighter.name} no UFCStats (abre em nova aba)`, `${fighter.name} on UFCStats (opens in a new tab)`, `${fighter.name} sur UFCStats (s’ouvre dans un nouvel onglet)`, `${fighter.name} en UFCStats (se abre en una pestaña nueva)`)}
             title={L(lang, 'Abrir no UFCStats', 'Open on UFCStats', 'Ouvrir sur UFCStats', 'Abrir en UFCStats')}
-            className="grid w-12 shrink-0 place-items-center text-[var(--muted)] hover:bg-[var(--panel)] hover:text-[var(--ink)]"
+            className="grid w-10 shrink-0 place-items-center text-[var(--muted)] hover:bg-[var(--panel)] hover:text-[var(--ink)]"
           >
             <ExternalLink className="h-4 w-4" aria-hidden="true" />
           </a>
@@ -744,7 +736,7 @@ function FighterPortrait({ fighter, imageUrl }: { fighter: FighterProfile; image
   const showImage = Boolean(imageUrl && !imageFailed)
 
   return (
-    <span title={credit ? photoRightsText(credit, i18n.language) : undefined} className="relative block h-[92px] w-[74px] shrink-0 overflow-hidden bg-[var(--track)]">
+    <span title={credit ? photoRightsText(credit, i18n.language) : undefined} className="relative block h-[70px] w-14 shrink-0 overflow-hidden bg-[var(--track)]">
       {showImage ? (
         <img
           src={imageUrl}
@@ -758,19 +750,9 @@ function FighterPortrait({ fighter, imageUrl }: { fighter: FighterProfile; image
         />
       ) : null}
       {!showImage || !imageLoaded ? (
-        <span className="absolute inset-0 grid place-items-center font-display text-2xl font-black text-[var(--muted)]">{initials}</span>
+        <span className="absolute inset-0 grid place-items-center font-display text-xl font-black text-[var(--muted)]">{initials}</span>
       ) : null}
     </span>
-  )
-}
-
-/** One fact on a fighter card: a quiet label over its value, with no box of its own. */
-function CardFact({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="min-w-0">
-      <dt className="truncate text-sm text-[var(--muted)]">{label}</dt>
-      <dd className="break-words font-display text-xl font-extrabold leading-tight tabular-nums">{value}</dd>
-    </div>
   )
 }
 
