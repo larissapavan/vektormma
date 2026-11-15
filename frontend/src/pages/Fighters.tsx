@@ -20,6 +20,7 @@ import {
   Swords,
   Target,
   Timer,
+  Trophy,
   Zap,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -36,8 +37,18 @@ import { Eyebrow } from '../shared/components/ui/Eyebrow'
 import { PageHeader } from '../shared/components/ui/PageHeader'
 import { formatPercent } from '../shared/data/fightLabels'
 import { isKnownActive, isKnownRetired } from '../shared/data/fighterStatusOverrides'
-import { compareFighters, divisionalRanks, rankLabel, ranksOf } from '../shared/data/fighterOrder'
+import {
+  compareFighters,
+  divisionHistory,
+  divisionalRanks,
+  foldName,
+  historyOf,
+  rankLabel,
+  ranksOf,
+  type HistoryEntry,
+} from '../shared/data/fighterOrder'
 import { useFighters } from '../shared/hooks/useFighters'
+import { useChampions } from '../shared/hooks/useChampions'
 import { useRankings } from '../shared/hooks/useRankings'
 import { getFighterImageUrl, useFighterImages, type FighterImageRecord } from '../shared/hooks/useFighterImages'
 import { photoRightsText, usePhotoCredit } from '../shared/hooks/usePhotoCredit'
@@ -152,6 +163,16 @@ export function Fighters() {
   const { imageByName } = useFighterImages()
   const { rankings } = useRankings()
   const ranks = useMemo(() => divisionalRanks(rankings), [rankings])
+  const { data: champions } = useChampions()
+  const history = useMemo(() => divisionHistory(champions?.reigns ?? []), [champions])
+  // A division's own history: its champions, interim champions and title challengers, plus Hall of Famers filed there.
+  const historyFor = useCallback(
+    (group: DivisionGroup) => {
+      const people = history.get(group.label.toLowerCase()) ?? new Map<string, HistoryEntry>()
+      return (fighter: FighterProfile) => historyOf(fighter, people, group.match(fighter))
+    },
+    [history],
+  )
   const [query, setQuery] = useState('')
   const [stanceFilter, setStanceFilter] = useState('All stances')
   const [badgeFilter, setBadgeFilter] = useState('')
@@ -199,13 +220,14 @@ export function Fighters() {
     const isActive = (fighter: FighterProfile) => statusOf(fighter) === 'active'
     for (const group of divisionGroups) {
       const groupRanks = ranksOf(ranks, group.label)
-      // A fighter ranked in a division shows there too, even when the record lists another one (Holloway, ranked at
-      // lightweight, is filed at featherweight), so the ranking has no gaps.
-      const inGroup = (fighter: FighterProfile) => group.match(fighter) || groupRanks.has(foldText(fighter.name).trim())
-      groups.set(group.key, visibleFighters.filter(inGroup).sort((a, b) => compareFighters(a, b, groupRanks, isActive)))
+      const pastOf = historyFor(group)
+      // A fighter ranked in a division, or who held or fought for its belt, shows there too even when the record files
+      // them in another one (Holloway, ranked at lightweight, is filed at featherweight), so the list has no gaps.
+      const inGroup = (fighter: FighterProfile) => group.match(fighter) || groupRanks.has(foldName(fighter.name)) || pastOf(fighter) !== null
+      groups.set(group.key, visibleFighters.filter(inGroup).sort((a, b) => compareFighters(a, b, groupRanks, isActive, pastOf)))
     }
     return groups
-  }, [visibleFighters, ranks, statusOf])
+  }, [visibleFighters, ranks, statusOf, historyFor])
 
   const hasAnyResults = visibleFighters.length > 0
   const isSearching = query.trim() !== '' || stanceFilter !== 'All stances' || badgeFilter !== ''
@@ -326,6 +348,7 @@ export function Fighters() {
                 group={featuredGroup}
                 fighters={featuredFighters}
                 ranks={ranksOf(ranks, featuredGroup.label)}
+                pastOf={historyFor(featuredGroup)}
                 imageByName={imageByName}
                 onSelectFighter={setSelectedFighter}
               />
@@ -510,12 +533,14 @@ function DivisionPanel({
   group,
   fighters,
   ranks,
+  pastOf,
   imageByName,
   onSelectFighter,
 }: {
   group: DivisionGroup
   fighters: FighterProfile[]
   ranks: Map<string, number>
+  pastOf: (fighter: FighterProfile) => HistoryEntry | null
   imageByName: Map<string, FighterImageRecord>
   onSelectFighter: (name: string) => void
 }) {
@@ -556,6 +581,8 @@ function DivisionPanel({
                 key={fighter.name}
                 fighter={fighter}
                 rank={rankLabel(fighter, ranks)}
+                past={pastOf(fighter)}
+                womens={group.label.startsWith("Women's")}
                 imageUrl={getFighterImageUrl(fighter.name, imageByName, fighter.image_url)}
                 onSelect={() => onSelectFighter(fighter.name)}
               />
@@ -643,16 +670,43 @@ function DivisionPill({
   )
 }
 
+/** What the fighter did for the division's belt, as a short line under the numbers. */
+function HistoryNote({ past, womens }: { past: HistoryEntry; womens: boolean }) {
+  const { i18n } = useTranslation()
+  const lang = i18n.language
+  const label = {
+    champion: womens
+      ? L(lang, 'Ex-campeã', 'Former champion', 'Ancienne championne', 'Excampeona')
+      : L(lang, 'Ex-campeão', 'Former champion', 'Ancien champion', 'Excampeón'),
+    interim: womens
+      ? L(lang, 'Ex-campeã interina', 'Former interim champion', 'Ancienne championne intérimaire', 'Excampeona interina')
+      : L(lang, 'Ex-campeão interino', 'Former interim champion', 'Ancien champion intérimaire', 'Excampeón interino'),
+    challenger: L(lang, 'Disputou o cinturão', 'Fought for the title', 'A disputé le titre', 'Disputó el título'),
+    hof: getBadgeLabel('hof', lang),
+  }[past.mark]
+  const Icon = past.mark === 'champion' || past.mark === 'interim' ? Trophy : Medal
+  return (
+    <span className="mr-3 mt-1 inline-flex items-center gap-1 text-[13px] font-bold">
+      <Icon className={`h-3.5 w-3.5 ${past.mark === 'champion' ? 'text-[var(--gold)]' : ''}`} aria-hidden="true" />
+      {label}
+    </span>
+  )
+}
+
 /** One fighter as a compact row: rank, photo, name, record and the key numbers, opening the profile. Two or three sit
  * side by side on wider screens so a division fits in a few screens instead of dozens. */
 function FighterDivisionCard({
   fighter,
   rank,
+  past,
+  womens,
   imageUrl,
   onSelect,
 }: {
   fighter: FighterProfile
   rank: string | null
+  past: HistoryEntry | null
+  womens: boolean
   imageUrl?: string | null
   onSelect: () => void
 }) {
@@ -695,6 +749,7 @@ function FighterDivisionCard({
               {record.join(' · ')}
             </span>
             {facts.length ? <span className="block truncate text-sm text-[var(--muted)]">{facts.join(' · ')}</span> : null}
+            {past && !rank ? <HistoryNote past={past} womens={womens} /> : null}
             {fighter.next_fight ? (
               <span title={`${fighter.next_fight.event_name}: vs ${fighter.next_fight.opponent}`} className="mt-1 inline-flex items-center gap-1 text-[13px] font-bold">
                 <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
