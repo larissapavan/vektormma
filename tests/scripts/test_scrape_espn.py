@@ -217,6 +217,18 @@ def test_decision_scorecards_use_the_announced_corner_order():
     assert saved["num_rounds"] == "3"
 
 
+def test_an_announced_title_bout_keeps_its_title_flag_once_it_has_a_result():
+    def detail(event, bout):
+        return espn.BoutDetail(method="SUB", method_detail="Rear Naked Choke", referee="Blake Grice", num_rounds="5", result="Submission")
+
+    tables = empty_tables(upcoming=[{
+        "event_name": "UFC 999: Alpha vs. Beta", "event_date": "November 07, 2026",
+        "fight_url": "http://ufcstats.com/fight-details/9", "fighter_1": "Alpha One", "fighter_2": "Beta Two", "title_fight": "True",
+    }])
+    espn.sync_completed_event(completed_event(), tables, espn.Catalog([]), detail, espn.Report())
+    assert tables.details[0]["title_fight"] == "True"
+
+
 def test_a_fight_without_a_stats_url_still_stores_the_referee():
     tables = empty_tables(upcoming=[{
         "event_name": "UFC 999: Alpha vs. Beta", "event_date": "November 07, 2026",
@@ -274,6 +286,29 @@ def test_sync_upcoming_event_keeps_ufcstats_rows_adds_new_and_drops_only_conflic
     assert ("Solo Fighter", "Other Solo", "http://ufcstats.com/fight-details/3") in pairs
     assert not any(p[1] == "Old Rival" for p in pairs)
     assert report.upcoming_bouts_added == 1 and len(report.upcoming_bouts_dropped) == 1
+
+
+def test_bouts_espn_does_not_list_yet_stay_on_the_undercard():
+    meta = {"event_name": "UFC 999: Alpha vs. Beta", "event_date": "November 07, 2026", "location": "Las Vegas, Nevada, USA", "event_url": ""}
+    prelim = {**meta, "fight_url": "", "fighter_1": "Solo Fighter", "fighter_2": "Other Solo", "weight_class": "Flyweight"}
+    tables = empty_tables(upcoming=[prelim])
+    comps = [
+        competition(10, "Welterweight", (3, "Gamma Three"), (4, "Delta Four"), completed=False),
+        competition(11, "Lightweight", (1, "Alpha One"), (2, "Beta Two"), completed=False),
+    ]
+    espn.sync_upcoming_event(espn.parse_scoreboard(payload(comps=comps))[0], tables, espn.Catalog([]), espn.Report())
+    assert [r["fighter_1"] for r in tables.upcoming] == ["Solo Fighter", "Gamma Three", "Alpha One"]
+
+
+def test_a_bout_on_two_cards_stays_only_on_the_later_one():
+    old = {"event_name": "UFC 335", "event_date": "December 12, 2026", "fighter_1": "Joe Pyfer", "fighter_2": "Bo Nickal"}
+    other = {**old, "fighter_1": "Brandon Moreno", "fighter_2": "Charles Johnson"}
+    new = {"event_name": "UFC Fight Night: Pyfer vs. Nickal", "event_date": "February 13, 2027", "fighter_1": "Joe Pyfer", "fighter_2": "Bo Nickal"}
+    tables = empty_tables(upcoming=[old, other, new])
+    report = espn.Report()
+    espn.drop_moved_bouts(tables, report)
+    assert tables.upcoming == [other, new]
+    assert len(report.upcoming_bouts_dropped) == 1
 
 
 def test_prune_upcoming_removes_events_espn_no_longer_lists():

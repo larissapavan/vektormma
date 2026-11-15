@@ -35,7 +35,9 @@ def _attach_fight_details(df: pd.DataFrame) -> pd.DataFrame:
         return df
     details = pd.read_csv(FIGHT_DETAILS_SOURCE_PATH, keep_default_na=False)
     details = details.drop_duplicates(subset=["fight_url"], keep="last")[["fight_url", *DETAIL_COLUMNS]]
-    return df.merge(details, on="fight_url", how="left")
+    # A file where no bout has a fight_url yet (upcoming cards right after an event moves to the results) reads that
+    # column as float NaN, and pandas refuses to merge float keys with text ones.
+    return df.astype({"fight_url": object}).merge(details, on="fight_url", how="left")
 
 
 _events_cache: dict = {"signature": None, "data": None}

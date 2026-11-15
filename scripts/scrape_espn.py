@@ -628,6 +628,15 @@ def detail_saved(tables: Tables, fight_url: str) -> bool:
     )
 
 
+def title_flag(tables: Tables, fight_url: str, announced: dict | None) -> str:
+    """The title flag of a finished bout. ESPN's results say nothing about belts, so it comes from the announced card
+    (upcoming_events.csv marks title bouts) or from a flag an earlier run already saved for this fight."""
+    if announced is not None and str(announced.get("title_fight", "")).strip().lower() == "true":
+        return "True"
+    saved = next((d for d in tables.details if fight_url and d.get("fight_url") == fight_url), None)
+    return "True" if saved is not None and str(saved.get("title_fight", "")).strip().lower() == "true" else "false"
+
+
 def upsert_fight_detail(tables: Tables, row: dict) -> None:
     fight_url = (row.get("fight_url") or "").strip()
     if not fight_url:
@@ -732,7 +741,7 @@ def sync_completed_event(
                     "fight_url": row["fight_url"],
                     "referee": detail.referee,
                     "num_rounds": detail.num_rounds,
-                    "title_fight": "false",
+                    "title_fight": title_flag(tables, row.get("fight_url", ""), announced),
                     "result": detail.result if detail.usable_method else "",
                     "result_details": scorecards,
                 },
@@ -782,6 +791,7 @@ def sync_upcoming_event(event: EspnEvent, tables: Tables, catalog: Catalog, repo
     meta = _event_meta(event, [r for r in existing if r["fighter_1"]] or None)
     espn_names = [f.name for b in event.bouts for f in b.fighters]
     rebuilt: list[dict] = []
+    kept: list[dict] = []
     used: set[int] = set()
     for bout in event.bouts:
         names = [f.name for f in bout.fighters]
@@ -805,7 +815,10 @@ def sync_upcoming_event(event: EspnEvent, tables: Tables, catalog: Catalog, repo
         if conflict:
             report.upcoming_bouts_dropped.append(f"{meta['event_name']}: {row['fighter_1']} vs {row['fighter_2']}")
         else:
-            rebuilt.append(row)  # not contradicted by ESPN (its card may still be incomplete)
+            kept.append(row)  # not contradicted by ESPN (its card may still be incomplete)
+    # ESPN lists a card from the first prelim to the main event, so bouts it does not show yet go on the undercard,
+    # ahead of its rows; after them they would sit below the main event and read as the co-main.
+    rebuilt[:0] = kept
     apply_weight_overrides(rebuilt)
     if key is None:
         report.upcoming_events_added.append(f"{meta['event_name']} ({meta['event_date']}, {len(rebuilt)} lutas)")
@@ -814,6 +827,28 @@ def sync_upcoming_event(event: EspnEvent, tables: Tables, catalog: Catalog, repo
     position = next(i for i, r in enumerate(tables.upcoming) if (r["event_name"], r["event_date"]) == key)
     tables.upcoming[:] = [r for r in tables.upcoming if (r["event_name"], r["event_date"]) != key]
     tables.upcoming[position:position] = rebuilt
+
+
+def drop_moved_bouts(tables: Tables, report: Report) -> None:
+    """A bout on two upcoming cards was moved, and ESPN left it on the old card too (Pyfer vs. Nickal stayed on UFC 335
+    after it went to Cleveland). Bouts are postponed far more often than pulled forward, so the latest card keeps it."""
+    latest: dict[tuple[str, str], tuple[date, tuple[str, str]]] = {}
+    for row in tables.upcoming:
+        day = parse_day(row["event_date"])
+        if not row.get("fighter_1") or day is None:
+            continue
+        pair = tuple(sorted((ascii_name(row["fighter_1"]).lower(), ascii_name(row["fighter_2"]).lower())))
+        if pair not in latest or day > latest[pair][0]:
+            latest[pair] = (day, (row["event_name"], row["event_date"]))
+    kept: list[dict] = []
+    for row in tables.upcoming:
+        pair = tuple(sorted((ascii_name(row.get("fighter_1") or "").lower(), ascii_name(row.get("fighter_2") or "").lower())))
+        home = latest.get(pair)
+        if row.get("fighter_1") and home and home[1] != (row["event_name"], row["event_date"]):
+            report.upcoming_bouts_dropped.append(f"{row['event_name']}: {row['fighter_1']} vs {row['fighter_2']} (moved to {home[1][0]})")
+            continue
+        kept.append(row)
+    tables.upcoming[:] = kept
 
 
 def prune_upcoming(events: list[EspnEvent], tables: Tables, since: date, until: date, report: Report) -> None:
@@ -945,6 +980,7 @@ def sync(
             sync_completed_event(event, tables, catalog, fetch_result, report)
         else:
             sync_upcoming_event(event, tables, catalog, report)
+    drop_moved_bouts(tables, report)
     if prune:
         prune_upcoming(events, tables, since, until, report)
     if update_fighters:
