@@ -42,16 +42,16 @@ fight_key,event_name,event_date,fighter_1,fighter_2,prob_fighter_1,predicted_win
 2026-11-07|tatiana suarez|virna jandiroba,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Tatiana Suarez,Virna Jandiroba,0.5973,Tatiana Suarez,0.5973,2026-11-06,Tatiana Suarez,True,2026-11-08,prefight
 2026-11-14|jefferson nascimento|nazim sadykhov,UFC 334: Gane vs. Hokit,2026-11-14,Nazim Sadykhov,Jefferson Nascimento,0.3977,Jefferson Nascimento,0.6023,2026-11-06,,,,prefight
 2026-11-14|adrian yanez|juan diaz,UFC 334: Gane vs. Hokit,2026-11-14,Adrian Yanez,Juan Diaz,0.3924,Juan Diaz,0.6076,2026-11-06,,,,prefight
-2026-11-14|bia mesquita|macy chiasson,UFC 334: Gane vs. Hokit,2026-11-14,Bia Mesquita,Macy Chiasson,0.5913,Bia Mesquita,0.5913,2026-11-06,,,,prefight
+2026-11-14|bia mesquita|macy chiasson,UFC 334: Gane vs. Hokit,2026-11-14,Bia Mesquita,Macy Chiasson,0.5913,Bia Mesquita,0.5913,2026-11-06,Bia Mesquita,True,2026-11-15,prefight
 2026-11-14|baisangur susurkaev|donte johnson,UFC 334: Gane vs. Hokit,2026-11-14,Donte Johnson,Baisangur Susurkaev,0.4477,Baisangur Susurkaev,0.5523,2026-11-06,,,,prefight
-2026-11-14|jim miller|terrance mckinney,UFC 334: Gane vs. Hokit,2026-11-14,Jim Miller,Terrance McKinney,0.3713,Terrance McKinney,0.6287,2026-11-06,,,,prefight
-2026-11-14|chris duncan|drew dober,UFC 334: Gane vs. Hokit,2026-11-14,Drew Dober,Chris Duncan,0.3095,Chris Duncan,0.6905,2026-11-06,,,,prefight
-2026-11-14|charles radtke|stephen thompson,UFC 334: Gane vs. Hokit,2026-11-14,Stephen Thompson,Charles Radtke,0.3100,Charles Radtke,0.6900,2026-11-06,,,,prefight
-2026-11-14|bilal hasan|luis gurule,UFC 334: Gane vs. Hokit,2026-11-14,Bilal Hasan,Luis Gurule,0.6531,Bilal Hasan,0.6531,2026-11-06,,,,prefight
-2026-11-14|kevin holland|uros medic,UFC 334: Gane vs. Hokit,2026-11-14,Uros Medic,Kevin Holland,0.6272,Uros Medic,0.6272,2026-11-06,,,,prefight
-2026-11-14|caio borralho|yousri belgaroui,UFC 334: Gane vs. Hokit,2026-11-14,Caio Borralho,Yousri Belgaroui,0.4573,Yousri Belgaroui,0.5427,2026-11-06,,,,prefight
-2026-11-14|amanda nunes|kayla harrison,UFC 334: Gane vs. Hokit,2026-11-14,Kayla Harrison,Amanda Nunes,0.6192,Kayla Harrison,0.6192,2026-11-06,,,,prefight
-2026-11-14|ciryl gane|josh hokit,UFC 334: Gane vs. Hokit,2026-11-14,Ciryl Gane,Josh Hokit,0.5606,Ciryl Gane,0.5606,2026-11-06,,,,prefight
+2026-11-14|jim miller|terrance mckinney,UFC 334: Gane vs. Hokit,2026-11-14,Jim Miller,Terrance McKinney,0.3713,Terrance McKinney,0.6287,2026-11-06,Terrance McKinney,True,2026-11-15,prefight
+2026-11-14|chris duncan|drew dober,UFC 334: Gane vs. Hokit,2026-11-14,Drew Dober,Chris Duncan,0.3095,Chris Duncan,0.6905,2026-11-06,Chris Duncan,True,2026-11-15,prefight
+2026-11-14|charles radtke|stephen thompson,UFC 334: Gane vs. Hokit,2026-11-14,Stephen Thompson,Charles Radtke,0.3100,Charles Radtke,0.6900,2026-11-06,Stephen Thompson,False,2026-11-15,prefight
+2026-11-14|bilal hasan|luis gurule,UFC 334: Gane vs. Hokit,2026-11-14,Bilal Hasan,Luis Gurule,0.6531,Bilal Hasan,0.6531,2026-11-06,Luis Gurule,False,2026-11-15,prefight
+2026-11-14|kevin holland|uros medic,UFC 334: Gane vs. Hokit,2026-11-14,Uros Medic,Kevin Holland,0.6272,Uros Medic,0.6272,2026-11-06,Draw / no contest,n/a,2026-11-15,prefight
+2026-11-14|caio borralho|yousri belgaroui,UFC 334: Gane vs. Hokit,2026-11-14,Caio Borralho,Yousri Belgaroui,0.4573,Yousri Belgaroui,0.5427,2026-11-06,Caio Borralho,False,2026-11-15,prefight
+2026-11-14|amanda nunes|kayla harrison,UFC 334: Gane vs. Hokit,2026-11-14,Kayla Harrison,Amanda Nunes,0.6192,Kayla Harrison,0.6192,2026-11-06,Kayla Harrison,True,2026-11-15,prefight
+2026-11-14|ciryl gane|josh hokit,UFC 334: Gane vs. Hokit,2026-11-14,Ciryl Gane,Josh Hokit,0.5606,Ciryl Gane,0.5606,2026-11-06,Ciryl Gane,True,2026-11-15,prefight
 2026-11-21|alessandro costa|amir albazi,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Amir Albazi,Alessandro Costa,0.4731,Alessandro Costa,0.5269,2026-11-06,,,,prefight
 2026-11-21|asu almabayev|kyoji horiguchi,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Asu Almabayev,Kyoji Horiguchi,0.4547,Kyoji Horiguchi,0.5453,2026-11-06,,,,prefight
 2026-11-21|aleksandre topuria|santiago luna,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Aleksandre Topuria,Santiago Luna,0.3313,Santiago Luna,0.6687,2026-11-06,,,,prefight
@@ -84,9 +84,9 @@ fight_key,event_name,event_date,fighter_1,fighter_2,prob_fighter_1,predicted_win
 2026-10-31|mickey gall|zach reese,UFC Fight Night: Moicano vs. Nolan,2026-10-31,Zach Reese,Mickey Gall,0.8231,Zach Reese,0.8231,2026-10-25,Zach Reese,True,2026-10-31,
 2026-11-07|marcos degli|mitch raposo,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Marcos Degli,Mitch Raposo,0.3523,Mitch Raposo,0.6477,2026-11-06,Mitch Raposo,True,2026-11-08,prefight
 2026-11-07|andre petroski|mantas kondratavicius,UFC Fight Night: Cortes Acosta vs. Walker,2026-11-07,Mantas Kondratavicius,Andre Petroski,0.6690,Mantas Kondratavicius,0.6690,2026-11-06,Andre Petroski,False,2026-11-08,prefight
-2026-11-14|evan elder|samuel sanches,UFC 334: Gane vs. Hokit,2026-11-14,Evan Elder,Samuel Sanches,0.5380,Evan Elder,0.5380,2026-11-06,,,,prefight
-2026-11-14|jared gordon|melquizael costa,UFC 334: Gane vs. Hokit,2026-11-14,Jared Gordon,Melquizael Costa,0.3968,Melquizael Costa,0.6032,2026-11-06,,,,prefight
-2026-11-14|cesar almeida|donte johnson,UFC 334: Gane vs. Hokit,2026-11-14,Donte Johnson,Cesar Almeida,0.7214,Donte Johnson,0.7214,2026-11-06,,,,prefight
+2026-11-14|evan elder|samuel sanches,UFC 334: Gane vs. Hokit,2026-11-14,Evan Elder,Samuel Sanches,0.5380,Evan Elder,0.5380,2026-11-06,Evan Elder,True,2026-11-15,prefight
+2026-11-14|jared gordon|melquizael costa,UFC 334: Gane vs. Hokit,2026-11-14,Jared Gordon,Melquizael Costa,0.3968,Melquizael Costa,0.6032,2026-11-06,Melquizael Costa,True,2026-11-15,prefight
+2026-11-14|cesar almeida|donte johnson,UFC 334: Gane vs. Hokit,2026-11-14,Donte Johnson,Cesar Almeida,0.7214,Donte Johnson,0.7214,2026-11-06,Cesar Almeida,False,2026-11-15,prefight
 2026-11-21|dom mar fan|nikolas motta,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Nikolas Motta,Dom Mar Fan,0.2154,Dom Mar Fan,0.7846,2026-11-06,,,,prefight
 2026-11-21|jacqueline cavalcanti|michelle montague,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Jacqueline Cavalcanti,Michelle Montague,0.6908,Jacqueline Cavalcanti,0.6908,2026-11-06,,,,prefight
 2026-11-21|alik lorenz|diyar nurgozhay,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Diyar Nurgozhay,Alik Lorenz,0.5861,Diyar Nurgozhay,0.5861,2026-11-06,,,,prefight
@@ -113,3 +113,7 @@ fight_key,event_name,event_date,fighter_1,fighter_2,prob_fighter_1,predicted_win
 2026-12-05|mehemmedeli osmanli|pavel andrusca,UFC Fight Night: Adesanya vs Magomedov,2026-12-05,Pavel Andrusca,Mehemmedeli Osmanli,0.5702,Pavel Andrusca,0.5702,2026-11-14,,,,prefight
 2027-02-06|joanderson brito|kaan ofli,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,Kaan Ofli,Joanderson Brito,0.3358,Joanderson Brito,0.6642,2026-11-14,,,,prefight
 2027-02-06|joosang yoo|marwan rahiki,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,Marwan Rahiki,JooSang Yoo,0.6612,Marwan Rahiki,0.6612,2026-11-14,,,,prefight
+2027-02-06|dagiisuren chagnaadorj|george mangos,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,George Mangos,Dagiisuren Chagnaadorj,0.5582,George Mangos,0.5582,2026-11-15,,,,prefight
+2027-02-06|rabindra dhant|ryo tajima,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,Rabindra Dhant,Ryo Tajima,0.4999,Ryo Tajima,0.5001,2026-11-15,,,,prefight
+2027-02-06|jiniushiyue|takaya suzuki,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,Jiniushiyue,Takaya Suzuki,0.4418,Takaya Suzuki,0.5582,2026-11-15,,,,prefight
+2027-02-06|bo hyun park|bo meng,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,Bo Meng,Bo Hyun Park,0.4377,Bo Hyun Park,0.5623,2026-11-15,,,,prefight
