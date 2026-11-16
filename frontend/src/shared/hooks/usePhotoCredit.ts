@@ -48,8 +48,12 @@ export function photoCreditText(credit: string, language: string): string {
   return L(language, `Foto: ${credit}`, `Photo: ${credit}`, `Photo : ${credit}`, `Foto: ${credit}`)
 }
 
-/** The tooltip on a credited photo: whose it is and that the rights are theirs. */
+/** The tooltip on a credited photo: whose it is and that the rights are theirs. A free Wikimedia Commons photo carries
+ * its author and license instead ("Michael Dunn, CC BY 2.5, via Wikimedia Commons"), and no rights are reserved. */
 export function photoRightsText(credit: string, language: string): string {
+  if (credit.endsWith('via Wikimedia Commons')) {
+    return L(language, `Foto: ${credit}. Licença livre.`, `Photo: ${credit}. Free license.`, `Photo : ${credit}. Licence libre.`, `Foto: ${credit}. Licencia libre.`)
+  }
   return L(
     language,
     `Imagem © ${credit}. Todos os direitos reservados.`,

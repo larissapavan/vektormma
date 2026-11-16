@@ -61,3 +61,14 @@ def test_the_one_athlete_photos_are_credited_to_one(client):
 
 def test_the_list_is_cacheable(client):
     assert client.get("/photo-credits").headers["cache-control"].startswith("public, max-age=")
+
+
+def test_a_free_commons_photo_carries_its_own_author_and_license(client):
+    credits = client.get("/photo-credits").json()["credits"]
+    commons = {line: paths for line, paths in credits.items() if line.endswith("via Wikimedia Commons")}
+    assert commons, "the retired champions' Commons photos are credited"
+    assert any("/fighter-photos/bas-rutten.webp" in paths for paths in commons.values())
+    for line, paths in commons.items():
+        assert ", CC" in line or "Public domain" in line or "CC0" in line  # the license is named
+        assert [path for path in paths if not (PUBLIC / path.lstrip("/")).exists()] == []
+        assert not set(paths) & set(_espn(client)) and not set(paths) & set(_ufc(client))

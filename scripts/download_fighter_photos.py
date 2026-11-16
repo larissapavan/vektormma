@@ -141,16 +141,21 @@ def photo_skip_keys(rows: list[dict], retry_missing: bool, recheck: set[str]) ->
 
 UFC_ATHLETE_URL = "https://www.ufc.com/athlete/{slug}"
 UFC_DELAY_SECONDS = 1.0
+# ufc.com's robots.txt asks for 15 seconds between requests; the one-off former-champions pass keeps to it.
+UFC_CRAWL_DELAY_SECONDS = 15.0
+# Fighters whose ufc.com page goes by their ring name rather than the name in our records.
+UFC_SLUG_OVERRIDES = {"cristiane justino": "cris-cyborg"}
 
 
 def parse_athlete_photo(html: str) -> str | None:
     """The headshot on a ufc.com athlete page, or None for the generic silhouette ufc.com shows when it has no photo."""
     tag = BeautifulSoup(html, "html.parser").find("meta", property="og:image")
     url = (tag.get("content") or "").strip() if tag else ""
-    return None if not url or "silhouette" in url.lower() else url
+    # ufc.com stands in a silhouette or a "coming soon" card when it has no headshot.
+    return None if not url or any(marker in url.lower() for marker in ("silhouette", "comingsoon")) else url
 
 
-def sync_ufc_page_photos(session: requests.Session, rows: list[dict], names: list[str]) -> int:
+def sync_ufc_page_photos(session: requests.Session, rows: list[dict], names: list[str], delay: float = UFC_DELAY_SECONDS) -> int:
     """Photos from the ufc.com athlete page for fighters ESPN has none for (typically new debutants)."""
     added = 0
     covered = covered_keys(rows)
@@ -158,13 +163,14 @@ def sync_ufc_page_photos(session: requests.Session, rows: list[dict], names: lis
         if name_key(name) in covered:
             continue
         try:
-            page = session.get(UFC_ATHLETE_URL.format(slug=slugify(name)), timeout=TIMEOUT_SECONDS)
+            slug = UFC_SLUG_OVERRIDES.get(name.lower(), slugify(name))
+            page = session.get(UFC_ATHLETE_URL.format(slug=slug), timeout=TIMEOUT_SECONDS)
             url = parse_athlete_photo(page.text) if page.status_code == 200 else None
             image = session.get(url, timeout=TIMEOUT_SECONDS) if url else None
         except requests.RequestException:
             continue
         finally:
-            time.sleep(UFC_DELAY_SECONDS)
+            time.sleep(delay)
         if image is None or image.status_code != 200:
             continue
         encoded = to_webp(image.content, max_width=ESPN_MAX_WIDTH)
@@ -190,6 +196,114 @@ def active_without_photo() -> list[str]:
     from backend.app.services.catalog_service import list_fighters
 
     return [fighter["name"] for fighter in list_fighters(ufc_only=True) if fighter.get("is_active") and not fighter.get("image_url")]
+
+
+# --------------------------------------------------------------------------- Wikimedia Commons
+
+WIKIPEDIA_API = "https://en.wikipedia.org/w/api.php"
+COMMONS_API = "https://commons.wikimedia.org/w/api.php"
+# Wikimedia asks automated clients to say who they are; no personal contact goes in it.
+WIKIMEDIA_USER_AGENT = "VektorMMA/1.0 (https://www.vektormma.com; fighter photos with credit)"
+FREE_LICENSES = ("CC BY", "CC0", "PUBLIC DOMAIN", "PD")
+COMMONS_DELAY_SECONDS = 1.0
+
+
+def commons_credit(author: str, license_name: str) -> str:
+    """The credit line a free photo carries on the site: "Michael Dunn, CC BY 2.5, via Wikimedia Commons"."""
+    author = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", author).replace("_", " ")).strip() or "Unknown author"
+    if len(author) > 60:
+        author = author[:57].rstrip() + "..."
+    return f"{author}, {license_name}, via Wikimedia Commons"
+
+
+def is_fighter_description(description: str | None) -> bool:
+    """Wikipedia's short description names a fighter ("American mixed martial artist"), not a namesake."""
+    text = (description or "").lower()
+    return any(word in text for word in ("martial", "fighter", "kickboxer"))
+
+
+def commons_photo(session: requests.Session, name: str) -> dict | None:
+    """The photo of a fighter's English Wikipedia article when it is a free file on Commons: its thumbnail, page and credit.
+    A non-free image (kept on Wikipedia itself under fair use) is not on Commons and is left out."""
+    for title in (f"{name} (fighter)", name):
+        answer = session.get(
+            WIKIPEDIA_API,
+            params={"action": "query", "titles": title, "prop": "pageimages|description", "piprop": "name", "redirects": 1, "format": "json"},
+            timeout=TIMEOUT_SECONDS,
+        ).json()
+        page = next(iter(answer.get("query", {}).get("pages", {}).values()), {})
+        time.sleep(COMMONS_DELAY_SECONDS)
+        if "missing" in page or not page:
+            continue
+        if not is_fighter_description(page.get("description")) or not page.get("pageimage"):
+            return None
+        info = session.get(
+            COMMONS_API,
+            params={"action": "query", "titles": "File:" + page["pageimage"], "prop": "imageinfo", "iiprop": "url|extmetadata", "iiurlwidth": 400, "format": "json"},
+            timeout=TIMEOUT_SECONDS,
+        ).json()
+        time.sleep(COMMONS_DELAY_SECONDS)
+        file_page = next(iter(info.get("query", {}).get("pages", {}).values()), {})
+        if "missing" in file_page or not file_page.get("imageinfo"):
+            return None
+        image = file_page["imageinfo"][0]
+        meta = image.get("extmetadata", {})
+        license_name = (meta.get("LicenseShortName", {}).get("value") or "").strip()
+        if not license_name.upper().startswith(FREE_LICENSES):
+            return None
+        return {
+            "thumb": image.get("thumburl") or image.get("url"),
+            "page": image.get("descriptionurl", ""),
+            "credit": commons_credit(meta.get("Artist", {}).get("value", ""), license_name),
+        }
+    return None
+
+
+def sync_commons_photos(session: requests.Session, rows: list[dict], names: list[str]) -> list[str]:
+    """Free photos from Wikimedia Commons for fighters no other source has one for; the names that got one."""
+    session = requests.Session()
+    session.headers["User-Agent"] = WIKIMEDIA_USER_AGENT
+    added: list[str] = []
+    covered = covered_keys(rows)
+    for name in names:
+        if name_key(name) in covered:
+            continue
+        try:
+            photo = commons_photo(session, name)
+            image = session.get(photo["thumb"], timeout=TIMEOUT_SECONDS) if photo else None
+        except (requests.RequestException, ValueError):
+            continue
+        if not photo or image is None or image.status_code != 200:
+            continue
+        encoded = to_webp(image.content, max_width=ESPN_MAX_WIDTH)
+        filename = f"{slugify(name)}.webp"
+        (PHOTOS_DIR / filename).write_bytes(encoded)
+        rows.append(
+            {
+                "name": name,
+                "kind": "commons",
+                # The source column holds the whole credit, which the site prints as is.
+                "source": photo["credit"],
+                "source_url": photo["page"],
+                "image_url": f"/fighter-photos/{filename}?v={version_tag(encoded)}",
+                "local_path": f"frontend/public/fighter-photos/{filename}",
+                "checked": date.today().isoformat(),
+            }
+        )
+        added.append(name)
+    return added
+
+
+def former_champions_without_photo() -> list[str]:
+    """Fighters who held a UFC belt, undisputed or interim, that the site shows without a photo: mostly retired
+    champions from before ESPN kept headshots, whose ufc.com athlete page still has one."""
+    from backend.app.services.catalog_service import list_fighters
+
+    return [
+        fighter["name"]
+        for fighter in list_fighters(ufc_only=True)
+        if not fighter.get("image_url") and (fighter.get("former_titles") or fighter.get("interim_titles") or fighter.get("current_titles"))
+    ]
 
 
 # --------------------------------------------------------------------------- champions
@@ -372,11 +486,13 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--champions", action="store_true", help="refresh champion belt photos from ufc.com")
     parser.add_argument("--missing", action="store_true", help="download ESPN headshots for fighters without a photo")
     parser.add_argument("--ufc-pages", action="store_true", help="photos from ufc.com athlete pages for active fighters still without one")
+    parser.add_argument("--former-champions", action="store_true", help="photos from ufc.com athlete pages for past champions still without one")
+    parser.add_argument("--commons", action="store_true", help="free Wikimedia Commons photos for past champions no other source has")
     parser.add_argument("--optimize-existing", action="store_true", help="shrink the historical photos in place")
     parser.add_argument("--limit", type=int, help="max fighters to check on ESPN in this run")
     parser.add_argument("--retry-missing", action="store_true", help="re-check fighters ESPN had no photo for")
     args = parser.parse_args(argv)
-    run_all = not (args.champions or args.missing or args.optimize_existing or args.ufc_pages)
+    run_all = not (args.champions or args.missing or args.optimize_existing or args.ufc_pages or args.former_champions or args.commons)
 
     PHOTOS_DIR.mkdir(parents=True, exist_ok=True)
     session = requests.Session()
@@ -384,6 +500,20 @@ def main(argv: list[str] | None = None) -> None:
 
     if args.optimize_existing:
         optimize_existing()
+    if args.former_champions:
+        names = former_champions_without_photo()
+        print(f"[info] {len(names)} past champions without a photo (ufc.com athlete pages, {UFC_CRAWL_DELAY_SECONDS:.0f} s apart) ...")
+        rows = load_manifest()
+        added = sync_ufc_page_photos(session, rows, names, delay=UFC_CRAWL_DELAY_SECONDS)
+        save_manifest(rows)
+        print(f"[info] ufc.com photos added: {added} | still without: {', '.join(n for n in names if name_key(n) not in covered_keys(rows)) or 'none'}")
+    if args.commons:
+        names = former_champions_without_photo()
+        print(f"[info] {len(names)} past champions without a photo (Wikimedia Commons) ...")
+        rows = load_manifest()
+        added_names = sync_commons_photos(requests.Session(), rows, names)
+        save_manifest(rows)
+        print(f"[info] Commons photos added: {', '.join(added_names) or 'none'} | still without: {', '.join(n for n in names if n not in added_names) or 'none'}")
     if args.champions or args.missing or args.ufc_pages or run_all:
         rows = load_manifest()
         fighters = load_csv(FIGHTERS_PATH)[1]

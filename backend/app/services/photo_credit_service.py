@@ -4,7 +4,9 @@ The photos are small copies stored with the site (frontend/public/fighter-photos
 down when it is downloaded: data/raw/fighter_photos.csv for the UFC roster, where `source` is "ESPN" for the ESPN
 headshots and "ufc.com ..." for the champions' belt photos and the athlete-page photos, and the headshots of the Bellator
 archive and of RIZIN, KSW, LFA and Cage Warriors are ESPN's too (see the About page). The ONE Championship photos are
-the athlete-page photos of onefc.com, registered in data/raw/one/fighters.csv. The site asks for this list once and
+the athlete-page photos of onefc.com, registered in data/raw/one/fighters.csv. A few retired champions no other source
+has a photo of use a free Wikimedia Commons file (kind "commons"), whose `source` holds its whole credit: author and
+license ("Michael Dunn, CC BY 2.5, via Wikimedia Commons"). The site asks for this list once and
 credits every photo on it ("Foto:
 ESPN", "Foto: UFC"); a photo that is not on it gets no credit line.
 """
@@ -65,6 +67,18 @@ def one_photo_paths() -> list[str]:
     return sorted({_web_path(url) for url in fighters["image_url"] if _web_path(url).startswith(ONE_WEB_PREFIX)})
 
 
+@lru_cache(maxsize=1)
+def commons_photo_credits() -> dict[str, list[str]]:
+    """Each free Commons photo with its own credit line (author and license), which the license requires on the photo."""
+    if not PHOTOS_MANIFEST_PATH.exists():
+        return {}
+    manifest = pd.read_csv(PHOTOS_MANIFEST_PATH, keep_default_na=False, dtype=str)
+    credits: dict[str, list[str]] = {}
+    for _, row in manifest[manifest["kind"].eq("commons") & manifest["local_path"].str.strip().ne("")].iterrows():
+        credits.setdefault(row["source"], []).append(_web_path(row["image_url"]) or WEB_PREFIX + Path(row["local_path"]).name)
+    return credits
+
+
 def photo_credits() -> dict[str, list[str]]:
     """Credit line -> the photos it goes on."""
-    return {"ESPN": espn_photo_paths(), "UFC": ufc_photo_paths(), "ONE": one_photo_paths()}
+    return {"ESPN": espn_photo_paths(), "UFC": ufc_photo_paths(), "ONE": one_photo_paths(), **commons_photo_credits()}

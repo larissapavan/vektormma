@@ -60,6 +60,7 @@ def test_athlete_page_photo_skips_the_generic_silhouette():
     assert photos.parse_athlete_photo(page.format("https://ufc.com/images/2026-09/DOE_JOHN_09-01.png")) == "https://ufc.com/images/2026-09/DOE_JOHN_09-01.png"
     assert photos.parse_athlete_photo(page.format("https://ufc.com/images/2019-04/SILHOUETTE.png?VersionId=x")) is None
     assert photos.parse_athlete_photo(page.format("https://ufc.com/images/2018-12/silhouette-headshot-female.png")) is None
+    assert photos.parse_athlete_photo(page.format("https://ufc.com/images/image/fighter_images/ComingSoon/comingsoon_headshot_odopod.png")) is None
     assert photos.parse_athlete_photo("<html></html>") is None
 
 
@@ -78,3 +79,15 @@ def test_photo_skip_keys_asks_again_about_active_fighters_without_a_photo(monkey
     assert photos.name_key("New Debutant") not in skip  # asked again
     assert photos.name_key("Has Photo") in skip and photos.name_key("Champ") in skip  # never overwrite a photo
     assert photos.name_key("Old Retiree") not in photos.photo_skip_keys(rows, retry_missing=True, recheck=set())
+
+
+def test_a_commons_credit_names_the_author_and_license():
+    assert photos.commons_credit('<a href="//x">Michael Dunn</a> from Silicon_Valley', "CC BY 2.5") == "Michael Dunn from Silicon Valley, CC BY 2.5, via Wikimedia Commons"
+    assert photos.commons_credit("", "CC0").startswith("Unknown author, CC0")
+
+
+def test_only_a_fighter_article_is_taken_from_wikipedia():
+    assert photos.is_fighter_description("American mixed martial artist (born 1972)")
+    assert photos.is_fighter_description("Dutch kickboxer and professional wrestler")
+    assert not photos.is_fighter_description("American jazz saxophonist")
+    assert not photos.is_fighter_description(None)
