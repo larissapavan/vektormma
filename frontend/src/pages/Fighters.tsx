@@ -12,6 +12,7 @@ import {
   Footprints,
   HandFist,
   Hammer,
+  LayoutGrid,
   Medal,
   Radio,
   Search,
@@ -69,6 +70,9 @@ type DivisionGroup = {
 
 // The UFC runs three women's divisions today. The discontinued Women's Featherweight (a handful of former fighters)
 // has no tab of its own: those fighters are listed under Open Class.
+/** The division bar's first choice: every division on one page instead of one at a time. */
+const ALL_DIVISIONS = 'all'
+
 const divisionGroups: DivisionGroup[] = [
   { key: 'flyweight', label: 'Flyweight', shortLabel: 'FLW', limit: '125 lb', icon: Zap, tone: 'blue', match: byDivision('flyweight') },
   { key: 'bantamweight', label: 'Bantamweight', shortLabel: 'BW', limit: '135 lb', icon: Footprints, tone: 'red', match: byDivision('bantamweight') },
@@ -249,8 +253,9 @@ export function Fighters() {
   const hasAnyResults = visibleFighters.length > 0
   const isSearching = query.trim() !== '' || stanceFilter !== 'All stances' || badgeFilter !== '' || countryFilter !== ''
   // Searching must show what it found: when the chosen division has no match, open the first one that does.
+  const showAll = activeDivision === ALL_DIVISIONS
   const shownDivision =
-    isSearching && (groupedFighters.get(activeDivision)?.length ?? 0) === 0
+    !showAll && isSearching && (groupedFighters.get(activeDivision)?.length ?? 0) === 0
       ? (divisionGroups.find((group) => (groupedFighters.get(group.key)?.length ?? 0) > 0)?.key ?? activeDivision)
       : activeDivision
   const featuredGroup = divisionGroups.find((group) => group.key === shownDivision) ?? divisionGroups[0]
@@ -367,22 +372,43 @@ export function Fighters() {
           <WeightClassBar
             groups={divisionGroups}
             counts={groupedFighters}
+            allCount={visibleFighters.length}
             activeKey={shownDivision}
             onSelect={setActiveDivision}
           />
 
           <div className="min-w-0">
-            <AnimatePresence mode="wait">
-              <DivisionPanel
-                key={featuredGroup.key}
-                group={featuredGroup}
-                fighters={featuredFighters}
-                ranks={ranksOf(ranks, featuredGroup.label)}
-                pastOf={historyFor(featuredGroup)}
-                imageByName={imageByName}
-                onSelectFighter={setSelectedFighter}
-              />
-            </AnimatePresence>
+            {showAll ? (
+              // Every division with a match, one after the other, each in its own order and with its own "show more".
+              <div className="space-y-12">
+                {divisionGroups
+                  .filter((group) => (groupedFighters.get(group.key)?.length ?? 0) > 0)
+                  .map((group) => (
+                    <DivisionPanel
+                      key={group.key}
+                      group={group}
+                      fighters={groupedFighters.get(group.key) ?? []}
+                      ranks={ranksOf(ranks, group.label)}
+                      pastOf={historyFor(group)}
+                      imageByName={imageByName}
+                      onSelectFighter={setSelectedFighter}
+                      inFullList
+                    />
+                  ))}
+              </div>
+            ) : (
+              <AnimatePresence mode="wait">
+                <DivisionPanel
+                  key={featuredGroup.key}
+                  group={featuredGroup}
+                  fighters={featuredFighters}
+                  ranks={ranksOf(ranks, featuredGroup.label)}
+                  pastOf={historyFor(featuredGroup)}
+                  imageByName={imageByName}
+                  onSelectFighter={setSelectedFighter}
+                />
+              </AnimatePresence>
+            )}
           </div>
         </div>
       ) : (
@@ -461,11 +487,13 @@ function CountPill({ active, children }: { active: boolean; children: React.Reac
 function WeightClassBar({
   groups,
   counts,
+  allCount,
   activeKey,
   onSelect,
 }: {
   groups: DivisionGroup[]
   counts: Map<string, FighterProfile[]>
+  allCount: number
   activeKey: string
   onSelect: (key: string) => void
 }) {
@@ -510,6 +538,8 @@ function WeightClassBar({
         className="chip-scroll flex items-center gap-1.5 overflow-x-auto whitespace-nowrap px-1.5"
         style={{ maskImage: mask, WebkitMaskImage: mask }}
       >
+        <AllDivisionsPill count={allCount} isActive={activeKey === ALL_DIVISIONS} onClick={() => onSelect(ALL_DIVISIONS)} />
+        <span aria-hidden="true" className="mx-1 h-4 w-px shrink-0 bg-[var(--border-subtle)]" />
         {groups.map((group, index) => (
           <div key={group.key} className="flex shrink-0 items-center gap-1.5">
             {index > 0 && sectionOf(group.key) !== sectionOf(groups[index - 1].key) ? (
@@ -566,6 +596,7 @@ function DivisionPanel({
   pastOf,
   imageByName,
   onSelectFighter,
+  inFullList = false,
 }: {
   group: DivisionGroup
   fighters: FighterProfile[]
@@ -573,6 +604,8 @@ function DivisionPanel({
   pastOf: (fighter: FighterProfile) => HistoryEntry | null
   imageByName: Map<string, FighterImageRecord>
   onSelectFighter: (name: string) => void
+  /** One of every division on one page: no "selected division" line above the name. */
+  inFullList?: boolean
 }) {
   const { i18n } = useTranslation()
   // Show a page at a time; the list starts over whenever the filters hand it a different set of fighters.
@@ -592,8 +625,8 @@ function DivisionPanel({
     >
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-1 pb-3">
         <div className="min-w-0">
-          <Eyebrow>{L(i18n.language, 'Categoria selecionada', 'Selected division', 'Catégorie affichée', 'División seleccionada')}</Eyebrow>
-          <h2 className="section-title mt-1">{groupLabel}</h2>
+          {inFullList ? null : <Eyebrow>{L(i18n.language, 'Categoria selecionada', 'Selected division', 'Catégorie affichée', 'División seleccionada')}</Eyebrow>}
+          <h2 className={`section-title ${inFullList ? '' : 'mt-1'}`}>{groupLabel}</h2>
         </div>
         <p className="text-base text-[var(--muted)]">
           <span className="font-bold tabular-nums text-[var(--ink)]">{fighters.length.toLocaleString(localeTag(i18n.language))}</span>{' '}
@@ -665,6 +698,30 @@ function DivisionPanel({
         ) : null}
       </div>
     </motion.section>
+  )
+}
+
+/** The first chip: every division on one page. */
+function AllDivisionsPill({ count, isActive, onClick }: { count: number; isActive: boolean; onClick: () => void }) {
+  const { i18n } = useTranslation()
+  const lang = i18n.language
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={isActive}
+      className={[
+        'inline-flex min-h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-sm border px-3 py-1.5 text-xs font-semibold transition-colors',
+        isActive
+          ? 'border-[var(--text-primary)] bg-[var(--text-primary)] text-[var(--bg-surface)]'
+          : 'border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:border-[var(--border-default)] hover:bg-[var(--bg-surface-hover)] hover:text-[var(--text-primary)]',
+      ].join(' ')}
+    >
+      <LayoutGrid className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+      <span className="hidden sm:inline">{L(lang, 'Todas as categorias', 'All divisions', 'Toutes les catégories', 'Todas las divisiones')}</span>
+      <span className="sm:hidden">{L(lang, 'Todas', 'All', 'Toutes', 'Todas')}</span>
+      <CountPill active={isActive}>{count}</CountPill>
+    </button>
   )
 }
 

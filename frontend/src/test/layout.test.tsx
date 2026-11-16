@@ -156,6 +156,18 @@ describe('the fighters page', () => {
     expect(screen.queryByText('Alpha One')).not.toBeInTheDocument()
   })
 
+  it('shows every division on one page on request', async () => {
+    api.extraFighters = 0
+    renderAt('/fighters')
+    expect(await screen.findByText('Selected division', undefined, { timeout: 10000 })).toBeInTheDocument()
+    const all = screen.getByRole('button', { name: /all divisions/i })
+    await userEvent.click(all)
+    expect(all).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.queryByText('Selected division')).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Lightweight' })).toBeInTheDocument()
+    expect(screen.getByText('Alpha One')).toBeInTheDocument()
+  })
+
   it('keeps the stance and badge filters behind a toggle on small screens', async () => {
     api.extraFighters = 0
     renderAt('/fighters')
