@@ -24,6 +24,8 @@ vi.mock('axios', () => {
           nickname: null,
           win_rate: 0.5 - index / 1000,
           fighter_url: null,
+          // One runner from another country, for the country filter.
+          ...(index === 0 ? { country: 'United States', country_code: 'us', nationalities: [{ name: 'United States', code: 'us' }] } : {}),
         }))
         return { data: [alpha, beta, ...extra] }
       }
@@ -140,6 +142,18 @@ describe('the fighters page', () => {
 
     await userEvent.type(screen.getByRole('textbox', { name: /search fighter or nickname/i }), 'Runner')
     expect(await screen.findByText(/Showing 24 of 40/)).toBeInTheDocument()
+  })
+
+  it('filters by country, with each country named and counted', async () => {
+    api.extraFighters = 40
+    renderAt('/fighters')
+    const select = await screen.findByRole('combobox', { name: /filter by country/i }, { timeout: 10000 })
+    expect(screen.getByRole('option', { name: 'United States (1)' })).toBeInTheDocument()
+    expect(screen.getByRole('option', { name: 'Brazil (41)' })).toBeInTheDocument()
+
+    await userEvent.selectOptions(select, 'us')
+    expect(await screen.findByText('Runner 01')).toBeInTheDocument()
+    expect(screen.queryByText('Alpha One')).not.toBeInTheDocument()
   })
 
   it('keeps the stance and badge filters behind a toggle on small screens', async () => {

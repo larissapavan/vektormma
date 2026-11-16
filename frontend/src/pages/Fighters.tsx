@@ -35,7 +35,7 @@ import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { FighterProfileModal } from '../shared/components/FighterProfileModal'
 import { Eyebrow } from '../shared/components/ui/Eyebrow'
 import { PageHeader } from '../shared/components/ui/PageHeader'
-import { formatPercent } from '../shared/data/fightLabels'
+import { formatPercent, localizeCountryName } from '../shared/data/fightLabels'
 import { isKnownActive, isKnownRetired } from '../shared/data/fighterStatusOverrides'
 import {
   compareFighters,
@@ -176,6 +176,7 @@ export function Fighters() {
   const [query, setQuery] = useState('')
   const [stanceFilter, setStanceFilter] = useState('All stances')
   const [badgeFilter, setBadgeFilter] = useState('')
+  const [countryFilter, setCountryFilter] = useState('')
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>('all')
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [activeDivision, setActiveDivision] = useState('lightweight')
@@ -201,6 +202,21 @@ export function Fighters() {
     [fighters],
   )
 
+  // Every country with UFC fighters, by its name on screen, with how many fighters each one has.
+  const countries = useMemo(() => {
+    const byCode = new Map<string, { name: string; count: number }>()
+    for (const fighter of fighters) {
+      for (const nation of nationalitiesOf(fighter)) {
+        const entry = byCode.get(nation.code) ?? { name: countryLabel(nation, i18n.language), count: 0 }
+        entry.count += 1
+        byCode.set(nation.code, entry)
+      }
+    }
+    return [...byCode.entries()]
+      .map(([code, entry]) => ({ code, ...entry }))
+      .sort((a, b) => a.name.localeCompare(b.name, localeTag(i18n.language)))
+  }, [fighters, i18n.language])
+
   const visibleFighters = useMemo(() => {
     const term = foldText(query.trim())
     return fighters.filter((fighter) => {
@@ -211,9 +227,10 @@ export function Fighters() {
       const matchesStance = stanceFilter === 'All stances' || fighter.stance === stanceFilter
       const matchesBadge = !badgeFilter || (fighter.badges ?? []).includes(badgeFilter)
       const matchesStatus = activeFilter === 'all' || statusOf(fighter) === activeFilter
-      return matchesName && matchesStance && matchesBadge && matchesStatus
+      const matchesCountry = !countryFilter || nationalitiesOf(fighter).some((nation) => nation.code === countryFilter)
+      return matchesName && matchesStance && matchesBadge && matchesStatus && matchesCountry
     })
-  }, [fighters, query, stanceFilter, badgeFilter, activeFilter, statusOf])
+  }, [fighters, query, stanceFilter, badgeFilter, countryFilter, activeFilter, statusOf])
 
   const groupedFighters = useMemo(() => {
     const groups = new Map<string, FighterProfile[]>()
@@ -230,7 +247,7 @@ export function Fighters() {
   }, [visibleFighters, ranks, statusOf, historyFor])
 
   const hasAnyResults = visibleFighters.length > 0
-  const isSearching = query.trim() !== '' || stanceFilter !== 'All stances' || badgeFilter !== ''
+  const isSearching = query.trim() !== '' || stanceFilter !== 'All stances' || badgeFilter !== '' || countryFilter !== ''
   // Searching must show what it found: when the chosen division has no match, open the first one that does.
   const shownDivision =
     isSearching && (groupedFighters.get(activeDivision)?.length ?? 0) === 0
@@ -249,8 +266,8 @@ export function Fighters() {
           { label: t('fighters.division'), value: `${divisionGroups.length}` },
         ]}
       >
-        <div className="grid gap-2.5 md:grid-cols-[1fr_220px_240px]">
-          <div className="flex gap-2">
+        <div className="grid gap-2.5 md:grid-cols-3 xl:grid-cols-[1fr_200px_220px_220px]">
+          <div className="flex gap-2 md:col-span-3 xl:col-span-1">
             <div className="soft-input flex min-w-0 flex-1 items-center gap-2.5 rounded-sm px-3 py-2.5">
               <Search className="h-4 w-4 shrink-0 text-[var(--text-red)]" />
               <input
@@ -270,9 +287,9 @@ export function Fighters() {
             >
               <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
               {L(i18n.language, 'Filtros', 'Filters', 'Filtres', 'Filtros')}
-              {stanceFilter !== 'All stances' || badgeFilter !== '' ? (
+              {stanceFilter !== 'All stances' || badgeFilter !== '' || countryFilter !== '' ? (
                 <span className="grid h-5 min-w-5 place-items-center rounded-sm bg-[var(--ink)] px-1 text-label text-[var(--on-ink)]">
-                  {(stanceFilter !== 'All stances' ? 1 : 0) + (badgeFilter !== '' ? 1 : 0)}
+                  {(stanceFilter !== 'All stances' ? 1 : 0) + (badgeFilter !== '' ? 1 : 0) + (countryFilter !== '' ? 1 : 0)}
                 </span>
               ) : null}
             </button>
@@ -287,6 +304,19 @@ export function Fighters() {
             {stances.map((stance) => (
               <option key={stance} value={stance}>
                 {stanceLabel(stance, i18n.language)}
+              </option>
+            ))}
+          </select>
+          <select
+            value={countryFilter}
+            onChange={(event) => setCountryFilter(event.target.value)}
+            aria-label={L(i18n.language, 'Filtrar por país', 'Filter by country', 'Filtrer par pays', 'Filtrar por país')}
+            className="soft-input rounded-sm px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
+          >
+            <option value="">{L(i18n.language, 'Todos os países', 'All countries', 'Tous les pays', 'Todos los países')}</option>
+            {countries.map((country) => (
+              <option key={country.code} value={country.code}>
+                {country.name} ({country.count.toLocaleString(localeTag(i18n.language))})
               </option>
             ))}
           </select>
@@ -827,6 +857,23 @@ function getDivisionLabel(fighter: FighterProfile) {
 
 function formatRecord(fighter: FighterProfile, language: string | boolean = false) {
   return `${fighter.wins ?? 0}-${fighter.losses ?? 0}${fighter.draws ? `-${fighter.draws}` : ''} ${L(language, 'cartel', 'record', 'palmarès', 'récord')}`
+}
+
+/** The fighter's countries, as the flags show them: every nationality, or the single country of the record. */
+function nationalitiesOf(fighter: FighterProfile): { name: string; code: string }[] {
+  if (fighter.nationalities?.length) return fighter.nationalities.filter((nation): nation is { name: string; code: string } => Boolean(nation.code))
+  return fighter.country_code ? [{ name: fighter.country ?? '', code: fighter.country_code }] : []
+}
+
+/** A country's name on screen; a record with only the code ("br") gets the name from the browser. */
+function countryLabel(nation: { name: string; code: string }, language: string): string {
+  const localized = localizeCountryName(nation.name, language)
+  if (localized) return localized
+  try {
+    return new Intl.DisplayNames([localeTag(language)], { type: 'region' }).of(nation.code.toUpperCase()) ?? nation.code.toUpperCase()
+  } catch {
+    return nation.code.toUpperCase()
+  }
 }
 
 function foldText(value: string) {
