@@ -117,3 +117,8 @@ fight_key,event_name,event_date,fighter_1,fighter_2,prob_fighter_1,predicted_win
 2027-02-06|rabindra dhant|ryo tajima,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,Rabindra Dhant,Ryo Tajima,0.4999,Ryo Tajima,0.5001,2026-11-15,,,,prefight
 2027-02-06|jiniushiyue|takaya suzuki,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,Jiniushiyue,Takaya Suzuki,0.4418,Takaya Suzuki,0.5582,2026-11-15,,,,prefight
 2027-02-06|bo hyun park|bo meng,UFC Fight Night: Salkilld vs. Saint Denis,2027-02-06,Bo Meng,Bo Hyun Park,0.4377,Bo Hyun Park,0.5623,2026-11-15,,,,prefight
+2027-01-16|steve garcia|yair rodriguez,UFC Fight Night: Rodriguez vs. Garcia,2027-01-16,Yair Rodriguez,Steve Garcia,0.3330,Steve Garcia,0.6670,2026-11-17,,,,prefight
+2027-01-16|daniel rodriguez|roberto soldic,UFC Fight Night: Rodriguez vs. Garcia,2027-01-16,Daniel Rodriguez,Roberto Soldic,0.3115,Roberto Soldic,0.6885,2026-11-17,,,,prefight
+2027-01-16|chidi njokuani|ignacio bahamondes,UFC Fight Night: Rodriguez vs. Garcia,2027-01-16,Ignacio Bahamondes,Chidi Njokuani,0.6285,Ignacio Bahamondes,0.6285,2026-11-17,,,,prefight
+2027-01-23|gabriel bonfim|sean brady,UFC Fight Night: Bonfim vs. Brady,2027-01-23,Gabriel Bonfim,Sean Brady,0.4447,Sean Brady,0.5553,2026-11-17,,,,prefight
+2027-02-13|bo nickal|joe pyfer,UFC Fight Night: Pyfer vs. Nickal,2027-02-13,Joe Pyfer,Bo Nickal,0.4456,Bo Nickal,0.5544,2026-11-17,,,,prefight

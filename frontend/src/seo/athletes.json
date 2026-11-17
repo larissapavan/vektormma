@@ -8523,20 +8523,6 @@
    "photo": "stephanie-luciano.webp"
   },
   {
-   "name": "Stephen Thompson",
-   "slug": "stephen-thompson",
-   "nickname": "Wonderboy",
-   "division": "Welterweight",
-   "wins": 18,
-   "losses": 9,
-   "draws": 1,
-   "belt": false,
-   "titles": [],
-   "country": "United States",
-   "countryCode": "us",
-   "photo": "stephen-thompson.webp"
-  },
-  {
    "name": "Steve Erceg",
    "slug": "steve-erceg",
    "nickname": "Astroboy",
@@ -9714,51 +9700,10 @@
    }
   },
   {
-   "slug": "jacqueline-cavalcanti-vs-michelle-montague",
-   "event": "UFC Fight Night: Prochazka vs. Stirling",
-   "date": "2026-11-21",
-   "position": 2,
-   "titleFight": false,
-   "weightClass": "Women's Bantamweight",
-   "a": {
-    "name": "Jacqueline Cavalcanti",
-    "slug": "jacqueline-cavalcanti",
-    "nickname": null,
-    "division": "Women's Bantamweight",
-    "wins": 10,
-    "losses": 2,
-    "draws": 0,
-    "belt": false,
-    "titles": [],
-    "country": "Portugal",
-    "countryCode": "pt",
-    "photo": "jacqueline-cavalcanti.webp"
-   },
-   "b": {
-    "name": "Michelle Montague",
-    "slug": "michelle-montague",
-    "nickname": "The Wild One",
-    "division": "Women's Bantamweight",
-    "wins": 8,
-    "losses": 0,
-    "draws": 0,
-    "belt": false,
-    "titles": [],
-    "country": "New Zealand",
-    "countryCode": "nz",
-    "photo": "michelle-montague.webp"
-   },
-   "pick": {
-    "winner": "Jacqueline Cavalcanti",
-    "probability": 0.6908,
-    "winnerIsA": true
-   }
-  },
-  {
    "slug": "aljamain-sterling-vs-kevin-vallejos",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 3,
+   "position": 2,
    "titleFight": false,
    "weightClass": "Featherweight",
    "a": {
@@ -9799,7 +9744,7 @@
    "slug": "dan-hooker-vs-brian-ortega",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 4,
+   "position": 3,
    "titleFight": false,
    "weightClass": "Lightweight",
    "a": {
@@ -9840,7 +9785,7 @@
    "slug": "asu-almabayev-vs-kyoji-horiguchi",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 5,
+   "position": 4,
    "titleFight": false,
    "weightClass": "Flyweight",
    "a": {
@@ -9881,7 +9826,7 @@
    "slug": "jared-cannonier-vs-ikram-aliskerov",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 6,
+   "position": 5,
    "titleFight": false,
    "weightClass": "Middleweight",
    "a": {
@@ -9922,7 +9867,7 @@
    "slug": "aleksandre-topuria-vs-santiago-luna",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 7,
+   "position": 6,
    "titleFight": false,
    "weightClass": "Bantamweight",
    "a": {
@@ -9963,7 +9908,7 @@
    "slug": "shamil-gaziev-vs-tallison-teixeira",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 8,
+   "position": 7,
    "titleFight": false,
    "weightClass": "Heavyweight",
    "a": {
@@ -10004,7 +9949,7 @@
    "slug": "amir-albazi-vs-alessandro-costa",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 9,
+   "position": 8,
    "titleFight": false,
    "weightClass": "Flyweight",
    "a": {
@@ -10045,7 +9990,7 @@
    "slug": "jake-matthews-vs-tahir-abdullayev",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 10,
+   "position": 9,
    "titleFight": false,
    "weightClass": "Welterweight",
    "a": {
@@ -10086,7 +10031,7 @@
    "slug": "nikolas-motta-vs-dom-mar-fan",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 11,
+   "position": 10,
    "titleFight": false,
    "weightClass": "Lightweight",
    "a": {
@@ -10127,7 +10072,7 @@
    "slug": "diyar-nurgozhay-vs-alik-lorenz",
    "event": "UFC Fight Night: Prochazka vs. Stirling",
    "date": "2026-11-21",
-   "position": 12,
+   "position": 11,
    "titleFight": false,
    "weightClass": "Light Heavyweight",
    "a": {
@@ -10161,6 +10106,47 @@
    "pick": {
     "winner": "Diyar Nurgozhay",
     "probability": 0.5861,
+    "winnerIsA": true
+   }
+  },
+  {
+   "slug": "jacqueline-cavalcanti-vs-michelle-montague",
+   "event": "UFC Fight Night: Prochazka vs. Stirling",
+   "date": "2026-11-21",
+   "position": 12,
+   "titleFight": false,
+   "weightClass": "Women's Bantamweight",
+   "a": {
+    "name": "Jacqueline Cavalcanti",
+    "slug": "jacqueline-cavalcanti",
+    "nickname": null,
+    "division": "Women's Bantamweight",
+    "wins": 10,
+    "losses": 2,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": "Portugal",
+    "countryCode": "pt",
+    "photo": "jacqueline-cavalcanti.webp"
+   },
+   "b": {
+    "name": "Michelle Montague",
+    "slug": "michelle-montague",
+    "nickname": "The Wild One",
+    "division": "Women's Bantamweight",
+    "wins": 8,
+    "losses": 0,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": "New Zealand",
+    "countryCode": "nz",
+    "photo": "michelle-montague.webp"
+   },
+   "pick": {
+    "winner": "Jacqueline Cavalcanti",
+    "probability": 0.6908,
     "winnerIsA": true
    }
   },
@@ -11061,6 +11047,11 @@
     "country": "United States",
     "countryCode": "us",
     "photo": "steve-garcia.webp"
+   },
+   "pick": {
+    "winner": "Steve Garcia",
+    "probability": 0.667,
+    "winnerIsA": false
    }
   },
   {
@@ -11097,6 +11088,11 @@
     "country": "Croatia",
     "countryCode": "hr",
     "photo": "roberto-soldic.webp"
+   },
+   "pick": {
+    "winner": "Roberto Soldic",
+    "probability": 0.6885,
+    "winnerIsA": false
    }
   },
   {
@@ -11133,6 +11129,11 @@
     "country": "Nigeria",
     "countryCode": "ng",
     "photo": "chidi-njokuani.webp"
+   },
+   "pick": {
+    "winner": "Ignacio Bahamondes",
+    "probability": 0.6285,
+    "winnerIsA": true
    }
   },
   {
@@ -11169,6 +11170,11 @@
     "country": "United States",
     "countryCode": "us",
     "photo": "sean-brady.webp"
+   },
+   "pick": {
+    "winner": "Sean Brady",
+    "probability": 0.5553,
+    "winnerIsA": false
    }
   },
   {
@@ -11617,6 +11623,11 @@
     "country": "United States",
     "countryCode": "us",
     "photo": "bo-nickal.webp"
+   },
+   "pick": {
+    "winner": "Bo Nickal",
+    "probability": 0.5544,
+    "winnerIsA": false
    }
   }
  ]
