@@ -61,7 +61,6 @@ type ActiveFilter = 'all' | Exclude<UfcStatus, 'never'>
 type DivisionGroup = {
   key: string
   label: string
-  shortLabel: string
   limit: string
   icon: LucideIcon
   tone: 'red' | 'blue' | 'gold'
@@ -74,18 +73,18 @@ type DivisionGroup = {
 const ALL_DIVISIONS = 'all'
 
 const divisionGroups: DivisionGroup[] = [
-  { key: 'flyweight', label: 'Flyweight', shortLabel: 'FLW', limit: '125 lb', icon: Zap, tone: 'blue', match: byDivision('flyweight') },
-  { key: 'bantamweight', label: 'Bantamweight', shortLabel: 'BW', limit: '135 lb', icon: Footprints, tone: 'red', match: byDivision('bantamweight') },
-  { key: 'featherweight', label: 'Featherweight', shortLabel: 'FW', limit: '145 lb', icon: Target, tone: 'gold', match: byDivision('featherweight') },
-  { key: 'lightweight', label: 'Lightweight', shortLabel: 'LW', limit: '155 lb', icon: Flame, tone: 'red', match: byDivision('lightweight') },
-  { key: 'welterweight', label: 'Welterweight', shortLabel: 'WW', limit: '170 lb', icon: Shield, tone: 'blue', match: byDivision('welterweight') },
-  { key: 'middleweight', label: 'Middleweight', shortLabel: 'MW', limit: '185 lb', icon: Swords, tone: 'gold', match: byDivision('middleweight') },
-  { key: 'light-heavyweight', label: 'Light Heavyweight', shortLabel: 'LHW', limit: '205 lb', icon: HandFist, tone: 'red', match: byDivision('light heavyweight') },
-  { key: 'heavyweight', label: 'Heavyweight', shortLabel: 'HW', limit: '265 lb', icon: Hammer, tone: 'blue', match: byDivision('heavyweight') },
+  { key: 'flyweight', label: 'Flyweight', limit: '125 lb', icon: Zap, tone: 'blue', match: byDivision('flyweight') },
+  { key: 'bantamweight', label: 'Bantamweight', limit: '135 lb', icon: Footprints, tone: 'red', match: byDivision('bantamweight') },
+  { key: 'featherweight', label: 'Featherweight', limit: '145 lb', icon: Target, tone: 'gold', match: byDivision('featherweight') },
+  { key: 'lightweight', label: 'Lightweight', limit: '155 lb', icon: Flame, tone: 'red', match: byDivision('lightweight') },
+  { key: 'welterweight', label: 'Welterweight', limit: '170 lb', icon: Shield, tone: 'blue', match: byDivision('welterweight') },
+  { key: 'middleweight', label: 'Middleweight', limit: '185 lb', icon: Swords, tone: 'gold', match: byDivision('middleweight') },
+  { key: 'light-heavyweight', label: 'Light Heavyweight', limit: '205 lb', icon: HandFist, tone: 'red', match: byDivision('light heavyweight') },
+  { key: 'heavyweight', label: 'Heavyweight', limit: '265 lb', icon: Hammer, tone: 'blue', match: byDivision('heavyweight') },
   {
     key: 'w-strawweight',
     label: "Women's Strawweight",
-    shortLabel: 'WSW',
+   
     limit: '115 lb',
     icon: Timer,
     tone: 'gold',
@@ -94,7 +93,7 @@ const divisionGroups: DivisionGroup[] = [
   {
     key: 'w-flyweight',
     label: "Women's Flyweight",
-    shortLabel: 'WFLW',
+   
     limit: '125 lb',
     icon: Bell,
     tone: 'blue',
@@ -103,7 +102,7 @@ const divisionGroups: DivisionGroup[] = [
   {
     key: 'w-bantamweight',
     label: "Women's Bantamweight",
-    shortLabel: 'WBW',
+   
     limit: '135 lb',
     icon: Medal,
     tone: 'red',
@@ -112,7 +111,7 @@ const divisionGroups: DivisionGroup[] = [
   {
     key: 'open-class',
     label: 'Open Class / Unclassified',
-    shortLabel: 'OPEN',
+   
     limit: 'Mixed',
     icon: Dumbbell,
     tone: 'blue',
@@ -750,8 +749,9 @@ function DivisionPill({
       ].join(' ')}
     >
       <group.icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-      <span className="hidden sm:inline">{getDivisionName(group.label, i18n.language)}</span>
-      <span className="sm:hidden">{group.shortLabel}</span>
+      {/* The full name on every screen: the bar already scrolls sideways, and the English codes (FLW, BW, WSW) read as
+          jargon in the other languages. */}
+      <span>{getDivisionName(group.label, i18n.language)}</span>
       <CountPill active={isActive}>{count}</CountPill>
     </button>
   )

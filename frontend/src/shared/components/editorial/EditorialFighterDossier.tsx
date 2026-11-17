@@ -241,7 +241,7 @@ export function EditorialFighterDossier({
                 {L(i18n.language, 'Dossiê do lutador', 'Fighter dossier', 'Dossier du combattant', 'Dosier del peleador')}
               </span>
               <span className="text-xs font-semibold text-[var(--ink)]">
-                VEKTOR MMA • HAUTE PERFORMANCE
+                {L(i18n.language, 'Vektor MMA • Perfil completo', 'Vektor MMA • Full profile', 'Vektor MMA • Profil complet', 'Vektor MMA • Perfil completo')}
               </span>
             </div>
           </div>
@@ -366,17 +366,17 @@ export function EditorialFighterDossier({
 
               {/* Official Record Big Badge */}
               <div className="pt-2">
-                <div className="inline-flex items-baseline gap-2 border border-[var(--rule)] bg-[var(--panel)] px-5 py-3">
-                  <span className="text-xs text-[var(--muted)]">
+                <div className="inline-flex max-w-full flex-wrap items-baseline gap-x-3 gap-y-1.5 border border-[var(--rule)] bg-[var(--panel)] px-4 py-3 sm:px-5">
+                  <span className="whitespace-nowrap text-xs text-[var(--muted)]">
                     {L(i18n.language, 'Cartel oficial', 'Official record', 'Palmarès', 'Récord oficial')}
                   </span>
-                  <span className="font-black text-2xl sm:text-3xl text-[var(--ink)]">
+                  <span className="whitespace-nowrap font-black text-2xl sm:text-3xl text-[var(--ink)]">
                     {profile?.wins ?? 0}
                     <span className="text-[var(--muted)] font-normal">{L(i18n.language, 'V', 'W', 'V', 'V')}</span> — {profile?.losses ?? 0}
                     <span className="text-[var(--muted)] font-normal">{L(i18n.language, 'D', 'L', 'D', 'D')}</span>
                     {profile?.draws ? ` — ${profile.draws}${L(i18n.language, 'E', 'D', 'N', 'E')}` : ''}
                   </span>
-                  <span className="ml-2 rounded-sm border-[1.5px] border-[var(--positive)] px-2 py-0.5 text-xs font-bold text-[var(--positive)]">
+                  <span className="whitespace-nowrap rounded-sm border-[1.5px] border-[var(--positive)] px-2 py-0.5 text-xs font-bold text-[var(--positive)]">
                     {Math.round((profile?.win_rate ?? 0) * 100)}% {L(i18n.language, 'vitórias', 'wins', 'victoires', 'victorias')}
                   </span>
                 </div>

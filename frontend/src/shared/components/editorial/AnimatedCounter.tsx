@@ -30,7 +30,7 @@ export function AnimatedCounter({
   const [displayValue, setDisplayValue] = useState(0)
   const ref = useRef<HTMLSpanElement>(null)
   const shown = useRef(0)
-  const isInView = useInView(ref, { once: true, margin: '-40px' })
+  const isInView = useInView(ref, { once: true })
   const reduceMotion = useReducedMotion()
 
   useEffect(() => {

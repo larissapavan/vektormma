@@ -475,11 +475,13 @@ function Drivers({ factors, redName }: { factors: MainFactor[]; redName: string 
             <div key={factor.feature}>
               <div className="flex items-end gap-2">
                 <span className="poster-display w-5 shrink-0 text-lg text-[var(--ink)]">{index + 1}</span>
-                <span className="min-w-0 flex-1 truncate text-xs font-bold sm:text-sm text-[var(--text-primary)]">
+                {/* The name takes the room it needs and the dotted leader fills what is left: with both at flex-1 the name was
+                    cut at half the row ("Diferença de golpes recebidos p...") while the dots took the other half. */}
+                <span className="min-w-0 truncate text-xs font-bold sm:text-sm text-[var(--text-primary)]">
                   {localizeFeature(factor.feature, i18n.language)}
                 </span>
-                <span className="poster-leader border-dotted border-[var(--border-default)]" aria-hidden="true" />
-                <span className="poster-display text-sm text-[var(--text-secondary)]">{factor.impact}</span>
+                <span className="poster-leader min-w-3 border-dotted border-[var(--border-default)]" aria-hidden="true" />
+                <span className="poster-display max-w-[45%] shrink-0 truncate text-sm text-[var(--text-secondary)]">{factor.impact}</span>
               </div>
               <div className="mt-1 h-2 rounded-sm overflow-hidden bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
                 <div className={`h-full ${factor.impact === redName ? 'bg-[var(--red)]' : 'bg-[var(--blue)]'}`} style={{ width: `${Math.min(100, (factor.magnitude / max) * 100)}%` }} />
@@ -514,15 +516,15 @@ function Drivers({ factors, redName }: { factors: MainFactor[]; redName: string 
   )
 }
 
-type TapeRow = { label: string; a: number | null; b: number | null; unit?: string; better: 'high' | 'low' | 'none'; pct?: boolean }
+type TapeRow = { label: string; a: number | null; b: number | null; unit?: string; better: 'high' | 'low' | 'none'; pct?: boolean; digits?: number }
 
 function TaleOfTape({ fighterA, fighterB }: { fighterA: FighterProfile | null; fighterB: FighterProfile | null }) {
   const { i18n } = useTranslation()
 
   const rows: TapeRow[] = [
-    { label: L(i18n.language, 'Idade', 'Age', 'Âge', 'Edad'), a: fighterA?.age ?? null, b: fighterB?.age ?? null, better: 'none' },
-    { label: L(i18n.language, 'Altura (cm)', 'Height (cm)', 'Taille (cm)', 'Estatura (cm)'), a: fighterA?.height_cm ?? null, b: fighterB?.height_cm ?? null, better: 'high' },
-    { label: L(i18n.language, 'Envergadura (cm)', 'Reach (cm)', 'Allonge (cm)', 'Alcance (cm)'), a: fighterA?.reach_cm ?? null, b: fighterB?.reach_cm ?? null, better: 'high' },
+    { label: L(i18n.language, 'Idade', 'Age', 'Âge', 'Edad'), a: fighterA?.age ?? null, b: fighterB?.age ?? null, better: 'none', digits: 0 },
+    { label: L(i18n.language, 'Altura (cm)', 'Height (cm)', 'Taille (cm)', 'Estatura (cm)'), a: fighterA?.height_cm ?? null, b: fighterB?.height_cm ?? null, better: 'high', digits: 0 },
+    { label: L(i18n.language, 'Envergadura (cm)', 'Reach (cm)', 'Allonge (cm)', 'Alcance (cm)'), a: fighterA?.reach_cm ?? null, b: fighterB?.reach_cm ?? null, better: 'high', digits: 0 },
     { label: L(i18n.language, 'Vitórias', 'Wins', 'Victoires', 'Victorias'), a: fighterA?.wins ?? null, b: fighterB?.wins ?? null, better: 'high' },
     { label: L(i18n.language, 'Derrotas', 'Losses', 'Défaites', 'Derrotas'), a: fighterA?.losses ?? null, b: fighterB?.losses ?? null, better: 'low' },
     { label: L(i18n.language, 'Taxa de vitória', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias'), a: fighterA?.win_rate ?? null, b: fighterB?.win_rate ?? null, better: 'high', pct: true },
@@ -543,9 +545,9 @@ function TaleOfTape({ fighterA, fighterB }: { fighterA: FighterProfile | null; f
       </div>
 
       <div className="grid grid-cols-[1fr_auto_1fr] border-b border-[var(--border-subtle)] text-center">
-        <span className="poster-display truncate bg-[var(--red)] px-3 py-2 text-base text-white sm:text-lg">{fighterA?.name ?? L(i18n.language, 'Canto vermelho', 'Red corner', 'Coin rouge', 'Esquina roja')}</span>
+        <span className="poster-display truncate bg-[var(--red)] px-3 py-2 text-base text-white sm:text-lg" title={fighterA?.name}>{fighterA ? <TapeName name={fighterA.name} /> : L(i18n.language, 'Canto vermelho', 'Red corner', 'Coin rouge', 'Esquina roja')}</span>
         <span className="w-24 shrink-0 sm:w-40" />
-        <span className="poster-display truncate bg-[var(--blue)] px-3 py-2 text-base text-white sm:text-lg">{fighterB?.name ?? L(i18n.language, 'Canto azul', 'Blue corner', 'Coin bleu', 'Esquina azul')}</span>
+        <span className="poster-display truncate bg-[var(--blue)] px-3 py-2 text-base text-white sm:text-lg" title={fighterB?.name}>{fighterB ? <TapeName name={fighterB.name} /> : L(i18n.language, 'Canto azul', 'Blue corner', 'Coin bleu', 'Esquina azul')}</span>
       </div>
 
       <div>
@@ -564,9 +566,21 @@ function TaleOfTape({ fighterA, fighterB }: { fighterA: FighterProfile | null; f
   )
 }
 
+/** The surname alone on a phone, where the column is a third of the screen ("Makhachev", not "Islam Makhac..."). */
+function TapeName({ name }: { name: string }) {
+  const parts = name.trim().split(/\s+/)
+  const surname = parts.length > 1 ? parts.slice(1).join(' ') : name
+  return (
+    <>
+      <span className="sm:hidden">{surname}</span>
+      <span className="hidden sm:inline">{name}</span>
+    </>
+  )
+}
+
 function Cell({ value, row, winning, ready }: { value: number | null; row: TapeRow; winning: boolean; ready: boolean }) {
   const { i18n } = useTranslation()
-  const text = !ready || value == null ? '--' : row.pct ? formatShare(value, i18n.language) : Number.isInteger(value) ? `${value}` : formatDecimal(value, 1, i18n.language)
+  const text = !ready || value == null ? '--' : row.pct ? formatShare(value, i18n.language) : Number.isInteger(value) ? `${value}` : formatDecimal(value, row.digits ?? 1, i18n.language)
   return (
     <span className="px-2 py-1.5 text-center">
       <span className={`poster-display inline-block px-2 text-xl sm:text-2xl ${winning ? 'rounded bg-[var(--tape)] text-[var(--on-tape)]' : ready ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}>{text}</span>
