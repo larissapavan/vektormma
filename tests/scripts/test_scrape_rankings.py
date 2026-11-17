@@ -1,4 +1,4 @@
-from scripts.scrape_rankings import GROUPS_EXPECTED, rankings_problem
+from scripts.scrape_rankings import GROUPS_EXPECTED, clean_athlete_url, rankings_problem
 
 
 def test_rankings_problem_rejects_a_partial_page():
@@ -27,3 +27,9 @@ def test_ranking_changes_report_moves_entries_exits_and_a_new_champion():
         "Flyweight: Gone left the rankings",
     ]
     assert ranking_changes(old, old) == []
+
+
+def test_clean_athlete_url_drops_the_escaped_index_php_prefix():
+    assert clean_athlete_url("/index%2ephp/athlete/petr-yan") == "/athlete/petr-yan"
+    assert clean_athlete_url("/athlete/petr-yan") == "/athlete/petr-yan"
+    assert clean_athlete_url(None) is None

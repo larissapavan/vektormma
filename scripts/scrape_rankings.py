@@ -80,6 +80,16 @@ def classify_header(raw_header: str) -> tuple[str, bool] | None:
     return label, False
 
 
+def clean_athlete_url(href: str | None) -> str | None:
+    """ufc.com sometimes prefixes its links with "/index%2ephp" (an escaped "/index.php"); keep the plain path."""
+    if not href:
+        return None
+    for prefix in ("/index%2ephp", "/index%2Ephp", "/index.php"):
+        if href.startswith(prefix + "/"):
+            return href[len(prefix):]
+    return href
+
+
 def parse_rank_change(cell_text: str) -> str | None:
     text = cell_text.strip()
     if not text:
@@ -116,7 +126,7 @@ def parse_rankings(html: str) -> list[dict]:
                     "rank": 0,
                     "fighter": champion_link.get_text(strip=True),
                     "rank_change": None,
-                    "athlete_url": champion_link.get("href"),
+                    "athlete_url": clean_athlete_url(champion_link.get("href")),
                 }
             )
 
@@ -138,7 +148,7 @@ def parse_rankings(html: str) -> list[dict]:
                     "rank": int(rank_text),
                     "fighter": fighter_name,
                     "rank_change": rank_change,
-                    "athlete_url": fighter_link.get("href") if fighter_link else None,
+                    "athlete_url": clean_athlete_url(fighter_link.get("href")) if fighter_link else None,
                 }
             )
 
