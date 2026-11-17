@@ -1,4 +1,4 @@
-import { L, uiLang, type UiLang } from '../../i18n/lang'
+import { L, formatShare, uiLang, type UiLang } from '../../i18n/lang'
 
 /** Win-method buckets used by the performance charts, as shown to the user. */
 const METHOD_LABELS: Record<UiLang, Record<string, string>> = {
@@ -376,7 +376,7 @@ export function getMethodLabel(method: string | null | undefined, language: stri
   return METHOD_LABELS[uiLang(language)][method] ?? translateFightMethod(method, language)
 }
 
-export function formatPercent(value: number | null | undefined) {
+export function formatPercent(value: number | null | undefined, language: string | boolean = false) {
   if (value == null) return '—'
-  return `${(value * 100).toFixed(1)}%`
+  return formatShare(value, language)
 }

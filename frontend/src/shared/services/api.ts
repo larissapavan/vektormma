@@ -46,15 +46,29 @@ const api = axios.create({
   params: { v: BUILD_ID },
 })
 
+// Several parts of one page ask for the same thing at the same moment: the header, the page and a card each want the
+// health check, the model figures or the picks. One request serves them all. Nothing is kept afterwards: once the
+// request settles, the next call asks the server (or the browser cache) again.
+const inFlight = new Map<string, Promise<unknown>>()
+
+function shared<T>(key: string, request: () => Promise<T>): Promise<T> {
+  const running = inFlight.get(key)
+  if (running) return running as Promise<T>
+  const promise = request().finally(() => inFlight.delete(key))
+  inFlight.set(key, promise)
+  return promise
+}
+
 export const getFighters = async () => {
   const response = await api.get<FighterProfile[]>('/fighters', { params: { ufc_only: true } })
   return response.data
 }
 
-export const getPhotoCredits = async () => {
-  const response = await api.get<{ credits: Record<string, string[]> }>('/photo-credits')
-  return response.data
-}
+export const getPhotoCredits = () =>
+  shared('/photo-credits', async () => {
+    const response = await api.get<{ credits: Record<string, string[]> }>('/photo-credits')
+    return response.data
+  })
 
 export const getEvents = async () => {
   const response = await api.get<EventSummary[]>('/events')
@@ -76,10 +90,11 @@ export const getDivisionMatrix = async (category: string, top = 8) => {
   return response.data
 }
 
-export const getUpcomingPicks = async () => {
-  const response = await api.get<UpcomingPick[]>('/predict/upcoming')
-  return response.data
-}
+export const getUpcomingPicks = () =>
+  shared('/predict/upcoming', async () => {
+    const response = await api.get<UpcomingPick[]>('/predict/upcoming')
+    return response.data
+  })
 
 export const getRecentResults = async (days: number) => {
   const response = await api.get<RecentResults>('/results/recent', { params: { days } })
@@ -138,15 +153,17 @@ export const getOtherOrganizations = async (fighterName: string) => {
   return response.data
 }
 
-export const getModelInfo = async () => {
-  const response = await api.get<ModelInfo>('/model-info')
-  return response.data
-}
+export const getModelInfo = () =>
+  shared('/model-info', async () => {
+    const response = await api.get<ModelInfo>('/model-info')
+    return response.data
+  })
 
-export const getHealth = async () => {
-  const response = await api.get<HealthInfo>('/health', { timeout: 20000 })
-  return response.data
-}
+export const getHealth = () =>
+  shared('/health', async () => {
+    const response = await api.get<HealthInfo>('/health', { timeout: 20000 })
+    return response.data
+  })
 
 /** Keep pinging for a while so a brief restart of the server does not show up as an outage. */
 export const waitForHealth = async (attempts = 8) => {
@@ -162,10 +179,11 @@ export const waitForHealth = async (attempts = 8) => {
   throw lastError
 }
 
-export const getDataInfo = async () => {
-  const response = await api.get<DataInfo>('/data-info')
-  return response.data
-}
+export const getDataInfo = () =>
+  shared('/data-info', async () => {
+    const response = await api.get<DataInfo>('/data-info')
+    return response.data
+  })
 
 export const predictFight = async (fighter_a_name: string, fighter_b_name: string) => {
   const response = await api.post<PredictionResponse>('/predict', {
@@ -202,15 +220,17 @@ export const getOrgFighterFights = async (org: string, fighter: string) => {
   return response.data
 }
 
-export const getOrgDataInfo = async (org: string) => {
-  const response = await api.get<DataInfo>(`/orgs/${org}/data-info`)
-  return response.data
-}
+export const getOrgDataInfo = (org: string) =>
+  shared(`/orgs/${org}/data-info`, async () => {
+    const response = await api.get<DataInfo>(`/orgs/${org}/data-info`)
+    return response.data
+  })
 
-export const getOrgUpcomingPicks = async (org: string) => {
-  const response = await api.get<UpcomingPick[]>(`/orgs/${encodeURIComponent(org)}/predict/upcoming`)
-  return response.data
-}
+export const getOrgUpcomingPicks = (org: string) =>
+  shared(`/orgs/${encodeURIComponent(org)}/predict/upcoming`, async () => {
+    const response = await api.get<UpcomingPick[]>(`/orgs/${encodeURIComponent(org)}/predict/upcoming`)
+    return response.data
+  })
 
 // Gyms are shared by every organization: a gym is matched with the fighters of each one.
 

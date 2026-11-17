@@ -3,9 +3,9 @@ import { ArrowLeftRight, ArrowRight, LoaderCircle } from 'lucide-react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { L, localeTag } from '../i18n/lang'
+import { L, formatDecimal, formatShare, localeTag } from '../i18n/lang'
 import { getDivisionName } from '../shared/data/divisions'
-import { translateHometown } from '../shared/data/fightLabels'
+import { translateHometown, translateStance } from '../shared/data/fightLabels'
 import { ChampionBelt } from '../shared/components/ChampionBelt'
 import { CopyLinkButton } from '../shared/components/CopyLinkButton'
 import { FighterAvatar } from '../shared/components/FighterAvatar'
@@ -162,7 +162,7 @@ export function Predictor({ preset }: { preset?: { a: string; b: string } } = {}
           },
           {
             label: t('predictor.modelAccuracy', 'Model accuracy'),
-            value: shown.accuracy != null ? `${(shown.accuracy * 100).toFixed(1)}%` : '—',
+            value: shown.accuracy != null ? formatShare(shown.accuracy, i18n.language) : '—',
             note: shown.caption || undefined,
           },
           {
@@ -360,8 +360,8 @@ function FighterSheet({ fighter, imageUrl, onOpenProfile }: { fighter: FighterPr
     [L(i18n.language, 'Altura', 'Height', 'Taille', 'Estatura'), fighter.height_cm ? `${fighter.height_cm.toFixed(0)} cm` : '—'],
     [L(i18n.language, 'Envergadura', 'Reach', 'Allonge', 'Alcance'), fighter.reach_cm ? `${fighter.reach_cm.toFixed(0)} cm` : '—'],
     [L(i18n.language, 'Peso', 'Weight', 'Poids', 'Peso'), fighter.weight_lbs ? `${fighter.weight_lbs.toFixed(0)} lb` : '—'],
-    [L(i18n.language, 'Base', 'Stance', 'Garde', 'Guardia'), fighter.stance || '—'],
-    [L(i18n.language, 'Taxa de vitória', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias'), fighter.win_rate != null ? `${(fighter.win_rate * 100).toFixed(1)}%` : '—'],
+    [L(i18n.language, 'Base', 'Stance', 'Garde', 'Guardia'), translateStance(fighter.stance, i18n.language) || '—'],
+    [L(i18n.language, 'Taxa de vitória', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias'), fighter.win_rate != null ? formatShare(fighter.win_rate, i18n.language) : '—'],
   ]
 
   return (
@@ -565,7 +565,8 @@ function TaleOfTape({ fighterA, fighterB }: { fighterA: FighterProfile | null; f
 }
 
 function Cell({ value, row, winning, ready }: { value: number | null; row: TapeRow; winning: boolean; ready: boolean }) {
-  const text = !ready || value == null ? '--' : row.pct ? `${(value * 100).toFixed(1)}%` : Number.isInteger(value) ? `${value}` : value.toFixed(1)
+  const { i18n } = useTranslation()
+  const text = !ready || value == null ? '--' : row.pct ? formatShare(value, i18n.language) : Number.isInteger(value) ? `${value}` : formatDecimal(value, 1, i18n.language)
   return (
     <span className="px-2 py-1.5 text-center">
       <span className={`poster-display inline-block px-2 text-xl sm:text-2xl ${winning ? 'rounded bg-[var(--tape)] text-[var(--on-tape)]' : ready ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}>{text}</span>

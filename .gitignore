@@ -35,3 +35,6 @@ Thumbs.db
 *.bak
 *.tmp
 .claude/*-patches/
+
+# Local Claude Code settings and previews
+.claude/

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { ArrowRight, HeartPulse } from 'lucide-react'
 
-import { L, pick } from '../../i18n/lang'
+import { L, formatDecimal, pick } from '../../i18n/lang'
 import { canRetire, COACHES, previewCamp, type Career, type CoachId } from '../../shared/game/career'
 import { COACH_TEXT } from '../../shared/game/coaches'
 import { Chip, Emblem, GhostButton, useFocusOnMount } from './ui'
@@ -29,8 +29,8 @@ function CoachCard({ coachId, career, onTrain }: { coachId: CoachId; career: Car
       </span>
       <span className="text-xs leading-5 text-[var(--text-secondary)]">{pick(lang, text.blurb)}</span>
       <span className="mt-auto flex flex-wrap gap-1.5">
-        <Chip tone={preview.striking >= 2 ? 'green' : 'neutral'}>{L(lang, 'Golpes', 'Striking', 'Frappe', 'Golpeo')} +{preview.striking.toFixed(1)}</Chip>
-        <Chip tone={preview.takedowns >= 2 ? 'green' : 'neutral'}>{L(lang, 'Quedas', 'Takedowns', 'Amenées', 'Derribos')} +{preview.takedowns.toFixed(1)}</Chip>
+        <Chip tone={preview.striking >= 2 ? 'green' : 'neutral'}>{L(lang, 'Golpes', 'Striking', 'Frappe', 'Golpeo')} +{formatDecimal(preview.striking, 1, lang)}</Chip>
+        <Chip tone={preview.takedowns >= 2 ? 'green' : 'neutral'}>{L(lang, 'Quedas', 'Takedowns', 'Amenées', 'Derribos')} +{formatDecimal(preview.takedowns, 1, lang)}</Chip>
         <Chip tone={injury >= 14 ? 'red' : injury <= 5 ? 'green' : 'neutral'}>{L(lang, `Lesão ${injury}%`, `Injury ${injury}%`, `Blessure ${injury} %`, `Lesión ${injury} %`)}</Chip>
         <Chip>{L(lang, `+${preview.age} ano`, `+${preview.age} yr`, `+${preview.age} an`, `+${preview.age} año`)}</Chip>
         {preview.scout > 0 ? <Chip tone="gold">{L(lang, 'Vantagem na próxima luta', 'Edge in the next fight', 'Avantage au prochain combat', 'Ventaja en la próxima pelea')}</Chip> : null}

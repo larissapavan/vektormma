@@ -335,7 +335,7 @@ function CurrentChampionDivisionCard({
   const championName = championEntry?.fighter ?? null
   const profile = championName ? lookup(championName) : undefined
   const record = profile ? formatRecord(profile) : null
-  const limit = divisionLimit(division)
+  const limit = divisionLimit(division, i18n.language)
 
   // Find the active/final reign for this champion
   const activeReign = useMemo(() => {
@@ -524,7 +524,7 @@ export function DivisionHistoryCard({
 }) {
   const { i18n } = useTranslation()
   const divisionLabel = getDivisionName(division, i18n.language)
-  const limit = divisionLimit(division)
+  const limit = divisionLimit(division, i18n.language)
   const uniqueChamps = useMemo(() => new Set(reigns.map((r) => compactNameKey(r.champion))).size, [reigns])
   const firstYear = reigns[0]?.date?.slice(0, 4)
   const lastYear = reigns[reigns.length - 1]?.date?.slice(0, 4)

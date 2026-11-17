@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 
-import { L } from '../../i18n/lang'
+import { L, formatDecimal } from '../../i18n/lang'
 import { getDivisionName } from '../data/divisions'
 import { formatDate, formatMethod, nonMmaDiscipline, originLine, profileSource } from '../data/orgFormat'
 import { OrgSportTag } from './OrgFightRow'
@@ -408,7 +408,7 @@ function OrgOnlyFighterModal({
                     <div>
                       <p className={label}>{L(lang, 'Peso', 'Weight', 'Poids', 'Peso')}</p>
                       <p className="text-sm font-bold text-[var(--ink)] tabular-nums mt-0.5">{profile?.weight_lbs ? `${Math.round(profile.weight_lbs)} lb` : '—'}</p>
-                      <p className="text-label text-[var(--muted)]">{profile?.weight_lbs ? `${(profile.weight_lbs * 0.45359237).toFixed(1)} kg` : ''}</p>
+                      <p className="text-label text-[var(--muted)]">{profile?.weight_lbs ? `${formatDecimal(profile.weight_lbs * 0.45359237, 1, lang)} kg` : ''}</p>
                     </div>
                     <div>
                       <p className={label}>{L(lang, 'Envergadura', 'Reach', 'Allonge', 'Alcance')}</p>
@@ -538,7 +538,7 @@ function OrgOnlyFighterModal({
                 ) : (
                   <div className="space-y-2 pt-3 border-t border-[var(--rule)]">
                     <div className="grid grid-cols-3 gap-6">
-                      <Metric value={profile?.sig_strikes_landed_per_min != null ? profile.sig_strikes_landed_per_min.toFixed(2) : '—'} label={L(lang, 'Golpes / Min (SLpM)', 'Strikes / Min (SLpM)', 'Coups / min (SLpM)', 'Golpes / min (SLpM)')} />
+                      <Metric value={profile?.sig_strikes_landed_per_min != null ? formatDecimal(profile.sig_strikes_landed_per_min, 2, lang) : '—'} label={L(lang, 'Golpes / Min (SLpM)', 'Strikes / Min (SLpM)', 'Coups / min (SLpM)', 'Golpes / min (SLpM)')} />
                       <Metric value={profile?.striking_defense != null ? `${Math.round(profile.striking_defense * 100)}%` : '—'} label={L(lang, 'Defesa de golpes', 'Striking defense', 'Défense frappes', 'Defensa de golpes')} />
                       <Metric value={profile?.takedown_defense != null ? `${Math.round(profile.takedown_defense * 100)}%` : '—'} label={L(lang, 'Defesa de quedas', 'Takedown defense', 'Défense au sol', 'Defensa de derribos')} />
                     </div>

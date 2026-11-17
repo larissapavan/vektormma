@@ -3,7 +3,7 @@ import { ArrowLeftRight, Dumbbell, Info, LoaderCircle, MapPin, Swords } from 'lu
 import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { L, localeTag } from '../../i18n/lang'
+import { L, formatDecimal, localeTag } from '../../i18n/lang'
 import { orgEs, orgFr, orgPt, type OrgConfig } from '../../shared/data/orgs'
 import { translateHometown } from '../../shared/data/fightLabels'
 import { getDivisionName } from '../../shared/data/divisions'
@@ -285,7 +285,7 @@ function CornerCard({
         [L(lang, 'Altura', 'Height', 'Taille', 'Estatura'), fighter.height_cm ? `${Math.round(fighter.height_cm)} cm` : '—'],
         [L(lang, 'Envergadura', 'Reach', 'Allonge', 'Alcance'), fighter.reach_cm ? `${Math.round(fighter.reach_cm)} cm` : '—'],
         [L(lang, 'Prec. golpes', 'Str. Acc', 'Préc. coups', 'Prec. golpes'), fighter.sig_str_acc ? `${Math.round(fighter.sig_str_acc * 100)}%` : '—'],
-        [L(lang, 'Quedas / 15 min', 'TD / 15 min', 'Amenées / 15 min', 'Derribos / 15 min'), fighter.takedown_avg_per_15min != null ? fighter.takedown_avg_per_15min.toFixed(2) : '—'],
+        [L(lang, 'Quedas / 15 min', 'TD / 15 min', 'Amenées / 15 min', 'Derribos / 15 min'), fighter.takedown_avg_per_15min != null ? formatDecimal(fighter.takedown_avg_per_15min, 2, lang) : '—'],
         [L(lang, 'Taxa de finalização', 'Finish rate', 'Avant la limite', 'Tasa de finalización'), fighter.finish_rate != null ? `${Math.round(fighter.finish_rate * 100)}%` : '—'],
       ]
     : []

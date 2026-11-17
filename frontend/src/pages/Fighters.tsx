@@ -806,7 +806,7 @@ function FighterDivisionCard({
   ].filter(Boolean)
   const record = [
     formatRecord(fighter, lang),
-    fighter.win_rate !== null && fighter.win_rate !== undefined ? `${formatPercent(fighter.win_rate)} ${L(lang, 'vitórias', 'wins', 'victoires', 'victorias')}` : null,
+    fighter.win_rate !== null && fighter.win_rate !== undefined ? `${formatPercent(fighter.win_rate, lang)} ${L(lang, 'vitórias', 'wins', 'victoires', 'victorias')}` : null,
     fighter.nickname ? `“${fighter.nickname}”` : null,
   ].filter(Boolean)
 

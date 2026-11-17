@@ -6,7 +6,7 @@ import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { L } from '../../i18n/lang'
+import { L, formatDecimal } from '../../i18n/lang'
 import { OtherOrganizationsPanel } from './OtherOrganizationsPanel'
 import { getDivisionName } from '../data/divisions'
 import { translateFightMethod, translateHometown, translateStance } from '../data/fightLabels'
@@ -525,7 +525,7 @@ export function FighterProfileModal({
                       </p>
                       <p className="text-label text-[var(--muted)]">
                         {profile?.weight_lbs
-                          ? `${(profile.weight_lbs * 0.45359237).toFixed(1)} kg`
+                          ? `${formatDecimal(profile.weight_lbs * 0.45359237, 1, i18n.language)} kg`
                           : ''}
                       </p>
                     </div>
@@ -718,7 +718,7 @@ export function FighterProfileModal({
                 <div className="grid grid-cols-3 gap-6 pt-3 border-t border-[var(--rule)]">
                   <div>
                     <p className="font-display font-bold text-xl sm:text-2xl text-[var(--ink)] tabular-nums">
-                      {profile?.sig_strikes_landed_per_min ? profile.sig_strikes_landed_per_min.toFixed(2) : '—'}
+                      {profile?.sig_strikes_landed_per_min ? formatDecimal(profile.sig_strikes_landed_per_min, 2, i18n.language) : '—'}
                     </p>
                     <p className="text-label text-[var(--muted)] font-medium">
                       {L(i18n.language, 'Golpes / Min (SLpM)', 'Strikes / Min (SLpM)', 'Coups / min (SLpM)', 'Golpes / min (SLpM)')}

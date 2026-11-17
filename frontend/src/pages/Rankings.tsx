@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ArrowDown, ArrowUp, Crown, Sparkles, Trophy } from 'lucide-react'
 
-import { L, localeTag } from '../i18n/lang'
+import { L, formatShare, localeTag } from '../i18n/lang'
 import { DivisionMatrixCard } from '../shared/components/DivisionMatrixCard'
 import { FighterAvatar } from '../shared/components/FighterAvatar'
 import { FighterBadges, FlagList } from '../shared/components/FighterBadges'
@@ -277,7 +277,7 @@ function RankingRow({
               <Trophy className="h-3.5 w-3.5" /> {t('rankings.champion')}
             </span>
           ) : null}
-          {entry.win_rate !== null ? <span>{L(i18n.language, 'Taxa de vitória', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias')}: {(entry.win_rate * 100).toFixed(1)}%</span> : null}
+          {entry.win_rate !== null ? <span>{L(i18n.language, 'Taxa de vitória', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias')}: {formatShare(entry.win_rate, i18n.language)}</span> : null}
           {entry.last_fight ? <span>{L(i18n.language, 'Última luta', 'Last fight', 'Dernier combat', 'Última pelea')}: {formatDate(entry.last_fight, i18n.language)}</span> : null}
         </div>
       </div>

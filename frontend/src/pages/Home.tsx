@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { FighterAvatar } from '../shared/components/FighterAvatar'
 import { FighterProfileModal } from '../shared/components/FighterProfileModal'
 import { FighterBadges, TitleFightBadge } from '../shared/components/FighterBadges'
-import { L, localeTag } from '../i18n/lang'
+import { L, formatShare, localeTag } from '../i18n/lang'
 import { badgesForRankings } from '../shared/data/badges'
 import { getDivisionName } from '../shared/data/divisions'
 import { shownMetrics } from '../shared/data/modelAccuracy'
@@ -439,9 +439,9 @@ function RankingsCard({
   )
 }
 
-function percentLabel(value: number | null | undefined) {
+function percentLabel(value: number | null | undefined, language: string) {
   if (value == null) return '—'
-  return `${(value * 100).toFixed(1)}%`
+  return formatShare(value, language)
 }
 
 /** The numbers behind the site, in one open row: no boxes, a rule between columns on wide screens. */
@@ -475,7 +475,7 @@ function StatsStrip({
     >
       <Stat
         label={L(lang, 'Acerto do modelo', 'Model hit rate', 'Réussite du modèle', 'Acierto del modelo')}
-        value={percentLabel(live ? liveAccuracy : testAccuracy)}
+        value={percentLabel(live ? liveAccuracy : testAccuracy, i18n.language)}
         note={live ? L(lang, 'palpites ao vivo', 'live picks', 'pronostics en direct', 'pronósticos en vivo') : testNote}
       />
       <div className={column}>

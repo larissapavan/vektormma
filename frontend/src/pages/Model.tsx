@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
-import { L } from '../i18n/lang'
+import { L, formatDecimal, formatShare } from '../i18n/lang'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { MetricsNote } from '../shared/components/MetricsNote'
 import { SectionHeading } from '../shared/components/SectionHeading'
@@ -51,9 +51,9 @@ export function Model() {
         <>
           <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             <MetricCard label={t('model.modelCard')} value={modelInfo.model_name} />
-            <MetricCard label={`${L(i18n.language, 'Taxa de acerto', 'Accuracy', 'Précision', 'Precisión')} (${shown.caption})`} value={shown.accuracy != null ? `${(shown.accuracy * 100).toFixed(1)}%` : '—'} />
-            <MetricCard label={t('model.rocAuc')} value={shown.rocAuc != null ? shown.rocAuc.toFixed(3) : '—'} />
-            <MetricCard label={L(i18n.language, 'Perda logarítmica', 'Log loss', 'Perte logarithmique', 'Pérdida logarítmica')} value={shown.logLoss != null ? shown.logLoss.toFixed(3) : '—'} />
+            <MetricCard label={`${L(i18n.language, 'Taxa de acerto', 'Accuracy', 'Précision', 'Precisión')} (${shown.caption})`} value={shown.accuracy != null ? formatShare(shown.accuracy, i18n.language) : '—'} />
+            <MetricCard label={t('model.rocAuc')} value={shown.rocAuc != null ? formatDecimal(shown.rocAuc, 3, i18n.language) : '—'} />
+            <MetricCard label={L(i18n.language, 'Perda logarítmica', 'Log loss', 'Perte logarithmique', 'Pérdida logarítmica')} value={shown.logLoss != null ? formatDecimal(shown.logLoss, 3, i18n.language) : '—'} />
           </section>
 
           <MetricsNote note={modelInfo.metrics_note} />

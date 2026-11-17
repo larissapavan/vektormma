@@ -19,6 +19,16 @@ export function localeTag(language: string | boolean | null | undefined): Locale
   return 'en-US'
 }
 
+/** A number with a fixed count of decimals, written the way the language does: "4,25" in pt-BR and fr, "4.25" in en and es-419. */
+export function formatDecimal(value: number, digits: number, language: string | boolean | null | undefined): string {
+  return new Intl.NumberFormat(localeTag(language), { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(value)
+}
+
+/** A 0–1 share as a percentage, the way the language writes it: "62,7%" in pt-BR, "62.7%" in en and es-419, "62,7 %" in fr. */
+export function formatShare(value: number, language: string | boolean | null | undefined, digits = 1): string {
+  return new Intl.NumberFormat(localeTag(language), { style: 'percent', minimumFractionDigits: digits, maximumFractionDigits: digits }).format(value)
+}
+
 /**
  * The string for the active language. Every language is written out in full (never the English text as a stand-in), so
  * a page reads in one language only. Proper names (fighters, organizations, events) are the only shared text.

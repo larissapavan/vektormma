@@ -9,7 +9,13 @@ export function NotFound() {
   const { i18n } = useTranslation()
 
   // The server answers 200 for every address (the app decides what exists), so this page asks search engines not to index it.
+  // The static 404 page and PageMeta may have written the tag already: reuse it, a second one would be a duplicate.
   useEffect(() => {
+    const existing = document.head.querySelector<HTMLMetaElement>('meta[name="robots"]')
+    if (existing) {
+      existing.content = 'noindex'
+      return
+    }
     const meta = document.createElement('meta')
     meta.name = 'robots'
     meta.content = 'noindex'

@@ -135,7 +135,8 @@ export function Chip({ children, tone = 'neutral' }: { children: ReactNode; tone
   const tones = {
     neutral: 'border-[var(--border-default)] bg-[var(--bg-surface-subtle)] text-[var(--text-secondary)]',
     red: 'border-[var(--rule)] bg-[var(--panel)] text-[var(--text-red)]',
-    gold: 'border-[var(--accent-gold)]/60 bg-[var(--accent-gold)]/15 text-[var(--text-gold)]',
+    // The fill is the bright gold in both themes: tinting with the dark gold of the light theme darkened the badge under its own text (4.2:1).
+    gold: 'border-[var(--accent-gold)]/60 bg-[var(--gold-fill)]/15 text-[var(--text-gold)]',
     green: 'border-[var(--accent-green)]/60 bg-[var(--accent-green)]/15 text-[var(--text-green)]',
   }
   return <span className={`inline-flex items-center gap-1 border px-2 py-0.5 text-label font-bold ${tones[tone]}`}>{children}</span>

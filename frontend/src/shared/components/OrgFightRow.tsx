@@ -130,7 +130,7 @@ function Corner({
     <button
       type="button"
       onClick={() => onOpen?.(name)}
-      className={`group min-w-0 cursor-pointer ${align === 'right' ? 'text-right' : 'text-left'}`}
+      className={`group -my-2 min-w-0 cursor-pointer py-2 ${align === 'right' ? 'text-right' : 'text-left'}`}
     >
       {content}
     </button>

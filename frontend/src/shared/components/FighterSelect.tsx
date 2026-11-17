@@ -117,7 +117,11 @@ export function FighterSelect({
 
   useEffect(() => {
     if (!open) return
-    window.setTimeout(() => searchRef.current?.focus(), 60)
+    // Focus right away, still inside the tap that opened the search: iOS only raises the keyboard for a focus made
+    // during the gesture, and letters typed in the first instant are not lost. The timer covers a field that mounts late.
+    searchRef.current?.focus()
+    const timer = window.setTimeout(() => searchRef.current?.focus(), 60)
+    return () => window.clearTimeout(timer)
   }, [open])
 
   useEffect(() => {

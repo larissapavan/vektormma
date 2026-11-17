@@ -277,7 +277,7 @@ function CurrentChampionsSection({ reigns, history }: { reigns: TitleReign[]; hi
         {ordered.map((reign) => {
           const profile = profileByName.get(normalizeFighterName(reign.champion))
           const record = profile ? `${profile.wins ?? 0}-${profile.losses ?? 0}-${profile.draws ?? 0}` : null
-          const limit = divisionLimit(reign.division)
+          const limit = divisionLimit(reign.division, i18n.language)
           const last = reign.last_fight
           const divisionLabel = getDivisionName(reign.division, i18n.language)
 

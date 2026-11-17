@@ -7,14 +7,13 @@ import {
   Globe2,
   Search,
   ShieldCheck,
-  Sparkles,
   Swords,
   Trophy,
   X,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { L, uiLang, type UiLang } from '../../../i18n/lang'
+import { L, formatDecimal, formatShare, uiLang, type UiLang } from '../../../i18n/lang'
 import { AnimatedCounter } from './AnimatedCounter'
 import { buildCareerPhases, type CareerPhase } from './careerPhases'
 import { getDivisionName } from '../../data/divisions'
@@ -22,8 +21,46 @@ import { translateFightMethod, translateHometown, translateStance } from '../../
 import { getFighterImageUrl, useFighterImages } from '../../hooks/useFighterImages'
 import { useFighters } from '../../hooks/useFighters'
 import { getFighterPerformance, predictFight } from '../../services/api'
-import type { FighterPerformance, PredictionResponse } from '../../types/api'
+import type { FighterPerformance, FighterProfile, PredictionResponse } from '../../types/api'
 import { PhotoCredit } from '../PhotoCredit'
+
+const NO_DATA: Record<UiLang, string> = {
+  pt: 'Sem dados registrados.',
+  en: 'No data on file.',
+  fr: 'Aucune donnée enregistrée.',
+  es: 'Sin datos registrados.',
+}
+
+/**
+ * The four headline figures of a dossier. A figure the data does not have stays null and is shown as a dash: nothing
+ * here is estimated or filled in with a typical value.
+ */
+function dossierMetrics(profile: FighterProfile | null | undefined, performance: FighterPerformance | null | undefined) {
+  const totalWins = profile?.wins ?? performance?.wins ?? null
+  let koSub: number | null = null
+  if (performance?.method_breakdown) {
+    koSub = 0
+    for (const [method, count] of Object.entries(performance.method_breakdown)) {
+      const m = method.toLowerCase()
+      if (m.includes('ko') || m.includes('sub')) koSub += count
+    }
+  }
+  const slpm = profile?.sig_strikes_landed_per_min ?? null
+  const sapm = profile?.sig_strikes_absorbed_per_min ?? null
+  const fights = (profile?.wins ?? 0) + (profile?.losses ?? 0) + (profile?.draws ?? 0)
+
+  return {
+    finishRate: koSub != null && totalWins ? Math.min(100, Math.round((koSub / totalWins) * 100)) : null,
+    koSub,
+    slpm,
+    sapm,
+    strikeDiff: slpm != null && sapm != null ? Number((slpm - sapm).toFixed(2)) : null,
+    tdd: profile?.takedown_defense != null ? Math.round(profile.takedown_defense * 100) : null,
+    winRate: profile?.win_rate ?? null,
+    wins: profile?.wins ?? null,
+    fights,
+  }
+}
 
 interface EditorialFighterDossierProps {
   initialFighterName: string
@@ -167,73 +204,11 @@ export function EditorialFighterDossier({
     return buildCareerPhases(profile, fights)
   }, [profile, performance])
 
-  // Primary Metrics
-  const metricsA = useMemo(() => {
-    const totalWins = profile?.wins ?? performance?.wins ?? 0
-    let koSub = 0
-    if (performance?.method_breakdown) {
-      for (const [method, count] of Object.entries(performance.method_breakdown)) {
-        const m = method.toLowerCase()
-        if (m.includes('ko') || m.includes('tko') || m.includes('sub')) {
-          koSub += count
-        }
-      }
-    } else {
-      koSub = Math.round(totalWins * 0.72)
-    }
-
-    const finishRate = totalWins > 0 ? Math.min(100, Math.round((koSub / totalWins) * 100)) : 0
-    const slpm = profile?.sig_strikes_landed_per_min ?? 4.12
-    const sapm = profile?.sig_strikes_absorbed_per_min ?? 3.25
-    const strikeDiff = Number((slpm - sapm).toFixed(2))
-    const tdd = Math.round((profile?.takedown_defense ?? 0.72) * 100)
-    const aiConfidence = Math.round((profile?.win_rate ?? 0.75) * 88 + 12)
-
-    return {
-      finishRate,
-      koSub,
-      totalWins,
-      slpm,
-      sapm,
-      strikeDiff,
-      tdd,
-      aiConfidence,
-    }
-  }, [profile, performance])
-
-  // Opponent Metrics
-  const metricsB = useMemo(() => {
-    if (!opponentProfile) return null
-    const totalWins = opponentProfile.wins ?? opponentPerformance?.wins ?? 0
-    let koSub = 0
-    if (opponentPerformance?.method_breakdown) {
-      for (const [method, count] of Object.entries(opponentPerformance.method_breakdown)) {
-        const m = method.toLowerCase()
-        if (m.includes('ko') || m.includes('tko') || m.includes('sub')) {
-          koSub += count
-        }
-      }
-    } else {
-      koSub = Math.round(totalWins * 0.7)
-    }
-    const finishRate = totalWins > 0 ? Math.min(100, Math.round((koSub / totalWins) * 100)) : 0
-    const slpm = opponentProfile.sig_strikes_landed_per_min ?? 3.9
-    const sapm = opponentProfile.sig_strikes_absorbed_per_min ?? 3.4
-    const strikeDiff = Number((slpm - sapm).toFixed(2))
-    const tdd = Math.round((opponentProfile.takedown_defense ?? 0.7) * 100)
-    const aiConfidence = Math.round((opponentProfile.win_rate ?? 0.72) * 85 + 15)
-
-    return {
-      finishRate,
-      koSub,
-      totalWins,
-      slpm,
-      sapm,
-      strikeDiff,
-      tdd,
-      aiConfidence,
-    }
-  }, [opponentProfile, opponentPerformance])
+  const metricsA = useMemo(() => dossierMetrics(profile, performance), [profile, performance])
+  const metricsB = useMemo(
+    () => (opponentProfile ? dossierMetrics(opponentProfile, opponentPerformance) : null),
+    [opponentProfile, opponentPerformance],
+  )
 
   // Filtered list for corner selector modal
   const filteredFighters = useMemo(() => {
@@ -555,22 +530,24 @@ export function EditorialFighterDossier({
 
               <div className="mt-4 flex items-baseline gap-1">
                 <span className="font-display font-extrabold text-3xl sm:text-4xl text-[var(--text-primary)] tabular-nums">
-                  <AnimatedCounter value={metricsA.finishRate} />
+                  {metricsA.finishRate != null ? <AnimatedCounter value={metricsA.finishRate} /> : '—'}
                 </span>
-                <span className="font-display font-extrabold text-3xl sm:text-4xl text-[var(--ink)]">%</span>
+                {metricsA.finishRate != null ? <span className="font-display font-extrabold text-3xl sm:text-4xl text-[var(--ink)]">%</span> : null}
               </div>
 
               <p className="mt-2 font-sans text-xs font-semibold text-[var(--ink)]">
                 {L(i18n.language, 'Taxa de nocaute / finalização', 'Finishing rate (KO / SUB)', 'Taux de victoires avant la limite (KO / soumission)', 'Tasa de finalización (KO / sumisión)')}
               </p>
               <p className="mt-1 text-label text-[var(--muted)] leading-relaxed">
-                {metricsA.koSub} {L(i18n.language, 'vitórias antes do gongo final', 'victories inside the distance', 'victoires avant la limite', 'victorias antes del límite')}.
+                {metricsA.koSub != null
+                  ? `${metricsA.koSub} ${L(i18n.language, 'vitórias antes do gongo final', 'victories inside the distance', 'victoires avant la limite', 'victorias antes del límite')}.`
+                  : NO_DATA[lang]}
               </p>
 
               {comparisonMode && metricsB && (
                 <div className="mt-4 pt-3 border-t border-[var(--rule)] flex items-center justify-between text-xs">
                   <span className="text-[var(--muted)]">{opponentProfile?.name}:</span>
-                  <span className="font-bold text-[var(--ink)]">{metricsB.finishRate}%</span>
+                  <span className="font-bold text-[var(--ink)]">{metricsB.finishRate != null ? `${metricsB.finishRate}%` : '—'}</span>
                 </div>
               )}
             </motion.div>
@@ -589,9 +566,13 @@ export function EditorialFighterDossier({
               </div>
 
               <div className="mt-4 flex items-baseline gap-1">
-                <span className={`font-display font-extrabold text-3xl sm:text-4xl tabular-nums ${metricsA.strikeDiff >= 0 ? 'text-[var(--ink)]' : 'text-[var(--muted)]'}`}>
-                  {metricsA.strikeDiff >= 0 ? '+' : ''}
-                  <AnimatedCounter value={metricsA.strikeDiff} decimals={2} />
+                <span className={`font-display font-extrabold text-3xl sm:text-4xl tabular-nums ${metricsA.strikeDiff == null || metricsA.strikeDiff >= 0 ? 'text-[var(--ink)]' : 'text-[var(--muted)]'}`}>
+                  {metricsA.strikeDiff == null ? '—' : (
+                    <>
+                      {metricsA.strikeDiff >= 0 ? '+' : ''}
+                      <AnimatedCounter value={metricsA.strikeDiff} decimals={2} />
+                    </>
+                  )}
                 </span>
               </div>
 
@@ -599,15 +580,16 @@ export function EditorialFighterDossier({
                 {L(i18n.language, 'Diferencial de golpes / min', 'Striking differential (SLpM - SApM)', 'Différentiel de frappe', 'Diferencial de golpeo (SLpM - SApM)')}
               </p>
               <p className="mt-1 text-label text-[var(--muted)] leading-relaxed">
-                {metricsA.slpm} {L(i18n.language, 'conectados vs', 'landed vs', 'portés vs', 'conectados vs')} {metricsA.sapm} {L(i18n.language, 'absorvidos/min', 'absorbed/min', 'absorbés/min', 'recibidos/min')}.
+                {metricsA.slpm != null && metricsA.sapm != null
+                  ? `${formatDecimal(metricsA.slpm, 2, lang)} ${L(i18n.language, 'conectados vs', 'landed vs', 'portés vs', 'conectados vs')} ${formatDecimal(metricsA.sapm, 2, lang)} ${L(i18n.language, 'absorvidos/min', 'absorbed/min', 'absorbés/min', 'recibidos/min')}.`
+                  : NO_DATA[lang]}
               </p>
 
               {comparisonMode && metricsB && (
                 <div className="mt-4 pt-3 border-t border-[var(--rule)] flex items-center justify-between text-xs">
                   <span className="text-[var(--muted)]">{opponentProfile?.name}:</span>
                   <span className="font-bold text-[var(--ink)]">
-                    {metricsB.strikeDiff >= 0 ? '+' : ''}
-                    {metricsB.strikeDiff.toFixed(2)}
+                    {metricsB.strikeDiff == null ? '—' : `${metricsB.strikeDiff >= 0 ? '+' : ''}${formatDecimal(metricsB.strikeDiff, 2, lang)}`}
                   </span>
                 </div>
               )}
@@ -628,9 +610,9 @@ export function EditorialFighterDossier({
 
               <div className="mt-4 flex items-baseline gap-1">
                 <span className="font-display font-extrabold text-3xl sm:text-4xl text-[var(--text-primary)] tabular-nums">
-                  <AnimatedCounter value={metricsA.tdd} />
+                  {metricsA.tdd != null ? <AnimatedCounter value={metricsA.tdd} /> : '—'}
                 </span>
-                <span className="font-display font-extrabold text-3xl sm:text-4xl text-[var(--positive)]">%</span>
+                {metricsA.tdd != null ? <span className="font-display font-extrabold text-3xl sm:text-4xl text-[var(--positive)]">%</span> : null}
               </div>
 
               <p className="mt-2 font-sans text-xs font-semibold text-[var(--ink)]">
@@ -643,12 +625,12 @@ export function EditorialFighterDossier({
               {comparisonMode && metricsB && (
                 <div className="mt-4 pt-3 border-t border-[var(--rule)] flex items-center justify-between text-xs">
                   <span className="text-[var(--muted)]">{opponentProfile?.name}:</span>
-                  <span className="font-bold text-[var(--ink)]">{metricsB.tdd}%</span>
+                  <span className="font-bold text-[var(--ink)]">{metricsB.tdd != null ? `${metricsB.tdd}%` : '—'}</span>
                 </div>
               )}
             </motion.div>
 
-            {/* Card 4: AI Model Accuracy */}
+            {/* Card 4: win rate, from the record */}
             <motion.div
               whileHover={{ y: -4 }}
               transition={{ duration: 0.2 }}
@@ -656,29 +638,37 @@ export function EditorialFighterDossier({
             >
               <div className="flex items-center justify-between text-[var(--muted)]">
                 <span className="text-label font-bold text-[var(--ink)]">
-                  {L(i18n.language, 'Acerto do modelo', 'Model hit rate', 'Réussite du modèle', 'Acierto del modelo')}
+                  {L(i18n.language, 'Cartel', 'Record', 'Palmarès', 'Récord')}
                 </span>
-                <Sparkles className="h-4 w-4 text-[var(--ink)]" />
+                <Trophy className="h-4 w-4 text-[var(--ink)]" />
               </div>
 
               <div className="mt-4 flex items-baseline gap-1">
                 <span className="font-display font-extrabold text-3xl sm:text-4xl text-[var(--text-primary)] tabular-nums">
-                  <AnimatedCounter value={metricsA.aiConfidence} decimals={1} />
+                  {metricsA.winRate != null ? <AnimatedCounter value={metricsA.winRate * 100} decimals={1} /> : '—'}
                 </span>
-                <span className="font-display font-extrabold text-3xl sm:text-4xl text-[var(--ink)]">%</span>
+                {metricsA.winRate != null ? <span className="font-display font-extrabold text-3xl sm:text-4xl text-[var(--ink)]">%</span> : null}
               </div>
 
               <p className="mt-2 font-sans text-xs font-semibold text-[var(--ink)]">
-                {L(i18n.language, 'Quanto o modelo acertou', 'How often the model was right', 'Taux de réussite du modèle', 'Cuánto acertó el modelo')}
+                {L(i18n.language, 'Taxa de vitória', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias')}
               </p>
               <p className="mt-1 text-label text-[var(--muted)] leading-relaxed">
-                {L(i18n.language, 'Taxa de acerto em lutas deste perfil', 'Accuracy across bouts fitting this profile', 'Précision sur les combats de ce profil', 'Precisión en peleas con este perfil')}.
+                {metricsA.wins != null && metricsA.fights > 0
+                  ? L(
+                      i18n.language,
+                      `${metricsA.wins} vitórias em ${metricsA.fights} lutas.`,
+                      `${metricsA.wins} wins in ${metricsA.fights} fights.`,
+                      `${metricsA.wins} victoires en ${metricsA.fights} combats.`,
+                      `${metricsA.wins} victorias en ${metricsA.fights} peleas.`,
+                    )
+                  : NO_DATA[lang]}
               </p>
 
               {comparisonMode && metricsB && (
                 <div className="mt-4 pt-3 border-t border-[var(--rule)] flex items-center justify-between text-xs">
                   <span className="text-[var(--muted)]">{opponentProfile?.name}:</span>
-                  <span className="font-bold text-[var(--ink)]">{metricsB.aiConfidence.toFixed(1)}%</span>
+                  <span className="font-bold text-[var(--ink)]">{metricsB.winRate != null ? formatShare(metricsB.winRate, lang) : '—'}</span>
                 </div>
               )}
             </motion.div>

@@ -1,4 +1,4 @@
-import { uiLang, type UiLang } from '../../i18n/lang'
+import { formatDecimal, uiLang, type UiLang } from '../../i18n/lang'
 
 export const DIVISION_NAMES_PT: Record<string, string> = {
   Flyweight: 'Peso Mosca',
@@ -128,8 +128,8 @@ export function divisionOrder(division: string) {
   return index === -1 ? ORDER.length : index
 }
 
-/** "125 lb (56.7 kg)", or null for a division without an official limit. */
-export function divisionLimit(division: string): string | null {
+/** "125 lb (56.7 kg)" ("56,7 kg" in Portuguese and French), or null for a division without an official limit. */
+export function divisionLimit(division: string, language: string | boolean = false): string | null {
   const pounds = LIMITS_LB[division]
-  return pounds ? `${pounds} lb (${(pounds * 0.45359237).toFixed(1)} kg)` : null
+  return pounds ? `${pounds} lb (${formatDecimal(pounds * 0.45359237, 1, language)} kg)` : null
 }

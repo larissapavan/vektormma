@@ -7,7 +7,7 @@ import { FlagIcon } from '../../shared/components/FlagIcon'
 import { LoadingSkeleton } from '../../shared/components/LoadingSkeleton'
 import { OrgFighterModal } from '../../shared/components/OrgFighterModal'
 import { PageHeader } from '../../shared/components/ui/PageHeader'
-import { L } from '../../i18n/lang'
+import { L, formatShare } from '../../i18n/lang'
 import { getDivisionName, poundForPoundLabel } from '../../shared/data/divisions'
 import { formatDate } from '../../shared/data/orgFormat'
 import { useOrg } from '../../shared/hooks/useOrg'
@@ -222,7 +222,7 @@ function RankingRow({
           {entry.win_rate !== null ? (
             <span>
               {L(i18n.language, 'Aproveitamento: ', 'Win rate: ', 'Taux de victoire : ', 'Porcentaje de victorias: ')}
-              {(entry.win_rate * 100).toFixed(1)}%
+              {formatShare(entry.win_rate, i18n.language)}
             </span>
           ) : null}
           {entry.last_fight ? (

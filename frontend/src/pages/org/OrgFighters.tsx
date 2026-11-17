@@ -513,11 +513,18 @@ function ScrollButton({
   visible: boolean
   onClick: () => void
 }) {
+  const { i18n } = useTranslation()
   const Icon = direction === 'left' ? ChevronLeft : ChevronRight
+  const label =
+    direction === 'left'
+      ? L(i18n.language, 'Categorias anteriores', 'Previous divisions', 'Catégories précédentes', 'Categorías anteriores')
+      : L(i18n.language, 'Próximas categorias', 'Next divisions', 'Catégories suivantes', 'Categorías siguientes')
   return (
     <button
       type="button"
       onClick={onClick}
+      aria-label={label}
+      title={label}
       disabled={!visible}
       tabIndex={visible ? 0 : -1}
       className={`absolute top-1/2 z-20 grid h-8 w-8 -translate-y-1/2 place-items-center rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] transition hover:text-[var(--gold)] ${
