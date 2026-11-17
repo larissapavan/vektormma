@@ -97,8 +97,10 @@ export function compareFighters(
   historyOfFighter: (fighter: FighterProfile) => HistoryEntry | null = () => null,
 ): number {
   // The division's ranking decides first (0 is its champion); the belt flag only counts where there is no ranking.
-  const rankA = ranks.get(foldName(a.name)) ?? (a.belt ? 0 : Number.POSITIVE_INFINITY)
-  const rankB = ranks.get(foldName(b.name)) ?? (b.belt ? 0 : Number.POSITIVE_INFINITY)
+  // A belt from another division (Makhachev at lightweight, holding the welterweight one) must not pass the ranked fighters.
+  const beltRank = (fighter: FighterProfile) => (fighter.belt && ranks.size === 0 ? 0 : Number.POSITIVE_INFINITY)
+  const rankA = ranks.get(foldName(a.name)) ?? beltRank(a)
+  const rankB = ranks.get(foldName(b.name)) ?? beltRank(b)
   if (rankA !== rankB) return rankA - rankB
   const pastA = rankA === Number.POSITIVE_INFINITY ? historyOfFighter(a) : null
   const pastB = rankB === Number.POSITIVE_INFINITY ? historyOfFighter(b) : null

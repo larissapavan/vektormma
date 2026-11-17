@@ -48,6 +48,17 @@ describe('the order of a division', () => {
     expect(ranksOf(divisionalRanks(rankings), 'lightweight').get('number one')).toBe(1)
   })
 
+  it('puts a champion of another division after the ranking, and counts the belt only where there is no ranking', () => {
+    const list = [fighter('Other Champion', 29, 1, { belt: true }), fighter('Veteran Ranked', 10, 5), fighter('The Champion', 20, 3)]
+    expect(list.sort((a, b) => compareFighters(a, b, ranks, active)).map((f) => f.name)).toEqual([
+      'The Champion',
+      'Veteran Ranked',
+      'Other Champion',
+    ])
+    const openClass = [fighter('Solid Unranked', 30, 0), fighter('Open Class Champion', 5, 2, { belt: true })]
+    expect(openClass.sort((a, b) => compareFighters(a, b, new Map(), active)).map((f) => f.name)[0]).toBe('Open Class Champion')
+  })
+
   it('labels the champion and ranked fighters, and leaves the rest unlabelled', () => {
     expect(rankLabel(fighter('The Champion', 1, 0), ranks)).toBe('C')
     expect(rankLabel(fighter('Other Champion', 1, 0, { belt: true }), ranks)).toBeNull()
