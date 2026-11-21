@@ -20,6 +20,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 
 from scripts.http_retry import get_with_retry
+from scripts.scrape_espn import NON_DECOMPOSING
 
 RANKINGS_URL = "https://www.ufc.com/rankings"
 OUTPUT_PATH = Path("data") / "raw" / "rankings.csv"
@@ -50,12 +51,17 @@ DIVISION_LABELS = {
     "Peso-galo feminino": "Women's Bantamweight",
     "Peso-pena feminino": "Women's Featherweight",
 }
+# ufc.com serves the page in the visitor's region language: from some networks it comes in English.
+DIVISION_LABELS.update({label: label for label in list(DIVISION_LABELS.values())})
 
 RANK_CHANGE_LABELS = {
     "Subiu": "up",
     "Desceu": "down",
     "Nova entrada": "new",
     "Sem mudança": None,
+    "Rank increased": "up",
+    "Rank decreased": "down",
+    "NR": "new",
 }
 
 OUTPUT_FIELDS = ["category", "is_p4p", "rank", "fighter", "rank_change", "athlete_url"]
@@ -139,6 +145,8 @@ def parse_rankings(html: str) -> list[dict]:
                 continue
             fighter_link = cells[1].select_one("a")
             fighter_name = fighter_link.get_text(strip=True) if fighter_link else cells[1].get_text(strip=True)
+            # The English page writes "Błachowicz": letters like "ł" have no plain form the name matching can find.
+            fighter_name = "".join(NON_DECOMPOSING.get(char, char) for char in fighter_name)
             rank_change = parse_rank_change(cells[2].get_text(" ", strip=True)) if len(cells) > 2 else None
 
             records.append(
@@ -208,7 +216,7 @@ def ranking_changes(old: list[dict], new: list[dict]) -> list[str]:
 def save_rankings(records: list[dict]) -> None:
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     with OUTPUT_PATH.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=OUTPUT_FIELDS)
+        writer = csv.DictWriter(handle, fieldnames=OUTPUT_FIELDS, lineterminator="\n")
         writer.writeheader()
         writer.writerows(records)
 

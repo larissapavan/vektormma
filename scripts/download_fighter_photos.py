@@ -74,6 +74,8 @@ CHAMPION_HEADER_LABELS = {  # ufc.com (pt-BR) division header -> title_reigns.cs
     "Peso-palha feminino": "Women's Strawweight", "Peso-mosca feminino": "Women's Flyweight",
     "Peso-galo feminino": "Women's Bantamweight", "Peso-pena feminino": "Women's Featherweight",
 }
+# ufc.com serves the page in the visitor's region language: from some networks it comes in English.
+CHAMPION_HEADER_LABELS.update({label: label for label in list(CHAMPION_HEADER_LABELS.values())})
 
 
 # --------------------------------------------------------------------------- images
