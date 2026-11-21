@@ -170,3 +170,16 @@ def test_main_event_first_orders_a_card_and_falls_back_to_the_last_bout():
     unnamed = event("UFC Fight Night: Special Card", "2030-01-01", ("Opener One", "Opener Two"), ("Middle A", "Middle B"), ("Headliner A", "Headliner B"))
     assert [(f["fighter_1"]) for f in service._main_event_first(unnamed)["fights"]] == ["Headliner A", "Middle A", "Opener One"]
     assert service._main_event_first(event("UFC 1: Solo", "2030-01-01", ("A", "B")))["fights"][0]["fighter_1"] == "A"
+
+
+def test_past_cards_put_the_main_event_first_whatever_the_source_order():
+    from backend.app.services import events_service as service
+
+    espn = event("UFC Fight Night: Prochazka vs. Stirling", "2026-11-21", ("John Mitchell", "Shoaib Yousaf"), ("Aljamain Sterling", "Kevin Vallejos"), ("Jiri Prochazka", "Navajo Stirling"))
+    assert [f["fighter_1"] for f in service._past_card_order(espn)["fights"]] == ["Jiri Prochazka", "Aljamain Sterling", "John Mitchell"]
+
+    ufcstats = event("UFC Freedom 250", "2026-06-14", ("Justin Gaethje", "Ilia Topuria"), ("Diego Lopes", "Steve Garcia"))
+    assert service._past_card_order(ufcstats) is ufcstats
+
+    main_first = event("UFC 300: Pereira vs. Hill", "2024-04-13", ("Alex Pereira", "Jamahal Hill"), ("Opener One", "Opener Two"))
+    assert service._past_card_order(main_first) is main_first
