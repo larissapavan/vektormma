@@ -110,7 +110,7 @@ def get_events() -> list[dict]:
 
     signature = _source_signature(EVENT_CARDS_SOURCE_PATH)
     if _events_cache["signature"] != signature:
-        _events_cache["data"] = _build_events(EVENT_CARDS_SOURCE_PATH, ascending=False)
+        _events_cache["data"] = [_past_card_order(event) for event in _build_events(EVENT_CARDS_SOURCE_PATH, ascending=False)]
         _events_cache["signature"] = signature
     return _events_cache["data"]
 
@@ -187,6 +187,30 @@ def _surname_tokens(text: str) -> list[str]:
     return [part for part in re.split(r"[^a-z0-9]+", plain) if part]
 
 
+def _named_main_event(event: dict) -> int | None:
+    """Index of the bout the card is named after ("UFC 333: Volkanovski vs. Evloev"), or None when no bout matches."""
+    headliners = [_surname_tokens(side) for side in re.split(r"\s+vs\.?\s+", event["name"].split(":", 1)[-1], flags=re.IGNORECASE)]
+    if len(headliners) != 2 or not all(headliners):
+        return None
+    for index, fight in enumerate(event["fights"]):
+        names = [set(_surname_tokens(str(fight["fighter_1"]))), set(_surname_tokens(str(fight["fighter_2"])))]
+        if any(all(token in names[0] for token in a) and all(token in names[1] for token in b) for a, b in (headliners, headliners[::-1])):
+            return index
+    return None
+
+
+def _past_card_order(event: dict) -> dict:
+    """Main event first on a past card too.
+
+    Results taken from ufcstats are stored from the main event down, but the events the ESPN refresh adds keep ESPN's
+    order, from the first prelim up. Only a card whose named main event is not already first is turned around; one
+    whose bouts match no name is left as stored, since its order cannot be told."""
+    named = _named_main_event(event)
+    if named is None or named == 0:
+        return event
+    return _main_event_first(event)
+
+
 def _main_event_first(event: dict) -> dict:
     """Put the main event first and the rest in card order, the way the pages show a card.
 
@@ -195,14 +219,8 @@ def _main_event_first(event: dict) -> dict:
     fights = event["fights"]
     if len(fights) < 2:
         return event
-    headliners = [_surname_tokens(side) for side in re.split(r"\s+vs\.?\s+", event["name"].split(":", 1)[-1], flags=re.IGNORECASE)]
-    main = len(fights) - 1
-    if len(headliners) == 2 and all(headliners):
-        for index, fight in enumerate(fights):
-            names = [set(_surname_tokens(str(fight["fighter_1"]))), set(_surname_tokens(str(fight["fighter_2"])))]
-            if any(all(token in names[0] for token in a) and all(token in names[1] for token in b) for a, b in (headliners, headliners[::-1])):
-                main = index
-                break
+    named = _named_main_event(event)
+    main = len(fights) - 1 if named is None else named
     ordered = [fights[main]] + [fight for index, fight in enumerate(reversed(fights)) if len(fights) - 1 - index != main]
     return {**event, "fights": ordered}
 
