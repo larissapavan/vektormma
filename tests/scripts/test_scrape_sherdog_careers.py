@@ -1,6 +1,7 @@
 import json
 
 from scripts.scrape_sherdog_careers import (
+    CareerLinker,
     career_entry,
     opponent_links,
     organization_of,
@@ -57,6 +58,10 @@ def test_the_page_gives_the_professional_bouts_oldest_first_and_skips_amateur_on
 def test_the_organization_comes_from_the_event_name():
     assert organization_of("UFC 315 - Muhammad vs. Della Maddalena") == ("UFC", True)
     assert organization_of("The Ultimate Fighter 28 Finale") == ("UFC", True)
+    assert organization_of("UFC - The Ultimate Fighter 28 Finale") == ("UFC", True)
+    assert organization_of("UFC - Road to UFC Season 3: Shanghai Quarterfinals 4") == ("Road to UFC", False)
+    assert organization_of("UFC - Road to UFC Season 2: Las Vegas Finals") == ("UFC", True)
+    assert organization_of("UFC Venezuela 4 - National MMA 2") == ("UFC Venezuela", False)
     assert organization_of("LFA 150 - Pereira vs. Silva") == ("LFA", False)
     assert organization_of("Jungle Fight 82") == ("Jungle Fight", False)
     assert organization_of("HFS - Hex Fight Series 31") == ("Hex Fight Series", False)
@@ -130,3 +135,43 @@ def test_the_hand_kept_file_wins_over_sherdog(tmp_path, monkeypatch):
     assert service.get_career_history("Alex Pereira") == {"source": "hand"}
     assert service.get_career_history("navajo stirling") == {"source": "sherdog"}
     assert service.get_career_history("Nobody") is None
+
+
+def test_a_ufc_bout_against_a_nickname_still_counts():
+    sherdog = [{"date": "2026-04-11", "opponent": "Patricio Freire", "is_ufc": True}, {"date": "2019-01-01", "opponent": "Patricio Freire", "is_ufc": False}]
+    assert verify([{"date": "2026-04-11", "opponent": "Patricio Pitbull"}], sherdog) == (True, 1)
+    # Outside the UFC, or on another day, a shared first name is not enough.
+    assert verify([{"date": "2019-01-01", "opponent": "Patricio Pitbull"}], sherdog) == (False, 0)
+    assert verify([{"date": "2026-05-11", "opponent": "Patricio Pitbull"}], sherdog) == (False, 0)
+
+
+class FakeFetcher:
+    def __init__(self, pages):
+        self.pages = pages
+        self.asked = []
+
+    def get(self, url):
+        self.asked.append(url)
+        return self.pages.get(url)
+
+
+def test_a_fighter_the_finder_does_not_know_is_found_through_a_linked_opponent():
+    opponent_page = PAGE  # Navajo Stirling's page links Jiri Prochazka next to their bout
+    prochazka = f"""<html><head><meta property="og:url" content="//www.sherdog.com/fighter/Jiri-Prochazka-97529" /></head><body>
+    <span class="fn">Jiri Prochazka</span><div class="tiled_bg">FIGHT HISTORY - PRO</div><div class="module fight_history"><table>{HEAD}
+    {bout("loss", "Navajo Stirling", "/fighter/Navajo-Stirling-413272", "UFC Fight Night 294 - Prochazka vs. Stirling", "Nov / 21 / 2026")}
+    </table></div></body></html>"""
+    fetcher = FakeFetcher({
+        "https://www.sherdog.com/stats/fightfinder?SearchTxt=jiri+denisa": "<table class='fightfinder_result'></table>",
+        "https://www.sherdog.com/fighter/Navajo-Stirling-413272": opponent_page,
+        "https://www.sherdog.com/fighter/Jiri-Prochazka-97529": prochazka,
+    })
+    careers = {"Navajo Stirling": career_entry("Navajo Stirling", parse_fighter_page(PAGE), "2026-11-21")}
+    # The UFC bills him by a name the finder does not know; his opponent's page leads to him.
+    ours = {"Jiri Denisa": [{"date": "2026-11-21", "opponent": "Navajo Stirling"}]}
+    linker = CareerLinker(fetcher, careers, lambda name: ours[name], "2026-11-21")
+
+    entry, reason, tried = linker.link("Jiri Denisa")
+
+    assert reason == "" and entry["sherdog_url"].endswith("Jiri-Prochazka-97529")
+    assert tried == ["https://www.sherdog.com/fighter/Jiri-Prochazka-97529"]

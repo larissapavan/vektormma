@@ -11,7 +11,9 @@ same date, for at least LINK_MIN_SHARE of them (names are spelled differently no
 yet cannot be checked and is not linked. Where the link comes from:
     1. the page found by an earlier run (data/raw/sherdog_careers.json keeps it);
     2. an opponent's page: next to each bout Sherdog links the opponent's page, and our cards say who that opponent was;
-    3. Sherdog's fight finder, by name (exact name first, then close spellings).
+    3. Sherdog's fight finder, by name (exact name first, then close spellings);
+    4. when the finder has nobody by that name (the UFC bills some fighters by a nickname): an already linked UFC
+       opponent's page, through its link next to the bout they had.
 Fighters that could not be linked are listed in data/raw/sherdog_careers_unmatched.csv with the reason, for review.
 
 What a Sherdog fighter page does NOT give, and stays empty rather than guessed: the location and weight class of a bout,
@@ -59,6 +61,7 @@ LINK_MIN_SHARE = 0.8
 NAME_MIN_RATIO = 0.8
 SEARCH_MIN_RATIO = 0.85
 MAX_CANDIDATES = 3
+OPPONENT_PAGES = 2
 # A fighter Sherdog could not be linked for is asked again after this many days (a debut adds a bout to check against).
 RETRY_UNMATCHED_DAYS = 7
 RESULTS = {"win": "win", "loss": "loss", "draw": "draw", "nc": "nc"}
@@ -104,6 +107,12 @@ def organization_of(event_name: str) -> tuple[str, bool]:
         return " ".join(words)
 
     left = strip_number(left)
+    # Road to UFC is the UFC's tournament for Asian prospects: its bouts are not UFC bouts, but its finals are held on
+    # UFC cards and count. "UFC Venezuela" is a regional promoter.
+    if re.search(r"\bRoad to UFC\b", event_name) and not re.search(r"\bFinals?\b", event_name):
+        return "Road to UFC", False
+    if re.match(r"UFC Venezuela\b", left):
+        return left, False
     if re.match(r"UFC\b", left) or re.match(r"The Ultimate Fighter\b.*\bFinale\b", event_name):
         return "UFC", True
     # "FCC 27 - Full Contact Contender 27": the right side spells the acronym out. "ACB 70 - Sheffield" does not (a city).
@@ -207,9 +216,18 @@ def _within_a_day(a: str | None, b: str | None) -> bool:
         return False
 
 
+def _share_a_name(a: str | None, b: str | None) -> bool:
+    """ "Patricio Pitbull" and "Patricio Freire": the UFC bills some fighters by a nickname Sherdog does not use."""
+    return bool({word for word in fold(a).split() if len(word) >= 3} & {word for word in fold(b).split() if len(word) >= 3})
+
+
 def matching_bout(ufc_fight: dict, sherdog_fights: list[dict]) -> dict | None:
+    """The page's bout that is this UFC bout: within a day of it, against the same opponent. A UFC bout on Sherdog whose
+    opponent only shares a name with ours (a nickname on one side) counts too: nobody is on two UFC cards a day apart."""
     for fight in sherdog_fights:
-        if _within_a_day(ufc_fight.get("date"), fight["date"]) and same_name(ufc_fight.get("opponent"), fight["opponent"]):
+        if not _within_a_day(ufc_fight.get("date"), fight["date"]):
+            continue
+        if same_name(ufc_fight.get("opponent"), fight["opponent"]) or (fight["is_ufc"] and _share_a_name(ufc_fight.get("opponent"), fight["opponent"])):
             return fight
     return None
 
@@ -318,12 +336,31 @@ class CareerLinker:
         self.ufc_fights_of = ufc_fights_of
         self.today = today
         self.discovered: dict[str, str] = {}
+        self.careers_by_key = {fold(name): entry for name, entry in careers.items()}
         for name, entry in careers.items():
             self.discovered.setdefault(fold(name), entry["sherdog_url"])
 
     def read_page(self, url: str) -> dict | None:
         html = self.fetcher.get(url)
         return parse_fighter_page(html) if html else None
+
+    def through_opponents(self, name: str, ufc_fights: list[dict]) -> list[str]:
+        """The fighter's page as linked from an already linked UFC opponent's page (the fight finder does not know
+        "Renato Moicano": Sherdog has him as Renato Carneiro). Reads at most OPPONENT_PAGES pages."""
+        found: list[str] = []
+        read = 0
+        for fight in ufc_fights:
+            opponent = self.careers_by_key.get(fold(fight.get("opponent")))
+            if not opponent or read >= OPPONENT_PAGES:
+                continue
+            page = self.read_page(opponent["sherdog_url"])
+            read += 1
+            for bout in (page or {}).get("fights", []):
+                if bout["is_ufc"] and _within_a_day(fight.get("date"), bout["date"]) and bout["opponent_url"] and bout["opponent_url"] not in found:
+                    found.append(bout["opponent_url"])
+            if found:
+                break
+        return found
 
     def link(self, name: str) -> tuple[dict | None, str, list[str]]:
         """(career entry or None, why not, addresses tried) for one of our fighters."""
@@ -336,6 +373,8 @@ class CareerLinker:
         if not known:
             html = self.fetcher.get(f"{BASE_URL}/stats/fightfinder?SearchTxt={quote_plus(fold(name))}")
             candidates = ranked_candidates(name, search_candidates(html or ""))
+            if not candidates:
+                candidates = self.through_opponents(name, ufc_fights)
         for url in candidates:
             page = self.read_page(url)
             tried.append(url)
@@ -403,6 +442,7 @@ def main(argv: list[str] | None = None) -> int:
         if entry:
             before = careers.get(name, {}).get("complete_record")
             careers[name] = entry
+            linker.careers_by_key[fold(name)] = entry
             unmatched.pop(name, None)
             linked += 1
             if before != entry["complete_record"]:
