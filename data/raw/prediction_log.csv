@@ -52,15 +52,15 @@ fight_key,event_name,event_date,fighter_1,fighter_2,prob_fighter_1,predicted_win
 2026-11-14|caio borralho|yousri belgaroui,UFC 334: Gane vs. Hokit,2026-11-14,Caio Borralho,Yousri Belgaroui,0.4573,Yousri Belgaroui,0.5427,2026-11-06,Caio Borralho,False,2026-11-15,prefight
 2026-11-14|amanda nunes|kayla harrison,UFC 334: Gane vs. Hokit,2026-11-14,Kayla Harrison,Amanda Nunes,0.6192,Kayla Harrison,0.6192,2026-11-06,Kayla Harrison,True,2026-11-15,prefight
 2026-11-14|ciryl gane|josh hokit,UFC 334: Gane vs. Hokit,2026-11-14,Ciryl Gane,Josh Hokit,0.5606,Ciryl Gane,0.5606,2026-11-06,Ciryl Gane,True,2026-11-15,prefight
-2026-11-21|alessandro costa|amir albazi,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Amir Albazi,Alessandro Costa,0.4731,Alessandro Costa,0.5269,2026-11-06,,,,prefight
-2026-11-21|asu almabayev|kyoji horiguchi,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Asu Almabayev,Kyoji Horiguchi,0.4547,Kyoji Horiguchi,0.5453,2026-11-06,,,,prefight
-2026-11-21|aleksandre topuria|santiago luna,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Aleksandre Topuria,Santiago Luna,0.3313,Santiago Luna,0.6687,2026-11-06,,,,prefight
-2026-11-21|jake matthews|tahir abdullayev,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Jake Matthews,Tahir Abdullayev,0.5290,Jake Matthews,0.5290,2026-11-06,,,,prefight
-2026-11-21|shamil gaziev|tallison teixeira,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Shamil Gaziev,Tallison Teixeira,0.2441,Tallison Teixeira,0.7559,2026-11-06,,,,prefight
-2026-11-21|ikram aliskerov|jared cannonier,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Jared Cannonier,Ikram Aliskerov,0.3106,Ikram Aliskerov,0.6894,2026-11-06,,,,prefight
-2026-11-21|brian ortega|dan hooker,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Dan Hooker,Brian Ortega,0.5771,Dan Hooker,0.5771,2026-11-06,,,,prefight
-2026-11-21|aljamain sterling|kevin vallejos,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Aljamain Sterling,Kevin Vallejos,0.4701,Kevin Vallejos,0.5299,2026-11-06,,,,prefight
-2026-11-21|jiri prochazka|navajo stirling,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Jiri Prochazka,Navajo Stirling,0.2408,Navajo Stirling,0.7592,2026-11-06,,,,prefight
+2026-11-21|alessandro costa|amir albazi,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Amir Albazi,Alessandro Costa,0.4731,Alessandro Costa,0.5269,2026-11-06,Amir Albazi,False,2026-11-21,prefight
+2026-11-21|asu almabayev|kyoji horiguchi,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Asu Almabayev,Kyoji Horiguchi,0.4547,Kyoji Horiguchi,0.5453,2026-11-06,Kyoji Horiguchi,True,2026-11-21,prefight
+2026-11-21|aleksandre topuria|santiago luna,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Aleksandre Topuria,Santiago Luna,0.3313,Santiago Luna,0.6687,2026-11-06,Santiago Luna,True,2026-11-21,prefight
+2026-11-21|jake matthews|tahir abdullayev,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Jake Matthews,Tahir Abdullayev,0.5290,Jake Matthews,0.5290,2026-11-06,Tahir Abdullayev,False,2026-11-21,prefight
+2026-11-21|shamil gaziev|tallison teixeira,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Shamil Gaziev,Tallison Teixeira,0.2441,Tallison Teixeira,0.7559,2026-11-06,Tallison Teixeira,True,2026-11-21,prefight
+2026-11-21|ikram aliskerov|jared cannonier,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Jared Cannonier,Ikram Aliskerov,0.3106,Ikram Aliskerov,0.6894,2026-11-06,Ikram Aliskerov,True,2026-11-21,prefight
+2026-11-21|brian ortega|dan hooker,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Dan Hooker,Brian Ortega,0.5771,Dan Hooker,0.5771,2026-11-06,Dan Hooker,True,2026-11-21,prefight
+2026-11-21|aljamain sterling|kevin vallejos,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Aljamain Sterling,Kevin Vallejos,0.4701,Kevin Vallejos,0.5299,2026-11-06,Kevin Vallejos,True,2026-11-21,prefight
+2026-11-21|jiri prochazka|navajo stirling,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Jiri Prochazka,Navajo Stirling,0.2408,Navajo Stirling,0.7592,2026-11-06,Navajo Stirling,True,2026-11-21,prefight
 2026-12-12|bo nickal|joe pyfer,UFC 335: Oliveira vs. Lopes,2026-12-12,Joe Pyfer,Bo Nickal,0.4456,Bo Nickal,0.5544,2026-11-06,,,,prefight
 2026-12-12|alex pereira|sergei pavlovich,UFC 335: Oliveira vs. Lopes,2026-12-12,Sergei Pavlovich,Alex Pereira,0.5559,Sergei Pavlovich,0.5559,2026-11-06,,,,prefight
 2026-12-12|charles oliveira|diego lopes,UFC 335: Oliveira vs. Lopes,2026-12-12,Charles Oliveira,Diego Lopes,0.5732,Charles Oliveira,0.5732,2026-11-06,,,,prefight
@@ -87,9 +87,9 @@ fight_key,event_name,event_date,fighter_1,fighter_2,prob_fighter_1,predicted_win
 2026-11-14|evan elder|samuel sanches,UFC 334: Gane vs. Hokit,2026-11-14,Evan Elder,Samuel Sanches,0.5380,Evan Elder,0.5380,2026-11-06,Evan Elder,True,2026-11-15,prefight
 2026-11-14|jared gordon|melquizael costa,UFC 334: Gane vs. Hokit,2026-11-14,Jared Gordon,Melquizael Costa,0.3968,Melquizael Costa,0.6032,2026-11-06,Melquizael Costa,True,2026-11-15,prefight
 2026-11-14|cesar almeida|donte johnson,UFC 334: Gane vs. Hokit,2026-11-14,Donte Johnson,Cesar Almeida,0.7214,Donte Johnson,0.7214,2026-11-06,Cesar Almeida,False,2026-11-15,prefight
-2026-11-21|dom mar fan|nikolas motta,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Nikolas Motta,Dom Mar Fan,0.2154,Dom Mar Fan,0.7846,2026-11-06,,,,prefight
+2026-11-21|dom mar fan|nikolas motta,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Nikolas Motta,Dom Mar Fan,0.2154,Dom Mar Fan,0.7846,2026-11-06,Dom Mar Fan,True,2026-11-21,prefight
 2026-11-21|jacqueline cavalcanti|michelle montague,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Jacqueline Cavalcanti,Michelle Montague,0.6908,Jacqueline Cavalcanti,0.6908,2026-11-06,,,,prefight
-2026-11-21|alik lorenz|diyar nurgozhay,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Diyar Nurgozhay,Alik Lorenz,0.5861,Diyar Nurgozhay,0.5861,2026-11-06,,,,prefight
+2026-11-21|alik lorenz|diyar nurgozhay,UFC Fight Night: Prochazka vs. Stirling,2026-11-21,Diyar Nurgozhay,Alik Lorenz,0.5861,Diyar Nurgozhay,0.5861,2026-11-06,Diyar Nurgozhay,True,2026-11-21,prefight
 2026-12-05|ivan gnizditskiy|uran satybaldiev,UFC Fight Night: Adesanya vs. Magomedov,2026-12-05,Ivan Gnizditskiy,Uran Satybaldiev,0.3764,Uran Satybaldiev,0.6236,2026-11-06,,,,prefight
 2026-12-05|matthieu duclos|modestino rodrigues,UFC Fight Night: Adesanya vs. Magomedov,2026-12-05,Matthieu Duclos,Modestino Rodrigues,0.6740,Matthieu Duclos,0.6740,2026-11-06,,,,prefight
 2026-12-05|bruno silva|jafel filho,UFC Fight Night: Adesanya vs. Magomedov,2026-12-05,Jafel Filho,Bruno Silva,0.6650,Jafel Filho,0.6650,2026-11-06,,,,prefight

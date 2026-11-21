@@ -1,4 +1,4 @@
-from scripts.scrape_rankings import GROUPS_EXPECTED, clean_athlete_url, rankings_problem
+from scripts.scrape_rankings import GROUPS_EXPECTED, classify_header, clean_athlete_url, departed_fighters, drop_departed, parse_rank_change, parse_rankings, rankings_problem
 
 
 def test_rankings_problem_rejects_a_partial_page():
@@ -33,3 +33,36 @@ def test_clean_athlete_url_drops_the_escaped_index_php_prefix():
     assert clean_athlete_url("/index%2ephp/athlete/petr-yan") == "/athlete/petr-yan"
     assert clean_athlete_url("/athlete/petr-yan") == "/athlete/petr-yan"
     assert clean_athlete_url(None) is None
+
+
+def test_the_english_page_is_read_like_the_portuguese_one():
+    assert classify_header("Flyweight") == ("Flyweight", False)
+    assert classify_header("Women's Bantamweight") == ("Women's Bantamweight", False)
+    assert classify_header("Peso-mosca") == ("Flyweight", False)
+    assert classify_header("Men's Pound-for-PoundTop Rank") == ("Pound-for-Pound (Men's)", True)
+    assert parse_rank_change("Rank increased by 4") == "up"
+    assert parse_rank_change("Rank decreased by 1") == "down"
+    assert parse_rank_change("NR") == "new"
+    assert parse_rank_change("Subiu 2") == "up"
+    assert parse_rank_change("") is None
+
+
+def test_letters_without_a_plain_form_are_spelled_in_ascii():
+
+    html = """<div class="view-grouping"><div class="view-grouping-header">Light Heavyweight</div>
+    <table><tbody><tr><td>11</td><td><a href="/athlete/jan-blachowicz">Jan Błachowicz</a></td><td></td></tr></tbody></table></div>"""
+    assert [row["fighter"] for row in parse_rankings(html)] == ["Jan Blachowicz"]
+
+
+def test_a_retired_fighter_is_left_out_and_those_below_move_up(tmp_path):
+    overrides = tmp_path / "status_overrides.csv"
+    overrides.write_text('name,status,note\nBrian Ortega,former,"retired, November 2026"\nSomeone Else,active,\n', encoding="utf-8")
+    rows = [
+        {"category": "Featherweight", "rank": rank, "fighter": name}
+        for rank, name in [(0, "Champ"), (12, "A"), (13, "Brian Ortega"), (14, "B"), (15, "C")]
+    ] + [{"category": "Lightweight", "rank": 14, "fighter": "D"}]
+
+    kept, removed = drop_departed(rows, departed_fighters(overrides))
+
+    assert removed == ["Featherweight: Brian Ortega (#13)"]
+    assert [(row["fighter"], row["rank"]) for row in kept] == [("Champ", 0), ("A", 12), ("B", 13), ("C", 14), ("D", 14)]
