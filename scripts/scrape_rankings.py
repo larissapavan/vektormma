@@ -15,6 +15,7 @@ takes seconds, not hours; just re-run it whenever rankings need refreshing.
 from __future__ import annotations
 
 import csv
+import unicodedata
 from pathlib import Path
 
 from bs4 import BeautifulSoup
@@ -24,6 +25,7 @@ from scripts.scrape_espn import NON_DECOMPOSING
 
 RANKINGS_URL = "https://www.ufc.com/rankings"
 OUTPUT_PATH = Path("data") / "raw" / "rankings.csv"
+STATUS_OVERRIDES_PATH = Path("data") / "raw" / "status_overrides.csv"
 TIMEOUT_SECONDS = 20
 
 HEADERS = {
@@ -163,6 +165,40 @@ def parse_rankings(html: str) -> list[dict]:
     return records
 
 
+def _name_key(name: str) -> str:
+    folded = unicodedata.normalize("NFKD", "".join(NON_DECOMPOSING.get(char, char) for char in str(name)))
+    return " ".join("".join(c for c in folded if c.isalnum() or c.isspace()).lower().split())
+
+
+def departed_fighters(path: Path = STATUS_OVERRIDES_PATH) -> dict[str, str]:
+    """Fighters status_overrides.csv marks as former (retired or released): name key -> name as written there."""
+    if not path.exists():
+        return {}
+    with path.open(newline="", encoding="utf-8") as handle:
+        return {_name_key(row["name"]): row["name"] for row in csv.DictReader(handle) if row.get("status", "").strip().lower() == "former"}
+
+
+def drop_departed(records: list[dict], departed: dict[str, str]) -> tuple[list[dict], list[str]]:
+    """Removes fighters who retired or were released before ufc.com updated its rankings, and moves up those below them.
+
+    ufc.com takes days or weeks to drop them; the site should not list a retired fighter in the meantime. The rows
+    reappear by themselves only if the override is deleted while ufc.com still ranks the fighter."""
+    kept: list[dict] = []
+    removed: list[str] = []
+    gaps: dict[str, list[int]] = {}
+    for record in records:
+        if _name_key(record["fighter"]) in departed:
+            removed.append(f"{record['category']}: {record['fighter']} (#{record['rank']})")
+            gaps.setdefault(record["category"], []).append(record["rank"])
+            continue
+        kept.append(record)
+    for record in kept:
+        below = sum(1 for rank in gaps.get(record["category"], []) if 0 < rank < record["rank"])
+        if below:
+            record["rank"] -= below
+    return kept, removed
+
+
 def rankings_problem(records: list[dict], previous_rows: int | None = None) -> str | None:
     """A partial page must not replace the stored rankings."""
     if not records:
@@ -228,6 +264,9 @@ def main() -> None:
     problem = rankings_problem(records, previous_ranking_rows())
     if problem:
         raise RuntimeError(f"Rankings left unchanged: {problem}.")
+    records, removed = drop_departed(records, departed_fighters())
+    for line in removed:
+        print(f"[info] left out, marked former in status_overrides.csv: {line}")
 
     changes = ranking_changes(load_previous_rankings(), records) if previous_ranking_rows() else []
     save_rankings(records)
