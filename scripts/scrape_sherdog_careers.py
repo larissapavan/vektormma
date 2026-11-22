@@ -7,13 +7,16 @@ date, method, referee, round and time. Amateur bouts are in a separate table and
 
 Linking a fighter of ours to a Sherdog page is the risky part (Sherdog has a dozen "Alex Pereira"), so a page is only
 accepted when it holds the fighter's UFC bouts as our event cards record them: the same opponent within a day of the
-same date, for at least LINK_MIN_SHARE of them (names are spelled differently now and then). A fighter with no UFC bout
+same date, for all of one or two bouts and from three on for all but one and at least LINK_MIN_SHARE of them (Sherdog
+knows some opponents by another name). Names match across accents, word order and run-on Chinese names ("Aoriqileng" is
+"Qileng Aori" there). A fighter with no UFC bout
 yet cannot be checked and is not linked. Where the link comes from:
     1. the page found by an earlier run (data/raw/sherdog_careers.json keeps it);
     2. an opponent's page: next to each bout Sherdog links the opponent's page, and our cards say who that opponent was;
-    3. Sherdog's fight finder, by name (exact name first, then close spellings);
-    4. when the finder has nobody by that name (the UFC bills some fighters by a nickname): an already linked UFC
-       opponent's page, through its link next to the bout they had.
+    3. Sherdog's fight finder: the name, its words the other way round, a run-on name split, then the other spellings in
+       name_aliases.csv (exact name first, then close spellings);
+    4. when the finder has nobody by any of those names, or only someone else (the UFC bills some fighters by a nickname):
+       an already linked UFC opponent's page, through its link next to the bout they had.
 Fighters that could not be linked are listed in data/raw/sherdog_careers_unmatched.csv with the reason, for review.
 
 What a Sherdog fighter page does NOT give, and stays empty rather than guessed: the location and weight class of a bout,
@@ -39,6 +42,7 @@ import sys
 import unicodedata
 from datetime import date, datetime, timedelta
 from difflib import SequenceMatcher
+from itertools import permutations
 from pathlib import Path
 from urllib.parse import quote_plus
 
@@ -55,6 +59,7 @@ BASE_URL = "https://www.sherdog.com"
 OUTPUT_PATH = Path("data") / "raw" / "sherdog_careers.json"
 UNMATCHED_PATH = Path("data") / "raw" / "sherdog_careers_unmatched.csv"
 CARDS_PATH = Path("data") / "raw" / "event_cards.csv"
+ALIASES_PATH = Path("data") / "raw" / "name_aliases.csv"
 UNMATCHED_FIELDS = ["name", "reason", "candidates", "checked"]
 REQUEST_DELAY_SECONDS = 1.0
 LINK_MIN_SHARE = 0.8
@@ -83,7 +88,29 @@ def same_name(a: str | None, b: str | None) -> bool:
         return False
     if fa == fb or sorted(fa.split()) == sorted(fb.split()):
         return True
+    # Chinese names: the UFC writes "Aoriqileng" and "Yizha", Sherdog "Qileng Aori" and "Zha Yi" ("DongHun"/"Dong Hun" too).
+    words = fb.split()
+    if len(words) <= 4 and fa.replace(" ", "") in {"".join(order) for order in permutations(words)}:
+        return True
     return SequenceMatcher(None, fa, fb).ratio() >= NAME_MIN_RATIO
+
+
+def search_names(name: str, aliases: list[str] | tuple[str, ...] = ()) -> list[str]:
+    """What to ask the fight finder, in order: the name, its words the other way round ("Shi Ming" / "Ming Shi"), a run-on
+    name split ("DongHun Choi" / "Dong Hun Choi"), and the other spellings in name_aliases.csv."""
+    names = [name]
+    words = name.split()
+    if 2 <= len(words) <= 3:
+        names.append(" ".join(reversed(words)))
+    split = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", name)
+    if split != name:
+        names.append(split)
+    names.extend(aliases)
+    unique: list[str] = []
+    for candidate in names:
+        if fold(candidate) not in [fold(seen) for seen in unique]:
+            unique.append(candidate)
+    return unique
 
 
 # --------------------------------------------------------------------------- parsing
@@ -98,6 +125,7 @@ def _day(text: str) -> str | None:
 
 def organization_of(event_name: str) -> tuple[str, bool]:
     """(organization, is UFC) from a Sherdog event name: "LFA 150 - A vs. B" is LFA, "HFS - Hex Fight Series 31" is Hex Fight Series."""
+    event_name = event_name.strip().rstrip("-:, ").strip() or event_name  # "BrazilMMA -": an event Sherdog names with nothing after the dash
     left, _, right = (part.strip() for part in event_name.partition(" - "))
 
     def strip_number(text: str) -> str:
@@ -237,7 +265,15 @@ def verify(ufc_fights: list[dict], sherdog_fights: list[dict]) -> tuple[bool, in
     if not ufc_fights:
         return False, 0
     matched = sum(1 for fight in ufc_fights if matching_bout(fight, sherdog_fights))
-    return matched >= max(1, math.ceil(LINK_MIN_SHARE * len(ufc_fights))), matched
+    return matched >= required_matches(len(ufc_fights)), matched
+
+
+def required_matches(bouts: int) -> int:
+    """All of one or two UFC bouts; from three on, one may be missed (an opponent Sherdog knows by another name: Loma
+    Lookboonmee is Konklak Suphisara there), and at least LINK_MIN_SHARE of them."""
+    if bouts <= 2:
+        return max(1, bouts)
+    return min(bouts - 1, math.ceil(LINK_MIN_SHARE * bouts))
 
 
 def _record(fights: list[dict]) -> dict:
@@ -330,8 +366,9 @@ def recent_fighters(days: int, today: date) -> set[str]:
 
 
 class CareerLinker:
-    def __init__(self, fetcher: Fetcher, careers: dict, ufc_fights_of, today: str) -> None:
+    def __init__(self, fetcher: Fetcher, careers: dict, ufc_fights_of, today: str, aliases: dict[str, list[str]] | None = None) -> None:
         self.fetcher = fetcher
+        self.aliases = aliases or {}
         self.careers = careers
         self.ufc_fights_of = ufc_fights_of
         self.today = today
@@ -343,6 +380,19 @@ class CareerLinker:
     def read_page(self, url: str) -> dict | None:
         html = self.fetcher.get(url)
         return parse_fighter_page(html) if html else None
+
+    def first_verified(self, name: str, ufc_fights: list[dict], candidates: list[str], tried: list[str]) -> dict | None:
+        for url in candidates:
+            page = self.read_page(url)
+            tried.append(url)
+            if not page:
+                continue
+            ok, _ = verify(ufc_fights, page["fights"])
+            if ok:
+                for opponent, address in opponent_links(ufc_fights, page).items():
+                    self.discovered.setdefault(opponent, address)
+                return career_entry(name, page, self.today)
+        return None
 
     def through_opponents(self, name: str, ufc_fights: list[dict]) -> list[str]:
         """The fighter's page as linked from an already linked UFC opponent's page (the fight finder does not know
@@ -369,26 +419,36 @@ class CareerLinker:
             return None, "no UFC bout yet to check a Sherdog page against", []
         known = self.discovered.get(fold(name))
         tried: list[str] = []
-        candidates = [known] if known else []
-        if not known:
-            html = self.fetcher.get(f"{BASE_URL}/stats/fightfinder?SearchTxt={quote_plus(fold(name))}")
-            candidates = ranked_candidates(name, search_candidates(html or ""))
-            if not candidates:
-                candidates = self.through_opponents(name, ufc_fights)
-        for url in candidates:
-            page = self.read_page(url)
-            tried.append(url)
-            if not page:
-                continue
-            ok, matched = verify(ufc_fights, page["fights"])
-            if ok:
-                for opponent, address in opponent_links(ufc_fights, page).items():
-                    self.discovered.setdefault(opponent, address)
-                return career_entry(name, page, self.today), "", tried
-        if known and not tried:
-            return None, "the linked page could not be read", tried
-        reason = "no Sherdog page holds the UFC bouts" if candidates else "the fight finder has no fighter by that name"
+        if known:
+            entry = self.first_verified(name, ufc_fights, [known], tried)
+            if entry or not tried:
+                return entry, "" if entry else "the linked page could not be read", tried
+        found_anyone = False
+        for query in search_names(name, self.aliases.get(name, ())):
+            html = self.fetcher.get(f"{BASE_URL}/stats/fightfinder?SearchTxt={quote_plus(fold(query))}")
+            candidates = [url for url in ranked_candidates(query, search_candidates(html or "")) if url not in tried]
+            found_anyone = found_anyone or bool(candidates)
+            entry = self.first_verified(name, ufc_fights, candidates, tried)
+            if entry:
+                return entry, "", tried
+        # The finder found nobody, or only someone else of that name (a Jose Montanha who fought in 2010).
+        extra = [url for url in self.through_opponents(name, ufc_fights) if url not in tried]
+        entry = self.first_verified(name, ufc_fights, extra, tried)
+        if entry:
+            return entry, "", tried
+        reason = "no Sherdog page holds the UFC bouts" if found_anyone or extra else "the fight finder has no fighter by that name"
         return None, reason, tried
+
+
+def load_aliases(path: Path = ALIASES_PATH) -> dict[str, list[str]]:
+    """Catalog name -> the other spellings name_aliases.csv lists for it."""
+    if not path.exists():
+        return {}
+    aliases: dict[str, list[str]] = {}
+    with path.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            aliases.setdefault(row["canonical"], []).append(row["alias"])
+    return aliases
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -426,7 +486,7 @@ def main(argv: list[str] | None = None) -> int:
     def ufc_fights_of(name: str) -> list[dict]:
         return [{"date": fight.get("date"), "opponent": fight.get("opponent")} for fight in get_fights_for_fighter(name)]
 
-    linker = CareerLinker(Fetcher(args.delay, user_agent=USER_AGENT), careers, ufc_fights_of, today.isoformat())
+    linker = CareerLinker(Fetcher(args.delay, user_agent=USER_AGENT), careers, ufc_fights_of, today.isoformat(), load_aliases())
     # Fighters whose page is already known (an earlier run, or an opponent's page read in this one) go first, so the fight
     # finder is used as little as possible.
     pending = list(todo)
