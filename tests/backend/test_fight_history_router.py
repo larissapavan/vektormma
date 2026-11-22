@@ -148,3 +148,15 @@ def test_opponents_list_everyone_the_fighter_has_faced_most_recent_first(client)
 
 def test_opponents_of_an_unknown_fighter_is_404(client):
     assert client.get("/fighters/Nobody Atall/opponents").status_code == 404
+
+
+def test_a_bout_espn_spelled_differently_is_on_the_fighters_profile():
+    """ESPN writes "Ko Seok-hyeon" where UFCStats writes "Seokhyeon Ko" (data/raw/name_aliases.csv): the bout belongs to the
+    catalog's fighter, the result is read against the same name, and the opponent's side names him the catalog's way."""
+    from backend.app.services.fight_history_service import get_fights_for_fighter
+
+    ko = {fight["date"]: fight for fight in get_fights_for_fighter("Seokhyeon Ko")}
+    assert ko["2026-11-07"]["opponent"] == "Wellington Turman" and ko["2026-11-07"]["result"] == "win"
+    turman = {fight["date"]: fight for fight in get_fights_for_fighter("Wellington Turman")}
+    assert turman["2026-11-07"]["opponent"] == "Seokhyeon Ko" and turman["2026-11-07"]["result"] == "loss"
+    assert any(fight["opponent"] == "Alice Pereira" for fight in get_fights_for_fighter("Daria Zhelezniakova"))

@@ -9,7 +9,7 @@ from difflib import SequenceMatcher
 import pandas as pd
 
 from backend.app.services.bmf_service import BMF_FIGHTS_SOURCE_PATH, is_bmf_title_fight
-from backend.app.services.catalog_service import _normalize_name, get_fighter_catalog
+from backend.app.services.catalog_service import NAME_ALIASES_PATH, _normalize_name, canonical_name, get_fighter_catalog
 from src.ufc_predictor.config import RAW_DATA_DIR
 
 TITLE_REIGNS_SOURCE_PATH = RAW_DATA_DIR / "title_reigns.csv"
@@ -38,7 +38,14 @@ def _source_signature() -> tuple | None:
         return None
     details = FIGHT_DETAILS_SOURCE_PATH.stat().st_mtime_ns if FIGHT_DETAILS_SOURCE_PATH.exists() else None
     bmf = BMF_FIGHTS_SOURCE_PATH.stat().st_mtime_ns if BMF_FIGHTS_SOURCE_PATH.exists() else None
-    return (EVENT_CARDS_SOURCE_PATH.stat().st_mtime_ns, details, bmf)
+    aliases = NAME_ALIASES_PATH.stat().st_mtime_ns if NAME_ALIASES_PATH.exists() else None
+    return (EVENT_CARDS_SOURCE_PATH.stat().st_mtime_ns, details, bmf, aliases)
+
+
+def _key(name) -> str:
+    """The fighter's key under the catalog spelling: ESPN writes "Ko Seok-hyeon" where UFCStats writes "Seokhyeon Ko"
+    (data/raw/name_aliases.csv), and both are the same fighter's bouts."""
+    return _normalize_name(canonical_name(name) if isinstance(name, str) else name)
 
 
 def _fold(name: str) -> str:
@@ -167,8 +174,8 @@ def _load_fight_history() -> pd.DataFrame:
                 details = details.drop_duplicates(subset=["fight_url"], keep="last")[["fight_url", *DETAIL_COLUMNS]]
                 df = df.merge(details.rename(columns={"result": "outcome"}), on="fight_url", how="left")
             df["event_date_parsed"] = pd.to_datetime(df["event_date"], format="%B %d, %Y", errors="coerce")
-            df["key_1"] = df["fighter_1"].apply(_normalize_name)
-            df["key_2"] = df["fighter_2"].apply(_normalize_name)
+            df["key_1"] = df["fighter_1"].apply(_key)
+            df["key_2"] = df["fighter_2"].apply(_key)
         _cache["data"] = df
         _cache["signature"] = signature
     return _cache["data"]
@@ -180,7 +187,7 @@ def get_fights_for_fighter(name: str) -> list[dict]:
     if df.empty:
         return []
 
-    key = _normalize_name(name)
+    key = _key(name)
     rows = df[(df["key_1"] == key) | (df["key_2"] == key)]
     rows = rows.sort_values("event_date_parsed", ascending=False, na_position="last")
 
@@ -188,12 +195,13 @@ def get_fights_for_fighter(name: str) -> list[dict]:
     fights: list[dict] = []
     for _, row in rows.iterrows():
         is_fighter_1 = row["key_1"] == key
-        opponent_name = row["fighter_2"] if is_fighter_1 else row["fighter_1"]
+        listed = row["fighter_2"] if is_fighter_1 else row["fighter_1"]
+        opponent_name = canonical_name(listed) or listed
         winner = row.get("winner")
 
         result = None
         if pd.notna(winner):
-            result = "win" if _normalize_name(winner) == key else "loss"
+            result = "win" if _key(winner) == key else "loss"
 
         date_parsed = row["event_date_parsed"]
         date_iso = date_parsed.date().isoformat() if pd.notna(date_parsed) else None
