@@ -102,7 +102,7 @@ export function SeasonFightsPanel({
                   <span className="font-display font-black text-sm sm:text-lg text-[var(--ink)] whitespace-nowrap">
                     {L(lang, 'Temporada', 'Season', 'Saison', 'Temporada')} {era.year}
                   </span>
-                  <span className="text-label sm:text-xs font-bold text-[var(--gold)] bg-[var(--gold-fill)] border border-[var(--gold)] px-1.5 sm:px-2 py-0.5 rounded-sm shrink-0">
+                  <span className="text-label sm:text-xs font-bold text-[var(--on-tape)] bg-[var(--gold-fill)] border border-[var(--gold)] px-1.5 sm:px-2 py-0.5 rounded-sm shrink-0">
                     {era.wins}{L(lang, 'V', 'W', 'V', 'V')} - {era.losses}{L(lang, 'D', 'L', 'D', 'D')}
                   </span>
                 </div>
@@ -114,7 +114,7 @@ export function SeasonFightsPanel({
 
             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               {era.milestone && (
-                <div className="hidden md:inline-flex items-center gap-1.5 rounded-sm bg-[var(--gold-fill)] border border-[var(--gold)] px-2.5 py-1 text-label font-bold text-[var(--gold)]">
+                <div className="hidden md:inline-flex items-center gap-1.5 rounded-sm bg-[var(--gold-fill)] border border-[var(--gold)] px-2.5 py-1 text-label font-bold text-[var(--on-tape)]">
                   <Trophy className="h-3 w-3" />
                   <span>{era.milestone}</span>
                 </div>

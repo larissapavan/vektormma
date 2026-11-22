@@ -400,8 +400,8 @@ export function FighterProfileModal({
                 )}
 
                 {isCurrentBmf && (
-                  <span className="inline-flex items-center gap-1.5 rounded-sm border border-[var(--gold)] bg-[var(--gold-fill)] px-2.5 py-1 text-label font-bold text-[var(--gold)]">
-                    <Sparkles className="h-3 w-3 text-[var(--gold)]" />
+                  <span className="inline-flex items-center gap-1.5 rounded-sm border border-[var(--gold)] bg-[var(--gold-fill)] px-2.5 py-1 text-label font-bold text-[var(--on-tape)]">
+                    <Sparkles className="h-3 w-3" />
                     <span>{L(i18n.language, 'Campeão BMF atual', 'Current BMF champion', 'Champion BMF actuel', 'Campeón BMF actual')}</span>
                   </span>
                 )}
