@@ -7,7 +7,10 @@ from scripts.scrape_sherdog_careers import (
     organization_of,
     parse_fighter_page,
     ranked_candidates,
+    required_matches,
+    same_name,
     save,
+    search_names,
     search_candidates,
     verify,
 )
@@ -68,6 +71,7 @@ def test_the_organization_comes_from_the_event_name():
     assert organization_of("FSC 34 - FightStar Championship 34") == ("FightStar Championship", False)
     assert organization_of("UKFC - UK Fighting Championships 9") == ("UK Fighting Championships", False)
     assert organization_of("ACB 70 - Sheffield") == ("ACB", False)
+    assert organization_of("BrazilMMA -") == ("BrazilMMA", False)
     assert organization_of("Dana White's Contender Series - Contender Series 2024: Week 5") == ("Dana White's Contender Series", False)
 
 
@@ -175,3 +179,47 @@ def test_a_fighter_the_finder_does_not_know_is_found_through_a_linked_opponent()
 
     assert reason == "" and entry["sherdog_url"].endswith("Jiri-Prochazka-97529")
     assert tried == ["https://www.sherdog.com/fighter/Jiri-Prochazka-97529"]
+
+
+def test_names_match_across_word_order_and_run_on_chinese_names():
+    assert same_name("Aoriqileng", "Qileng Aori")
+    assert same_name("Yizha", "Zha Yi")
+    assert same_name("DongHun Choi", "Dong Hun Choi")
+    assert same_name("Shi Ming", "Ming Shi")
+    assert not same_name("Yizha", "Zha Wang")
+
+
+def test_from_three_bouts_one_may_be_missed():
+    assert [required_matches(n) for n in (1, 2, 3, 4, 5, 10)] == [1, 2, 2, 3, 4, 8]
+
+
+def test_the_finder_is_asked_for_the_other_spellings_too():
+    assert search_names("Shi Ming") == ["Shi Ming", "Ming Shi"]
+    assert search_names("DongHun Choi") == ["DongHun Choi", "Choi DongHun", "Dong Hun Choi"]
+    assert search_names("Jose Delano", ["Jose Mauro Delano"]) == ["Jose Delano", "Delano Jose", "Jose Mauro Delano"]
+    assert search_names("Aoriqileng") == ["Aoriqileng"]
+
+
+def test_a_homonym_from_the_finder_falls_back_to_the_opponents_page():
+    prochazka = f"""<html><head><meta property="og:url" content="//www.sherdog.com/fighter/Jiri-Prochazka-97529" /></head><body>
+    <span class="fn">Jiri Prochazka</span><div class="tiled_bg">FIGHT HISTORY - PRO</div><div class="module fight_history"><table>{HEAD}
+    {bout("loss", "Navajo Stirling", "/fighter/Navajo-Stirling-413272", "UFC Fight Night 294 - Prochazka vs. Stirling", "Nov / 21 / 2026")}
+    </table></div></body></html>"""
+    homonym = f"""<html><head><meta property="og:url" content="//www.sherdog.com/fighter/Jiri-Prochazka-1" /></head><body>
+    <span class="fn">Jiri Prochazka</span><div class="tiled_bg">FIGHT HISTORY - PRO</div><div class="module fight_history"><table>{HEAD}
+    {bout("win", "Somebody", "/fighter/Somebody-2", "Local Show 1", "Jan / 01 / 2010")}
+    </table></div></body></html>"""
+    finder = """<table class="fightfinder_result"><tr><td></td><td><a href="/fighter/Jiri-Prochazka-1">Jiri Prochazka</a></td></tr></table>"""
+    fetcher = FakeFetcher({
+        "https://www.sherdog.com/stats/fightfinder?SearchTxt=jiri+prochazka": finder,
+        "https://www.sherdog.com/fighter/Jiri-Prochazka-1": homonym,
+        "https://www.sherdog.com/fighter/Navajo-Stirling-413272": PAGE,
+        "https://www.sherdog.com/fighter/Jiri-Prochazka-97529": prochazka,
+    })
+    careers = {"Navajo Stirling": career_entry("Navajo Stirling", parse_fighter_page(PAGE), "2026-11-21")}
+    linker = CareerLinker(fetcher, careers, lambda name: [{"date": "2026-11-21", "opponent": "Navajo Stirling"}], "2026-11-21")
+
+    entry, reason, tried = linker.link("Jiri Prochazka")
+
+    assert reason == "" and entry["sherdog_url"].endswith("Jiri-Prochazka-97529")
+    assert tried == ["https://www.sherdog.com/fighter/Jiri-Prochazka-1", "https://www.sherdog.com/fighter/Jiri-Prochazka-97529"]
