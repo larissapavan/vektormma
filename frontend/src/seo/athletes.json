@@ -1305,8 +1305,8 @@
    "photo": "brunno-ferreira.webp"
   },
   {
-   "name": "Bruno Silva",
-   "slug": "bruno-silva",
+   "name": "Bruno Gustavo da Silva",
+   "slug": "bruno-gustavo-da-silva",
    "nickname": "Bulldog",
    "division": "Flyweight",
    "wins": 15,
@@ -1316,7 +1316,7 @@
    "titles": [],
    "country": "Brazil",
    "countryCode": "br",
-   "photo": "bruno-silva.webp"
+   "photo": "bruno-gustavo-da-silva.webp"
   },
   {
    "name": "Bryce Mitchell",
@@ -9872,15 +9872,15 @@
    }
   },
   {
-   "slug": "bruno-silva-vs-jafel-filho",
+   "slug": "bruno-gustavo-da-silva-vs-jafel-filho",
    "event": "UFC Fight Night: Adesanya vs Magomedov",
    "date": "2026-12-05",
    "position": 7,
    "titleFight": false,
    "weightClass": "Flyweight",
    "a": {
-    "name": "Bruno Silva",
-    "slug": "bruno-silva",
+    "name": "Bruno Gustavo da Silva",
+    "slug": "bruno-gustavo-da-silva",
     "nickname": "Bulldog",
     "division": "Flyweight",
     "wins": 15,
@@ -9890,7 +9890,7 @@
     "titles": [],
     "country": "Brazil",
     "countryCode": "br",
-    "photo": "bruno-silva.webp"
+    "photo": "bruno-gustavo-da-silva.webp"
    },
    "b": {
     "name": "Jafel Filho",
