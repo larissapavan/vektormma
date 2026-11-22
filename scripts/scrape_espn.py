@@ -59,6 +59,8 @@ FIGHTS_PATH = RAW_DATA_DIR / "fights.csv"
 EVENTS_PATH = RAW_DATA_DIR / "events.csv"
 UPCOMING_PATH = RAW_DATA_DIR / "upcoming_events.csv"
 FIGHTERS_PATH = RAW_DATA_DIR / "fighters.csv"
+# ESPN athletes tied to a fighters.csv row by id, for names the catalog holds twice or ESPN spells like someone else.
+ESPN_ATHLETES_PATH = RAW_DATA_DIR / "espn_athletes.csv"
 CAREER_STATS_PATH = RAW_DATA_DIR / "fighter_career_stats.csv"
 FIGHT_DETAILS_PATH = RAW_DATA_DIR / "fight_details.csv"
 WEIGHT_OVERRIDES_PATH = RAW_DATA_DIR / "weight_overrides.csv"
@@ -459,12 +461,25 @@ def find_event_key(event: EspnEvent, groups: dict[tuple[str, str], list[dict]]) 
 # --------------------------------------------------------------------------- fighter catalog
 
 
+def load_pinned_athletes(path: Path = ESPN_ATHLETES_PATH) -> dict[str, str]:
+    """ESPN athlete id -> fighter_url, from data/raw/espn_athletes.csv (espn_id, fighter_url, note)."""
+    if not path.exists():
+        return {}
+    with path.open(newline="", encoding="utf-8") as handle:
+        return {row["espn_id"].strip(): row["fighter_url"].strip() for row in csv.DictReader(handle) if row.get("espn_id")}
+
+
 class Catalog:
     """Matches ESPN athletes to fighters.csv rows (exact name key, then guarded fuzzy match)."""
 
-    def __init__(self, fighters: list[dict], career: list[dict] | None = None):
+    def __init__(self, fighters: list[dict], career: list[dict] | None = None, pinned: dict[str, str] | None = None):
         self.rows = fighters
         self.career = {r["fighter_url"]: r for r in (career or [])}
+        # ESPN id -> fighters.csv row, from data/raw/espn_athletes.csv: ESPN calls the flyweight Bruno Gustavo da Silva
+        # "Bruno Silva", the name of a middleweight in the catalog, and no name rule can tell them apart.
+        by_url = {row.get("fighter_url"): row for row in fighters if row.get("fighter_url")}
+        pinned = load_pinned_athletes() if pinned is None else pinned
+        self.pinned = {espn_id: by_url[url] for espn_id, url in pinned.items() if url in by_url}
         self.index: dict[str, list[dict]] = {}
         for row in fighters:
             self.index.setdefault(name_key(self.name_of(row)), []).append(row)
@@ -493,6 +508,8 @@ class Catalog:
 
     def find(self, fighter: EspnFighter) -> tuple[dict | None, str]:
         key = name_key(fighter.name)
+        if fighter.espn_id in self.pinned:
+            return self.pinned[fighter.espn_id], "exact"
         if fighter.espn_id in self.created:
             return self.created[fighter.espn_id], "created"
         matches = self.index.get(key, [])
