@@ -6179,20 +6179,6 @@
    "photo": "maycee-barber.webp"
   },
   {
-   "name": "Mehemmedeli Osmanli",
-   "slug": "mehemmedeli-osmanli",
-   "nickname": null,
-   "division": "Bantamweight",
-   "wins": 12,
-   "losses": 2,
-   "draws": 0,
-   "belt": false,
-   "titles": [],
-   "country": "Azerbaijan",
-   "countryCode": "az",
-   "photo": "mehemmedeli-osmanli-5345640.webp"
-  },
-  {
    "name": "Melissa Amaya",
    "slug": "melissa-amaya",
    "nickname": "La Mamba",
@@ -9787,6 +9773,11 @@
     "country": "Brazil",
     "countryCode": "br",
     "photo": "gabriel-santos.webp"
+   },
+   "pick": {
+    "winner": "Luke Riley",
+    "probability": 0.6236,
+    "winnerIsA": true
    }
   },
   {
@@ -9995,7 +9986,7 @@
    }
   },
   {
-   "slug": "pavel-andrusca-vs-mehemmedeli-osmanli",
+   "slug": "pavel-andrusca-vs-mahammadali-osmanli",
    "event": "UFC Fight Night: Adesanya vs Magomedov",
    "date": "2026-12-05",
    "position": 10,
@@ -10016,18 +10007,18 @@
     "photo": "pavel-andrusca.webp"
    },
    "b": {
-    "name": "Mehemmedeli Osmanli",
-    "slug": "mehemmedeli-osmanli",
-    "nickname": null,
+    "name": "Mahammadali Osmanli",
+    "slug": "mahammadali-osmanli",
+    "nickname": "Ineffable",
     "division": "Bantamweight",
-    "wins": 12,
-    "losses": 2,
+    "wins": 13,
+    "losses": 1,
     "draws": 0,
     "belt": false,
     "titles": [],
     "country": "Azerbaijan",
     "countryCode": "az",
-    "photo": "mehemmedeli-osmanli-5345640.webp"
+    "photo": "mehemmedeli-osmanli.webp"
    },
    "pick": {
     "winner": "Pavel Andrusca",
@@ -10358,6 +10349,11 @@
     "country": "Russia",
     "countryCode": "ru",
     "photo": "baisangur-susurkaev.webp"
+   },
+   "pick": {
+    "winner": "Baisangur Susurkaev",
+    "probability": 0.5853,
+    "winnerIsA": false
    }
   },
   {
@@ -10394,6 +10390,11 @@
     "country": "United States",
     "countryCode": "us",
     "photo": "ethyn-ewing.webp"
+   },
+   "pick": {
+    "winner": "Kyler Phillips",
+    "probability": 0.5132,
+    "winnerIsA": true
    }
   },
   {
@@ -10758,6 +10759,11 @@
     "country": "United States",
     "countryCode": "us",
     "photo": "chris-curtis.webp"
+   },
+   "pick": {
+    "winner": "Geoff Neal",
+    "probability": 0.6779,
+    "winnerIsA": true
    }
   },
   {
@@ -10794,6 +10800,11 @@
     "country": "United Kingdom",
     "countryCode": "gb",
     "photo": "louie-sutherland.webp"
+   },
+   "pick": {
+    "winner": "Louie Sutherland",
+    "probability": 0.7151,
+    "winnerIsA": false
    }
   },
   {
@@ -10830,6 +10841,11 @@
     "country": "United States",
     "countryCode": "us",
     "photo": "elisha-ellison.webp"
+   },
+   "pick": {
+    "winner": "Kennedy Nzechukwu",
+    "probability": 0.6041,
+    "winnerIsA": true
    }
   },
   {
@@ -10866,6 +10882,11 @@
     "country": "Switzerland",
     "countryCode": "ch",
     "photo": "robert-valentin.webp"
+   },
+   "pick": {
+    "winner": "Gilbert Urbina",
+    "probability": 0.5332,
+    "winnerIsA": true
    }
   },
   {
@@ -10902,6 +10923,11 @@
     "country": "France",
     "countryCode": "fr",
     "photo": "michael-aljarouj.webp"
+   },
+   "pick": {
+    "winner": "Alden Coria",
+    "probability": 0.6493,
+    "winnerIsA": true
    }
   },
   {
@@ -10938,6 +10964,11 @@
     "country": "United States",
     "countryCode": "us",
     "photo": "marquel-mederos.webp"
+   },
+   "pick": {
+    "winner": "MarQuel Mederos",
+    "probability": 0.6282,
+    "winnerIsA": false
    }
   },
   {
@@ -10974,6 +11005,11 @@
     "country": "Peru",
     "countryCode": "pe",
     "photo": "piero-guaylupo.webp"
+   },
+   "pick": {
+    "winner": "Magomed Zaynukov",
+    "probability": 0.5238,
+    "winnerIsA": true
    }
   },
   {
@@ -11010,6 +11046,11 @@
     "country": "Japan",
     "countryCode": "jp",
     "photo": "toshiomi-kazama.webp"
+   },
+   "pick": {
+    "winner": "John Garza",
+    "probability": 0.6765,
+    "winnerIsA": true
    }
   },
   {
@@ -11046,6 +11087,11 @@
     "country": "Belgium",
     "countryCode": "be",
     "photo": "gokhan-saricam.webp"
+   },
+   "pick": {
+    "winner": "Steven Asplund",
+    "probability": 0.6774,
+    "winnerIsA": true
    }
   },
   {
@@ -11082,6 +11128,11 @@
     "country": "Poland",
     "countryCode": "pl",
     "photo": "karolina-kowalkiewicz.webp"
+   },
+   "pick": {
+    "winner": "Sam Hughes",
+    "probability": 0.6164,
+    "winnerIsA": true
    }
   },
   {
@@ -11243,6 +11294,11 @@
     "country": "United States",
     "countryCode": "us",
     "photo": "michael-johnson.webp"
+   },
+   "pick": {
+    "winner": "Lance Gibson Jr.",
+    "probability": 0.6118,
+    "winnerIsA": true
    }
   },
   {
@@ -11279,6 +11335,11 @@
     "country": "United Kingdom",
     "countryCode": "gb",
     "photo": "louis-lee-scott.webp?v=2d6b93cb"
+   },
+   "pick": {
+    "winner": "Serhiy Sidey",
+    "probability": 0.6026,
+    "winnerIsA": true
    }
   },
   {
@@ -11315,6 +11376,11 @@
     "country": "United Kingdom",
     "countryCode": "gb",
     "photo": "sean-clancy-jr.webp"
+   },
+   "pick": {
+    "winner": "Cam Nelson",
+    "probability": 0.5817,
+    "winnerIsA": true
    }
   },
   {
@@ -11679,6 +11745,11 @@
     "country": "United Kingdom",
     "countryCode": "gb",
     "photo": "sam-patterson.webp"
+   },
+   "pick": {
+    "winner": "Sam Patterson",
+    "probability": 0.5367,
+    "winnerIsA": false
    }
   },
   {
