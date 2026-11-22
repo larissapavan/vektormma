@@ -395,3 +395,15 @@ def test_weight_overrides_fix_a_bout_espn_books_in_the_wrong_division():
     override = [{"fighter_1": "Tainara Lisboa", "fighter_2": "Lucia Szabova", "weight_class": "Women's Bantamweight"}]
     espn.apply_weight_overrides(rows, override)
     assert [r["weight_class"] for r in rows] == ["Women's Bantamweight", "Lightweight"]
+
+
+def test_an_espn_athlete_pinned_by_id_is_not_taken_for_a_namesake():
+    # ESPN calls the flyweight Bruno Gustavo da Silva "Bruno Silva", the catalog name of a middleweight.
+    middleweight = {**fighter_row("Bruno", "Silva", 23, 13), "fighter_url": "http://ufcstats.com/fighter-details/mw"}
+    flyweight = {**fighter_row("Bruno Gustavo", "da Silva", 15, 9), "fighter_url": "http://ufcstats.com/fighter-details/fly"}
+    catalog = espn.Catalog([middleweight, flyweight], pinned={"3895544": "http://ufcstats.com/fighter-details/fly"})
+
+    assert catalog.canonical(espn.EspnFighter("3895544", "Bruno Silva", (15, 9, 2))) == "Bruno Gustavo da Silva"
+    assert catalog.canonical(espn.EspnFighter("4333158", "Bruno Silva", (23, 13, 0))) == "Bruno Silva"
+    # A pin to a fighter the catalog does not have is ignored.
+    assert espn.Catalog([middleweight], pinned={"1": "http://ufcstats.com/fighter-details/gone"}).pinned == {}
