@@ -12,6 +12,7 @@ ufc.com page as the rankings, and fighters created from ESPN need their headshot
     5. Roster    scripts.scrape_roster_watch         the UFC roster (roster.watch): status, nationalities, badges, debut and last fight dates
     6. Records   scripts.scrape_stat_leaders         the UFC's career Record Book (statleaders.ufc.com)
     7. Career    scripts.scrape_ufc_career_stats     career striking/grappling numbers of fighters who fought lately (ufc.com, 15 s per page)
+       Careers   scripts.scrape_sherdog_careers      the whole pro record, bout by bout, of who fought lately and of new active fighters (sherdog.com)
     8. PFL       scripts.scrape_pfl                  the Professional Fighters League: events, results, fighters, rankings, photos (pflmma.com)
     9. ONE       scripts.scrape_one                  ONE Championship: announced cards, new events and results of the last weeks (onefc.com)
    10. ESPN orgs scripts.scrape_espn_org             LFA and Cage Warriors: the last 45 days and the cards to come (ESPN). RIZIN and KSW are
@@ -46,13 +47,16 @@ if __package__ in (None, ""):
 
 from scripts import (
     build_og_images, build_seo_athletes, download_fighter_photos, log_predictions, scrape_espn, scrape_espn_org, scrape_fight_stats, scrape_fighter_origins, scrape_gyms, scrape_oktagon,
-    scrape_one, scrape_pfl, scrape_rankings, scrape_roster_watch, scrape_sherdog_org, scrape_stat_leaders, scrape_ufc_career_stats, validate_data,
+    scrape_one, scrape_pfl, scrape_rankings, scrape_roster_watch, scrape_sherdog_careers, scrape_sherdog_org, scrape_stat_leaders,
+    scrape_ufc_career_stats, validate_data,
 )
 
 # New fighters are a handful per week; the cap keeps a daily run short even if the origins file is ever behind.
 ORIGINS_DAILY_LIMIT = 300
 # Per-fight statistics for the fights of the last month; older ones were collected once and are never asked again.
 FIGHT_STATS_DAYS = 30
+# Whole careers from Sherdog: the fighters of the cards of the last days (their newest bout), and active fighters not linked yet.
+SHERDOG_CAREERS_DAYS = 10
 
 
 def require_valid() -> None:
@@ -76,6 +80,12 @@ def run_career_stats() -> None:
     status = scrape_ufc_career_stats.main([])
     if status != 0:
         raise RuntimeError("no ufc.com athlete page could be read; fighter_career_stats.csv was left untouched")
+
+
+def run_sherdog_careers() -> None:
+    status = scrape_sherdog_careers.main(["--recent-days", str(SHERDOG_CAREERS_DAYS)])
+    if status != 0:
+        raise RuntimeError("no fighter could be linked to Sherdog; sherdog_careers.json kept what it had")
 
 
 def run_one(*, dry_run: bool) -> None:
@@ -170,6 +180,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--skip-sherdog", action="store_true", help="skip Jungle Fight, Invicta FC, KSW, RIZIN and LFA (Sherdog)")
     parser.add_argument("--skip-career-stats", action="store_true", help="skip the ufc.com career numbers (about ten minutes)")
     parser.add_argument("--skip-gyms", action="store_true")
+    parser.add_argument("--skip-careers", action="store_true", help="skip the whole careers from Sherdog")
     parser.add_argument("--skip-predictions", action="store_true")
     parser.add_argument("--skip-stats", action="store_true", help="skip the per-fight statistics")
     parser.add_argument("--since", help="ESPN scan start date, YYYY-MM-DD (default: 30 days before the latest stored event)")
@@ -201,6 +212,7 @@ def main(argv: list[str] | None = None) -> int:
         print("\n[dry-run] rankings and photos skipped (they write files)")
         results["Fight statistics (ESPN)"] = results["UFC rankings"] = results["Photos (champions, new fighters)"] = None
         results["Fighter origins"] = results["Former roster"] = results["Record book"] = results["UFC career stats"] = None
+        results["Sherdog careers"] = None
         # The PFL preview reads the site but writes nothing, so unlike the steps above it can run.
         results["PFL (pflmma.com)"] = None if args.skip_pfl else run_step("PFL (pflmma.com)", lambda: run_pfl(dry_run=True, photos=False))
         results["ONE (onefc.com)"] = None if args.skip_one else run_step("ONE (onefc.com)", lambda: run_one(dry_run=True))
@@ -235,6 +247,7 @@ def main(argv: list[str] | None = None) -> int:
         results["UFC career stats"] = (
             None if args.skip_career_stats else run_step("UFC career stats (ufc.com)", run_career_stats)
         )
+        results["Sherdog careers"] = None if args.skip_careers else run_step("Sherdog careers (sherdog.com)", run_sherdog_careers)
         results["PFL (pflmma.com)"] = (
             None if args.skip_pfl else run_step("PFL (pflmma.com)", lambda: run_pfl(dry_run=False, photos=not args.skip_photos))
         )

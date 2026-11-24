@@ -92,3 +92,11 @@ def test_without_data_files_the_answers_are_empty(client, tmp_path, monkeypatch)
     gyms_service._cache.update(signature=None, data=None)
     assert client.get("/gyms").json() == []
     gyms_service._cache.update(signature=None, data=None)
+
+
+def test_a_namesake_in_a_far_division_is_not_linked():
+    # The gym's flyweight "Bruno Silva" is not the catalog's middleweight Bruno Silva.
+    assert not gyms_service._same_division_range("Flyweight", "Middleweight")
+    assert not gyms_service._same_division_range("Women's Flyweight", "Flyweight")
+    assert gyms_service._same_division_range("Flyweight", "Bantamweight")
+    assert gyms_service._same_division_range(None, "Middleweight") and gyms_service._same_division_range("Flyweight", None)

@@ -13,6 +13,7 @@ from pathlib import Path
 from src.ufc_predictor.config import RAW_DATA_DIR
 
 from .catalog_service import list_fighters
+from .crossorg_service import MAX_DIVISION_GAP, _division_rank, _womens
 from .org_service import ORGS, _name_key, get_org_fighters
 
 GYMS_PATH = RAW_DATA_DIR / "gyms.csv"
@@ -44,11 +45,20 @@ def _known_fighters() -> dict[str, dict[str, dict]]:
     return known
 
 
+def _same_division_range(gym_division: str | None, profile_division: str | None) -> bool:
+    """A name is not enough when two fighters share it: the gym's flyweight "Bruno Silva" (Bruno Gustavo da Silva in the
+    catalog) is not the catalog's middleweight Bruno Silva. Same guard as crossorg_service: same gender, close divisions."""
+    if _womens(gym_division) is not None and _womens(profile_division) is not None and _womens(gym_division) != _womens(profile_division):
+        return False
+    gym_rank, profile_rank = _division_rank(gym_division), _division_rank(profile_division)
+    return gym_rank is None or profile_rank is None or abs(gym_rank - profile_rank) <= MAX_DIVISION_GAP
+
+
 def _build() -> dict:
     known = _known_fighters()
     fighters_by_gym: dict[str, list[dict]] = {}
     for row in _read(GYM_FIGHTERS_PATH):
-        profiles = known.get(_name_key(row["fighter"]), {})
+        profiles = {org: profile for org, profile in known.get(_name_key(row["fighter"]), {}).items() if _same_division_range(row["division"], profile.get("division"))}
         # The organization the fighter is active in first, then the UFC, then the rest.
         orgs = sorted(profiles, key=lambda org: (not profiles[org].get("is_active"), org != "ufc", org))
         first = profiles[orgs[0]] if orgs else {}
