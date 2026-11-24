@@ -45,10 +45,10 @@ def test_the_pull_never_changes_who_the_model_favours():
         assert abs(eased - 0.5) < abs(raw - 0.5)
 
 
-def test_the_data_note_names_a_fighter_whose_striking_numbers_are_averages():
+def test_the_data_note_names_a_fighter_whose_striking_numbers_are_missing():
     result = assess(profile("Cris", "pfl"), profile("Dana"), today=TODAY)
     assert result["level"] == "some_gaps"
-    assert result["reasons"] == ["Cris has no striking or takedown numbers on file outside the UFC, so the model used averages for them."]
+    assert result["reasons"] == ["Cris has no striking or takedown numbers for fights outside the UFC; where they are missing, the model uses typical values."]
 
 
 @pytest.fixture(scope="module")

@@ -225,10 +225,10 @@ function OutsideUfcNotice({ org }: { org: OrgConfig }) {
       <p className="text-sm leading-6 text-[var(--text-secondary)]">
         {L(
           lang,
-          `O modelo foi treinado com lutas do UFC e só foi validado nelas. Os dados ${orgPt(org, 'de')} trazem cartel, idade e medidas, mas não a precisão de golpes nem de quedas: nesses pontos o modelo usa médias.`,
-          `The model is trained on UFC fights and has only been validated on them. The ${org.shortName} data has record, age and measurements, but no striking or takedown accuracy, so the model uses averages for those.`,
-          `Le modèle est entraîné sur des combats UFC et n’a été validé que sur eux. Les données ${org.shortName} donnent le bilan, l’âge et les mensurations, mais pas la précision en frappe ni aux takedowns : le modèle utilise des moyennes.`,
-          `El modelo se entrena con peleas de la UFC y solo se validó con ellas. Los datos de ${orgEs(org)} traen récord, edad y medidas, pero no la precisión de golpes ni de derribos: en esos puntos el modelo usa promedios.`,
+          `O modelo foi treinado com lutas do UFC e só foi validado nelas. Os dados ${orgPt(org, 'de')} trazem cartel, idade e medidas, mas não a precisão de golpes nem de quedas: nesses pontos o modelo usa valores típicos.`,
+          `The model is trained on UFC fights and has only been validated on them. The ${org.shortName} data has record, age and measurements, but no striking or takedown accuracy, so the model uses typical values for those.`,
+          `Le modèle est entraîné sur des combats UFC et n’a été validé que sur eux. Les données ${org.shortName} donnent le bilan, l’âge et les mensurations, mais pas la précision en frappe ni aux takedowns : le modèle utilise des valeurs typiques.`,
+          `El modelo se entrena con peleas de la UFC y solo se validó con ellas. Los datos de ${orgEs(org)} traen récord, edad y medidas, pero no la precisión de golpes ni de derribos: en esos puntos el modelo usa valores típicos.`,
         )}
         {org.probabilitiesEased
           ? ` ${L(

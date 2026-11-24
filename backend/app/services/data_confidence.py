@@ -3,6 +3,10 @@
 The model gives a number for any two fighters, but a fighter with two fights, or one who has been out for two years,
 or one with no reach on record, is a far shakier input than a veteran who fought last spring. This reads the two
 profiles and says so in plain words, so a 70% built on thin data is not read like a 70% built on a full career.
+
+The sentences must hold for whichever model is served (backend/app/services/prefight_service.py). The pre-fight model does
+weigh time off and fills a gap with a median; the earlier one has no time-off feature and fills it with a fixed value.
+frontend/src/shared/data/confidenceText.ts matches these sentences to translate them: change both together.
 """
 
 from __future__ import annotations
@@ -48,16 +52,17 @@ def _fighter_issues(profile: dict, today: date) -> tuple[int, list[str]]:
     layoff = _layoff_days(profile, today)
     if layoff is not None and layoff >= LONG_LAYOFF_DAYS:
         points += 2 if layoff >= VERY_LONG_LAYOFF_DAYS else 1
-        reasons.append(f"{name} last fought in the UFC about {_duration(layoff)} ago; the model sees no sign of ring rust.")
+        reasons.append(f"{name} last fought in the UFC about {_duration(layoff)} ago, so their numbers may not show how they fight today.")
 
     if profile.get("data_origin"):
         points += 1
-        reasons.append(f"{name} has no striking or takedown numbers on file outside the UFC, so the model used averages for them.")
+        reasons.append(f"{name} has no striking or takedown numbers for fights outside the UFC; where they are missing, the model uses typical values.")
 
     missing = [label for key, label in (("age", "age"), ("height_cm", "height"), ("reach_cm", "reach")) if profile.get(key) is None]
     if missing:
         points += 1
-        reasons.append(f"{name} has no {' or '.join(missing)} on record, so the model filled it in with an average.")
+        filled = "a typical value" if len(missing) == 1 else "typical values"
+        reasons.append(f"{name} has no {' or '.join(missing)} on record, so the model used {filled}.")
     return points, reasons
 
 
