@@ -29,7 +29,11 @@ function duration(lang: string, amount: string, unit: string) {
   )
 }
 
-/** The reasons the API writes, as patterns, so a fighter's name and numbers carry over into every language. */
+/**
+ * The reasons the API writes, as patterns, so a fighter's name and numbers carry over into every language. Three of them also
+ * match the wording used until November 2026, which a saved pages.json or an API not yet redeployed still sends; that wording
+ * did not describe the served model, so it is shown with the current sentence, in English too.
+ */
 const REASONS: [RegExp, Translator][] = [
   [
     /^(.+) has only (\d+) recorded fights?, so their numbers are not settled yet\.$/,
@@ -48,38 +52,40 @@ const REASONS: [RegExp, Translator][] = [
       L(lang, `${name} tem só ${n} lutas registradas.`, `${name} has only ${n} recorded fights.`, `${name} ne compte que ${n} combats enregistrés.`, `${name} tiene solo ${n} peleas registradas.`),
   ],
   [
-    /^(.+) last fought in the UFC about (\d+) (years?|months?) ago; the model sees no sign of ring rust\.$/,
+    /^(.+) last fought in the UFC about (\d+) (years?|months?) ago(?:, so their numbers may not show how they fight today|; the model sees no sign of ring rust)\.$/,
     (lang, [, name, amount, unit]) =>
       L(
         lang,
-        `${name} lutou no UFC pela última vez há cerca de ${duration(lang, amount, unit)}; o modelo não leva em conta o tempo parado.`,
-        `${name} last fought in the UFC about ${amount} ${unit} ago; the model sees no sign of ring rust.`,
-        `${name} a combattu à l’UFC pour la dernière fois il y a environ ${duration(lang, amount, unit)} ; le modèle ne tient pas compte de l’inactivité.`,
-        `${name} peleó en la UFC por última vez hace unos ${duration(lang, amount, unit)}; el modelo no tiene en cuenta la inactividad.`,
+        `${name} lutou no UFC pela última vez há cerca de ${duration(lang, amount, unit)}; os números podem não mostrar o nível atual.`,
+        `${name} last fought in the UFC about ${amount} ${unit} ago, so their numbers may not show how they fight today.`,
+        `${name} a combattu à l’UFC pour la dernière fois il y a environ ${duration(lang, amount, unit)} ; ses chiffres ne reflètent peut-être plus son niveau actuel.`,
+        `${name} peleó en la UFC por última vez hace cerca de ${duration(lang, amount, unit)}; es posible que sus números ya no reflejen su nivel actual.`,
       ),
   ],
   [
-    /^(.+) has no striking or takedown numbers on file outside the UFC, so the model used averages for them\.$/,
+    /^(.+) has no striking or takedown numbers (?:for fights outside the UFC; where they are missing, the model uses typical values|on file outside the UFC, so the model used averages for them)\.$/,
     (lang, [, name]) =>
       L(
         lang,
-        `${name} não tem números de golpes nem de quedas fora do UFC, então o modelo usou médias.`,
-        `${name} has no striking or takedown numbers on file outside the UFC, so the model used averages for them.`,
-        `${name} n’a pas de chiffres de frappe ni de takedown hors de l’UFC : le modèle a utilisé des moyennes.`,
-        `${name} no tiene números de golpes ni de derribos fuera de la UFC, así que el modelo usó promedios.`,
+        `${name} não tem números de golpes nem de quedas das lutas fora do UFC; onde faltam, o modelo usa valores típicos.`,
+        `${name} has no striking or takedown numbers for fights outside the UFC; where they are missing, the model uses typical values.`,
+        `${name} n’a pas de chiffres de frappe ni de takedown pour ses combats hors de l’UFC ; là où ils manquent, le modèle utilise des valeurs typiques.`,
+        `${name} no tiene números de golpes ni de derribos de sus peleas fuera de la UFC; donde faltan, el modelo usa valores típicos.`,
       ),
   ],
   [
-    /^(.+) has no (.+) on record, so the model filled it in with an average\.$/,
+    /^(.+) has no (.+) on record, so the model (?:used a typical value|used typical values|filled it in with an average)\.$/,
     (lang, [, name, fields]) => {
       const words: Record<string, [string, string, string]> = { age: ['idade', 'âge', 'edad'], height: ['altura', 'taille', 'estatura'], reach: ['envergadura', 'allonge', 'alcance'] }
-      const list = (index: 0 | 1 | 2, or: string) => fields.split(' or ').map((field) => words[field]?.[index] ?? field).join(` ${or} `)
+      const missing = fields.split(' or ')
+      const one = missing.length === 1
+      const list = (index: 0 | 1 | 2, separator: string) => missing.map((field) => words[field]?.[index] ?? field).join(separator)
       return L(
         lang,
-        `${name} não tem ${list(0, 'nem')} registrada, então o modelo usou uma média.`,
-        `${name} has no ${fields} on record, so the model filled it in with an average.`,
-        `${name} n’a pas d’${list(1, 'ni')} enregistrée : le modèle a utilisé une moyenne.`,
-        `${name} no tiene ${list(2, 'ni')} registrada, así que el modelo usó un promedio.`,
+        `${name} não tem ${list(0, ' nem ')} ${one ? 'registrada' : 'registradas'}, então o modelo usou ${one ? 'um valor típico' : 'valores típicos'}.`,
+        `${name} has no ${fields} on record, so the model used ${one ? 'a typical value' : 'typical values'}.`,
+        `Données manquantes pour ${name} (${list(1, ', ')}) : le modèle a utilisé ${one ? 'une valeur typique' : 'des valeurs typiques'}.`,
+        `Faltan datos de ${name} (${list(2, ', ')}): el modelo usó ${one ? 'un valor típico' : 'valores típicos'}.`,
       )
     },
   ],
