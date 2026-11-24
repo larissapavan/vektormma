@@ -24,8 +24,9 @@ def head_to_head(
     # Validate both names exist in the catalog before searching fight history,
     # so a typo returns a clear 404 instead of a silent "0 meetings" result.
     try:
-        get_fighter_profile(fighter_a)
-        get_fighter_profile(fighter_b)
+        # The catalog spelling: the fight history does not ignore accents as the profile lookup does.
+        fighter_a = get_fighter_profile(fighter_a)["name"]
+        fighter_b = get_fighter_profile(fighter_b)["name"]
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
@@ -37,7 +38,7 @@ def head_to_head(
 @limiter.limit("60/minute")
 def fighter_performance(request: Request, response: Response, name: str) -> FighterPerformance:
     try:
-        get_fighter_profile(name)
+        name = get_fighter_profile(name)["name"]
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
@@ -49,7 +50,7 @@ def fighter_performance(request: Request, response: Response, name: str) -> Figh
 @limiter.limit("60/minute")
 def fighter_opponents(request: Request, response: Response, name: str) -> OpponentsResponse:
     try:
-        get_fighter_profile(name)
+        name = get_fighter_profile(name)["name"]
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 

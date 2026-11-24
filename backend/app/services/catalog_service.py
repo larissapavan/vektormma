@@ -5,6 +5,7 @@ import math
 import os
 import re
 import time
+import unicodedata
 from datetime import date
 from pathlib import Path
 
@@ -514,10 +515,66 @@ def _build_profiles(ufc_only: bool) -> list[dict]:
     return [_format_profile(row) for row in records]
 
 
+# Letters NFKD does not split into a base letter and an accent.
+_NON_DECOMPOSING = str.maketrans(
+    {"ł": "l", "Ł": "l", "đ": "d", "Đ": "d", "ø": "o", "Ø": "o", "ı": "i", "ß": "ss", "æ": "ae", "Æ": "ae", "œ": "oe", "Œ": "oe"}
+)
+
+
+def _lookup_keys(name: str) -> tuple[str, str]:
+    """A name without accents, case or punctuation, in two spellings: punctuation as a space ("sean o malley", "j j aldrich")
+    and apostrophes and dots dropped ("sean omalley", "jj aldrich"). Spaces always count: without them the flyweight
+    "Dawoon Jung" of ONE would be the UFC light heavyweight "Da Woon Jung"."""
+    plain = unicodedata.normalize("NFKD", str(name).translate(_NON_DECOMPOSING))
+    spaced, joined = (
+        _normalize_name(text.encode("ascii", "ignore").decode())
+        for text in (re.sub(r"['’‘`´.]", " ", plain), re.sub(r"['’‘`´.]", "", plain))
+    )
+    return spaced, joined
+
+
+_name_index_cache: dict = {"index": None}
+
+
+def _name_index(catalog: pd.DataFrame) -> tuple[dict[str, int], dict[str, int]]:
+    """Where each name is in the catalog: by its exact spelling, and by `_lookup_keys` (names and aliases).
+
+    Built once per catalog (the profile is asked for every fight of every event); a new catalog means a new index. When two
+    fighters share a loose key, the active one, or else the one with UFC fights, keeps it: the exact spelling finds the other."""
+    # One value holds the catalog and its indexes, so a thread never reads the index of another catalog.
+    index = _name_index_cache["index"]
+    if index is None or index[0] is not catalog:
+        names = catalog["name"].tolist()
+        exact: dict[str, int] = {}
+        for position, name in enumerate(names):
+            exact.setdefault(name, position)
+        loose: dict[str, int] = {}
+        preference = list(zip(~catalog["is_active"].astype(bool), catalog["ufc_status"].eq("never")))
+        for position in sorted(range(len(names)), key=preference.__getitem__):
+            for key in _lookup_keys(names[position]):
+                loose.setdefault(key, position)
+        for alias, canonical in load_name_aliases().items():
+            if canonical in exact:
+                loose.setdefault(alias, exact[canonical])
+        loose.pop("", None)
+        index = (catalog, exact, loose)
+        _name_index_cache["index"] = index
+    return index[1], index[2]
+
+
+def _catalog_position(catalog: pd.DataFrame, name: str) -> int | None:
+    """The catalog row of a name: its exact (or alias) spelling first, then ignoring accents, case and punctuation."""
+    exact, loose = _name_index(catalog)
+    position = exact.get(canonical_name(name) or name)
+    if position is None:
+        position = next((loose[key] for key in _lookup_keys(name) if key in loose), None)
+    return position
+
+
 def get_fighter_profile(name: str) -> dict:
     catalog = get_fighter_catalog()
-    match = catalog.loc[catalog["name"] == (canonical_name(name) or name)]
-    if match.empty:
+    position = _catalog_position(catalog, name)
+    if position is None:
         # ONE, PFL and Bellator first (a name found in several keeps the profile it always had), then the other organisations.
         from backend.app.services.org_service import ORGS
 
@@ -567,7 +624,7 @@ def get_fighter_profile(name: str) -> dict:
                 pass
         raise KeyError(f"Fighter '{name}' was not found in the catalog.")
 
-    rec = match.iloc[0].to_dict()
+    rec = catalog.iloc[position].to_dict()
     try:
         from backend.app.services.elo_service import get_fighter_elo
         elo_info = get_fighter_elo(rec["name"])

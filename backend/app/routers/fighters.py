@@ -35,7 +35,7 @@ def similar_fighters(
     limit: int = Query(default=5, ge=1, le=20, description="Max number of similar fighters to return."),
 ) -> list[SimilarFighter]:
     try:
-        get_fighter_profile(name)
+        name = get_fighter_profile(name)["name"]
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
@@ -51,7 +51,7 @@ def fighter_elo(
     name: str,
 ) -> dict:
     try:
-        get_fighter_profile(name)
+        name = get_fighter_profile(name)["name"]
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
