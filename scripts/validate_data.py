@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import csv
 import io
+import os
 import re
 import subprocess
 import sys
@@ -17,6 +18,8 @@ import unicodedata
 from collections import Counter
 from datetime import date, datetime, timedelta
 from pathlib import Path
+
+from PIL import Image
 
 RAW_DIR = Path("data") / "raw"
 MAX_ROW_LOSS = 0.02  # tolerated shrink per file
@@ -49,9 +52,12 @@ ORG_MIN_ROWS = {
 ADDED_COLUMNS = {"one/fights.csv": ["discipline"]}
 PHOTO_DIR = Path("frontend") / "public" / "fighter-photos"
 # A refresh once replaced the champion belt photos (50 to 170 KB) with 4 KB files: the source had served a tiny thumbnail. A photo
-# that was big enough to matter and shrinks to under this share of its committed size is a bad download, not a new picture.
+# that was big enough to matter and shrinks to under this share of its committed size is a bad download, not a new picture,
+# unless it has more pixels than a thumbnail: ufc.com's originals are 13 KB at 520 px, the thumbnails 4 KB at 208 px.
 PHOTO_MIN_COMMITTED_BYTES = 20_000
 PHOTO_MAX_SHRINK = 0.30
+PHOTO_THUMBNAIL_SIDE = 300
+MAX_ANNOTATIONS = 9  # GitHub shows at most ten error annotations per step
 STALE_UPCOMING_DAYS = 3  # a card this far past its date should have turned into results by now
 
 
@@ -186,13 +192,22 @@ def committed_photo_sizes(photo_dir: Path = PHOTO_DIR) -> dict[str, int]:
     return sizes
 
 
+def is_thumbnail(path: Path) -> bool:
+    """No side of the picture is long enough for a photo (or it cannot be read as an image at all)."""
+    try:
+        with Image.open(path) as image:
+            return max(image.size) < PHOTO_THUMBNAIL_SIDE
+    except OSError:
+        return True
+
+
 def photo_shrink_problems(photo_dir: Path = PHOTO_DIR, committed: dict[str, int] | None = None) -> list[str]:
     """A photo that got much smaller than the one in git HEAD was overwritten by a bad download (a thumbnail, a placeholder)."""
     sizes = committed_photo_sizes(photo_dir) if committed is None else committed
     shrunk = []
     for name, old in sizes.items():
         path = Path(name)
-        if old >= PHOTO_MIN_COMMITTED_BYTES and path.exists() and path.stat().st_size < old * PHOTO_MAX_SHRINK:
+        if old >= PHOTO_MIN_COMMITTED_BYTES and path.exists() and path.stat().st_size < old * PHOTO_MAX_SHRINK and is_thumbnail(path):
             shrunk.append(f"{path.name} ({old // 1000} KB -> {path.stat().st_size // 1000} KB)")
     if not shrunk:
         return []
@@ -434,10 +449,20 @@ def champion_mismatches() -> list[str]:
     return notes
 
 
+def annotations(problems: list[str]) -> list[str]:
+    """One `::error` line per problem, so that the run's page on GitHub says what is wrong without opening the log."""
+    shown = problems if len(problems) <= MAX_ANNOTATIONS else [*problems[: MAX_ANNOTATIONS - 1], f"and {len(problems) - MAX_ANNOTATIONS + 1} more, in the log"]
+    escaped = (problem.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A") for problem in shown)
+    return [f"::error title=Invalid data::{problem}" for problem in escaped]
+
+
 def main() -> int:
     problems = validate()
     for problem in problems:
         print(f"[invalid] {problem}")
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        for line in annotations(problems):
+            print(line)
     for note in warnings():
         # "::warning::" shows up as an annotation on the GitHub Actions run; elsewhere it is just a line of text.
         print(f"::warning::{note}")

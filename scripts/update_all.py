@@ -66,7 +66,7 @@ def require_valid() -> None:
     for note in validate_data.warnings():
         print(f"[warn] {note}")
     if problems:
-        raise RuntimeError("refreshed data failed validation")
+        raise RuntimeError(f"refreshed data failed validation: {problems[0]}" + (f" (and {len(problems) - 1} more)" if len(problems) > 1 else ""))
 
 
 def run_pfl(*, dry_run: bool, photos: bool) -> None:

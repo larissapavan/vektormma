@@ -1,5 +1,8 @@
 import io
+from types import SimpleNamespace
 
+import pytest
+import requests
 from PIL import Image
 
 from scripts import download_fighter_photos as photos
@@ -91,3 +94,112 @@ def test_only_a_fighter_article_is_taken_from_wikipedia():
     assert photos.is_fighter_description("Dutch kickboxer and professional wrestler")
     assert not photos.is_fighter_description("American jazz saxophonist")
     assert not photos.is_fighter_description(None)
+
+
+# --------------------------------------------------------------------------- champion photos
+
+CARD = "https://ufc.com/images/styles/athlete_profile_listing_medium_1x/s3/2026-10/{}?itok=abc"
+ORIGINAL = "https://ufc.com/images/2026-10/{}"
+
+
+class UfcSite:
+    """Answers for ufc.com: the rankings page with one champion, and images by address."""
+
+    def __init__(self, picture, images):
+        self.html = f"""<div class="view-grouping"><div class="view-grouping-header">Flyweight</div>
+            <div class="rankings--athlete--champion"><img src="{CARD.format(picture)}"><h5><a>Natalia Silva</a></h5></div></div>"""
+        self.images = images
+        self.asked = []
+
+    def get(self, url, **_):
+        answer = requests.Response()
+        answer.status_code = 200
+        if url == photos.RANKINGS_URL:
+            answer._content = self.html.encode()
+            return answer
+        self.asked.append(url)
+        answer._content = self.images.get(url)
+        if answer._content is None:
+            answer.status_code = 404
+        return answer
+
+
+@pytest.fixture
+def photo(tmp_path, monkeypatch):
+    """The champion's photo file, in a temporary folder."""
+    monkeypatch.setattr(photos, "PHOTOS_DIR", tmp_path)
+    monkeypatch.setattr(photos, "BASE_DIR", tmp_path)
+    monkeypatch.setattr(photos.time, "sleep", lambda _: None)
+    return tmp_path / "natalia-silva-champion.webp"
+
+
+def sync(site, rows):
+    return photos.sync_champions(site, rows, SimpleNamespace(find=lambda fighter: (None, "none")))
+
+
+def champion_row(picture="SILVA_BELT.png"):
+    return {
+        "name": "Natalia Silva", "kind": "champion", "source": "ufc.com (Flyweight)", "source_url": CARD.format(picture).split("?")[0],
+        "image_url": "/fighter-photos/natalia-silva-champion.webp?v=old",
+        "local_path": "frontend/public/fighter-photos/natalia-silva-champion.webp", "checked": "2026-11-15",
+    }
+
+
+def test_the_original_of_a_resized_picture_has_no_style_in_its_address():
+    assert photos.original_image_url(CARD.format("SILVA_BELT.png")) == ORIGINAL.format("SILVA_BELT.png")
+    assert photos.original_image_url(ORIGINAL.format("SILVA_BELT.png")) == ORIGINAL.format("SILVA_BELT.png")
+
+
+def test_a_good_photo_of_the_same_picture_is_kept_and_nothing_is_downloaded(photo):
+    good = photos.to_webp(png_bytes((832, 520)))
+    photo.write_bytes(good)
+    site = UfcSite("SILVA_BELT.png", {CARD.format("SILVA_BELT.png"): png_bytes((208, 130))})
+    (row,) = sync(site, [champion_row()])
+    assert site.asked == []
+    assert photo.read_bytes() == good
+    assert row["image_url"].endswith(f"?v={photos.version_tag(good)}")  # the tag is the kept file's, whatever it was before
+    assert row["checked"] != "2026-11-15"
+
+
+def test_a_new_picture_is_downloaded_at_its_original_size(photo):
+    photo.write_bytes(photos.to_webp(png_bytes((832, 520))))
+    site = UfcSite("SILVA_NEW.png", {ORIGINAL.format("SILVA_NEW.png"): png_bytes((520, 325)), CARD.format("SILVA_NEW.png"): png_bytes((208, 130))})
+    (row,) = sync(site, [champion_row()])
+    assert site.asked == [ORIGINAL.format("SILVA_NEW.png")]
+    assert Image.open(photo).size == (520, 325)
+    assert row["source_url"].endswith("SILVA_NEW.png")
+
+
+def test_a_good_photo_is_not_traded_for_a_thumbnail(photo):
+    good = photos.to_webp(png_bytes((832, 520)))
+    photo.write_bytes(good)
+    site = UfcSite("SILVA_NEW.png", {CARD.format("SILVA_NEW.png"): png_bytes((208, 130))})  # no original
+    (row,) = sync(site, [champion_row()])
+    assert photo.read_bytes() == good
+    assert row["source_url"].endswith("SILVA_BELT.png")  # still the old picture, so the next run tries the new one again
+
+
+def test_a_good_photo_stays_when_the_new_one_cannot_be_read_at_all(photo):
+    good = photos.to_webp(png_bytes((832, 520)))
+    photo.write_bytes(good)
+    (row,) = sync(UfcSite("SILVA_NEW.png", {}), [champion_row()])
+    assert photo.read_bytes() == good
+    assert row["source_url"].endswith("SILVA_BELT.png")
+
+
+def test_a_thumbnail_left_by_an_earlier_run_is_replaced(photo):
+    photo.write_bytes(photos.to_webp(png_bytes((208, 130))))
+    sync(UfcSite("SILVA_BELT.png", {ORIGINAL.format("SILVA_BELT.png"): png_bytes((520, 325))}), [champion_row()])
+    assert Image.open(photo).size == (520, 325)
+
+
+def test_a_new_champion_gets_a_thumbnail_when_there_is_nothing_better(photo):
+    images = {ORIGINAL.format("SILVA_BELT.png"): b"<html>not an image</html>", CARD.format("SILVA_BELT.png"): png_bytes((208, 130))}
+    (row,) = sync(UfcSite("SILVA_BELT.png", images), [])
+    assert Image.open(photo).size == (208, 130)
+    assert row["source_url"].endswith("SILVA_BELT.png")
+
+
+def test_a_new_champion_with_no_readable_photo_fails_the_step(photo):
+    with pytest.raises(RuntimeError, match="No readable champion photo"):
+        sync(UfcSite("SILVA_BELT.png", {}), [])

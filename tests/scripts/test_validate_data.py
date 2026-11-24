@@ -1,3 +1,5 @@
+from PIL import Image
+
 from scripts import validate_data
 
 
@@ -134,6 +136,31 @@ def test_a_photo_that_shrinks_to_a_thumbnail_is_flagged_but_ordinary_small_photo
     committed = {big.as_posix(): 60_000, fine.as_posix(): 60_000, tiny_before.as_posix(): 8_000, gone.as_posix(): 60_000}
     assert validate_data.photo_shrink_problems(tmp_path, committed) == ["fighter-photos: 1 photos shrank to under 30% of the committed size (first: champion.webp (60 KB -> 4 KB))"]
     assert validate_data.photo_shrink_problems(tmp_path, {}) == []
+
+
+def test_a_smaller_file_that_is_still_a_whole_photo_is_not_flagged(tmp_path):
+    """A new belt photo comes from ufc.com at 520 px in about 13 KB; the one it replaces may be a larger file."""
+    photo, thumbnail = tmp_path / "photo.webp", tmp_path / "thumbnail.webp"
+    Image.new("RGB", (520, 325)).save(photo)
+    Image.new("RGB", (208, 130)).save(thumbnail)
+    committed = {photo.as_posix(): 60_000, thumbnail.as_posix(): 60_000}
+    problems = validate_data.photo_shrink_problems(tmp_path, committed)
+    assert len(problems) == 1 and "1 photos shrank" in problems[0] and "thumbnail.webp" in problems[0]
+
+
+def test_github_shows_each_problem_and_says_how_many_it_left_out(monkeypatch, capsys):
+    assert validate_data.annotations(["rankings.csv: 30% gone"]) == ["::error title=Invalid data::rankings.csv: 30%25 gone"]
+    many = validate_data.annotations([f"problem {n}" for n in range(12)])
+    assert len(many) == validate_data.MAX_ANNOTATIONS and many[-1].endswith("and 4 more, in the log")
+
+    monkeypatch.setattr(validate_data, "validate", lambda: ["broken"])
+    monkeypatch.setattr(validate_data, "warnings", lambda: [])
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    assert validate_data.main() == 1
+    assert "::error" not in capsys.readouterr().out
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    assert validate_data.main() == 1
+    assert "::error title=Invalid data::broken" in capsys.readouterr().out
 
 
 STATS_HEADER = "fight_url,event_date,fighter,opponent,espn_event_id,espn_competition_id,espn_athlete_id,sig_landed,sig_attempted,td_landed,td_attempted\n"

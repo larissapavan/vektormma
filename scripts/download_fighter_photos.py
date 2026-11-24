@@ -2,7 +2,8 @@
 
 Two sources, both public:
 - Champions: the divisional champion cards on https://www.ufc.com/rankings (always the current belt photo, so a
-  title change is picked up on the next run; photos of fighters who lost the belt are removed).
+  title change is picked up on the next run; photos of fighters who lost the belt are removed). The card shows a
+  208 px thumbnail, so the original behind it is downloaded, and only when the picture changed.
 - Everyone else: ESPN headshots (https://a.espncdn.com/i/headshots/mma/players/full/<id>.png). They have the same
   head-and-shoulders framing as the champion photos, so the app looks consistent; the live Octagon API
   (full-body photos, often outdated belt shots) is only the fallback for fighters ESPN has no headshot for.
@@ -63,7 +64,8 @@ ESPN_HEADSHOT_URL = "https://a.espncdn.com/i/headshots/mma/players/full/{athlete
 
 MANIFEST_FIELDS = ["name", "kind", "source", "source_url", "image_url", "local_path", "checked"]
 ESPN_MAX_WIDTH = 300
-CHAMPION_MAX_SIDE = 420
+CHAMPION_MAX_SIDE = 640  # the originals are 520 px wide
+THUMBNAIL_MAX_SIDE = 300  # a champion photo with no side this long is a thumbnail
 WEBP_QUALITY = 80
 REQUEST_DELAY_SECONDS = 0.25
 TIMEOUT_SECONDS = 30
@@ -90,6 +92,15 @@ def to_webp(data: bytes, *, max_width: int | None = None, max_side: int | None =
     out = io.BytesIO()
     image.save(out, format="WEBP", quality=WEBP_QUALITY, method=method)
     return out.getvalue()
+
+
+def is_thumbnail(data: bytes) -> bool:
+    """Too small to be a champion photo, or not an image at all."""
+    try:
+        with Image.open(io.BytesIO(data)) as image:
+            return max(image.size) < THUMBNAIL_MAX_SIDE
+    except OSError:
+        return True
 
 
 def slugify(name: str) -> str:
@@ -328,6 +339,25 @@ def parse_champions(html: str) -> list[tuple[str, str, str]]:
     return champions
 
 
+def original_image_url(url: str) -> str:
+    """The full-size picture behind a resized ufc.com one: the athlete pages link it at the same path without the style.
+    .../images/styles/<style>/s3/2025-01/7/X_BELT.png?itok=... -> .../images/2025-01/7/X_BELT.png"""
+    return re.sub(r"/images/styles/[^/]+/s3/", "/images/", url.split("?")[0])
+
+
+def download_champion(session: requests.Session, card_url: str) -> bytes | None:
+    """The picture as WebP: the original, or the card's thumbnail when the original cannot be read, or None."""
+    for url in dict.fromkeys((original_image_url(card_url), card_url)):
+        time.sleep(UFC_CRAWL_DELAY_SECONDS)
+        try:
+            response = session.get(url, headers=UFC_HEADERS, timeout=TIMEOUT_SECONDS)
+            response.raise_for_status()
+            return to_webp(response.content, max_side=CHAMPION_MAX_SIDE)
+        except (requests.RequestException, OSError) as error:  # OSError: what came back is not an image
+            print(f"  [warn] {url}: {error}")
+    return None
+
+
 def sync_champions(session: requests.Session, rows: list[dict], catalog: Catalog) -> list[dict]:
     response = session.get(RANKINGS_URL, headers=UFC_HEADERS, timeout=TIMEOUT_SECONDS)
     response.raise_for_status()
@@ -341,21 +371,32 @@ def sync_champions(session: requests.Session, rows: list[dict], catalog: Catalog
         row, status = catalog.find(EspnFighter("", name, None))
         catalog_name = catalog.name_of(row) if row is not None and status in {"exact", "fuzzy"} else ascii_name(name)
         filename = f"{slugify(catalog_name)}-champion.webp"
-        data = session.get(source, headers=UFC_HEADERS, timeout=TIMEOUT_SECONDS)
-        data.raise_for_status()
-        encoded = to_webp(data.content, max_side=CHAMPION_MAX_SIDE)
-        (PHOTOS_DIR / filename).write_bytes(encoded)
+        path = PHOTOS_DIR / filename
+        earlier = next((r for r in rows if r["kind"] == "champion" and r["name"] == catalog_name), None)
+        current = path.read_bytes() if path.exists() else None
+        good = current is not None and not is_thumbnail(current)
+        source_url, encoded, what = source.split("?")[0], current, "kept"
+        if not (good and earlier and original_image_url(earlier["source_url"]) == original_image_url(source)):
+            downloaded = download_champion(session, source)
+            if good and (downloaded is None or is_thumbnail(downloaded)):
+                # A good photo is not traded for a thumbnail. Its source stays on record, so the next run tries again.
+                source_url = earlier["source_url"] if earlier else ""
+                what = "kept, no full-size version of the new one could be read"
+            elif downloaded is None:
+                raise RuntimeError(f"No readable champion photo at {source}")
+            else:
+                encoded, what = downloaded, "downloaded"
+                path.write_bytes(downloaded)
         wanted.add(filename)
         rows[:] = [r for r in rows if not (r["kind"] == "champion" and r["name"] == catalog_name)]
         rows.append(
             {
-                "name": catalog_name, "kind": "champion", "source": f"ufc.com ({division})", "source_url": source.split("?")[0],
+                "name": catalog_name, "kind": "champion", "source": f"ufc.com ({division})", "source_url": source_url,
                 "image_url": f"{WEB_PREFIX}{filename}?v={version_tag(encoded)}",
                 "local_path": f"frontend/public/fighter-photos/{filename}", "checked": date.today().isoformat(),
             }
         )
-        print(f"  champion: {division}: {catalog_name} ({len(encoded) // 1024} KB)")
-        time.sleep(REQUEST_DELAY_SECONDS)
+        print(f"  champion: {division}: {catalog_name} ({len(encoded) // 1024} KB, {what})")
 
     # Former champions fall back to the other photo sources.
     for row in [r for r in rows if r["kind"] == "champion" and Path(r["local_path"]).name not in wanted]:
