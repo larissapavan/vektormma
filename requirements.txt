@@ -7,3 +7,5 @@ beautifulsoup4==4.12.3
 matplotlib==3.10.1
 pytest==8.3.4
 httpx==0.28.1
+# backend/explainer (the prediction explainer). Not in backend/requirements.txt: the deployed API does not import it.
+langgraph==1.2.24

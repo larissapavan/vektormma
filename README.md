@@ -73,6 +73,25 @@ Data refreshed every day by GitHub Actions (Python, pandas), a scikit-learn mode
 
 </details>
 
+<details>
+<summary><b>How do I get a prediction explained in text?</b></summary>
+
+<br>
+
+A small [LangGraph](https://docs.langchain.com/oss/python/langgraph/graph-api) graph in `backend/explainer` writes it from templates, in Portuguese, using only this repository's model and data. There is no LLM and no external API. If the checks on the text fail, a shorter one is printed instead.
+
+```
+python -m venv .venv
+.venv\Scripts\activate          # Windows; on Linux or macOS: source .venv/bin/activate
+pip install -r requirements.txt
+python -m scripts.explain_prediction "Alex Pereira" "Israel Adesanya"
+pytest tests/explainer
+```
+
+The first answer can take up to half a minute, while the model and the fight history load.
+
+</details>
+
 ## Author
 
 Made by **Larissa Pavan**, software developer working with Python, AI and machine learning.
