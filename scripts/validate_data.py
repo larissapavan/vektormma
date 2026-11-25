@@ -354,6 +354,7 @@ def org_problems() -> list[str]:
                 problems.append(f"{label}: rows dropped from {old_n} to {new_n}")
 
         problems.extend(org_fight_problems(org))
+        problems.extend(org_event_problems(org))
         photos_missing = [
             row["name"]
             for row in read_dicts(folder / "fighters.csv")
@@ -362,6 +363,14 @@ def org_problems() -> list[str]:
         if photos_missing:
             problems.append(f"{org}/fighters.csv: {len(photos_missing)} listed photos are missing on disk (first: {photos_missing[0]})")
     return problems
+
+
+def org_event_problems(org: str) -> list[str]:
+    """An event is shown by its slug: two days under one slug would be shown as a single card."""
+    days: dict[str, set[str]] = {}
+    for row in read_dicts(RAW_DIR / org / "fights.csv"):
+        days.setdefault(row.get("event_slug", ""), set()).add(row.get("event_date", ""))
+    return [f"{org}/fights.csv: the event {slug} has bouts on {' and '.join(sorted(found))}" for slug, found in sorted(days.items()) if len(found) > 1][:20]
 
 
 def org_fight_problems(org: str) -> list[str]:

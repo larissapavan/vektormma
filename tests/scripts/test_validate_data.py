@@ -270,3 +270,14 @@ def test_a_saved_pick_may_not_disappear_or_change_after_its_fight(tmp_path, monk
 
 def test_the_track_record_of_the_repository_keeps_its_promise():
     assert validate_data.prediction_log_problems() == []
+
+
+def test_two_days_under_one_event_slug_are_flagged(tmp_path, monkeypatch):
+    monkeypatch.setattr(validate_data, "RAW_DIR", tmp_path)
+    (tmp_path / "one").mkdir()
+    write(tmp_path / "one" / "fights.csv", "event_slug,event_date\none-173,2025-11-16\none-174,2026-04-03\none-174,2026-12-12\n")
+    assert validate_data.org_event_problems("one") == ["one/fights.csv: the event one-174 has bouts on 2026-04-03 and 2026-12-12"]
+
+
+def test_no_organization_of_the_repository_has_two_days_under_one_slug():
+    assert [problem for org in validate_data.ORG_DIRS for problem in validate_data.org_event_problems(org)] == []

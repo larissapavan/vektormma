@@ -343,6 +343,17 @@ def test_two_events_on_the_same_day_are_told_apart_by_their_slug():
     assert [r["event_slug"] for r in result] == ["one-friday-fights-177", "one-friday-fights-177", "one-fight-night-49x"]
 
 
+def test_an_event_whose_slug_another_day_already_uses_gets_its_own():
+    """The site shows an event by its slug: ONE 174 of December was once shown as one card with an April event filed as ONE 174."""
+    rows = [stored_row(event_slug="one-174", event_name="ONE 174", event_date="2026-04-03", fighter_1="A One", fighter_2="B Two")]
+    event = parse(name="ONE 174", start="2026-12-12T19:00:00+07:00", bouts=[("Featherweight MMA", "Tang Kai", "Enkh Orgil")])
+    result, _ = merged(rows, event)
+    assert {(r["event_date"], r["event_slug"]) for r in result} == {("2026-04-03", "one-174"), ("2026-12-12", "one-174-2026-12-12")}
+
+    again, report = merged(result, event)  # reading it again finds the same event, by its day
+    assert again == result and report["added"] == []
+
+
 # --------------------------------------------------------------------------- the command
 
 

@@ -355,14 +355,18 @@ def _apply_result(row: dict, bout: dict, report: dict) -> None:
     report["results"] += 1
 
 
-def merge_event(stored: list[dict], event: dict, profiles: Profiles, womens: set[str], stored_locations: list[str], report: dict, *, results: bool = True) -> list[dict]:
+def merge_event(stored: list[dict], event: dict, profiles: Profiles, womens: set[str], stored_locations: list[str], report: dict, *, results: bool = True, taken: frozenset[str] | set[str] = frozenset()) -> list[dict]:
     """The rows of one event after reading its page: the stored ones, corrected and completed, plus the new bouts."""
     rows = [dict(row) for row in stored]
     if rows:
         meta = {key: rows[0][key] for key in ("event_name", "event_date", "location", "event_url", "event_slug", "circuit")}
         url_base = rows[0]["fight_url"].split("#")[0] if rows[0]["fight_url"] else event["url"]
     else:
+        # The slug is what an event is called on the site: one that another day already uses gets the day at the end, or the two
+        # cards would be shown as one.
         slug = event_slug_of(event["title"])
+        if slug in taken:
+            slug = f"{slug}-{event['date'].isoformat()}"
         meta = {
             "event_name": event["title"], "event_date": event["date"].isoformat(), "location": _location_for(event, stored_locations),
             "event_url": event["url"], "event_slug": slug, "circuit": CIRCUIT,
@@ -442,7 +446,11 @@ def merge_all(rows: list[dict], events: list[dict], profiles: Profiles, *, resul
     locations = sorted({row["location"] for row in rows if row["location"]})
     for event in sorted(events, key=lambda item: item["date"]):
         key = find_group(groups, event) or (event["date"].isoformat(), event_slug_of(event["title"]))
-        groups[key] = merge_event(groups.get(key, []), event, profiles, womens, locations, report, results=results)
+        taken = {slug for _, slug in groups}
+        merged = merge_event(groups.get(key, []), event, profiles, womens, locations, report, results=results, taken=taken)
+        if key not in groups and merged:
+            key = (key[0], merged[0]["event_slug"])
+        groups[key] = merged
         position.setdefault(key, len(position))
     # Newest first; events that share a day keep the order they had.
     ordered = sorted(groups, key=lambda key: (-date.fromisoformat(key[0]).toordinal(), position[key]))
