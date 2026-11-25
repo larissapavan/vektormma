@@ -6,6 +6,7 @@ import { translateReason } from '../shared/data/confidenceText'
 // still has a pattern here.
 const LAYOFF = 'Ana Lima last fought in the UFC about 2 years ago, so their numbers may not show how they fight today.'
 const NO_STATS = 'Ana Lima has no striking or takedown numbers for fights outside the UFC; where they are missing, the model uses typical values.'
+const NO_RECORD = 'Ana Lima has no career record on file.'
 const NO_REACH = 'Ana Lima has no reach on record, so the model used a typical value.'
 const NO_AGE_OR_REACH = 'Ana Lima has no age or reach on record, so the model used typical values.'
 
@@ -17,6 +18,9 @@ describe('data confidence sentences', () => {
     [NO_STATS, 'pt-BR', 'Ana Lima não tem números de golpes nem de quedas das lutas fora do UFC; onde faltam, o modelo usa valores típicos.'],
     [NO_STATS, 'fr-FR', 'Ana Lima n’a pas de chiffres de frappe ni de takedown pour ses combats hors de l’UFC ; là où ils manquent, le modèle utilise des valeurs typiques.'],
     [NO_STATS, 'es-419', 'Ana Lima no tiene números de golpes ni de derribos de sus peleas fuera de la UFC; donde faltan, el modelo usa valores típicos.'],
+    [NO_RECORD, 'pt-BR', 'Não temos o cartel de Ana Lima.'],
+    [NO_RECORD, 'fr-FR', 'Nous n’avons pas le palmarès de Ana Lima.'],
+    [NO_RECORD, 'es-419', 'No tenemos el récord de Ana Lima.'],
     [NO_REACH, 'pt-BR', 'Ana Lima não tem envergadura registrada, então o modelo usou um valor típico.'],
     [NO_REACH, 'fr-FR', 'Données manquantes pour Ana Lima (allonge) : le modèle a utilisé une valeur typique.'],
     [NO_REACH, 'es-419', 'Faltan datos de Ana Lima (alcance): el modelo usó un valor típico.'],
@@ -28,7 +32,7 @@ describe('data confidence sentences', () => {
   })
 
   it('leaves the English sentence as the API wrote it', () => {
-    for (const reason of [LAYOFF, NO_STATS, NO_REACH, NO_AGE_OR_REACH]) expect(translateReason(reason, 'en-US')).toBe(reason)
+    for (const reason of [LAYOFF, NO_STATS, NO_RECORD, NO_REACH, NO_AGE_OR_REACH]) expect(translateReason(reason, 'en-US')).toBe(reason)
   })
 
   it('shows the current sentence for the earlier wording, in every language', () => {

@@ -42,7 +42,11 @@ def _fighter_issues(profile: dict, today: date) -> tuple[int, list[str]]:
     points, reasons = 0, []
 
     fights = int(profile.get("total_fights") or 0)
-    if fights < VERY_FEW_FIGHTS:
+    if fights == 0 and profile.get("data_origin"):
+        # The organization's file has no career record: that is not a fighter with no fights.
+        points += 2
+        reasons.append(f"{name} has no career record on file.")
+    elif fights < VERY_FEW_FIGHTS:
         points += 2
         reasons.append(f"{name} has only {fights} recorded fight{'s' if fights != 1 else ''}, so their numbers are not settled yet.")
     elif fights < FEW_FIGHTS:

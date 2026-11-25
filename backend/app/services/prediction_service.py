@@ -130,8 +130,13 @@ def _counterpart(column: str) -> str:
     return column
 
 
+def is_tie(probability: float) -> bool:
+    """Exactly 50%: what the model gives two fighters it has nothing to tell apart by."""
+    return abs(probability - 0.5) < TIE_TOLERANCE
+
+
 def _first_wins(probability: float, name_first: str, name_second: str) -> bool:
-    if abs(probability - 0.5) < TIE_TOLERANCE:
+    if is_tie(probability):
         return name_first.lower() <= name_second.lower()
     return probability > 0.5
 
@@ -358,20 +363,25 @@ class PredictionService:
         return factors
 
     def _build_comparison(self, fighter_a: dict, fighter_b: dict) -> dict:
-        age_a = fighter_a["age"] or 0
-        age_b = fighter_b["age"] or 0
-        reach_a = fighter_a["reach_cm"] or 0
-        reach_b = fighter_b["reach_cm"] or 0
         return {
             "fighter_a_win_rate": fighter_a["win_rate"],
             "fighter_b_win_rate": fighter_b["win_rate"],
-            "reach_difference": round(reach_a - reach_b, 2),
-            "age_difference": round(age_a - age_b, 2),
+            "reach_difference": _difference(fighter_a["reach_cm"], fighter_b["reach_cm"]),
+            "age_difference": _difference(fighter_a["age"], fighter_b["age"]),
         }
 
     def _build_message(self, predicted_winner: str, probability: float) -> str:
+        if is_tie(probability):
+            return "The model has no data that sets these two fighters apart."
         confidence = "strong" if probability >= 0.7 else "moderate" if probability >= 0.58 else "competitive"
         return f"The model gives {predicted_winner} a {confidence} edge in this matchup."
+
+
+def _difference(first, second) -> float | None:
+    """first - second, or None when either is missing: a missing reach is not a reach of zero."""
+    if pd.isna(first) or pd.isna(second):
+        return None
+    return round(float(first) - float(second), 2)
 
 
 def _model_number(value, default: float = 0.0) -> float:
