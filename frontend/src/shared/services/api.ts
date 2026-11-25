@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import { apiBaseURL, BUILD_ID } from './apiBase'
+import { eventsFrom, rowsFrom, type Columns, type EventColumns } from './columns'
 import type {
   DivisionMatrix,
   OtherOrganization,
@@ -54,25 +55,12 @@ function shared<T>(key: string, request: () => Promise<T>): Promise<T> {
   return promise
 }
 
+/** Asks for a long list as columns (see columns.ts). */
+const COLUMNS = { columns: true }
+
 export const getFighters = async () => {
-  const response = await api.get<FighterProfile[] | FighterColumns>('/fighters', { params: { ufc_only: true, columns: true } })
-  return fightersFrom(response.data)
-}
-
-export interface FighterColumns {
-  count: number
-  columns: Record<string, unknown[]>
-}
-
-/** One object per fighter, from the column form. An API from before it ignores the request for columns and sends the list. */
-export function fightersFrom(data: FighterProfile[] | FighterColumns): FighterProfile[] {
-  if (Array.isArray(data)) return data
-  const entries = Object.entries(data.columns)
-  return Array.from({ length: data.count }, (_, row) => {
-    const fighter: Record<string, unknown> = {}
-    for (const [field, values] of entries) fighter[field] = values[row]
-    return fighter as unknown as FighterProfile
-  })
+  const response = await api.get<FighterProfile[] | Columns>('/fighters', { params: { ufc_only: true, ...COLUMNS } })
+  return rowsFrom(response.data)
 }
 
 export const getPhotoCredits = () =>
@@ -82,8 +70,8 @@ export const getPhotoCredits = () =>
   })
 
 export const getEvents = async () => {
-  const response = await api.get<EventSummary[]>('/events')
-  return response.data
+  const response = await api.get<EventSummary[] | EventColumns>('/events', { params: COLUMNS })
+  return eventsFrom(response.data)
 }
 
 export const getUpcomingEvents = async () => {
@@ -217,13 +205,13 @@ export const predictFight = async (fighter_a_name: string, fighter_b_name: strin
 // Organizations other than the UFC share one set of endpoints, /orgs/{id}/...
 
 export const getOrgFighters = async (org: string) => {
-  const response = await api.get<OrgFighter[]>(`/orgs/${org}/fighters`)
-  return response.data
+  const response = await api.get<OrgFighter[] | Columns>(`/orgs/${org}/fighters`, { params: COLUMNS })
+  return rowsFrom(response.data)
 }
 
 export const getOrgEvents = async (org: string) => {
-  const response = await api.get<OrgEvent[]>(`/orgs/${org}/events`)
-  return response.data
+  const response = await api.get<OrgEvent[] | EventColumns>(`/orgs/${org}/events`, { params: COLUMNS })
+  return eventsFrom(response.data)
 }
 
 export const getOrgUpcomingEvents = async (org: string) => {

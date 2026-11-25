@@ -6,7 +6,7 @@ from backend.app.schemas.data_info import DataInfoResponse
 from backend.app.schemas.fight_history import FightRecord
 from backend.app.schemas.orgs import OrgEvent, OrgFighter, OrgInfo, OrgRankingCategory
 from backend.app.schemas.prediction import UpcomingPick
-from backend.app.services.crossorg_service import ufc_names_for_org, ufc_photo
+from backend.app.services.crossorg_service import ufc_names_for_org, ufc_photos
 from backend.app.services.org_service import (
     _name_key,
     get_org,
@@ -19,6 +19,7 @@ from backend.app.services.org_service import (
     get_org_upcoming_predictions,
     list_orgs,
 )
+from backend.app.utils.columns import columns_response, events_to_columns, to_columns
 
 router = APIRouter(prefix="/orgs", tags=["organisations"])
 
@@ -41,7 +42,7 @@ def organisations(request: Request, response: Response) -> list[OrgInfo]:
     ]
 
 
-@router.get("/{org_id}/fighters", response_model=list[OrgFighter])
+@router.get("/{org_id}/fighters", response_model=None)
 @limiter.limit("60/minute")
 def org_fighters(
     request: Request,
@@ -49,19 +50,20 @@ def org_fighters(
     org_id: str,
     limit: int | None = Query(default=None, ge=1, le=5000),
     offset: int = Query(default=0, ge=0),
-) -> list[OrgFighter]:
+    columns: bool = Query(default=False, description="Answer one column per field instead of one object per fighter (smaller)."),
+) -> list[OrgFighter] | Response:
     fighters = get_org_fighters(_known_org(org_id))
-    response.headers["Cache-Control"] = "public, max-age=300"
-    response.headers["X-Total-Count"] = str(len(fighters))
+    headers = {"Cache-Control": "public, max-age=300", "X-Total-Count": str(len(fighters))}
+    response.headers.update(headers)
     page = fighters[offset : offset + limit] if limit is not None else fighters[offset:]
-    ufc_names = ufc_names_for_org(org_id)
+    ufc_names, photos = ufc_names_for_org(org_id), ufc_photos()
     result = []
     for fighter in page:
         ufc_name = ufc_names.get(_name_key(fighter["name"]))
         # One person, one photo: a fighter this organization has no photo of takes the one the UFC profile has.
-        image_url = fighter["image_url"] or (ufc_photo(ufc_name) if ufc_name else None)
+        image_url = fighter["image_url"] or (photos.get(_name_key(ufc_name)) if ufc_name else None)
         result.append(OrgFighter(**{**fighter, "image_url": image_url}, ufc_name=ufc_name))
-    return result
+    return columns_response(to_columns([fighter.model_dump() for fighter in result]), headers) if columns else result
 
 
 @router.get("/{org_id}/fighters/{name}/fights", response_model=list[FightRecord])
@@ -76,12 +78,18 @@ def org_fighter_fights(request: Request, response: Response, org_id: str, name: 
     return [FightRecord(**fight) for fight in fights]
 
 
-@router.get("/{org_id}/events", response_model=list[OrgEvent])
+@router.get("/{org_id}/events", response_model=None)
 @limiter.limit("60/minute")
-def org_events(request: Request, response: Response, org_id: str) -> list[OrgEvent]:
-    events = get_org_events(_known_org(org_id))
-    response.headers["Cache-Control"] = "public, max-age=300"
-    return [OrgEvent(**event) for event in events]
+def org_events(
+    request: Request,
+    response: Response,
+    org_id: str,
+    columns: bool = Query(default=False, description="Answer one column per field instead of one object per event and fight (smaller)."),
+) -> list[OrgEvent] | Response:
+    events = [OrgEvent(**event) for event in get_org_events(_known_org(org_id))]
+    headers = {"Cache-Control": "public, max-age=300"}
+    response.headers.update(headers)
+    return columns_response(events_to_columns([event.model_dump() for event in events]), headers) if columns else events
 
 
 @router.get("/{org_id}/events/upcoming", response_model=list[OrgEvent])

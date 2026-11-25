@@ -75,6 +75,12 @@ def ufc_photo(ufc_name: str) -> str | None:
     return _cache["photos"].get(_name_key(ufc_name))
 
 
+def ufc_photos() -> dict[str, str]:
+    """Every UFC photo by name key, for a whole list of fighters (ufc_photo looks at the catalog's files on every call)."""
+    _ufc_index()
+    return _cache["photos"]
+
+
 def _linked(ufc: tuple[str, str | None], org_division: str | None) -> bool:
     ufc_womens, org_womens = _womens(ufc[1]), _womens(org_division)
     if ufc_womens is not None and org_womens is not None and ufc_womens != org_womens:
@@ -112,11 +118,14 @@ def catalog_name_for(name: str, division: str | None) -> str | None:
 
 def ufc_names_for_org(org_id: str) -> dict[str, str]:
     """Org fighter name key -> the UFC name of the same person, for the fighters of that organization who fought in the UFC."""
+    # The index is read once: asking for it per fighter checks the catalog's files thousands of times, seconds for a big organization.
+    index = _ufc_index()
     links: dict[str, str] = {}
     for fighter in get_org_fighters(org_id):
-        ufc_name = ufc_name_for(fighter["name"], fighter["division"])
-        if ufc_name:
-            links[_name_key(fighter["name"])] = ufc_name
+        name = fighter["name"]
+        match = index.get(_name_key(name)) or index.get(_name_key(canonical_name(name) or ""))
+        if match and _linked(match, fighter["division"]):
+            links[_name_key(name)] = match[0]
     return links
 
 
