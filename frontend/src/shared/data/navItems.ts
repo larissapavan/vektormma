@@ -17,6 +17,7 @@ export const NAV_I18N_KEYS: Record<string, string> = {
   About: 'nav.about',
   RecordBook: 'nav.recordBook',
   Cancelled: 'nav.cancelled',
+  MyCard: 'nav.myCard',
 }
 
 // One entry per page: the matchup and champions pages used to sit under a second row of tabs that repeated this menu.
@@ -26,6 +27,7 @@ const ufcNavItems: NavItem[] = [
   { to: '/fighters', label: 'Fighters' },
   { to: '/events', label: 'Events' },
   { to: '/results', label: 'Results' },
+  { to: '/my-card', label: 'MyCard' },
   { to: '/rankings', label: 'Rankings' },
   { to: '/champions', label: 'Champions' },
   { to: '/record-book', label: 'RecordBook' },

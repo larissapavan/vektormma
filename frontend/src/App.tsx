@@ -21,6 +21,9 @@ const RecordBook = lazy(() => import('./pages/RecordBook').then((module) => ({ d
 const CancelledFights = lazy(() =>
   import('./pages/CancelledFights').then((module) => ({ default: module.CancelledFights })),
 )
+const MyCard = lazy(() =>
+  import('./pages/MyCard').then((module) => ({ default: module.MyCard })),
+)
 const Career = lazy(() => import('./pages/Career').then((module) => ({ default: module.Career })))
 const Champions = lazy(() => import('./pages/Champions').then((module) => ({ default: module.Champions })))
 const HeadToHead = lazy(() => import('./pages/HeadToHead').then((module) => ({ default: module.HeadToHead })))
@@ -75,6 +78,7 @@ function App() {
               <Route path="/head-to-head" element={<HeadToHead />} />
               <Route path="/matchup-intelligence" element={<MatchupRedirect />} />
               <Route path="/cancelled-fights" element={<CancelledFights />} />
+              <Route path="/my-card" element={<MyCard />} />
               <Route path="/career" element={<Career />} />
               <Route path="/fighters" element={<Fighters />} />
               <Route path="/athlete" element={<AthleteDossier />} />

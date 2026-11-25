@@ -11,6 +11,7 @@ import { ABOUT_SOURCES, sourceName, sourceUse } from '../shared/data/aboutSource
 import { baselineName, localizeApiText } from '../shared/data/apiText'
 import { DATA_ECOSYSTEM_SOURCES, dataSteps, sourceOrg, sourceScope } from '../shared/data/dataPipeline'
 import { careerRules } from '../shared/data/careerRules'
+import { myCardRules } from '../shared/data/myCardText'
 import { getDivisionName } from '../shared/data/divisions'
 import { localizeCountryName } from '../shared/data/fightLabels'
 import { eventPreview, eventRecap } from '../shared/data/eventText'
@@ -454,6 +455,11 @@ function ufcSections(lang: UiLang, path: string, data: PagesData, context: PageC
     case '/predictor':
     case '/head-to-head':
       return upcomingPicksSection(lang, context.fights)
+    case '/my-card':
+      return [
+        { heading: L(lang, 'Como funciona', 'How it works', 'Comment ça marche', 'Cómo funciona'), bullets: myCardRules(lang) },
+        ...eventSections(lang, ufc.upcoming.slice(0, 1), context),
+      ]
     case '/career':
       return [{ heading: L(lang, 'Como funciona', 'How it works', 'Comment ça marche', 'Cómo funciona'), bullets: careerRules(lang) }]
     default:

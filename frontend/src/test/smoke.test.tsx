@@ -34,6 +34,7 @@ const pages: [string, string, string | RegExp][] = [
   ['Champions', '/champions', 'Current champions'],
   ['Record book', '/record-book', 'Total Fights'],
   ['Never happened', '/cancelled-fights', /the fights that never happened/i],
+  ['My card', '/my-card', /0 of 2 picks made/i],
   ['Career game', '/career', /simulate your ufc career/i],
   ['Track record', '/track-record', /waiting for the first results/i],
   ['Head-to-head', '/head-to-head', /^head-to-head$/i],

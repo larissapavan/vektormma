@@ -12,6 +12,8 @@ import { respond } from '../src/test/fixtures'
 const THEME_KEY = 'ufc-predictor:theme-v2'
 // The key of the career save (src/shared/game/save.ts, which cannot be imported here: it reads the browser's window).
 const SAVE_KEY = 'vektor:career:v1'
+// The key of the visitor's picks (src/shared/data/myCard.ts).
+const MY_CARD_KEY = 'vektor:my-card:v1'
 const challengeLink = (fights: number) => `/en/career?d=${Buffer.from(JSON.stringify({ s: 20261108, f: fights })).toString('base64url')}`
 
 async function prepare(page: Page, theme: 'dark' | 'light') {
@@ -58,6 +60,19 @@ for (const theme of ['dark', 'light'] as const) {
       await page.goto('/en/career')
       await expect(page.getByRole('button', { name: /start the career/i })).toBeVisible()
       expect(await violations(page)).toEqual([])
+    })
+
+    test('my card, with picks made and a card already checked', async ({ page }) => {
+      await prepare(page, theme)
+      const past = { event: 'UFC 900: Alpha vs. Beta', date: '2026-11-07', a: 'Alpha One', b: 'Beta Two', winner: 'Beta Two', model: { winner: 'Alpha One', probability: 0.71 }, result: { outcome: 'win', winner: 'Alpha One' } }
+      await page.addInitScript(([key, value]) => localStorage.setItem(key, value), [MY_CARD_KEY, JSON.stringify([past])])
+      await page.goto('/en/my-card')
+      for (const name of ['Alpha One', 'Delta Four']) await page.getByRole('button', { name, exact: true }).click()
+      await expect(page.getByText(/2 of 2 picks made/)).toBeVisible()
+      await expect(page.getByText(/the model got it right/)).toBeVisible()
+      expect(await violations(page)).toEqual([])
+      await page.setViewportSize({ width: 375, height: 800 })
+      expect(await page.locator('html').evaluate((html) => html.scrollWidth - html.clientWidth)).toBeLessThanOrEqual(0)
     })
 
     test('the fights that never happened', async ({ page }) => {

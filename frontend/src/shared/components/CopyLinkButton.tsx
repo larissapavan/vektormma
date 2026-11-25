@@ -3,29 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { L, langPath, uiLang } from '../../i18n/lang'
-
-async function copyText(text: string) {
-  try {
-    await navigator.clipboard.writeText(text)
-    return true
-  } catch {
-    // No clipboard API (older browsers, an insecure origin): fall back to a hidden field and the copy command.
-    const field = document.createElement('textarea')
-    field.value = text
-    field.setAttribute('readonly', '')
-    field.style.position = 'fixed'
-    field.style.opacity = '0'
-    document.body.appendChild(field)
-    field.select()
-    try {
-      return document.execCommand('copy')
-    } catch {
-      return false
-    } finally {
-      document.body.removeChild(field)
-    }
-  }
-}
+import { copyText } from '../utils/copyText'
 
 /** Copies a link to the clipboard; `href` is relative to the site (e.g. "/predictor?a=..."). */
 export function CopyLinkButton({ href, label, className = '' }: { href: string; label?: string; className?: string }) {

@@ -1,13 +1,13 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CalendarClock, CalendarDays, ChevronDown, Gamepad2, Hash, MapPin, Search, Swords } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { CalendarClock, CalendarDays, ChevronDown, ClipboardPen, Hash, MapPin, Search, Swords } from 'lucide-react'
 
 import { L, localeTag } from '../i18n/lang'
 import { eventPreview } from '../shared/data/eventText'
 import { translateHometown } from '../shared/data/fightLabels'
 import { formatMethod as formatMethodLabel } from '../shared/data/orgFormat'
 import { FighterProfileModal } from '../shared/components/FighterProfileModal'
-import { CardSimulatorModal } from '../shared/components/CardSimulatorModal'
 import { LatestNewsCard } from '../shared/components/LatestNewsCard'
 import { FightMatchupCard } from '../shared/components/FightMatchupCard'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
@@ -34,14 +34,12 @@ export function Events() {
   const { t, i18n } = useTranslation()
   const { events, loading, error } = useEvents()
   const upcoming = useUpcomingEvents()
-  const pickFor = useUpcomingPicks()
   const [query, setQuery] = useUrlParam('q')
   const [yearFilter, setYearFilter] = useUrlParam('year', 'ALL')
   const [monthFilter, setMonthFilter] = useUrlParam('month', 'ALL', ['ALL', ...MONTH_KEYS])
   const [openEvents, setOpenEvents] = useState<Set<string>>(new Set())
   const [openGroups, setOpenGroups] = useState<Set<string>>(new Set())
   const [profileName, setProfileName] = useState<string | null>(null)
-  const [simulatingEvent, setSimulatingEvent] = useState<EventSummary | null>(null)
 
   const years = useMemo(() => {
     const found = new Set<string>()
@@ -224,7 +222,6 @@ export function Events() {
           error={upcoming.error}
           openEvents={openEvents}
           onToggle={toggleEvent}
-          onSimulate={setSimulatingEvent}
         />
 
         {isSearching ? null : results}
@@ -237,15 +234,6 @@ export function Events() {
             name={profileName}
             onClose={() => setProfileName(null)}
             onSelectFighter={setProfileName}
-          />
-        ) : null}
-
-        {simulatingEvent ? (
-          <CardSimulatorModal
-            event={simulatingEvent}
-            pickFor={pickFor}
-            onClose={() => setSimulatingEvent(null)}
-            onOpenFighter={setProfileName}
           />
         ) : null}
       </div>
@@ -263,14 +251,12 @@ function UpcomingEventsSection({
   error,
   openEvents,
   onToggle,
-  onSimulate,
 }: {
   events: EventSummary[]
   loading: boolean
   error: string | null
   openEvents: Set<string>
   onToggle: (key: string) => void
-  onSimulate?: (event: EventSummary) => void
 }) {
   const { t, i18n } = useTranslation()
   const lang = i18n.language
@@ -356,8 +342,6 @@ function UpcomingEventsSection({
               isOpen={filtering || openEvents.has(key)}
               onToggle={() => onToggle(key)}
               pickFor={pickFor}
-              // The picks game and the written read of a card are about the whole card, not the part a filter left.
-              onSimulate={filtering ? undefined : onSimulate}
               partial={filtering}
             />
           )
@@ -430,14 +414,12 @@ function EventCard({
   isOpen,
   onToggle,
   pickFor,
-  onSimulate,
   partial = false,
 }: {
   event: EventSummary
   isOpen: boolean
   onToggle: () => void
   pickFor?: (event: string, fighterA: string, fighterB: string) => UpcomingPick | undefined
-  onSimulate?: (event: EventSummary) => void
   /** Only some of the card's fights are listed (a filter is on). */
   partial?: boolean
 }) {
@@ -495,15 +477,11 @@ function EventCard({
               </p>
             ) : <span />}
 
-            {pickFor && event.fights.length && onSimulate ? (
-              <button
-                type="button"
-                onClick={() => onSimulate(event)}
-                className="ghost-action inline-flex cursor-pointer items-center gap-2 px-4"
-              >
-                <Gamepad2 className="h-4 w-4" aria-hidden="true" />
+            {pickFor && event.date && event.fights.length ? (
+              <Link to={`/my-card?card=${event.date}`} className="ghost-action inline-flex items-center gap-2 px-4">
+                <ClipboardPen className="h-4 w-4" aria-hidden="true" />
                 {L(i18n.language, 'Dar seus palpites para o card', 'Make your picks for the card', 'Faire vos pronostics sur la carte', 'Haz tus pronósticos de la cartelera')}
-              </button>
+              </Link>
             ) : null}
           </div>
 
