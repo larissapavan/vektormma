@@ -70,6 +70,7 @@ longo-weidman-mma,Longo-Weidman MMA,https://fighthub-app.com/en/gyms/longo-weidm
 marathon-mma,Marathon MMA,https://fighthub-app.com/en/gyms/marathon-mma/,4,2026-10-21
 millennia-mma,Millennia MMA,https://fighthub-app.com/en/gyms/millennia-mma/,4,2026-10-26
 mma-spirit,MMA Spirit,https://fighthub-app.com/en/gyms/mma-spirit/,4,2026-11-24
+mt-gym-23,MT Gym 23,https://fighthub-app.com/en/gyms/mt-gym-23/,4,2026-11-25
 octagon-fighting-academy,Octagon Fighting Academy,https://fighthub-app.com/en/gyms/octagon-fighting-academy/,4,2026-10-21
 renzo-gracie-philly,Renzo Gracie Philly,https://fighthub-app.com/en/gyms/renzo-gracie-philly/,4,2026-10-26
 scottish-hit-squad,Scottish Hit Squad,https://fighthub-app.com/en/gyms/scottish-hit-squad/,4,2026-11-24
@@ -203,7 +204,6 @@ mighty-bulls-gdynia,Mighty Bulls Gdynia,https://fighthub-app.com/en/gyms/mighty-
 mixed-martial-pro-team,Mixed Martial PRO Team,https://fighthub-app.com/en/gyms/mixed-martial-pro-team/,2,2026-11-24
 mma-gold-fight-team,MMA Gold Fight Team,https://fighthub-app.com/en/gyms/mma-gold-fight-team/,2,2026-10-21
 mma-science-academy,MMA Science Academy,https://fighthub-app.com/en/gyms/mma-science-academy/,2,2026-10-21
-mt-gym-23,MT Gym 23,https://fighthub-app.com/en/gyms/mt-gym-23/,2,2026-10-26
 munich-allstars-gym,Munich Allstars Gym,https://fighthub-app.com/en/gyms/munich-allstars-gym/,2,2026-10-26
 nashville-mma,Nashville MMA,https://fighthub-app.com/en/gyms/nashville-mma/,2,2026-10-21
 next-edge-academy-of-martial-arts,Next Edge Academy of Martial Arts,https://fighthub-app.com/en/gyms/next-edge-academy-of-martial-arts/,2,2026-10-21
@@ -241,6 +241,7 @@ team-lloyd-irvin,Team Lloyd Irvin,https://fighthub-app.com/en/gyms/team-lloyd-ir
 team-nogueira-dubai,Team Nogueira Dubai,https://fighthub-app.com/en/gyms/team-nogueira-dubai/,2,2026-10-21
 team-renegade,Team Renegade,https://fighthub-app.com/en/gyms/team-renegade/,2,2026-11-24
 team-sendo,Team Sendo,https://fighthub-app.com/en/gyms/team-sendo/,2,2026-10-21
+team-shockwave,Team Shockwave,https://fighthub-app.com/en/gyms/team-shockwave/,2,2026-11-25
 tft-mma,TFT MMA,https://fighthub-app.com/en/gyms/tft-mma/,2,2026-11-24
 tft-mma-team-fish-tank,TFT MMA 'Team Fish Tank',https://fighthub-app.com/en/gyms/tft-mma-team-fish-tank/,2,2026-11-24
 the-academy-mn,The Academy MN,https://fighthub-app.com/en/gyms/the-academy-mn/,2,2026-10-21
@@ -431,6 +432,7 @@ corinthians-mma,Corinthians MMA,https://fighthub-app.com/en/gyms/corinthians-mma
 craig-ewers-academy,Craig Ewers Academy,https://fighthub-app.com/en/gyms/craig-ewers-academy/,1,2026-11-24
 crazy-88-brazilian-jiu-jitsu,Crazy 88 Brazilian Jiu jitsu,https://fighthub-app.com/en/gyms/crazy-88-brazilian-jiu-jitsu/,1,2026-10-21
 crosspoint-kichijoji,Crosspoint Kichijoji,https://fighthub-app.com/en/gyms/crosspoint-kichijoji/,1,2026-11-24
+cruel-top-team,Cruel Top Team,https://fighthub-app.com/en/gyms/cruel-top-team/,1,2026-11-25
 csa,CSA,https://fighthub-app.com/en/gyms/csa/,1,2026-10-21
 csw,CSW,https://fighthub-app.com/en/gyms/csw/,1,2026-10-21
 csw-training-center,CSW Training Center,https://fighthub-app.com/en/gyms/csw-training-center/,1,2026-10-21
@@ -575,6 +577,7 @@ harris-holt-combat-sports,Harris Holt Combat Sports,https://fighthub-app.com/en/
 hayastan-mma-charlotte,Hayastan MMA Charlotte,https://fighthub-app.com/en/gyms/hayastan-mma-charlotte/,1,2026-10-21
 heartbreak-conditioning,Heartbreak Conditioning,https://fighthub-app.com/en/gyms/heartbreak-conditioning/,1,2026-10-21
 hemmers-gym,Hemmers Gym,https://fighthub-app.com/en/gyms/hemmers-gym/,1,2026-10-26
+herman-gutierrez,Herman Gutierrez,https://fighthub-app.com/en/gyms/herman-gutierrez/,1,2026-11-25
 hevioxo-mma-club,Hevioxo MMA Club,https://fighthub-app.com/en/gyms/hevioxo-mma-club/,1,2026-10-21
 hffs,HFFS,https://fighthub-app.com/en/gyms/hffs/,1,2026-11-24
 high-altitude-martial-arts,High Altitude Martial Arts,https://fighthub-app.com/en/gyms/high-altitude-martial-arts/,1,2026-10-21
@@ -943,7 +946,6 @@ team-ryano,Team Ryano,https://fighthub-app.com/en/gyms/team-ryano/,1,2026-10-21
 team-sayah,Team Sayah,https://fighthub-app.com/en/gyms/team-sayah/,1,2026-10-21
 team-schreiber,Team Schreiber,https://fighthub-app.com/en/gyms/team-schreiber/,1,2026-10-21
 team-shikhshabekov,Team Shikhshabekov,https://fighthub-app.com/en/gyms/team-shikhshabekov/,1,2026-10-21
-team-shockwave,Team Shockwave,https://fighthub-app.com/en/gyms/team-shockwave/,1,2026-10-21
 team-shogun,Team Shogun,https://fighthub-app.com/en/gyms/team-shogun/,1,2026-10-21
 team-silverio,Team Silverio,https://fighthub-app.com/en/gyms/team-silverio/,1,2026-10-21
 team-sityodtong,Team Sityodtong,https://fighthub-app.com/en/gyms/team-sityodtong/,1,2026-10-21

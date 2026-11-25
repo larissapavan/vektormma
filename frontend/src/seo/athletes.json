@@ -350,7 +350,7 @@
    ],
    "country": "Australia",
    "countryCode": "au",
-   "photo": "alexander-volkanovski-champion.webp?v=ffebcae9"
+   "photo": "alexander-volkanovski-champion.webp?v=550e8d22"
   },
   {
    "name": "Alexander Volkov",
@@ -743,6 +743,20 @@
    "country": "United States",
    "countryCode": "us",
    "photo": "anthony-wint.webp"
+  },
+  {
+   "name": "Anvarbek Daniyalbekov",
+   "slug": "anvarbek-daniyalbekov",
+   "nickname": null,
+   "division": "Middleweight",
+   "wins": 8,
+   "losses": 0,
+   "draws": 0,
+   "belt": false,
+   "titles": [],
+   "country": "Russia",
+   "countryCode": "ru",
+   "photo": null
   },
   {
    "name": "Arman Tsarukyan",
@@ -1472,7 +1486,7 @@
    ],
    "country": "New Zealand",
    "countryCode": "nz",
-   "photo": "carlos-ulberg-champion.webp?v=8d4fa13e"
+   "photo": "carlos-ulberg-champion.webp?v=846db228"
   },
   {
    "name": "Carlos Vera",
@@ -1808,8 +1822,8 @@
    "draws": 0,
    "belt": false,
    "titles": [],
-   "country": "United States",
-   "countryCode": "us",
+   "country": "Mexico",
+   "countryCode": "mx",
    "photo": "christopher-alvidrez.webp?v=317685ce"
   },
   {
@@ -1826,7 +1840,7 @@
    ],
    "country": "France",
    "countryCode": "fr",
-   "photo": "ciryl-gane-champion.webp?v=fcd50c94"
+   "photo": "ciryl-gane-champion.webp?v=59c576df"
   },
   {
    "name": "Claudio Puelles",
@@ -3494,7 +3508,7 @@
    ],
    "country": "Russia",
    "countryCode": "ru",
-   "photo": "islam-makhachev-champion.webp?v=cb8dd074"
+   "photo": "islam-makhachev-champion.webp?v=de85f4ce"
   },
   {
    "name": "Ismail Naurdiev",
@@ -4476,7 +4490,7 @@
    ],
    "country": "Myanmar",
    "countryCode": "mm",
-   "photo": "joshua-van-champion.webp?v=762e469d"
+   "photo": "joshua-van-champion.webp?v=ed253464"
   },
   {
    "name": "Josiah Harrell",
@@ -4660,7 +4674,7 @@
    ],
    "country": "United States",
    "countryCode": "us",
-   "photo": "justin-gaethje-champion.webp?v=82c6c02f"
+   "photo": "justin-gaethje-champion.webp?v=6687a9d6"
   },
   {
    "name": "Kaan Ofli",
@@ -4830,7 +4844,7 @@
    ],
    "country": "United States",
    "countryCode": "us",
-   "photo": "kayla-harrison-champion.webp?v=1772088f"
+   "photo": "kayla-harrison-champion.webp?v=6459506c"
   },
   {
    "name": "Keiichiro Nakamura",
@@ -5560,7 +5574,7 @@
    ],
    "country": "Brazil",
    "countryCode": "br",
-   "photo": "mackenzie-dern-champion.webp?v=65e54c8c"
+   "photo": "mackenzie-dern-champion.webp?v=628431ad"
   },
   {
    "name": "Mackenzie Stiller",
@@ -6445,6 +6459,20 @@
    "photo": "mike-malott.webp"
   },
   {
+   "name": "Mike Perry",
+   "slug": "mike-perry",
+   "nickname": "Platinum",
+   "division": "Welterweight",
+   "wins": 14,
+   "losses": 8,
+   "draws": 0,
+   "belt": false,
+   "titles": [],
+   "country": "United States",
+   "countryCode": "us",
+   "photo": "mike-perry.webp"
+  },
+  {
    "name": "Miles Johns",
    "slug": "miles-johns",
    "nickname": "Chapo",
@@ -6738,7 +6766,7 @@
    ],
    "country": "Brazil",
    "countryCode": "br",
-   "photo": "natalia-silva-champion.webp?v=d6243223"
+   "photo": "natalia-silva-champion.webp?v=2d51935e"
   },
   {
    "name": "Nate Landwehr",
@@ -7202,7 +7230,7 @@
    ],
    "country": "Russia",
    "countryCode": "ru",
-   "photo": "petr-yan-champion.webp?v=a98343a6"
+   "photo": "petr-yan-champion.webp?v=4ac34c23"
   },
   {
    "name": "Piera Rodriguez",
@@ -8226,7 +8254,7 @@
    ],
    "country": "United States",
    "countryCode": "us",
-   "photo": "sean-strickland-champion.webp?v=bc530f2c"
+   "photo": "sean-strickland-champion.webp?v=698090fe"
   },
   {
    "name": "Sean Woodson",
@@ -9740,44 +9768,44 @@
    }
   },
   {
-   "slug": "luke-riley-vs-gabriel-santos",
+   "slug": "levan-chokheli-vs-islam-dulatov",
    "event": "UFC Fight Night: Adesanya vs Magomedov",
    "date": "2026-12-05",
    "position": 4,
    "titleFight": false,
-   "weightClass": "Featherweight",
+   "weightClass": "Welterweight",
    "a": {
-    "name": "Luke Riley",
-    "slug": "luke-riley",
+    "name": "Levan Chokheli",
+    "slug": "levan-chokheli",
     "nickname": null,
-    "division": "Featherweight",
-    "wins": 14,
-    "losses": 0,
+    "division": "Welterweight",
+    "wins": 15,
+    "losses": 3,
     "draws": 0,
     "belt": false,
     "titles": [],
-    "country": "United Kingdom",
-    "countryCode": "gb",
-    "photo": "luke-riley.webp"
+    "country": "Georgia",
+    "countryCode": "ge",
+    "photo": "levan-chokheli.webp"
    },
    "b": {
-    "name": "Gabriel Santos",
-    "slug": "gabriel-santos",
-    "nickname": "Mosquitinho",
-    "division": "Featherweight",
+    "name": "Islam Dulatov",
+    "slug": "islam-dulatov",
+    "nickname": "The Ripper",
+    "division": "Welterweight",
     "wins": 12,
-    "losses": 2,
+    "losses": 1,
     "draws": 0,
     "belt": false,
     "titles": [],
-    "country": "Brazil",
-    "countryCode": "br",
-    "photo": "gabriel-santos.webp"
+    "country": "Germany",
+    "countryCode": "de",
+    "photo": "islam-dulatov.webp"
    },
    "pick": {
-    "winner": "Luke Riley",
-    "probability": 0.6122,
-    "winnerIsA": true
+    "winner": "Islam Dulatov",
+    "probability": 0.5163,
+    "winnerIsA": false
    }
   },
   {
@@ -10109,44 +10137,80 @@
    }
   },
   {
-   "slug": "levan-chokheli-vs-islam-dulatov",
+   "slug": "luke-riley-vs-gabriel-santos",
    "event": "UFC Fight Night: Adesanya vs Magomedov",
    "date": "2026-12-05",
    "position": 13,
    "titleFight": false,
-   "weightClass": "Welterweight",
+   "weightClass": "Featherweight",
    "a": {
-    "name": "Levan Chokheli",
-    "slug": "levan-chokheli",
+    "name": "Luke Riley",
+    "slug": "luke-riley",
     "nickname": null,
-    "division": "Welterweight",
-    "wins": 15,
-    "losses": 3,
+    "division": "Featherweight",
+    "wins": 14,
+    "losses": 0,
     "draws": 0,
     "belt": false,
     "titles": [],
-    "country": "Georgia",
-    "countryCode": "ge",
-    "photo": "levan-chokheli.webp"
+    "country": "United Kingdom",
+    "countryCode": "gb",
+    "photo": "luke-riley.webp"
    },
    "b": {
-    "name": "Islam Dulatov",
-    "slug": "islam-dulatov",
-    "nickname": "The Ripper",
-    "division": "Welterweight",
+    "name": "Gabriel Santos",
+    "slug": "gabriel-santos",
+    "nickname": "Mosquitinho",
+    "division": "Featherweight",
     "wins": 12,
-    "losses": 1,
+    "losses": 2,
     "draws": 0,
     "belt": false,
     "titles": [],
-    "country": "Germany",
-    "countryCode": "de",
-    "photo": "islam-dulatov.webp"
+    "country": "Brazil",
+    "countryCode": "br",
+    "photo": "gabriel-santos.webp"
    },
    "pick": {
-    "winner": "Islam Dulatov",
-    "probability": 0.5163,
-    "winnerIsA": false
+    "winner": "Luke Riley",
+    "probability": 0.6122,
+    "winnerIsA": true
+   }
+  },
+  {
+   "slug": "mateusz-rebecki-vs-elves-brener",
+   "event": "UFC Fight Night: Adesanya vs Magomedov",
+   "date": "2026-12-05",
+   "position": 14,
+   "titleFight": false,
+   "weightClass": "Lightweight",
+   "a": {
+    "name": "Mateusz Rebecki",
+    "slug": "mateusz-rebecki",
+    "nickname": null,
+    "division": "Lightweight",
+    "wins": 21,
+    "losses": 5,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": "Poland",
+    "countryCode": "pl",
+    "photo": "mateusz-rebecki.webp"
+   },
+   "b": {
+    "name": "Elves Brener",
+    "slug": "elves-brener",
+    "nickname": null,
+    "division": "Lightweight",
+    "wins": 17,
+    "losses": 6,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": "Brazil",
+    "countryCode": "br",
+    "photo": "elves-brener.webp"
    }
   },
   {
@@ -10813,7 +10877,7 @@
    "date": "2027-01-16",
    "position": 6,
    "titleFight": false,
-   "weightClass": null,
+   "weightClass": "Heavyweight",
    "a": {
     "name": "Kennedy Nzechukwu",
     "slug": "kennedy-nzechukwu",
@@ -10977,7 +11041,7 @@
    "date": "2027-01-16",
    "position": 10,
    "titleFight": false,
-   "weightClass": "Light Heavyweight",
+   "weightClass": "Lightweight",
    "a": {
     "name": "Magomed Zaynukov",
     "slug": "magomed-zaynukov",
@@ -11197,7 +11261,7 @@
     ],
     "country": "Myanmar",
     "countryCode": "mm",
-    "photo": "joshua-van-champion.webp?v=762e469d"
+    "photo": "joshua-van-champion.webp?v=ed253464"
    },
    "b": {
     "name": "Manel Kape",
@@ -11381,6 +11445,150 @@
     "winner": "Cam Nelson",
     "probability": 0.5148,
     "winnerIsA": true
+   }
+  },
+  {
+   "slug": "tresean-gore-vs-marc-andre-barriault",
+   "event": "UFC 336: Van vs. Kape",
+   "date": "2027-01-30",
+   "position": 6,
+   "titleFight": false,
+   "weightClass": "Middleweight",
+   "a": {
+    "name": "Tresean Gore",
+    "slug": "tresean-gore",
+    "nickname": "Mr. Vicious",
+    "division": "Middleweight",
+    "wins": 8,
+    "losses": 4,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": "United States",
+    "countryCode": "us",
+    "photo": "tresean-gore.webp"
+   },
+   "b": {
+    "name": "Marc-Andre Barriault",
+    "slug": "marc-andre-barriault",
+    "nickname": "Powerbar",
+    "division": "Middleweight",
+    "wins": 18,
+    "losses": 11,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": "Canada",
+    "countryCode": "ca",
+    "photo": "marc-andre-barriault.webp"
+   }
+  },
+  {
+   "slug": "gable-steveson-vs-terrance-chatman",
+   "event": "UFC 336: Van vs. Kape",
+   "date": "2027-01-30",
+   "position": 7,
+   "titleFight": false,
+   "weightClass": null,
+   "a": {
+    "name": "Gable Steveson",
+    "slug": "gable-steveson",
+    "nickname": null,
+    "division": "Heavyweight",
+    "wins": 4,
+    "losses": 1,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": "United States",
+    "countryCode": "us",
+    "photo": "gable-steveson.webp"
+   },
+   "b": {
+    "name": "Terrance Chatman",
+    "slug": "terrance-chatman",
+    "nickname": "The Answer",
+    "division": "Heavyweight",
+    "wins": 5,
+    "losses": 2,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": "United States",
+    "countryCode": "us",
+    "photo": "terrance-chatman.webp"
+   }
+  },
+  {
+   "slug": "tanner-boser-vs-jose-montanha",
+   "event": "UFC 336: Van vs. Kape",
+   "date": "2027-01-30",
+   "position": 8,
+   "titleFight": false,
+   "weightClass": null,
+   "a": {
+    "name": "Tanner Boser",
+    "slug": "tanner-boser",
+    "nickname": "The Bulldozer",
+    "division": "Heavyweight",
+    "wins": 23,
+    "losses": 11,
+    "draws": 1,
+    "belt": false,
+    "titles": [],
+    "country": "Canada",
+    "countryCode": "ca",
+    "photo": "tanner-boser.webp"
+   },
+   "b": {
+    "name": "Jose Montanha",
+    "slug": "jose-montanha",
+    "nickname": "Montanha",
+    "division": "Heavyweight",
+    "wins": 7,
+    "losses": 1,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": "Brazil",
+    "countryCode": "br",
+    "photo": "jose-montanha.webp"
+   }
+  },
+  {
+   "slug": "julien-leblanc-vs-vlasto-cepo",
+   "event": "UFC 336: Van vs. Kape",
+   "date": "2027-01-30",
+   "position": 9,
+   "titleFight": false,
+   "weightClass": "Middleweight",
+   "a": {
+    "name": "Julien Leblanc",
+    "slug": "julien-leblanc",
+    "nickname": null,
+    "division": "Middleweight",
+    "wins": 10,
+    "losses": 4,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": "Canada",
+    "countryCode": "ca",
+    "photo": "julien-leblanc.webp"
+   },
+   "b": {
+    "name": "Vlasto Cepo",
+    "slug": "vlasto-cepo",
+    "nickname": "El Chapo",
+    "division": "Middleweight",
+    "wins": 14,
+    "losses": 4,
+    "draws": 0,
+    "belt": false,
+    "titles": [],
+    "country": "Serbia",
+    "countryCode": "rs",
+    "photo": "vlasto-cepo.webp"
    }
   },
   {
