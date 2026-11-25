@@ -6,7 +6,10 @@ import pandas as pd
 import pytest
 
 from backend.app.services import catalog_service, org_service
-from backend.app.services.catalog_service import get_fighter_catalog, get_fighter_profile
+from backend.app.services.catalog_service import get_fighter_catalog, get_fighter_profile, load_name_aliases
+from backend.app.services.data_confidence import assess
+from backend.app.services.prediction_service import _eased
+from backend.app.services.prefight_service import PrefightPredictionService
 
 
 def _org_file(monkeypatch, *names):
@@ -69,6 +72,88 @@ def test_spaces_still_tell_two_people_apart():
     # ONE's flyweight Dawoon Jung is not the UFC light heavyweight Da Woon Jung.
     assert get_fighter_profile("Dawoon Jung")["data_origin"] == "one"
     assert get_fighter_profile("da woon jung")["name"] == "Da Woon Jung"
+
+
+@pytest.fixture(scope="module")
+def prefight():
+    return PrefightPredictionService()
+
+
+def _ufc_fights(prefight, name: str) -> int:
+    """UFC fights the pre-fight model replays for a name."""
+    state = prefight._tracker.states.get(prefight._key(name))
+    return state.fights if state else 0
+
+
+@pytest.mark.parametrize("org_id", list(org_service.ORGS))
+def test_a_fighter_whose_ufc_history_the_model_replays_gets_the_ufc_profile(prefight, org_id):
+    wrong = [
+        fighter["name"]
+        for fighter in org_service.get_org_fighters(org_id)
+        if _ufc_fights(prefight, fighter["name"]) and get_fighter_profile(fighter["name"]).get("data_origin")
+    ]
+    assert not wrong, f"{org_id}: a UFC history in the model, but the profile of another organization: {wrong}"
+
+
+@pytest.mark.parametrize(
+    ("org_id", "listed", "ufc_name"),
+    [
+        # Accents and hyphens: the loose lookup.
+        ("bellator", "Adrian Yañez", "Adrian Yanez"),
+        ("bellator", "Gaston Bolaños", "Gaston Bolanos"),
+        ("bellator", "Landon Quiñones", "Landon Quinones"),
+        ("one", "Waldo Cortes-Acosta", "Waldo Cortes Acosta"),
+        ("rizin", "Jiří Procházka", "Jiri Prochazka"),
+        # Another spelling of the same person: name_aliases.csv.
+        ("pfl", "Cris Cyborg", "Cristiane Justino"),
+        ("pfl", "Antonio Carlos Jr.", "Antonio Carlos Junior"),
+        ("bellator", "Jose Maria Tomé", "Jose Maria"),
+        ("one", "Xiong Jing Nan", "Xiong Jingnan"),
+        ("one", "Ham Seo-hee", "Seo Hee Ham"),
+        ("ksw", "Phil de Fries", "Philip De Fries"),
+        ("rizin", "Ulka Sasaki", "Yuta Sasaki"),
+        ("lfa", "Jose Mariscal", "Chepe Mariscal"),
+        ("lfa", "Jose Henrique", "Jose Souza"),
+        ("cage-warriors", "Mark O. Madsen", "Mark Madsen"),
+        ("oktagon", "Isabella de Padua", "Isabela de Padua"),
+        ("jungle-fight", "Ronaldo Souza", "Jacare Souza"),
+        ("invicta", "Konklak Suphisara", "Loma Lookboonmee"),
+    ],
+)
+def test_a_ufc_fighter_listed_under_another_spelling_gets_the_ufc_profile(prefight, org_id, listed, ufc_name):
+    assert listed in {fighter["name"] for fighter in org_service.get_org_fighters(org_id)}
+    profile = get_fighter_profile(listed)
+    assert profile["name"] == ufc_name
+    assert profile.get("data_origin") is None
+    assert _ufc_fights(prefight, profile["name"]) > 0
+    # What data_origin would do: pull the probability to 50% and say that the UFC numbers are missing.
+    assert _eased(0.8, profile) == 0.8
+    assert not any("outside the UFC" in reason for reason in assess(profile, profile)["reasons"])
+
+
+@pytest.mark.parametrize("name", ["Dawoon Jung", "Patricky Pitbull", "Usman Nurmagomedov", "Tyree Fortune", "Kevin Ferguson Jr.", "Lucas Almeida Barreto"])
+def test_a_brother_or_a_near_namesake_of_a_ufc_fighter_keeps_the_own_profile(prefight, name):
+    profile = get_fighter_profile(name)
+    assert profile["name"] == name
+    assert profile["data_origin"]
+    assert _ufc_fights(prefight, name) == 0
+
+
+def test_the_lfa_flyweight_bruno_silva_is_not_the_ufc_middleweight():
+    # ESPN calls both men Bruno Silva (data/raw/espn_athletes.csv): the LFA file has the flyweight, under his catalog name.
+    [bulldog] = [fighter for fighter in org_service.get_org_fighters("lfa") if (fighter["profile_url"] or "").endswith("/id/3895544")]
+    profile = get_fighter_profile(bulldog["name"])
+    assert (profile["nickname"], profile["division"]) == ("Bulldog", "Flyweight")
+    assert get_fighter_profile("Bruno Silva")["nickname"] == "Blindado"
+
+
+def test_the_duplicate_row_of_jose_souza_is_folded_into_him():
+    assert "Jose Henrique" not in set(get_fighter_catalog()["name"])
+
+
+def test_every_alias_leads_to_a_catalog_fighter():
+    names = set(get_fighter_catalog()["name"])
+    assert {alias: name for alias, name in load_name_aliases().items() if name not in names} == {}
 
 
 @pytest.mark.parametrize("typed", ["Definitely Not A Real Fighter Name", "definitely not a real fighter name", "!!!", ""])

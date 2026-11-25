@@ -105,6 +105,7 @@ STANDALONE = [org_id for org_id, org in ORGS.items() if org.since is None]
 SAME_PERSON: dict[str, dict[str, str]] = {
     "ksw": {"Oleksii Polishchuk": "Oleksii Polischuck", "Patryk Surdyn": "Patrick Surdyn"},
     "rizin": {"Kyung Pyo Kim": "KyeungPyo Kim"},
+    "lfa": {"Bruno Silva": "Bruno Gustavo da Silva"},  # the flyweight, pinned in data/raw/espn_athletes.csv
 }
 # Pairs of names a card put together (same event, same opponent) that I judged to be two people, or could not tell: the bout stays
 # recognised (it is not added twice), but neither name is written as the other for the rest of the files. name_key spellings.

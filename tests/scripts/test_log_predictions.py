@@ -222,14 +222,14 @@ def test_a_fight_moved_to_a_later_card_closes_the_pick_of_the_first_date(log_fil
 
 
 def test_the_same_fight_saved_under_two_spellings_counts_once(log_file, monkeypatch):
-    logged(monkeypatch, [("Ana One", "Jose Souza"), ("Ana One", "Jose Henrique")])
+    logged(monkeypatch, [("Ana One", "Jose Souza"), ("Ana One", "Jose Qwerty")])
     results(monkeypatch, [("2026-11-07", "Jose Souza", "Ana One", "Jose Souza")])
     log_predictions.resolve(today="2026-11-12")
     assert outcome(0) == ("False", "Jose Souza") and outcome(1) == ("n/a", track_record_service.DUPLICATE_PICK)
 
 
 def test_a_pick_that_may_be_the_fight_under_another_spelling_is_left_open_and_reported(log_file, monkeypatch, capsys):
-    logged(monkeypatch, [("Ana One", "Jose Henrique")])
+    logged(monkeypatch, [("Ana One", "Jose Qwerty")])
     results(monkeypatch, [("2026-11-07", "Jose Souza", "Ana One", "Jose Souza")])
     assert log_predictions.resolve(today="2026-11-12") == 0
     assert outcome() == ("", "") and "name_aliases.csv" in capsys.readouterr().out

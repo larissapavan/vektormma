@@ -42,6 +42,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta
+from functools import lru_cache
 from pathlib import Path
 
 import requests
@@ -58,7 +59,18 @@ from scripts.scrape_bellator import (
     parse_bout_method,
     propagate_weight_classes,
 )
-from scripts.scrape_espn import ascii_name, clean_clock, clean_round, load_csv, map_weight_class, name_key, save_csv
+from scripts.scrape_espn import (
+    FIGHTERS_PATH,
+    Catalog,
+    ascii_name,
+    clean_clock,
+    clean_round,
+    load_csv,
+    load_pinned_athletes,
+    map_weight_class,
+    name_key,
+    save_csv,
+)
 from scripts.scrape_pfl import FIGHT_FIELDS, FIGHTER_FIELDS, RANKING_FIELDS
 from src.ufc_predictor.config import BASE_DIR, RAW_DATA_DIR
 
@@ -159,6 +171,16 @@ def bout_weight_class(competition: dict) -> str:
     return map_weight_class((competition.get("type") or {}).get("abbreviation", ""))
 
 
+@lru_cache(maxsize=1)
+def pinned_names() -> dict[str, str]:
+    """ESPN athlete id -> the UFC catalog name of the fighters in data/raw/espn_athletes.csv.
+
+    ESPN calls the flyweight Bruno Gustavo da Silva "Bruno Silva", the catalog name of a middleweight: under ESPN's name his
+    LFA bout would lead to the other man's profile, because the site finds a profile by name."""
+    names = {row["fighter_url"]: Catalog.name_of(row) for row in load_csv(FIGHTERS_PATH)[1]}
+    return {espn_id: names[url] for espn_id, url in load_pinned_athletes().items() if url in names}
+
+
 def parse_events(payload: dict, league: League) -> list[dict]:
     """Events of a scoreboard answer with their bouts. The main event is first, as on the other organizations' cards."""
     events = []
@@ -180,7 +202,7 @@ def parse_events(payload: dict, league: League) -> list[dict]:
                     "fighters": [
                         {
                             "id": str(c["id"]),
-                            "name": c["athlete"]["displayName"].strip(),
+                            "name": pinned_names().get(str(c["id"]), c["athlete"]["displayName"].strip()),
                             "flag": ((c["athlete"].get("flag") or {}).get("alt") or "").strip(),
                             "record": next((r.get("summary", "") for r in c.get("records") or []), ""),
                         }

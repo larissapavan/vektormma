@@ -44,6 +44,12 @@ def test_every_league_is_a_registered_organisation_with_the_same_id_and_a_data_f
         assert ORGS[league.id].data_dir.name == league.id
 
 
+def test_a_pinned_athlete_gets_the_ufc_catalog_name_and_a_namesake_keeps_the_name_espn_gives():
+    bulldog, namesake, kenney = competitor("3895544", "Bruno Silva", 1), competitor("77", "Bruno Silva", 1), competitor("4030197", "Casey Kenney", 2, winner=True)
+    [event] = esp.parse_events(scoreboard(competition("1", [namesake, kenney]), competition("2", [bulldog, kenney])), LFA)
+    assert [bout["fighters"][0]["name"] for bout in event["bouts"]] == ["Bruno Gustavo da Silva", "Bruno Silva"]
+
+
 def test_the_venue_comes_from_the_event_or_else_from_a_bout():
     on_event = scoreboard(two(), venues=[{"address": {"city": "Phoenix", "state": "AZ", "country": "USA"}}], date_text="2024-12-06T23:00Z")
     on_bout = scoreboard(two(venue={"address": {"city": "Warsaw", "country": "Poland"}}), date_text="2024-12-06T18:00Z")
