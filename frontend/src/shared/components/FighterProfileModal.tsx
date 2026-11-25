@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { L, formatDecimal } from '../../i18n/lang'
+import { ModelRecordPanel } from './ModelRecordPanel'
 import { OtherOrganizationsPanel } from './OtherOrganizationsPanel'
 import { getDivisionName } from '../data/divisions'
 import { translateFightMethod, translateHometown, translateStance } from '../data/fightLabels'
@@ -742,6 +743,7 @@ export function FighterProfileModal({
                   </div>
                 </div>
                 <OtherOrganizationsPanel name={name} />
+                <ModelRecordPanel name={name} />
               </>
             )}
           </div>

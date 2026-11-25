@@ -1,10 +1,13 @@
 import axios from 'axios'
+
+import { apiBaseURL, BUILD_ID } from './apiBase'
 import type {
   DivisionMatrix,
-  SyncTrackRecordResponse,
   OtherOrganization,
   ChampionsResponse,
   DataInfo,
+  FighterModelRecord,
+  Surprises,
   EventSummary,
   FighterPerformance,
   FighterProfile,
@@ -30,16 +33,8 @@ import type {
   RankingCategory,
 } from '../types/api'
 
-const apiBaseURL = import.meta.env.DEV
-  ? import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000'
-  : '/api'
-
-declare const __BUILD_ID__: string | undefined
-
 // Every request carries the build id, so each deploy starts with fresh answers instead of whatever the browser cached
-// from the previous one (the API caches for up to an hour). Without the define (a stray config, tests) it is "dev".
-const BUILD_ID = typeof __BUILD_ID__ === 'undefined' ? 'dev' : __BUILD_ID__
-
+// from the previous one (the API caches for up to an hour).
 const api = axios.create({
   baseURL: apiBaseURL,
   timeout: 60000,
@@ -60,8 +55,24 @@ function shared<T>(key: string, request: () => Promise<T>): Promise<T> {
 }
 
 export const getFighters = async () => {
-  const response = await api.get<FighterProfile[]>('/fighters', { params: { ufc_only: true } })
-  return response.data
+  const response = await api.get<FighterProfile[] | FighterColumns>('/fighters', { params: { ufc_only: true, columns: true } })
+  return fightersFrom(response.data)
+}
+
+export interface FighterColumns {
+  count: number
+  columns: Record<string, unknown[]>
+}
+
+/** One object per fighter, from the column form. An API from before it ignores the request for columns and sends the list. */
+export function fightersFrom(data: FighterProfile[] | FighterColumns): FighterProfile[] {
+  if (Array.isArray(data)) return data
+  const entries = Object.entries(data.columns)
+  return Array.from({ length: data.count }, (_, row) => {
+    const fighter: Record<string, unknown> = {}
+    for (const [field, values] of entries) fighter[field] = values[row]
+    return fighter as unknown as FighterProfile
+  })
 }
 
 export const getPhotoCredits = () =>
@@ -153,6 +164,16 @@ export const getOtherOrganizations = async (fighterName: string) => {
   return response.data
 }
 
+export const getModelRecord = async (fighterName: string) => {
+  const response = await api.get<FighterModelRecord>(`/fighters/${encodeURIComponent(fighterName)}/model-record`)
+  return response.data
+}
+
+export const getSurprises = async () => {
+  const response = await api.get<Surprises>('/track-record/surprises')
+  return response.data
+}
+
 export const getModelInfo = () =>
   shared('/model-info', async () => {
     const response = await api.get<ModelInfo>('/model-info')
@@ -241,10 +262,5 @@ export const getGyms = async () => {
 
 export const getGym = async (slug: string) => {
   const response = await api.get<GymDetail>(`/gyms/${encodeURIComponent(slug)}`)
-  return response.data
-}
-
-export const syncTrackRecord = async () => {
-  const response = await api.post<SyncTrackRecordResponse>('/track-record/sync')
   return response.data
 }

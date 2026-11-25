@@ -4,22 +4,17 @@ import { ExternalLink } from 'lucide-react'
 import { L, localeTag } from '../i18n/lang'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { SectionHeading } from '../shared/components/SectionHeading'
-import { DATA_ECOSYSTEM_SOURCES, dataSteps, sourceOrg, sourceScope } from '../shared/data/dataPipeline'
+import { DATA_ECOSYSTEM_SOURCES, dataSteps, refreshSourceLabel, sourceOrg, sourceScope } from '../shared/data/dataPipeline'
 import { useDataInfo } from '../shared/hooks/useDataInfo'
 import { useModelInfo } from '../shared/hooks/useModelInfo'
+import type { SourceRefresh } from '../shared/types/api'
 
 
 export function DataIntelligence() {
   const { t, i18n } = useTranslation()
   const { dataInfo, loading, error } = useDataInfo()
 
-  const formattedDate = dataInfo?.last_updated
-    ? new Date(`${dataInfo.last_updated}T00:00:00`).toLocaleDateString(localeTag(i18n.language), {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
-    : '—'
+  const formattedDate = longDate(dataInfo?.last_updated, i18n.language)
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -61,6 +56,8 @@ export function DataIntelligence() {
             />
           </section>
 
+          {dataInfo.refresh?.length ? <RefreshSection refresh={dataInfo.refresh} latestFight={dataInfo.latest_fight_date} /> : null}
+
           <section className="border-t-[3px] border-[var(--ink)] pt-5">
             <h2 className="section-title">{t('dataIntelligence.pipelineTitle')}</h2>
             <p className="mt-2 max-w-[70ch] text-base text-[var(--muted)]">{t('dataIntelligence.pipelineDesc')}</p>
@@ -97,6 +94,57 @@ export function DataIntelligence() {
         </>
       )}
     </div>
+  )
+}
+
+function longDate(day: string | null | undefined, lang: string): string {
+  const date = day ? new Date(`${day}T00:00:00`) : null
+  return date && !Number.isNaN(date.getTime()) ? date.toLocaleDateString(localeTag(lang), { year: 'numeric', month: 'long', day: 'numeric' }) : '—'
+}
+
+/** When each source last worked. One that is failing says so: the page must not look fresher than the data. */
+function RefreshSection({ refresh, latestFight }: { refresh: SourceRefresh[]; latestFight?: string | null }) {
+  const { i18n } = useTranslation()
+  const lang = i18n.language
+
+  return (
+    <section className="border-t-[3px] border-[var(--ink)] pt-5">
+      <h2 className="section-title">
+        {L(lang, 'Última atualização de cada fonte', 'Last update of each source', 'Dernière mise à jour de chaque source', 'Última actualización de cada fuente')}
+      </h2>
+      {latestFight ? (
+        <p className="mt-2 max-w-[70ch] text-base text-[var(--muted)]">
+          {L(
+            lang,
+            `A luta mais recente do UFC com resultado é de ${longDate(latestFight, lang)}.`,
+            `The newest UFC fight with a result is from ${longDate(latestFight, lang)}.`,
+            `Le combat de l’UFC le plus récent avec un résultat date du ${longDate(latestFight, lang)}.`,
+            `La pelea más reciente de la UFC con resultado es del ${longDate(latestFight, lang)}.`,
+          )}
+        </p>
+      ) : null}
+      <dl className="mt-4 border-t border-[var(--rule)]">
+        {refresh.map((entry) => (
+          <div key={entry.source} className="grid gap-x-6 gap-y-0.5 border-b border-[var(--rule)] py-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+            <dt className="font-semibold text-[var(--ink)]">{refreshSourceLabel(entry.source, lang)}</dt>
+            <dd className="text-base tabular-nums text-[var(--ink)] sm:text-right">
+              {entry.last_success ? longDate(entry.last_success, lang) : L(lang, 'Ainda não atualizada', 'Not updated yet', 'Pas encore mise à jour', 'Aún sin actualizar')}
+              {entry.failing_since ? (
+                <span className="block text-sm font-semibold">
+                  {L(
+                    lang,
+                    `Sem conseguir atualizar desde ${longDate(entry.failing_since, lang)}`,
+                    `Updates failing since ${longDate(entry.failing_since, lang)}`,
+                    `Mise à jour en échec depuis le ${longDate(entry.failing_since, lang)}`,
+                    `Sin poder actualizarse desde el ${longDate(entry.failing_since, lang)}`,
+                  )}
+                </span>
+              ) : null}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
   )
 }
 

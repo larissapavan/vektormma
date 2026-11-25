@@ -16,6 +16,7 @@ from backend.app.routers.meta import build_meta_router
 from backend.app.routers.prediction import _predict_all_upcoming, build_prediction_router
 from backend.app.schemas.model_info import ModelInfoResponse
 from backend.app.services import prefight_service
+from backend.app.services.prediction_service import pretty_feature_name
 from backend.app.services.prefight_service import PrefightPredictionService, build_prediction_service, selected_model
 from backend.app.utils.constants import PREFIGHT_HIGHLIGHTS, PREFIGHT_LIMITATIONS
 from src.ufc_predictor.config import PREFIGHT_MODEL_PATH
@@ -133,7 +134,7 @@ def test_the_factors_are_the_same_in_both_orders_and_add_up(service, a, b):
 
     x_ab, x_ba = service._both_orders(get_fighter_profile(a), get_fighter_profile(b))
     total = service._combined_attributions(x_ab, x_ba).sum()
-    raw = service.model.predict_proba(x_ab)[:, 1][0], service.model.predict_proba(x_ba)[:, 1][0]
+    raw = [np.mean([member.predict_proba(x)[0, 1] for member in service.members]) for x in (x_ab, x_ba)]
     assert abs(total - ((raw[0] + 1 - raw[1]) / 2 - 0.5)) < SHAP_SUM_CEILING
     assert abs(total + service._combined_attributions(x_ba, x_ab).sum()) < TOLERANCE
 
@@ -151,6 +152,61 @@ def test_both_orders_see_the_fight_in_the_same_way(service):
     assert x_ab.at[0, "scheduled_rounds"] == 5.0  # nothing said about the rounds: a title fight is five
 
 
+def test_the_served_model_is_the_average_of_the_members_and_has_its_own_key_in_the_track_record(service):
+    assert len(service.members) == 2
+    assert service.model_key == "prefight2"
+    assert service.trained_through >= service.recent_evaluation["end"]  # it learned the test fights too, after being tested
+
+
+def test_the_columns_about_results_are_explained_as_one_factor(service):
+    """Rating, wins and losses are weighed against each other: alone, "more wins" would count against a fighter."""
+    labels = [f["feature"] for a, b in PAIRS for f in service.predict_matchup(a, b)["main_factors"]]
+    assert "UFC results and level of opposition" in labels
+    assert not {"Rating (Elo) difference", "UFC wins difference", "UFC losses difference"} & set(labels)
+
+
+@pytest.mark.parametrize(("a", "b"), PAIRS)
+def test_each_factor_carries_what_the_model_read_for_each_fighter(service, a, b):
+    from backend.app.services.catalog_service import get_fighter_profile
+
+    forward = service.predict_matchup(a, b)["main_factors"]
+    backward = {factor["key"]: factor for factor in service.predict_matchup(b, a)["main_factors"]}
+    x_ab, _ = service._both_orders(get_fighter_profile(a), get_fighter_profile(b))
+    for factor in forward:
+        mirrored = backward[factor["key"]]
+        if factor["key"] == "ufc_results":
+            assert factor["results_a"] == mirrored["results_b"] and factor["results_a"]["fights"] > 0
+            assert factor["results_a"]["elo"] - factor["results_b"]["elo"] == pytest.approx(x_ab.at[0, "elo_diff"], abs=1)
+        elif factor["key"].endswith("_diff"):
+            assert (factor["value_a"], factor["value_b"]) == (mirrored["value_b"], mirrored["value_a"])
+            if factor["value_a"] is not None and factor["value_b"] is not None:
+                assert factor["value_a"] - factor["value_b"] == pytest.approx(x_ab.at[0, factor["key"]])
+
+
+def test_a_number_the_model_does_not_have_is_none_and_not_a_made_up_one(service):
+    factors = [{"key": "sig_acc_diff"}, {"key": "ufc_results"}, {"key": "weight_lbs"}]
+    newcomer = {"name": "Nobody Atall", "age": 30.0, "height_cm": 180.0, "reach_cm": None, "stance": ""}
+    service._add_factor_values(factors, newcomer, {"name": "Islam Makhachev"})
+    assert factors[0]["value_a"] is None and 0 < factors[0]["value_b"] < 1
+    assert factors[1]["results_a"]["fights"] == 0 and factors[1]["results_b"]["wins"] > 10
+    assert factors[2]["value_a"] is None and factors[2]["value_b"] is None  # about the fight, not about a fighter
+
+
+def test_every_factor_has_a_written_label():
+    unlabelled = [c for c in [*FEATURE_COLUMNS, "ufc_results"] if c.endswith("_diff") and pretty_feature_name(c).endswith("Diff")]
+    assert unlabelled == [] and pretty_feature_name("ufc_results") == "UFC results and level of opposition"
+
+
+def test_the_linear_attributions_add_up_exactly():
+    rng = np.random.default_rng(1)
+    weights, background, rows = rng.normal(size=4), rng.normal(size=(30, 4)), rng.normal(size=(3, 4))
+    p = lambda x: 1 / (1 + np.exp(-(x @ weights + 0.2)))  # noqa: E731
+    values = prefight_service.linear_attributions(weights, 0.2, background, rows)
+    np.testing.assert_allclose(values.sum(axis=1), p(rows) - p(background).mean(), atol=1e-12)
+    same = prefight_service.linear_attributions(weights, 0.2, background[:1], background[:1])
+    np.testing.assert_allclose(same, 0, atol=1e-12)
+
+
 # --------------------------------------------------------------------------- calibration
 
 
@@ -158,7 +214,7 @@ def test_the_probability_is_the_stored_temperature_applied_to_the_two_order_aver
     from backend.app.services.catalog_service import get_fighter_profile
 
     x_ab, x_ba = service._both_orders(get_fighter_profile("Alex Pereira"), get_fighter_profile("Magomed Ankalaev"))
-    forward, backward = service.model.predict_proba(x_ab)[0, 1], service.model.predict_proba(x_ba)[0, 1]
+    forward, backward = (np.mean([member.predict_proba(x)[0, 1] for member in service.members]) for x in (x_ab, x_ba))
     raw = (forward + 1 - backward) / 2
     expected = calibrate(np.array([raw]), service.temperature)[0]
     assert service._symmetric_probability(x_ab, x_ba) == pytest.approx(expected, abs=TOLERANCE)
@@ -233,7 +289,8 @@ def test_the_model_info_is_valid_and_describes_the_prefight_model(service):
     assert "pre-fight" in parsed.model_name
     assert parsed.recent_evaluation and parsed.recent_evaluation.fights > 1000
     assert parsed.recent_evaluation.calibration and parsed.recent_evaluation.baselines
-    assert parsed.metrics_note.startswith("Measured once on ")
+    assert re.match(r"Measured on [\d,]+ fights .+ up to \w+ \d{4}\.$", parsed.metrics_note)
+    assert parsed.recent_evaluation.segments and parsed.recent_evaluation.importance
     assert parsed.limitations[-1] == "This is a personal project for learning, not betting advice."
     assert 0.55 < parsed.metrics["accuracy"] < 0.75  # honest, not the 75% the current model's file reports
 
@@ -257,3 +314,4 @@ def test_the_upcoming_picks_are_consistent(service):
         assert pick.probability == pytest.approx(max(pick.fighter_1_probability, 1 - pick.fighter_1_probability))
         assert pick.predicted_winner in (pick.fighter_1, pick.fighter_2)
         assert (pick.predicted_winner == pick.fighter_1) == (pick.fighter_1_probability >= 0.5)
+        assert pick.data_level in {"solid", "some_gaps", "thin"}

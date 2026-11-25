@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import os
+import time
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
@@ -21,6 +22,7 @@ from backend.app.routers.fighters import router as fighters_router
 from backend.app.routers.game import build_game_router
 from backend.app.routers.gyms import router as gyms_router
 from backend.app.routers.meta import build_meta_router
+from backend.app.routers.monitor import router as monitor_router
 from backend.app.routers.news import router as news_router
 from backend.app.routers.orgs import router as orgs_router
 from backend.app.routers.prediction import build_prediction_router
@@ -28,6 +30,7 @@ from backend.app.routers.rankings import router as rankings_router
 from backend.app.routers.record_book import router as record_book_router
 from backend.app.routers.results import router as results_router
 from backend.app.routers.track_record import router as track_record_router
+from backend.app.services.monitor_service import monitor
 from backend.app.services.prediction_service import PredictionService
 from backend.app.services.prefight_service import build_prediction_service
 from backend.app.utils.edge_cache import edge_cache_headers
@@ -129,7 +132,26 @@ async def add_security_headers(request: Request, call_next):
     return response
 
 
+# Added last, so it is the outermost: it times everything the others do and sees an exception before it becomes a 500.
+@app.middleware("http")
+async def time_requests(request: Request, call_next):
+    started = time.perf_counter()
+    status = 499  # the visitor left before the answer: not a failure of ours
+    try:
+        response = await call_next(request)
+        status = response.status_code
+        return response
+    except Exception:
+        status = 500
+        raise
+    finally:
+        # The route's template (/fighters/{name}/elo), never the address itself: no fighter, no query, and few of them.
+        route = getattr(request.scope.get("route"), "path", "(no route)")
+        monitor.request(f"{request.method} {route}", status, (time.perf_counter() - started) * 1000)
+
+
 app.include_router(build_meta_router(get_prediction_service))
+app.include_router(monitor_router)
 app.include_router(fighters_router)
 app.include_router(events_router)
 app.include_router(rankings_router)

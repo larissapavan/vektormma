@@ -8,9 +8,11 @@ from scripts import log_predictions
 class FakeService:
     def __init__(self):
         self.calls = []
+        self.contexts = []
 
-    def predict_pick(self, a, b):
+    def predict_pick(self, a, b, context=None):
         self.calls.append((a, b))
+        self.contexts.append(context)
         if "Unknown" in (a, b):
             raise KeyError("not in the catalog")
         return {"fighter_a_probability": 0.7, "predicted_winner": a, "probability": 0.7}
@@ -20,6 +22,12 @@ class FakeService:
 def log_file(tmp_path, monkeypatch):
     monkeypatch.setattr(track_record_service, "PREDICTION_LOG_PATH", tmp_path / "prediction_log.csv")
     return tmp_path / "prediction_log.csv"
+
+
+@pytest.fixture(autouse=True)
+def no_announced_fights(monkeypatch):
+    """No test of this file reads the real cards: they change every day."""
+    monkeypatch.setattr(log_predictions, "get_upcoming_events", list)
 
 
 def upcoming(monkeypatch, fights, date="2026-11-07"):
@@ -44,6 +52,21 @@ def test_every_announced_fight_is_logged_once_with_the_pick_and_confidence(log_f
 def test_fights_that_already_happened_are_not_logged(log_file, monkeypatch):
     upcoming(monkeypatch, [("Fighter One", "Fighter Two")], date="2026-10-01")
     assert log_predictions.log_upcoming(FakeService(), today="2026-10-15") == 0
+
+
+def test_nothing_is_logged_on_the_day_of_the_card_because_the_fight_may_be_over(log_file, monkeypatch):
+    upcoming(monkeypatch, [("Fighter One", "Fighter Two")], date="2026-11-07")
+    assert log_predictions.log_upcoming(FakeService(), today="2026-11-07") == 0
+    assert log_predictions.log_upcoming(FakeService(), today="2026-11-06") == 1
+
+
+def test_the_pick_is_made_with_what_the_site_also_tells_the_model(log_file, monkeypatch):
+    fight = {"fighter_1": "Fighter One", "fighter_2": "Fighter Two", "weight_class": "Lightweight", "title_fight": True, "num_rounds": 5}
+    monkeypatch.setattr(log_predictions, "get_upcoming_events", lambda: [{"name": "UFC 999", "date": "2026-11-07", "fights": [fight]}])
+    service = FakeService()
+    log_predictions.log_upcoming(service, today="2026-11-01")
+    log_predictions.refresh_unresolved(service, today="2026-11-02")
+    assert service.contexts == [{"weight_class": "Lightweight", "title_fight": True, "num_rounds": 5}] * 2
 
 
 def history(rows):
@@ -143,3 +166,70 @@ def test_refreshing_the_unresolved_picks_records_the_new_model(log_file, monkeyp
     assert log_predictions.refresh_unresolved(Prefight(), today="2026-11-02") == 1
     row = track_record_service.load_log().iloc[0]
     assert (row["model"], row["logged_at"]) == ("prefight", "2026-11-02")
+
+
+def logged(monkeypatch, fights, day="2026-11-07"):
+    """Saves a pick for each fight and then takes the card down, as happens once it is over."""
+    upcoming(monkeypatch, fights, date=day)
+    log_predictions.log_upcoming(FakeService(), today="2026-11-01")
+    monkeypatch.setattr(log_predictions, "get_upcoming_events", list)
+
+
+def results(monkeypatch, rows):
+    monkeypatch.setattr(log_predictions, "_load_fight_history", lambda: history(rows))
+
+
+def outcome(index=0):
+    row = track_record_service.load_log().iloc[index]
+    return row["correct"], row["winner"]
+
+
+def test_a_fight_that_never_took_place_is_closed_once_the_results_of_its_day_are_in(log_file, monkeypatch):
+    logged(monkeypatch, [("Ana One", "Bia Two")])
+    results(monkeypatch, [("2026-10-31", "Other Person", "Someone Else", "Other Person")])
+    assert log_predictions.resolve(today="2026-11-30") == 0  # no result of that day yet: the refresh may just be behind
+
+    results(monkeypatch, [("2026-11-07", "Ana One", "Cleo Three", "Ana One")])  # she fought a replacement
+    assert log_predictions.resolve(today="2026-11-09") == 0  # too soon
+    assert log_predictions.resolve(today="2026-11-10") == 1
+    assert outcome() == ("n/a", track_record_service.DID_NOT_HAPPEN)
+    assert log_predictions.resolve(today="2026-11-11") == 0  # closed once
+
+
+def test_a_closed_pick_is_settled_after_all_when_its_result_turns_up(log_file, monkeypatch):
+    logged(monkeypatch, [("Ana One", "Bia Two")])
+    results(monkeypatch, [("2026-11-07", "Other Person", "Someone Else", "Other Person")])
+    log_predictions.resolve(today="2026-11-10")
+    results(monkeypatch, [("2026-11-08", "Ana One", "Bia Two", "Bia Two")])  # filed under the next day
+    assert log_predictions.resolve(today="2026-11-12") == 1
+    assert outcome() == ("False", "Bia Two")
+
+
+def test_a_rematch_months_later_does_not_settle_the_first_pick(log_file, monkeypatch):
+    logged(monkeypatch, [("Ana One", "Bia Two")])
+    results(monkeypatch, [("2027-03-01", "Ana One", "Bia Two", "Bia Two")])
+    log_predictions.resolve(today="2027-03-02")
+    assert outcome() == ("n/a", track_record_service.DID_NOT_HAPPEN)
+
+
+def test_a_fight_moved_to_a_later_card_closes_the_pick_of_the_first_date(log_file, monkeypatch):
+    logged(monkeypatch, [("Ana One", "Bia Two")], day="2026-12-12")
+    upcoming(monkeypatch, [("Bia Two", "Ana One")], date="2027-02-13")
+    assert log_predictions.log_upcoming(FakeService(), today="2026-11-20") == 1  # the new date gets its own pick
+    results(monkeypatch, [("2026-11-07", "Other Person", "Someone Else", "Other Person")])
+    assert log_predictions.resolve(today="2026-11-20") == 1
+    assert outcome(0) == ("n/a", track_record_service.RESCHEDULED) and outcome(1) == ("", "")
+
+
+def test_the_same_fight_saved_under_two_spellings_counts_once(log_file, monkeypatch):
+    logged(monkeypatch, [("Ana One", "Jose Souza"), ("Ana One", "Jose Henrique")])
+    results(monkeypatch, [("2026-11-07", "Jose Souza", "Ana One", "Jose Souza")])
+    log_predictions.resolve(today="2026-11-12")
+    assert outcome(0) == ("False", "Jose Souza") and outcome(1) == ("n/a", track_record_service.DUPLICATE_PICK)
+
+
+def test_a_pick_that_may_be_the_fight_under_another_spelling_is_left_open_and_reported(log_file, monkeypatch, capsys):
+    logged(monkeypatch, [("Ana One", "Jose Henrique")])
+    results(monkeypatch, [("2026-11-07", "Jose Souza", "Ana One", "Jose Souza")])
+    assert log_predictions.resolve(today="2026-11-12") == 0
+    assert outcome() == ("", "") and "name_aliases.csv" in capsys.readouterr().out

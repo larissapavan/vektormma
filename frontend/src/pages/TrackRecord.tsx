@@ -1,17 +1,24 @@
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CalendarClock, Check, RefreshCw, Scale, Target, X } from 'lucide-react'
+import { CalendarClock, Check, Scale, Target, X } from 'lucide-react'
 
-import { L, localeTag, uiLang } from '../i18n/lang'
+import { L, formatDecimal, localeTag, uiLang } from '../i18n/lang'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
+import { SurprisesCard } from '../shared/components/SurprisesCard'
 import { PageHeader } from '../shared/components/ui/PageHeader'
 import { Stat } from '../shared/components/ui/Stat'
 import { localizeApiText } from '../shared/data/apiText'
 import { shownMetrics } from '../shared/data/modelAccuracy'
 import { useModelInfo } from '../shared/hooks/useModelInfo'
 import { useTrackRecord } from '../shared/hooks/useTrackRecord'
-import { syncTrackRecord } from '../shared/services/api'
-import type { ConfidenceBand, ModelRecord, RecentEvaluation, TrackedFight } from '../shared/types/api'
+import type { ConfidenceBand, ModelRecord, RecentEvaluation, Scores, TrackRecord as TrackRecordData, TrackedFight } from '../shared/types/api'
+
+/** "entre 48% e 70%": the range the hit rate is in, given how few fights there are. */
+function rangeText(scores: Pick<Scores, 'accuracy_low' | 'accuracy_high'>, lang: string): string | null {
+  if (scores.accuracy_low == null || scores.accuracy_high == null) return null
+  const low = percent(scores.accuracy_low)
+  const high = percent(scores.accuracy_high)
+  return L(lang, `entre ${low} e ${high}`, `between ${low} and ${high}`, `entre ${low} et ${high}`, `entre ${low} y ${high}`)
+}
 
 const percent = (value: number | null | undefined) => (value == null ? '—' : `${Math.round(value * 100)}%`)
 
@@ -25,52 +32,13 @@ function formatDate(date: string | null | undefined, lang: string = 'en-US') {
 
 export function TrackRecord() {
   const { t, i18n } = useTranslation()
-  const { data, loading, error, reload } = useTrackRecord()
+  const { data, loading, error } = useTrackRecord()
   const { modelInfo } = useModelInfo()
   const shown = shownMetrics(modelInfo, i18n.language)
 
-  const [syncing, setSyncing] = useState(false)
-  const [syncMessage, setSyncMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
-
-  const handleSync = async () => {
-    setSyncing(true)
-    setSyncMessage(null)
-    try {
-      const res = await syncTrackRecord()
-      const msg = L(
-        i18n.language,
-        `Sincronização concluída: ${res.settled_count} lutas resolvidas, ${res.new_logged_count} novas lutas registradas. Total resolvidas: ${res.total_resolved}.`,
-        `Sync complete: ${res.settled_count} fights settled, ${res.new_logged_count} new logged. Total settled: ${res.total_resolved}.`,
-        `Synchronisation terminée : ${res.settled_count} combats réglés, ${res.new_logged_count} nouveaux enregistrés. Total réglé : ${res.total_resolved}.`,
-        `Sincronización completa: ${res.settled_count} peleas resueltas, ${res.new_logged_count} nuevas registradas. Total resueltas: ${res.total_resolved}.`,
-      )
-      setSyncMessage({ type: 'success', text: msg })
-      await reload()
-    } catch (err) {
-      console.error(err)
-      setSyncMessage({
-        type: 'error',
-        text: L(i18n.language, 'Falha ao sincronizar resultados com o servidor.', 'Failed to sync results with the server.', 'Échec de la synchronisation des résultats avec le serveur.', 'No se pudieron sincronizar los resultados con el servidor.'),
-      })
-    } finally {
-      setSyncing(false)
-    }
-  }
-
   return (
     <div className="space-y-12">
-      <PageHeader title={t('trackRecord.title')} description={t('trackRecord.description')}>
-        <button type="button" onClick={handleSync} disabled={syncing} className="ghost-action inline-flex cursor-pointer items-center gap-2 px-5 disabled:cursor-wait disabled:opacity-60">
-          <RefreshCw className={`h-4 w-4 ${syncing ? 'animate-spin' : ''}`} aria-hidden="true" />
-          {syncing ? t('trackRecord.syncing') : t('trackRecord.syncButton')}
-        </button>
-      </PageHeader>
-
-      {syncMessage ? (
-        <p role="status" className="border-l-[3px] border-[var(--ink)] bg-[var(--panel)] px-4 py-3 text-base">
-          {syncMessage.text}
-        </p>
-      ) : null}
+      <PageHeader title={t('trackRecord.title')} description={t('trackRecord.description')} />
 
       {error ? <p role="alert" className="error-note">{error}</p> : null}
 
@@ -80,7 +48,7 @@ export function TrackRecord() {
         <>
           <section aria-label={L(i18n.language, 'Resumo de desempenho', 'Summary', 'Résumé', 'Resumen de rendimiento')}>
             <div className="grid grid-cols-2 gap-x-8 gap-y-6 border-t-[3px] border-[var(--ink)] pt-5 lg:grid-cols-4">
-              <BigStat label={t('trackRecord.liveAccuracy')} value={percent(data.accuracy)} note={data.resolved ? L(i18n.language, `${data.correct} de ${data.resolved}`, `${data.correct} of ${data.resolved}`, `${data.correct} sur ${data.resolved}`, `${data.correct} de ${data.resolved}`) : L(i18n.language, 'após o primeiro card', 'after the first card', 'après la première carte', 'después de la primera cartelera')} />
+              <BigStat label={t('trackRecord.liveAccuracy')} value={percent(data.accuracy)} note={data.resolved ? L(i18n.language, `${data.correct} de ${data.resolved}, todos os modelos`, `${data.correct} of ${data.resolved}, every model`, `${data.correct} sur ${data.resolved}, tous modèles`, `${data.correct} de ${data.resolved}, todos los modelos`) : L(i18n.language, 'após o primeiro card', 'after the first card', 'après la première carte', 'después de la primera cartelera')} />
               <BigStat label={shown.source === 'recent' ? t('trackRecord.recentFights') : t('trackRecord.reported')} value={percent(shown.accuracy)} note={shown.source === 'recent' ? shown.caption : undefined} />
               <Stat label={t('trackRecord.picksLogged')} value={`${data.logged}`} />
               <Stat label={t('trackRecord.settled')} value={`${data.resolved}`} note={data.pending ? `${data.pending} ${t('trackRecord.waiting')}` : undefined} />
@@ -94,6 +62,7 @@ export function TrackRecord() {
                 'La precisión en vivo cuenta solo los pronósticos guardados antes de cada cartelera, en peleas que ocurrieron después. La precisión en peleas recientes es una prueba con peleas ya disputadas que el modelo no vio en el entrenamiento. La de en vivo es la medida más fiel, pero aún abarca pocas peleas.',
               )}
             </p>
+            <LiveScores data={data} />
           </section>
 
           {data.resolved === 0 ? <WaitingCard data={data} /> : null}
@@ -103,6 +72,8 @@ export function TrackRecord() {
           ) : null}
 
           {data.models && data.models.length > 1 ? <ModelsCard models={data.models} /> : null}
+
+          {data.events?.length ? <EventsCard events={data.events} /> : null}
 
           {modelInfo?.recent_evaluation?.baselines?.length ? <BaselineCard evaluation={modelInfo.recent_evaluation} /> : null}
 
@@ -120,6 +91,10 @@ export function TrackRecord() {
             />
           ) : null}
 
+          {modelInfo?.recent_evaluation?.segments?.length ? <SegmentsCard evaluation={modelInfo.recent_evaluation} /> : null}
+
+          <SurprisesCard />
+
           {data.recent.length ? (
             <FightList title={t('trackRecord.recentResults')} fights={data.recent} />
           ) : null}
@@ -133,6 +108,21 @@ export function TrackRecord() {
               <li>{L(i18n.language, 'Cada combate anunciado tem seu palpite e probabilidade registrados antes do card, utilizando apenas os números históricos dos lutadores até aquela data.', "The daily update saves the model's pick and confidence for every announced fight, using each fighter's numbers that day.", 'La mise à jour quotidienne enregistre le choix et la confiance du modèle pour chaque combat annoncé, avec les chiffres de chaque combattant ce jour-là.', 'La actualización diaria guarda el pronóstico y la confianza del modelo para cada pelea anunciada, con los números que tenía cada peleador ese día.')}</li>
               <li>{L(i18n.language, 'Assim que o evento termina, o resultado oficial é confrontado com o palpite prévio. Empates e lutas sem resultado são desconsiderados.', 'After the event the result is matched to the saved pick. Draws and no contests count for neither side.', 'Après l’événement, le résultat est rapproché du choix enregistré. Les nuls et les sans-décision ne comptent pour personne.', 'Después del evento, el resultado se cruza con el pronóstico guardado. Los empates y las peleas sin resultado no cuentan para ningún lado.')}</li>
               <li>{L(i18n.language, 'As previsões ao vivo são o teste definitivo de desempenho no mundo real, sem qualquer viés retrospectivo.', 'Live picks are the true measure of predictive skill, evaluated strictly forward in time.', 'Les pronostics en direct sont la vraie mesure du modèle, évalués strictement vers l’avenir.', 'Los pronósticos en vivo son la verdadera medida de la capacidad predictiva, evaluados estrictamente hacia adelante en el tiempo.')}</li>
+              <li>{L(i18n.language, 'Quando o modelo muda, os palpites das lutas que ainda não aconteceram são refeitos com o novo, antes da luta. Os das lutas que já passaram ficam como estavam.', 'When the model changes, the picks of fights still to come are made again with the new one, before the fight. Those of past fights stay as they were.', 'Quand le modèle change, les pronostics des combats à venir sont refaits avec le nouveau, avant le combat. Ceux des combats passés restent tels quels.', 'Cuando el modelo cambia, los pronósticos de las peleas que aún no ocurren se rehacen con el nuevo, antes de la pelea. Los de las peleas pasadas quedan como estaban.')}</li>
+              {data.voided ? (
+                <li>
+                  {data.voided === 1
+                    ? L(i18n.language, '1 palpite salvo não conta: a luta não aconteceu, mudou de data ou já tinha outro palpite salvo. Ele continua no registro.', '1 saved pick does not count: the fight never took place, moved to another date or already had a saved pick. It stays in the log.', '1 pronostic enregistré ne compte pas : le combat n’a pas eu lieu, a changé de date ou avait déjà un pronostic. Il reste dans le registre.', '1 pronóstico guardado no cuenta: la pelea no se realizó, cambió de fecha o ya tenía otro pronóstico. Sigue en el registro.')
+                    : L(i18n.language, `${data.voided} palpites salvos não contam: a luta não aconteceu, mudou de data ou já tinha outro palpite salvo. Eles continuam no registro.`, `${data.voided} saved picks do not count: the fight never took place, moved to another date or already had a saved pick. They stay in the log.`, `${data.voided} pronostics enregistrés ne comptent pas : le combat n’a pas eu lieu, a changé de date ou avait déjà un pronostic. Ils restent dans le registre.`, `${data.voided} pronósticos guardados no cuentan: la pelea no se realizó, cambió de fecha o ya tenía otro pronóstico. Siguen en el registro.`)}
+                </li>
+              ) : null}
+              {data.awaiting_result ? (
+                <li>
+                  {data.awaiting_result === 1
+                    ? L(i18n.language, '1 luta já passou da data e ainda está sem resultado nos dados.', '1 fight is past its date and has no result in the data yet.', '1 combat a dépassé sa date et n’a pas encore de résultat dans les données.', '1 pelea ya pasó su fecha y aún no tiene resultado en los datos.')
+                    : L(i18n.language, `${data.awaiting_result} lutas já passaram da data e ainda estão sem resultado nos dados.`, `${data.awaiting_result} fights are past their date and have no result in the data yet.`, `${data.awaiting_result} combats ont dépassé leur date et n’ont pas encore de résultat dans les données.`, `${data.awaiting_result} peleas ya pasaron su fecha y aún no tienen resultado en los datos.`)}
+                </li>
+              ) : null}
               {data.earlier_model_note ? <li>{localizeApiText(data.earlier_model_note, i18n.language)}</li> : null}
               {data.model_change_note ? <li>{localizeApiText(data.model_change_note, i18n.language)}</li> : null}
             </ul>
@@ -179,6 +169,99 @@ function WaitingCard({ data }: { data: NonNullable<ReturnType<typeof useTrackRec
   )
 }
 
+/** How much the live number can be trusted, and whether the percentages beat saying 50% every time. Says it when they do not. */
+function LiveScores({ data }: { data: TrackRecordData }) {
+  const { i18n } = useTranslation()
+  const lang = i18n.language
+  const range = rangeText(data, lang)
+  if (!range || data.brier == null || data.average_confidence == null || data.accuracy == null) return null
+  const brier = formatDecimal(data.brier, 3, lang)
+  const coin = formatDecimal(0.25, 3, lang)
+  return (
+    <ul className="mt-4 max-w-[70ch] list-disc space-y-2 pl-5 text-base leading-7">
+      <li>
+        {L(
+          lang,
+          `Com ${data.resolved} lutas, o acerto real pode estar ${range} (intervalo de 95%).`,
+          `With ${data.resolved} fights, the true hit rate could be ${range} (95% interval).`,
+          `Avec ${data.resolved} combats, la vraie précision peut se situer ${range} (intervalle à 95 %).`,
+          `Con ${data.resolved} peleas, el acierto real puede estar ${range} (intervalo del 95 %).`,
+        )}
+      </li>
+      <li>
+        {L(
+          lang,
+          `A confiança média dos palpites foi de ${percent(data.average_confidence)}, e eles acertaram ${percent(data.accuracy)}.`,
+          `The picks said ${percent(data.average_confidence)} on average, and ${percent(data.accuracy)} of them were right.`,
+          `La confiance moyenne des pronostics était de ${percent(data.average_confidence)}, et ${percent(data.accuracy)} étaient justes.`,
+          `La confianza media de los pronósticos fue de ${percent(data.average_confidence)}, y acertaron el ${percent(data.accuracy)}.`,
+        )}
+      </li>
+      <li>
+        {data.brier < 0.25
+          ? L(lang, `Erro das probabilidades (Brier): ${brier}. Dizer sempre 50% daria ${coin}; quanto menor, melhor.`, `Error of the percentages (Brier): ${brier}. Saying 50% every time would score ${coin}; lower is better.`, `Erreur des probabilités (Brier) : ${brier}. Dire toujours 50 % donnerait ${coin} ; plus c’est bas, mieux c’est.`, `Error de las probabilidades (Brier): ${brier}. Decir siempre 50 % daría ${coin}; cuanto más bajo, mejor.`)
+          : L(lang, `Erro das probabilidades (Brier): ${brier}. Dizer sempre 50% daria ${coin}, então até aqui as porcentagens ao vivo saíram piores que o cara ou coroa.`, `Error of the percentages (Brier): ${brier}. Saying 50% every time would score ${coin}, so the live percentages have done worse than a coin flip so far.`, `Erreur des probabilités (Brier) : ${brier}. Dire toujours 50 % donnerait ${coin} : jusqu’ici, les pourcentages en direct ont fait moins bien que pile ou face.`, `Error de las probabilidades (Brier): ${brier}. Decir siempre 50 % daría ${coin}, así que hasta ahora los porcentajes en vivo han sido peores que cara o cruz.`)}
+      </li>
+    </ul>
+  )
+}
+
+/** Hits card by card, so a good or bad night can be seen in the total. */
+function EventsCard({ events }: { events: NonNullable<TrackRecordData['events']> }) {
+  const { i18n } = useTranslation()
+  const lang = i18n.language
+  return (
+    <section className="border-t-[3px] border-[var(--ink)] pt-4">
+      <div className="flex items-center gap-2">
+        <CalendarClock className="h-5 w-5 shrink-0" aria-hidden="true" />
+        <h2 className="section-title">{L(lang, 'Card a card', 'Card by card', 'Carte par carte', 'Cartelera por cartelera')}</h2>
+      </div>
+      <ul className="mt-2">
+        {events.map((event) => (
+          <li key={`${event.date}-${event.name}`} className="flex items-baseline justify-between gap-4 border-b border-[var(--rule)] py-3">
+            <div className="min-w-0">
+              <p className="text-base font-semibold leading-snug">{event.name}</p>
+              <p className="text-[15px] text-[var(--muted)]">{formatDate(event.date, lang)}</p>
+            </div>
+            <p className="shrink-0 font-display text-xl font-extrabold tabular-nums">
+              {L(lang, `${event.correct} de ${event.fights}`, `${event.correct} of ${event.fights}`, `${event.correct} sur ${event.fights}`, `${event.correct} de ${event.fights}`)}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+/** The test on past fights by kind of fight: a good average can hide a weak spot. */
+function SegmentsCard({ evaluation }: { evaluation: RecentEvaluation }) {
+  const { i18n } = useTranslation()
+  const lang = i18n.language
+  return (
+    <section className="border-t-[3px] border-[var(--ink)] pt-4">
+      <div className="flex items-center gap-2">
+        <Target className="h-5 w-5 shrink-0" aria-hidden="true" />
+        <h2 className="section-title">{L(lang, 'Teste em lutas passadas, por tipo de luta', 'Back-test by kind of fight', 'Contrôle historique par type de combat', 'Prueba retrospectiva por tipo de pelea')}</h2>
+      </div>
+      <p className="mt-1 max-w-[70ch] text-[15px] text-[var(--muted)]">
+        {L(lang, 'Grupos pequenos variam muito por acaso.', 'Small groups vary a lot by chance.', 'Les petits groupes varient beaucoup par hasard.', 'Los grupos pequeños varían mucho por azar.')}
+      </p>
+      <ul className="mt-3 grid gap-3">
+        {(evaluation.segments ?? []).map((segment) => (
+          <li key={segment.label}>
+            <div className="flex items-baseline justify-between gap-2 text-base">
+              <span className="font-bold">{localizeApiText(segment.label, lang)}</span>
+              <span className="text-[15px] text-[var(--muted)]">{segment.fights.toLocaleString(localeTag(lang))} {L(lang, 'lutas', 'fights', 'combats', 'peleas')}</span>
+            </div>
+            <Bar label={L(lang, 'O modelo disse', 'Model said', 'Le modèle disait', 'El modelo decía')} value={segment.average_confidence} tone="muted" />
+            <Bar label={L(lang, 'Acertou de fato', 'Actually right', 'Réellement juste', 'Acierto real')} value={segment.accuracy} tone="strong" />
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
 function CalibrationCard({ title, note, bands }: { title: string; note?: string; bands: ConfidenceBand[] }) {
   const { i18n } = useTranslation()
   const lang = uiLang(i18n.language)
@@ -199,6 +282,11 @@ function CalibrationCard({ title, note, bands }: { title: string; note?: string;
             </div>
             <Bar label={L(i18n.language, 'O modelo disse', 'Model said', 'Le modèle disait', 'El modelo decía')} value={band.average_confidence} tone="muted" />
             <Bar label={L(i18n.language, 'Acertou de fato', 'Actually right', 'Réellement juste', 'Acierto real')} value={band.accuracy} tone="strong" />
+            {rangeText(band, i18n.language) ? (
+              <p className="mt-1 text-[15px] text-[var(--muted)]">
+                {L(i18n.language, 'Com tão poucas lutas, o acerto real pode estar', 'With so few fights, the true hit rate could be', 'Avec si peu de combats, la vraie précision peut se situer', 'Con tan pocas peleas, el acierto real puede estar')} {rangeText(band, i18n.language)}.
+              </p>
+            ) : null}
           </li>
         ))}
       </ul>
@@ -210,10 +298,13 @@ function CalibrationCard({ title, note, bands }: { title: string; note?: string;
 function ModelsCard({ models }: { models: ModelRecord[] }) {
   const { i18n } = useTranslation()
   const lang = uiLang(i18n.language)
+  const since = (model: ModelRecord) => formatDate(model.since, i18n.language)
   const name = (model: ModelRecord) =>
-    model.model === 'prefight'
-      ? L(lang, 'Modelo pré-luta', 'Pre-fight model', 'Modèle pré-combat', 'Modelo previo a la pelea')
-      : L(lang, 'Modelo atual', 'Current model', 'Modèle actuel', 'Modelo actual')
+    model.model === 'prefight2'
+      ? L(lang, 'Modelo pré-luta combinado', 'Combined pre-fight model', 'Modèle pré-combat combiné', 'Modelo combinado previo a la pelea')
+      : model.model === 'prefight'
+        ? L(lang, 'Modelo pré-luta', 'Pre-fight model', 'Modèle pré-combat', 'Modelo previo a la pelea')
+        : L(lang, 'Primeiro modelo', 'First model', 'Premier modèle', 'Primer modelo')
 
   return (
     <section className="border-t-[3px] border-[var(--ink)] pt-4">
@@ -226,10 +317,10 @@ function ModelsCard({ models }: { models: ModelRecord[] }) {
       <p className="mt-1 max-w-[70ch] text-[15px] text-[var(--muted)]">
         {L(
           lang,
-          'Cada modelo é contado à parte: os números acima somam os dois.',
-          'Each model is counted on its own: the numbers above add both together.',
-          'Chaque modèle est compté à part : les chiffres ci-dessus additionnent les deux.',
-          'Cada modelo se cuenta aparte: las cifras de arriba suman los dos.',
+          'Cada modelo é contado à parte: os números acima somam todos.',
+          'Each model is counted on its own: the numbers above add them all together.',
+          'Chaque modèle est compté à part : les chiffres ci-dessus les additionnent tous.',
+          'Cada modelo se cuenta aparte: las cifras de arriba los suman todos.',
         )}
       </p>
       <ul className="mt-3 grid gap-3">
@@ -238,17 +329,17 @@ function ModelsCard({ models }: { models: ModelRecord[] }) {
             <div className="flex items-baseline justify-between gap-2 text-base">
               <span className="font-bold">{name(model)}</span>
               <span className="text-[15px] text-[var(--muted)]">
-                {L(lang, `desde ${model.since}`, `since ${model.since}`, `depuis le ${model.since}`, `desde ${model.since}`)}
+                {L(lang, `desde ${since(model)}`, `since ${since(model)}`, `depuis le ${since(model)}`, `desde ${since(model)}`)}
               </span>
             </div>
             <p className="mt-0.5 text-[15px]">
               {model.resolved
                 ? L(
                     lang,
-                    `${model.correct} de ${model.resolved} certos (${percent(model.accuracy)}), ${model.logged - model.resolved} ainda sem resultado.`,
-                    `${model.correct} of ${model.resolved} right (${percent(model.accuracy)}), ${model.logged - model.resolved} still to be settled.`,
-                    `${model.correct} sur ${model.resolved} justes (${percent(model.accuracy)}), ${model.logged - model.resolved} pas encore réglés.`,
-                    `${model.correct} de ${model.resolved} acertados (${percent(model.accuracy)}), ${model.logged - model.resolved} sin resultado aún.`,
+                    `${model.correct} de ${model.resolved} certos (${percent(model.accuracy)}), ${model.pending ?? model.logged - model.resolved} ainda sem resultado.`,
+                    `${model.correct} of ${model.resolved} right (${percent(model.accuracy)}), ${model.pending ?? model.logged - model.resolved} still to be settled.`,
+                    `${model.correct} sur ${model.resolved} justes (${percent(model.accuracy)}), ${model.pending ?? model.logged - model.resolved} pas encore réglés.`,
+                    `${model.correct} de ${model.resolved} acertados (${percent(model.accuracy)}), ${model.pending ?? model.logged - model.resolved} sin resultado aún.`,
                   )
                 : L(
                     lang,
@@ -258,6 +349,12 @@ function ModelsCard({ models }: { models: ModelRecord[] }) {
                     `${model.logged} pronósticos guardados, ninguno con resultado aún.`,
                   )}
             </p>
+            {rangeText(model, lang) ? (
+              <p className="text-[15px] text-[var(--muted)]">
+                {L(lang, 'Acerto real', 'True hit rate', 'Vraie précision', 'Acierto real')} {rangeText(model, lang)}
+                {model.brier != null ? ` · Brier ${formatDecimal(model.brier, 3, i18n.language)} (${L(lang, 'cara ou coroa', 'coin flip', 'pile ou face', 'cara o cruz')}: ${formatDecimal(0.25, 3, i18n.language)})` : ''}
+              </p>
+            ) : null}
           </li>
         ))}
       </ul>
@@ -267,6 +364,8 @@ function ModelsCard({ models }: { models: ModelRecord[] }) {
 
 function BaselineCard({ evaluation }: { evaluation: RecentEvaluation }) {
   const { i18n } = useTranslation()
+  // The 95% margin of a hit rate measured on this many fights, in whole points.
+  const noise = Math.ceil(196 * Math.sqrt(0.25 / Math.max(evaluation.fights, 1)))
 
   const rows = [
     { label: L(i18n.language, 'O modelo', 'The model', 'Le modèle', 'El modelo'), accuracy: evaluation.accuracy, strong: true },
@@ -278,16 +377,16 @@ function BaselineCard({ evaluation }: { evaluation: RecentEvaluation }) {
       <div className="flex items-center gap-2">
         <Scale className="h-5 w-5 shrink-0" aria-hidden="true" />
         <h2 className="section-title">
-          {L(i18n.language, 'Supera métodos estatísticos tradicionais?', 'Does it beat simple rules?', 'Bat-il les règles simples ?', '¿Supera a las reglas simples?')}
+          {L(i18n.language, 'O modelo e os métodos mais simples', 'The model and simpler methods', 'Le modèle et les méthodes plus simples', 'El modelo y los métodos más simples')}
         </h2>
       </div>
       <p className="mt-1 max-w-[70ch] text-[15px] text-[var(--muted)]">
         {L(
           i18n.language,
-          `Taxa de acerto nas mesmas ${evaluation.fights.toLocaleString('pt-BR')} lutas recentes. Um modelo só vale alguma coisa se acertar mais que essas referências.`,
-          `Accuracy on the same ${evaluation.fights.toLocaleString('en-US')} recent fights. A model is only worth something if it beats these.`,
-          `Précision sur les mêmes ${evaluation.fights.toLocaleString(localeTag(i18n.language))} combats récents. Un modèle n’a d’intérêt que s’il bat ces repères.`,
-          `Precisión en las mismas ${evaluation.fights.toLocaleString('es-419')} peleas recientes. Un modelo solo vale algo si supera estas referencias.`,
+          `Taxa de acerto nas mesmas ${evaluation.fights.toLocaleString('pt-BR')} lutas recentes. Diferenças de até ${noise} pontos podem ser acaso: nessa margem, um método não é melhor que o outro.`,
+          `Accuracy on the same ${evaluation.fights.toLocaleString('en-US')} recent fights. A gap of up to ${noise} points can be chance: within it, no method is better than the other.`,
+          `Précision sur les mêmes ${evaluation.fights.toLocaleString(localeTag(i18n.language))} combats récents. Un écart de ${noise} points ou moins peut être dû au hasard : dans cette marge, aucune méthode n’est meilleure que l’autre.`,
+          `Precisión en las mismas ${evaluation.fights.toLocaleString('es-419')} peleas recientes. Una diferencia de hasta ${noise} puntos puede ser azar: dentro de ese margen, ningún método es mejor que otro.`,
         )}
       </p>
       <ul className="mt-3 grid gap-2">

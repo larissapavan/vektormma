@@ -9,6 +9,8 @@ What differs from the current model:
     - The probability is calibrated with one temperature stored in the model file. It has no intercept, so 50% stays 50%
       and p(A, B) + p(B, A) is still exactly 1.
     - There are no corners, so SHAP's two orders line up column for column.
+    - The probability is the average of the members of the model file (gradient boosting and logistic regression). Each member
+      is explained on its own, in probability, and the explanations are averaged the same way.
 """
 
 from __future__ import annotations
@@ -22,14 +24,19 @@ import joblib
 import numpy as np
 import pandas as pd
 
+try:
+    import shap
+except ImportError:  # pragma: no cover
+    shap = None
+
 from backend.app.utils.constants import PREFIGHT_HIGHLIGHTS, PREFIGHT_LIMITATIONS, PREFIGHT_MODEL_NAME
 from src.ufc_predictor.config import PREFIGHT_MODEL_PATH, RAW_DATA_DIR
 from src.ufc_predictor.prefight import (
-    ELO_K, ELO_START, FEATURE_COLUMNS, SIG_ACC_PRIOR, SIG_ACC_STRENGTH, TD_ACC_PRIOR, TD_ACC_STRENGTH, FighterState, Static,
-    build_statics, calibrate, load_fights, load_raw, matchup_row, name_key, replay, weight_features,
+    ELO_K, ELO_START, FEATURE_COLUMNS, RESULT_COLUMNS, RESULTS_FACTOR, SIG_ACC_PRIOR, SIG_ACC_STRENGTH, TD_ACC_PRIOR, TD_ACC_STRENGTH, FighterState, Static,
+    build_statics, calibrate, fighter_features, load_fights, load_raw, matchup_row, name_key, replay, weight_features,
 )
 
-from .prediction_service import PredictionService, _model_number
+from .prediction_service import PredictionService, _model_number, pretty_feature_name
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +57,23 @@ PER_FIGHT_FIELDS = (
 
 def _month(iso_day: str) -> str:
     return date.fromisoformat(iso_day).strftime("%B %Y")
+
+
+def linear_attributions(weights: np.ndarray, intercept: float, background: np.ndarray, rows: np.ndarray) -> np.ndarray:
+    """What each feature adds to a logistic regression's probability, from each background fight to the row (integrated gradients,
+    averaged over the background). It is exact: a row's values add up to its probability minus the background's average."""
+    def sigmoid(z: np.ndarray) -> np.ndarray:
+        return 1.0 / (1.0 + np.exp(-z))
+
+    z_rows, z_background = rows @ weights + intercept, background @ weights + intercept
+    out = np.zeros(rows.shape)
+    for index, row in enumerate(rows):
+        steps = z_rows[index] - z_background
+        p = sigmoid(z_background)
+        near = np.abs(steps) < 1e-9
+        slope = np.where(near, p * (1 - p), (sigmoid(z_rows[index]) - p) / np.where(near, 1.0, steps))
+        out[index] = (slope[:, None] * (row - background) * weights).mean(axis=0)
+    return out
 
 
 def _heavier_division(*divisions: str | None) -> str:
@@ -73,14 +97,16 @@ class PrefightPredictionService(PredictionService):
         if list(bundle["feature_columns"]) != FEATURE_COLUMNS:
             raise ValueError("The pre-fight model was trained on other columns than src/ufc_predictor/prefight.py builds: retrain it.")
 
-        self.model = bundle["model"]
+        self.members: list = bundle["members"]
+        self.model_key = bundle.get("model_key", PREFIGHT)
+        self.trained_through: str | None = bundle.get("trained_through")
         self.feature_columns: list[str] = bundle["feature_columns"]
         self.metrics: dict = bundle.get("metrics", {})
         self.baseline_metrics: dict = bundle.get("baseline_metrics", {})
         self.shap_background = bundle.get("shap_background")
         self.temperature = float(bundle["calibration"]["temperature"])
         self.recent_evaluation = bundle.get("evaluation")
-        self.shap_explainer = self._build_shap_explainer()
+        self.shap_explainer = self._build_member_explainers()
 
         tables = load_raw(raw_dir)
         fights = load_fights(tables.cards, tables.details, tables.stats, tables.aliases)
@@ -178,9 +204,27 @@ class PrefightPredictionService(PredictionService):
 
     def _symmetric_probability(self, x_ab: pd.DataFrame, x_ba: pd.DataFrame) -> float:
         """Chance that the first fighter wins: both orders averaged, then calibrated with the stored temperature."""
-        probabilities = self.model.predict_proba(pd.concat([x_ab, x_ba], ignore_index=True))[:, 1]
+        both = pd.concat([x_ab, x_ba], ignore_index=True)
+        probabilities = np.mean([member.predict_proba(both)[:, 1] for member in self.members], axis=0)
         raw = (float(probabilities[0]) + 1.0 - float(probabilities[1])) / 2.0
         return float(calibrate(np.array([raw]), self.temperature)[0])
+
+    def _build_member_explainers(self) -> list | None:
+        """One function per member: rows -> what each feature adds to its probability. None when SHAP cannot run, so that
+        the factors are left out rather than computed from half of the model."""
+        if shap is None or self.shap_background is None or len(self.shap_background) == 0:
+            logger.warning("No SHAP explanation available; main_factors will be empty on every prediction.")
+            return None
+        return [self._explainer_of(member) for member in self.members]
+
+    def _explainer_of(self, member):
+        steps, classifier = member[:-1], member[-1]
+        background = steps.transform(self.shap_background[self.feature_columns])
+        if hasattr(classifier, "coef_"):
+            weights, intercept = classifier.coef_[0], float(classifier.intercept_[0])
+            return lambda frame: linear_attributions(weights, intercept, background, steps.transform(frame))
+        explainer = shap.TreeExplainer(classifier, background, feature_names=self.feature_columns, model_output="probability")
+        return lambda frame: explainer(steps.transform(frame)).values
 
     def _combined_attributions(self, x_ab: pd.DataFrame, x_ba: pd.DataFrame) -> np.ndarray | None:
         """Each feature's push toward the first fighter. There are no corners, so a feature is the same column in both
@@ -188,20 +232,46 @@ class PrefightPredictionService(PredictionService):
         only approximately additive), a little less than the calibrated probability moves."""
         if self.shap_explainer is None:
             return None
-        imputed = self.model.named_steps["imputer"].transform(pd.concat([x_ab, x_ba], ignore_index=True))
-        values = self.shap_explainer(imputed).values
+        both = pd.concat([x_ab, x_ba], ignore_index=True)
+        values = np.mean([explain(both) for explain in self.shap_explainer], axis=0)
         return 0.5 * (values[0] - values[1])
+
+    def _factor(self, column: str) -> str:
+        return RESULTS_FACTOR if column in RESULT_COLUMNS else column
+
+    def _add_factor_values(self, factors: list[dict], fighter_a: dict, fighter_b: dict) -> None:
+        """What the model read for each fighter: the numbers the site explains a factor with. They are the model's own, so they
+        can differ a little from a profile's career totals (only UFC fights with statistics, pulled toward a typical value while
+        there is little fight time behind them). None where the model had nothing and filled in a typical value."""
+        on = date.today()
+        read = {}
+        for side, profile in (("a", fighter_a), ("b", fighter_b)):
+            state, static = self._fighter(profile, on)
+            read[side] = (state, fighter_features(state, static, on))
+        for factor in factors:
+            for side, (state, values) in read.items():
+                if factor["key"] == RESULTS_FACTOR:
+                    factor[f"results_{side}"] = {
+                        "fights": state.fights, "wins": state.wins, "losses": state.losses, "streak": state.streak, "elo": round(state.elo),
+                    }
+                    continue
+                value = values.get(factor["key"].removesuffix("_diff")) if factor["key"].endswith("_diff") else None
+                factor[f"value_{side}"] = None if value is None or math.isnan(value) else float(value)
 
     # ------------------------------------------------------------------ what the site shows about the model
 
     def model_info(self) -> dict:
         evaluation = self.recent_evaluation
+        if evaluation and evaluation.get("importance"):
+            named = [{"label": pretty_feature_name(row["factor"]), "extra_log_loss": row["extra_log_loss"]} for row in evaluation["importance"]]
+            evaluation = {**evaluation, "importance": named}
         note = None
         if evaluation:
             note = (
-                f"Measured once on {evaluation['fights']:,} fights ({_month(evaluation['start'])} to {_month(evaluation['end'])}), all later than "
-                "the fights it trained on, each fighter described as of the morning of the fight. "
-                f"It picked the winner {evaluation['accuracy']:.1%} of the time; its confidence was calibrated on a separate block of earlier fights."
+                f"Measured on {evaluation['fights']:,} fights ({_month(evaluation['start'])} to {_month(evaluation['end'])}), each predicted by a "
+                "version trained only on earlier fights, each fighter described as of the morning of the fight. "
+                f"It picked the winner {evaluation['accuracy']:.1%} of the time; its confidence was calibrated on earlier fights. "
+                f"The version in use was then trained on every fight up to {_month(self.trained_through or evaluation['end'])}."
             )
         return {
             "model_name": PREFIGHT_MODEL_NAME,

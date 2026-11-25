@@ -44,19 +44,27 @@ def test_accuracy_bands_and_misses_come_from_the_settled_fights(client, fake_log
                 row("3", 0.92, "False", winner="B"),
                 row("4", 0.85, "True", winner="A"),
                 row("5", 0.7, "n/a", winner="Draw / no contest"),
-                row("6", 0.75, "", event_date="2026-11-14"),
+                row("6", 0.75, "", event_date="2099-11-14"),
+                row("7", 0.75, "", event_date="2026-01-03"),  # its day has passed and the result is not in
+                row("8", 0.75, "n/a", winner=service.DID_NOT_HAPPEN),
             ],
             columns=service.LOG_COLUMNS,
         )
     )
     body = client.get("/track-record").json()
 
-    assert (body["logged"], body["resolved"], body["correct"], body["pending"]) == (6, 4, 2, 1)
+    assert (body["logged"], body["resolved"], body["correct"], body["pending"]) == (8, 4, 2, 1)
+    assert (body["awaiting_result"], body["voided"]) == (1, 1)
     assert body["accuracy"] == 0.5
-    assert body["next_event"] == {"name": "UFC 999", "date": "2026-11-14"}
+    assert body["next_event"] == {"name": "UFC 999", "date": "2099-11-14"}
     assert [band["label"] for band in body["bands"]] == ["50-60%", "60-70%", "80%+"]
     assert body["biggest_misses"][0]["confidence"] == 0.92  # the most confident wrong pick comes first
     assert all(fight["winner"] for fight in body["recent"])
+
+
+def test_the_public_api_cannot_change_the_log(client):
+    assert client.post("/track-record/sync").status_code == 404
+    assert client.post("/track-record").status_code == 405
 
 
 def test_track_record_is_cacheable(client):
@@ -97,7 +105,7 @@ def test_picks_of_the_prefight_model_are_counted_apart_from_the_earlier_ones(cli
 
     body = client.get("/track-record").json()
     current, prefight = body["models"]
-    assert (current["model"], current["label"], current["since"]) == ("current", "Current model", "2026-10-25")
+    assert (current["model"], current["label"], current["since"]) == ("current", "First model", "2026-10-25")
     assert (current["logged"], current["resolved"], current["correct"], current["accuracy"]) == (2, 2, 1, 0.5)
     assert (prefight["model"], prefight["label"], prefight["since"]) == ("prefight", "Pre-fight model", "2026-11-10")
     assert (prefight["logged"], prefight["resolved"], prefight["correct"], prefight["accuracy"]) == (2, 1, 1, 1.0)
@@ -107,6 +115,27 @@ def test_picks_of_the_prefight_model_are_counted_apart_from_the_earlier_ones(cli
         "The record of each model is counted separately below."
     )
     assert body["logged"] == 4  # the overall numbers still count every pick
+
+
+def test_the_scores_say_how_little_a_few_fights_prove(client, fake_log):
+    service.save_log(
+        pd.DataFrame(
+            [row("1", 0.6, "True", winner="A"), row("2", 0.8, "False", winner="B"), row("3", 0.5, "True", event_date="2026-11-14", winner="A")],
+            columns=service.LOG_COLUMNS,
+        )
+    )
+    body = client.get("/track-record").json()
+    assert body["accuracy_low"] < 0.25 and body["accuracy_high"] > 0.9  # 2 of 3 right
+    assert body["brier"] == pytest.approx((0.4**2 + 0.8**2 + 0.5**2) / 3)
+    assert [(e["date"], e["correct"], e["fights"]) for e in body["events"]] == [("2026-11-14", 1, 1), ("2026-11-07", 1, 2)]
+    assert all(band["accuracy_low"] <= band["accuracy"] <= band["accuracy_high"] for band in body["bands"])
+
+
+def test_the_interval_of_a_hit_rate():
+    low, high = service.wilson(44, 74)
+    assert (round(low, 2), round(high, 2)) == (0.48, 0.70)
+    assert service.wilson(0, 0) is None
+    assert service.wilson(5, 5)[1] == 1.0 and service.wilson(0, 5)[0] == 0.0
 
 
 def test_a_log_file_from_before_the_model_column_still_loads(client, fake_log):

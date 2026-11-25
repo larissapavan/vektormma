@@ -61,10 +61,12 @@ function MatchupRedirect() {
 }
 
 function App() {
+  // A page that broke must not keep the next one from opening.
+  const { pathname } = useLocation()
   return (
     <ThemeProvider>
       <MainLayout>
-        <ErrorBoundary>
+        <ErrorBoundary resetKey={pathname}>
           <Suspense fallback={<ServerLoadingState />}>
             <Routes>
               <Route path="/" element={<Landing />} />

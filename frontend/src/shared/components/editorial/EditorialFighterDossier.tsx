@@ -22,6 +22,7 @@ import { getFighterImageUrl, useFighterImages } from '../../hooks/useFighterImag
 import { useFighters } from '../../hooks/useFighters'
 import { getFighterPerformance, predictFight } from '../../services/api'
 import type { FighterPerformance, FighterProfile, PredictionResponse } from '../../types/api'
+import { ModelRecordPanel } from '../ModelRecordPanel'
 import { PhotoCredit } from '../PhotoCredit'
 
 const NO_DATA: Record<UiLang, string> = {
@@ -674,6 +675,12 @@ export function EditorialFighterDossier({
             </motion.div>
           </div>
         </section>
+
+        {activeFighterName ? (
+          <div className="mt-12 sm:mt-16">
+            <ModelRecordPanel name={activeFighterName} />
+          </div>
+        ) : null}
 
         {/* SECTION 3: STORYTELLING TIMELINE (PHASES) */}
         <section className="mt-16 sm:mt-20">

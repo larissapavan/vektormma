@@ -173,9 +173,7 @@
     "howMeasured": "Fonctionnement",
     "recentResults": "Résultats récents",
     "biggestMisses": "Plus grosses erreurs",
-    "biggestMissesNote": "Les pronostics les plus confiants qui se sont révélés faux.",
-    "syncButton": "Synchroniser les résultats",
-    "syncing": "Synchronisation..."
+    "biggestMissesNote": "Les pronostics les plus confiants qui se sont révélés faux."
   },
   "headToHead": {
     "title": "Historique des face-à-face",

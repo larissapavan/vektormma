@@ -173,9 +173,7 @@
     "howMeasured": "How it works",
     "recentResults": "Recent results",
     "biggestMisses": "Biggest misses",
-    "biggestMissesNote": "Highest confidence predictions that were wrong.",
-    "syncButton": "Sync results",
-    "syncing": "Syncing..."
+    "biggestMissesNote": "Highest confidence predictions that were wrong."
   },
   "headToHead": {
     "title": "Head-to-head history",

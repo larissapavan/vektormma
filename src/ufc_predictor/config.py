@@ -14,6 +14,8 @@ MODEL_PATH = MODEL_DIR / "ufc_winner_model.joblib"
 # The pre-fight model, written by `python -m src.ufc_predictor.train_prefight --promote`. The API loads it by default;
 # MODEL_PATH (the earlier model) is served only when the environment variable PREDICTION_MODEL is "current".
 PREFIGHT_MODEL_PATH = MODEL_DIR / "ufc_prefight_model.joblib"
+# What the test of that model said about each test fight, written with it.
+PREFIGHT_BACKTEST_PATH = MODEL_DIR / "ufc_prefight_backtest.csv"
 REPORT_PATH = REPORT_DIR / "training_report.txt"
 
 EXTERNAL_KAGGLE_FILES = {

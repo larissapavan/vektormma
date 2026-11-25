@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { ArrowLeftRight, ArrowRight, LoaderCircle } from 'lucide-react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -13,10 +13,12 @@ import { FighterProfileModal } from '../shared/components/FighterProfileModal'
 import { FighterSelect } from '../shared/components/FighterSelect'
 import { FighterBadges, FlagList, TitleFightBadge } from '../shared/components/FighterBadges'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
-import { MatchupRadarChart } from '../shared/components/MatchupRadarChart'
+import { MatchupSummary } from '../shared/components/MatchupSummary'
 import { RecentFightsPanel } from '../shared/components/RecentFightsPanel'
+import { StyleComparison } from '../shared/components/StyleComparison'
 import { getFighterImageUrl, useFighterImages } from '../shared/hooks/useFighterImages'
 import { useFighters } from '../shared/hooks/useFighters'
+import { factorSentence } from '../shared/data/explainMatchup'
 import { localizePredictionMessage } from '../shared/data/probability'
 import { DataConfidenceNote } from '../shared/components/DataConfidenceNote'
 import { localizeFeature } from '../shared/utils/localizeFeature'
@@ -27,11 +29,11 @@ import { PageHeader } from '../shared/components/ui/PageHeader'
 import { predictionSentence, ProbabilityBand } from '../shared/components/ui/ProbabilityBand'
 import { getMatchupTitleFight } from '../shared/data/titleFights'
 import { getFighterPerformance } from '../shared/services/api'
-import type { FighterPerformance, FighterProfile, MainFactor, PredictionResponse } from '../shared/types/api'
+import type { FighterPerformance, FighterProfile, MainFactor, PredictionResponse, RecentEvaluation } from '../shared/types/api'
 
 /**
- * Pick two fighters and see the model's estimated win chance, what weighs on it, the numbers side by side, a radar of
- * their styles and each one's recent fights. It also absorbed the old matchup analysis page (/matchup-intelligence
+ * Pick two fighters and see the model's estimated win chance, what weighs on it, the numbers side by side, their
+ * styles compared and each one's recent fights. It also absorbed the old matchup analysis page (/matchup-intelligence
  * redirects here). `preset` chooses the corners from a fight's own address (/fight/a-vs-b); ?a= and ?b= still win.
  */
 export function Predictor({ preset }: { preset?: { a: string; b: string } } = {}) {
@@ -45,7 +47,11 @@ export function Predictor({ preset }: { preset?: { a: string; b: string } } = {}
   const [profileName, setProfileName] = useState<string | null>(null)
   const { fighters, loading, error: fightersError } = useFighters()
   const { modelInfo, health } = useModelInfo()
-  const { prediction, loading: predicting, error: predictionError, runPrediction } = usePrediction()
+  const { prediction: answer, loading: predicting, error: predictionError, runPrediction } = usePrediction()
+  // The pair the last answer was asked for. A corner changed since then leaves it behind: its numbers are not this pair's.
+  const [asked, setAsked] = useState(() => `${presetA}|${presetB}`)
+  const prediction = asked === `${nameA}|${nameB}` ? answer : null
+  const resultRef = useRef<HTMLDivElement>(null)
   const [error, setError] = useState<string | null>(null)
 
   const chooseCorner = (side: 'a' | 'b', value: string) => {
@@ -69,6 +75,10 @@ export function Predictor({ preset }: { preset?: { a: string; b: string } } = {}
     if (nextB) next.set('b', nextB)
     else next.delete('b')
     setSearchParams(next, { replace: true })
+    if (prediction) {
+      setAsked(`${nextA}|${nextB}`)
+      void runPrediction(nextA, nextB)
+    }
   }
 
   useEffect(() => {
@@ -86,7 +96,13 @@ export function Predictor({ preset }: { preset?: { a: string; b: string } } = {}
     if (!canScore) return
     try {
       setError(null)
-      await runPrediction(nameA, nameB)
+      setAsked(`${nameA}|${nameB}`)
+      const scored = await runPrediction(nameA, nameB)
+      // The result sits above the corners: take the reader (and the focus) to it.
+      if (scored) {
+        resultRef.current?.focus({ preventScroll: true })
+        resultRef.current?.scrollIntoView?.({ block: 'start' })
+      }
     } catch {
       setError(
         L(
@@ -100,7 +116,7 @@ export function Predictor({ preset }: { preset?: { a: string; b: string } } = {}
     }
   }
 
-  // Each fighter's recent form, for the radar and the recent fights, once the model has scored the pair.
+  // Each fighter's recent fights, once the model has scored the pair.
   const performanceKey = prediction ? `${prediction.fighter_a_profile.name}|${prediction.fighter_b_profile.name}` : ''
   const [performance, setPerformance] = useState<{ key: string; a: FighterPerformance | null; b: FighterPerformance | null } | null>(null)
   useEffect(() => {
@@ -126,6 +142,15 @@ export function Predictor({ preset }: { preset?: { a: string; b: string } } = {}
   const isOnline = Boolean(health?.model_loaded)
   const problem = error ?? predictionError ?? fightersError
 
+  // With a fight to show (a shared link, or after scoring one) the result comes first and the corners below it.
+  const showResult = Boolean(prediction) || (predicting && canScore)
+  const result = (
+    <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
+      <Scorecard prediction={prediction} predicting={predicting} evaluation={modelInfo?.recent_evaluation ?? null} fighterA={fighterA} fighterB={fighterB} />
+      <Drivers factors={prediction?.main_factors ?? []} names={prediction ? { a: prediction.fighter_a_profile.name, b: prediction.fighter_b_profile.name } : null} />
+    </div>
+  )
+
   return (
     <div className="space-y-5 sm:space-y-6">
       {eventName && nameA && nameB ? (
@@ -148,35 +173,14 @@ export function Predictor({ preset }: { preset?: { a: string; b: string } } = {}
         description={t('predictor.heroSubtitle', 'Pick any two fighters. The model gives you the odds and shows which numbers moved them.')}
       />
 
-      <Scoreboard
-        cells={[
-          {
-            label: t('predictor.fightsOnFile', 'Fights on file'),
-            value: health?.fights_tracked ? health.fights_tracked.toLocaleString(localeTag(i18n.language)) : '—',
-            note: resultsThrough(health?.latest_fight_date ?? null, i18n.language),
-          },
-          {
-            label: t('predictor.fighters', 'Fighters'),
-            value: (health?.fighters_loaded ?? fighters.length).toLocaleString(localeTag(i18n.language)),
-            note: activeFighters ? `${activeFighters.toLocaleString(localeTag(i18n.language))} ${t('predictor.active', 'active')}` : undefined,
-          },
-          {
-            label: t('predictor.modelAccuracy', 'Model accuracy'),
-            value: shown.accuracy != null ? formatShare(shown.accuracy, i18n.language) : '—',
-            note: shown.caption || undefined,
-          },
-          {
-            label: t('predictor.backend', 'Backend'),
-            value: isOnline ? t('predictor.onAir', 'On air') : t('header.apiOffline', 'Offline'),
-            note: isOnline ? L(i18n.language, 'Modelo carregado', 'Model loaded', 'Modèle chargé', 'Modelo cargado') : L(i18n.language, 'Inacessível', 'Unreachable', 'Injoignable', 'Inaccesible'),
-            alert: !isOnline,
-            onlineDot: isOnline,
-          },
-        ]}
-      />
-
       {problem ? (
         <p className="rounded-sm border border-[var(--accent-gold)]/40 bg-[var(--accent-gold)]/15 px-3 py-2 text-sm font-semibold text-[var(--text-gold)]">{problem}</p>
+      ) : null}
+
+      {showResult ? (
+        <div ref={resultRef} tabIndex={-1} className="scroll-mt-24 outline-none">
+          {result}
+        </div>
       ) : null}
 
       <div className="space-y-6">
@@ -235,10 +239,7 @@ export function Predictor({ preset }: { preset?: { a: string; b: string } } = {}
           {canScore && !predicting ? <ArrowRight className="h-5 w-5" /> : null}
         </button>
 
-        <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
-          <Scorecard prediction={prediction} fighterA={fighterA} fighterB={fighterB} />
-          <Drivers factors={prediction?.main_factors ?? []} redName={prediction?.fighter_a_profile.name ?? null} />
-        </div>
+        {showResult ? null : result}
 
         <TaleOfTape fighterA={fighterA} fighterB={fighterB} />
 
@@ -250,13 +251,7 @@ export function Predictor({ preset }: { preset?: { a: string; b: string } } = {}
                 label={L(i18n.language, 'Copiar link do combate', 'Copy matchup link', 'Copier le lien du combat', 'Copiar enlace del enfrentamiento')}
               />
             </div>
-            <MatchupRadarChart
-              fighterA={prediction.fighter_a_profile}
-              fighterB={prediction.fighter_b_profile}
-              performanceA={performanceReady?.a ?? null}
-              performanceB={performanceReady?.b ?? null}
-              loading={performanceLoading}
-            />
+            <StyleComparison fighterA={prediction.fighter_a_profile} fighterB={prediction.fighter_b_profile} />
             <RecentFightsPanel
               nameA={prediction.fighter_a_profile.name}
               nameB={prediction.fighter_b_profile.name}
@@ -266,9 +261,36 @@ export function Predictor({ preset }: { preset?: { a: string; b: string } } = {}
             />
           </>
         ) : predicting ? (
-          <LoadingSkeleton className="h-[340px]" label={L(i18n.language, 'Carregando gráfico de radar', 'Loading radar chart', 'Chargement du graphique radar', 'Cargando el gráfico de radar')} />
+          <LoadingSkeleton className="h-[340px]" label={L(i18n.language, 'Carregando a comparação de estilos', 'Loading the style comparison', 'Chargement de la comparaison des styles', 'Cargando la comparación de estilos')} />
         ) : null}
       </div>
+
+      <Scoreboard
+        cells={[
+          {
+            label: t('predictor.fightsOnFile', 'Fights on file'),
+            value: health?.fights_tracked ? health.fights_tracked.toLocaleString(localeTag(i18n.language)) : '—',
+            note: resultsThrough(health?.latest_fight_date ?? null, i18n.language),
+          },
+          {
+            label: t('predictor.fighters', 'Fighters'),
+            value: (health?.fighters_loaded ?? fighters.length).toLocaleString(localeTag(i18n.language)),
+            note: activeFighters ? `${activeFighters.toLocaleString(localeTag(i18n.language))} ${t('predictor.active', 'active')}` : undefined,
+          },
+          {
+            label: t('predictor.modelAccuracy', 'Model accuracy'),
+            value: shown.accuracy != null ? formatShare(shown.accuracy, i18n.language) : '—',
+            note: shown.caption || undefined,
+          },
+          {
+            label: t('predictor.backend', 'Backend'),
+            value: isOnline ? t('predictor.onAir', 'On air') : t('header.apiOffline', 'Offline'),
+            note: isOnline ? L(i18n.language, 'Modelo carregado', 'Model loaded', 'Modèle chargé', 'Modelo cargado') : L(i18n.language, 'Inacessível', 'Unreachable', 'Injoignable', 'Inaccesible'),
+            alert: !isOnline,
+            onlineDot: isOnline,
+          },
+        ]}
+      />
 
       {profileName ? (
         <FighterProfileModal
@@ -373,14 +395,14 @@ function FighterSheet({ fighter, imageUrl, onOpenProfile }: { fighter: FighterPr
           className="shrink-0 cursor-pointer transition hover:scale-105"
           title={L(i18n.language, `Abrir perfil completo de ${fighter.name}`, `Open ${fighter.name}'s full profile`, `Ouvrir le profil complet de ${fighter.name}`, `Abrir el perfil completo de ${fighter.name}`)}
         >
-          <FighterAvatar name={fighter.name} imageUrl={imageUrl} className="h-24 w-24 sm:h-28 sm:w-28" />
+          <FighterAvatar name={fighter.name} imageUrl={imageUrl} className="h-16 w-16 sm:h-28 sm:w-28" />
         </button>
         <div className="min-w-0">
           <h3 className="poster-display flex flex-wrap items-center gap-2 text-2xl leading-none sm:text-3xl text-[var(--text-primary)]">
             <button
               type="button"
               onClick={onOpenProfile}
-              className="truncate transition hover:text-[var(--ink)] cursor-pointer"
+              className="min-h-11 truncate text-left transition hover:text-[var(--ink)] cursor-pointer sm:min-h-0"
             >
               {fighter.name}
             </button>
@@ -400,7 +422,7 @@ function FighterSheet({ fighter, imageUrl, onOpenProfile }: { fighter: FighterPr
         </div>
       </div>
 
-      <dl className="grid grid-cols-2 gap-x-4 gap-y-3 border-t border-[var(--border-subtle)] pt-3 sm:grid-cols-3">
+      <dl className="hidden gap-x-4 gap-y-3 border-t border-[var(--border-subtle)] pt-3 sm:grid sm:grid-cols-3">
         {rows.map(([label, value]) => (
           <div key={label} className="min-w-0">
             <dt className="truncate text-label text-[var(--text-muted)]">{label}</dt>
@@ -414,10 +436,14 @@ function FighterSheet({ fighter, imageUrl, onOpenProfile }: { fighter: FighterPr
 
 function Scorecard({
   prediction,
+  predicting,
+  evaluation,
   fighterA,
   fighterB,
 }: {
   prediction: PredictionResponse | null
+  predicting: boolean
+  evaluation: RecentEvaluation | null
   fighterA: FighterProfile | null
   fighterB: FighterProfile | null
 }) {
@@ -439,11 +465,19 @@ function Scorecard({
       <div className="space-y-4 p-4 sm:p-5">
         {prediction ? (
           <>
+            <div className="flex items-end justify-between gap-4 text-base font-bold leading-tight sm:text-lg">
+              <span className="min-w-0">{prediction.fighter_a_profile.name}</span>
+              <span className="min-w-0 text-right">{prediction.fighter_b_profile.name}</span>
+            </div>
             <ProbabilityBand nameA={prediction.fighter_a_profile.name} nameB={prediction.fighter_b_profile.name} probabilityA={prediction.fighter_a_probability} />
             <p className="text-base font-semibold">{predictionSentence(i18n.language, prediction.predicted_winner, prediction.probability)}</p>
-            <p className="text-[15px] leading-6 text-[var(--muted)]">{localizePredictionMessage(prediction.message, prediction.predicted_winner, i18n.language)}</p>
+            {/* The sentence above already says how big the edge is; what is left to say is that there is none. */}
+            {/edge in this matchup/.test(prediction.message) ? null : <p className="text-[15px] leading-6 text-[var(--muted)]">{localizePredictionMessage(prediction.message, prediction.predicted_winner, i18n.language)}</p>}
+            <MatchupSummary prediction={prediction} evaluation={evaluation} />
             <DataConfidenceNote confidence={prediction.data_confidence} />
           </>
+        ) : predicting ? (
+          <LoadingSkeleton className="h-[140px]" label={L(i18n.language, 'Calculando a chance de vitória', 'Working out the win chance', 'Calcul de la chance de victoire', 'Calculando la probabilidad de victoria')} />
         ) : (
           <p className="py-6 text-base text-[var(--muted)]">
             {fighterA && fighterB
@@ -457,7 +491,7 @@ function Scorecard({
 }
 
 /** The factors behind the estimate; each bar takes the colour of the corner it favours. */
-function Drivers({ factors, redName }: { factors: MainFactor[]; redName: string | null }) {
+function Drivers({ factors, names }: { factors: MainFactor[]; names: { a: string; b: string } | null }) {
   const { i18n } = useTranslation()
   const max = Math.max(...factors.map((factor) => factor.magnitude), 0.01)
   const rows = factors.slice(0, 6)
@@ -484,19 +518,27 @@ function Drivers({ factors, redName }: { factors: MainFactor[]; redName: string 
                 <span className="poster-display max-w-[45%] shrink-0 truncate text-sm text-[var(--text-secondary)]">{factor.impact}</span>
               </div>
               <div className="mt-1 h-2 rounded-sm overflow-hidden bg-[var(--bg-surface-subtle)] border border-[var(--border-subtle)]">
-                <div className={`h-full ${factor.impact === redName ? 'bg-[var(--red)]' : 'bg-[var(--blue)]'}`} style={{ width: `${Math.min(100, (factor.magnitude / max) * 100)}%` }} />
+                <div className={`h-full ${factor.impact === names?.a ? 'bg-[var(--red)]' : 'bg-[var(--blue)]'}`} style={{ width: `${Math.min(100, (factor.magnitude / max) * 100)}%` }} />
               </div>
-              <p className="mt-1 text-xs text-[var(--text-muted)]">
-                {L(
-                  i18n.language,
-                  `${localizeFeature(factor.feature, i18n.language)} pesou a favor de ${factor.impact}.`,
-                  factor.explanation,
-                  `${localizeFeature(factor.feature, i18n.language)} a pesé en faveur de ${factor.impact}.`,
-                  `${localizeFeature(factor.feature, i18n.language)} inclinó el pronóstico a favor de ${factor.impact}.`,
-                )}
+              <p className="mt-1.5 text-sm leading-6 text-[var(--text-secondary)]">
+                {names ? factorSentence(factor, names, i18n.language) : null}
               </p>
             </div>
-          ))
+          )).concat(
+            rows.some((factor) => factor.key) ? (
+              <p key="note" className="border-t border-[var(--border-subtle)] pt-3 text-sm leading-6 text-[var(--text-muted)]">
+                {L(
+                  i18n.language,
+                  'Os números são os que o modelo lê: só lutas no UFC com estatísticas, puxados para um valor típico quando há pouco tempo de luta. Por isso podem diferir um pouco dos do perfil.',
+                  'These are the numbers the model reads: only UFC fights with statistics, pulled toward a typical value when there is little fight time. They can differ a little from the profile’s.',
+                  'Ce sont les chiffres que lit le modèle : seulement les combats UFC avec statistiques, ramenés vers une valeur typique quand il y a peu de temps de combat. Ils peuvent différer un peu de ceux du profil.',
+                  'Son los números que lee el modelo: solo peleas de la UFC con estadísticas, acercados a un valor típico cuando hay poco tiempo de pelea. Pueden diferir un poco de los del perfil.',
+                )}
+              </p>
+            ) : (
+              []
+            ),
+          )
         ) : (
           <>
             {[1, 2, 3].map((n) => (
@@ -507,7 +549,7 @@ function Drivers({ factors, redName }: { factors: MainFactor[]; redName: string 
               </div>
             ))}
             <p className="text-sm font-medium leading-6 text-[var(--text-muted)]">
-              {L(i18n.language, 'Simule a luta para ver os fatores que definiram o favoritismo.', 'Score the fight to see the three numbers that pushed the odds, ranked.', 'Calculez le combat pour voir les chiffres qui ont fait pencher les cotes, du plus fort au plus faible.', 'Pronostica la pelea para ver los tres números que movieron las probabilidades, ordenados.')}
+              {L(i18n.language, 'Simule a luta para ver os fatores que definiram o favoritismo.', 'Score the fight to see the numbers that pushed the odds, ranked.', 'Calculez le combat pour voir les chiffres qui ont fait pencher les cotes, du plus fort au plus faible.', 'Pronostica la pelea para ver los números que movieron las probabilidades, ordenados.')}
             </p>
           </>
         )}

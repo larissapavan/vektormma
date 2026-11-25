@@ -28,9 +28,10 @@ jobs:
 
       - name: Refresh ESPN data, UFC rankings, fighter photos and the static athlete pages
         id: refresh
-        # One flaky source must not cost the whole day. update_all keeps going after a failing step and leaves that
-        # step's files untouched, so whatever did refresh is still validated and committed below. The run is still
-        # marked as failed at the end (last step) so the problem is not hidden.
+        # One flaky source must not cost the whole day. update_all keeps going after a failing step, leaves that step's
+        # files untouched, and puts back the files of a source that came out broken (scripts/quarantine.py), so whatever
+        # did refresh is still validated and committed below. The run is still marked as failed at the end (last step) so
+        # the problem is not hidden.
         continue-on-error: true
         # The picks saved for the track record must come from the model the site serves. Both serve the pre-fight model
         # unless the repository variable PREDICTION_MODEL and the same variable on the API host are set to "current".
@@ -43,24 +44,37 @@ jobs:
       - name: Validate refreshed data
         run: python -m scripts.validate_data
 
-      - name: Run tests
-        # The model regression test (about 40 s) runs in CI on every push; a bad day of data must not block the refresh commit.
-        run: pytest -q -m "not model_regression"
+      - name: Check that the API works with the refreshed data
+        run: python -m scripts.smoke_api
 
       - name: Commit and push changes
         run: |
-          if git diff --quiet -- data/raw frontend/public/fighter-photos frontend/public/og frontend/src/seo/athletes.json frontend/src/seo/athleteDetails.json frontend/src/seo/pages.json && [ -z "$(git ls-files --others --exclude-standard frontend/public/fighter-photos frontend/public/og)" ]; then
+          git add data/raw frontend/public/fighter-photos frontend/public/og frontend/src/seo/athletes.json frontend/src/seo/athleteDetails.json frontend/src/seo/pages.json
+          if git diff --cached --quiet; then
             echo "No data changes."
             exit 0
           fi
           git config user.name "fight-intelligence-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/raw frontend/public/fighter-photos frontend/public/og frontend/src/seo/athletes.json frontend/src/seo/athleteDetails.json frontend/src/seo/pages.json
           git commit -m "chore(data): daily refresh $(date -u +%F)"
+          # The refresh takes over half an hour: a push made meanwhile must not cost it.
+          git pull --rebase --autostash origin "$GITHUB_REF_NAME"
           git push
 
-      - name: Report a failed refresh step
-        if: steps.refresh.outcome == 'failure'
+      - name: Run tests
+        # After the commit: whether the code is right does not depend on today's data, and a test must not cost a day of it.
+        # The model regression test (about two minutes) runs in CI on every push.
+        id: tests
+        continue-on-error: true
+        run: pytest -q -m "not model_regression"
+
+      - name: Report what failed
+        if: steps.refresh.outcome == 'failure' || steps.tests.outcome == 'failure'
         run: |
-          echo "::error::A refresh step failed. See the Summary at the end of the refresh log. The steps that worked were validated and committed."
+          if [ "${{ steps.refresh.outcome }}" = "failure" ]; then
+            echo "::error::A refresh step failed. See the run's summary. The sources that worked were validated and committed."
+          fi
+          if [ "${{ steps.tests.outcome }}" = "failure" ]; then
+            echo "::error::The data was committed, but a test fails with it. See the Run tests step."
+          fi
           exit 1

@@ -1,15 +1,15 @@
 {
-  "fights": 1755,
-  "start": "2023-06-17",
-  "end": "2026-10-31",
-  "accuracy": 0.6268,
-  "roc_auc": 0.6723,
-  "log_loss": 0.7073,
-  "brier": 0.2396,
-  "ece": 0.0839,
+  "fights": 1770,
+  "start": "2023-07-08",
+  "end": "2026-11-21",
+  "accuracy": 0.626,
+  "roc_auc": 0.6737,
+  "log_loss": 0.7067,
+  "brier": 0.2389,
+  "ece": 0.0818,
   "confident_threshold": 0.9,
-  "confident_fights": 234,
-  "confident_hit_rate": 0.7094,
+  "confident_fights": 237,
+  "confident_hit_rate": 0.7089,
   "baselines": [
     {
       "label": "Pick at random",
@@ -17,55 +17,55 @@
     },
     {
       "label": "Pick the fighter with more UFC wins",
-      "accuracy": 0.486
+      "accuracy": 0.4825
     },
     {
       "label": "Pick the fighter with the better rating (Elo)",
-      "accuracy": 0.555
+      "accuracy": 0.5523
     }
   ],
   "calibration": [
     {
       "label": "50%-55%",
-      "fights": 289,
+      "fights": 287,
       "average_confidence": 0.526,
-      "accuracy": 0.4913
+      "accuracy": 0.4774
     },
     {
       "label": "55%-60%",
-      "fights": 246,
-      "average_confidence": 0.575,
-      "accuracy": 0.565
+      "fights": 247,
+      "average_confidence": 0.5748,
+      "accuracy": 0.5709
     },
     {
       "label": "60%-65%",
       "fights": 209,
-      "average_confidence": 0.6235,
-      "accuracy": 0.5981
+      "average_confidence": 0.6231,
+      "accuracy": 0.5885
     },
     {
       "label": "65%-70%",
-      "fights": 183,
-      "average_confidence": 0.6755,
-      "accuracy": 0.6011
+      "fights": 191,
+      "average_confidence": 0.6758,
+      "accuracy": 0.5969
     },
     {
       "label": "70%-80%",
-      "fights": 332,
-      "average_confidence": 0.7518,
-      "accuracy": 0.7108
+      "fights": 338,
+      "average_confidence": 0.7526,
+      "accuracy": 0.716
     },
     {
       "label": "80%-90%",
-      "fights": 262,
-      "average_confidence": 0.847,
-      "accuracy": 0.6947
+      "fights": 261,
+      "average_confidence": 0.8477,
+      "accuracy": 0.7011
     },
     {
       "label": "90%-100%",
-      "fights": 234,
+      "fights": 237,
       "average_confidence": 0.9491,
-      "accuracy": 0.7094
+      "accuracy": 0.7089
     }
   ]
 }

@@ -173,9 +173,7 @@
     "howMeasured": "Cómo funciona",
     "recentResults": "Resultados recientes",
     "biggestMisses": "Mayores errores",
-    "biggestMissesNote": "Los pronósticos con más confianza que salieron mal.",
-    "syncButton": "Sincronizar resultados",
-    "syncing": "Sincronizando..."
+    "biggestMissesNote": "Los pronósticos con más confianza que salieron mal."
   },
   "headToHead": {
     "title": "Historial cara a cara",

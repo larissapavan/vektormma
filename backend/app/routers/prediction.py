@@ -13,6 +13,8 @@ from fastapi import APIRouter, HTTPException, Request, Response
 from backend.app.dependencies import PredictionServiceGetter, get_prediction_service
 from backend.app.rate_limit import limiter
 from backend.app.schemas.prediction import DivisionMatrix, PredictionRequest, PredictionResponse, UpcomingPick
+from backend.app.services.catalog_service import get_fighter_profile
+from backend.app.services.data_confidence import assess as assess_data
 from backend.app.services.events_service import get_upcoming_events
 from backend.app.services.prediction_service import PredictionService
 from backend.app.services.rankings_service import get_rankings
@@ -67,6 +69,7 @@ def _predict_all_upcoming(service: PredictionService) -> list[UpcomingPick]:
                     bmf_title=bool(fight.get("bmf_title")),
                     interim_title=bool(fight.get("interim_title")),
                     card_position=position,
+                    data_level=assess_data(get_fighter_profile(fighter_1), get_fighter_profile(fighter_2))["level"],
                 )
             )
     return picks

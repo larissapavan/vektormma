@@ -39,14 +39,18 @@ Want a different matchup? Pick any two fighters on the [predictor](https://www.v
 
 <br>
 
-On 1,755 UFC fights the model never saw during training (June 2023 to October 2026):
+On 1,770 UFC fights (July 2023 to November 2026), each predicted by a version trained only on earlier fights:
 
 | Way of picking the winner | Right |
 |---|---|
 | Flip a coin | 50% |
-| Pick the fighter with more UFC wins | 48.6% |
-| Pick the fighter with the better Elo rating | 55.5% |
-| **Vektor MMA** | **62.7%** |
+| Pick the fighter with more UFC wins | 48.2% |
+| Pick the fighter with the better Elo rating | 55.2% |
+| Pick the younger fighter | 59.8% |
+| Logistic regression alone | 63.5% |
+| **Vektor MMA** (average of gradient boosting and logistic regression) | **63.7%** |
+
+A gap of two points can be chance on this many fights, so by accuracy alone the average is not better than its parts. It is kept because its percentages were closer to what happened on earlier fights, where that choice was made ([training report](docs/prefight-model-report.md)).
 
 Better than guessing, far from certain: one punch can change a fight. Every live pick is saved before the event and checked after it, wrong ones included, on the [track record page](https://www.vektormma.com/en/track-record). The details are on [how the model works](https://www.vektormma.com/en/model).
 
@@ -58,8 +62,8 @@ Better than guessing, far from certain: one punch can change a fight. Every live
 <br>
 
 1. **Collect.** Results of thousands of past fights and each fighter's numbers: age, reach, record, striking and takedown accuracy.
-2. **Learn.** A machine learning model finds how those differences relate to winning.
-3. **Predict.** It compares the two fighters, once with each in the red corner, and averages the answers.
+2. **Learn.** Two machine learning models, one of decision trees and one linear, find how those differences relate to winning.
+3. **Predict.** Each compares the two fighters, once in each order, and all the answers are averaged.
 4. **Explain.** A method called SHAP shows which numbers pushed the pick to each side.
 
 </details>

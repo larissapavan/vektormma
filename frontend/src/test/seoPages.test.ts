@@ -70,7 +70,7 @@ describe('static text of the list pages', () => {
       for (const html of [dataHtml, modelHtml]) expect(html).not.toMatch(/undefined|\bnull\b|NaN/)
     }
     // The sentences the API sends in English are translated, never left as they came.
-    expect(bodyHtml(modelBody('pt', (pt as unknown as Record<string, Record<string, string>>).model, data.model), [])).not.toContain('Measured once')
+    expect(bodyHtml(modelBody('pt', (pt as unknown as Record<string, Record<string, string>>).model, data.model), [])).not.toContain('Measured on')
     expect(modelBody('pt', { title: 'T', description: 'D.' }, null).sections).toBeUndefined()
   })
 

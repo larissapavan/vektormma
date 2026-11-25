@@ -3,13 +3,24 @@ import { AlertTriangle, RotateCcw } from 'lucide-react'
 
 import { L } from '../../i18n/lang'
 import { LANGUAGE_STORAGE_KEY } from '../../i18n'
+import { isChunkError, reloadOnce, reportError } from '../services/errorReporter'
 
 interface ErrorBoundaryProps {
   children: ReactNode
+  /** When it changes (the visitor went to another page), the error is left behind. */
+  resetKey?: string
 }
 
 interface ErrorBoundaryState {
   error: Error | null
+}
+
+function chosenLanguage(): string {
+  try {
+    return localStorage.getItem(LANGUAGE_STORAGE_KEY) || navigator.language
+  } catch {
+    return navigator.language // storage is blocked: the page that says something went wrong must not break too
+  }
 }
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
@@ -21,11 +32,18 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   componentDidCatch(error: Error, info: ErrorInfo) {
     console.error('Unhandled UI error:', error, info.componentStack)
+    // The site was updated while this page was open: its parts are gone, and the new version is one reload away.
+    if (isChunkError(error) && reloadOnce()) return
+    reportError(isChunkError(error) ? 'chunk' : 'render', error, info.componentStack ?? '')
+  }
+
+  componentDidUpdate(previous: ErrorBoundaryProps) {
+    if (this.state.error && previous.resetKey !== this.props.resetKey) this.setState({ error: null })
   }
 
   render() {
     if (this.state.error) {
-      const language = typeof window !== 'undefined' ? (localStorage.getItem(LANGUAGE_STORAGE_KEY) || navigator.language) : 'en'
+      const language = chosenLanguage()
       return (
         <div className="flex min-h-[60vh] items-center justify-center px-3 py-8">
           <div className="surface-card w-full max-w-md rounded-sm p-5 text-center">

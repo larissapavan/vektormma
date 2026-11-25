@@ -9,8 +9,10 @@ What it checks, and why:
 
   - the home page answers with the app's root element (the host is up and the build is the app);
   - /api/health, which goes through the Vercel rewrite to the Railway API, says the model and the catalog are loaded;
-  - /api/data-info says the data was refreshed within MAX_STALE_DAYS. The daily update (update-data.yml) commits the new
-    data and the API redeploys with it, so a date much older than a day means the refresh has been failing;
+  - /api/data-info says the events and results were refreshed within MAX_STALE_DAYS, and that no other source has been failing
+    for longer than MAX_FAILING_DAYS. The daily update (update-data.yml) commits when each source last worked
+    (data/raw/refresh_status.json) and the API redeploys with it;
+  - /api/monitor does not show failing requests or pages breaking in visitors' browsers (the details are in the API host's log);
   - the sitemap is served, because search engines read it from there.
 
 A request is tried a few times before it counts as a failure: the API may be waking up, and one dropped packet should not
@@ -28,8 +30,16 @@ import urllib.request
 from datetime import date
 
 DEFAULT_BASE = "https://www.vektormma.com"
-# The refresh runs daily, but a quiet day commits nothing and so redeploys nothing: a week without any is a real problem.
-MAX_STALE_DAYS = 7
+# The refresh runs daily and records every success, even on a day with no news: three days without one is a real problem.
+MAX_STALE_DAYS = 3
+# Until a refresh has recorded anything, the date is the newest fight's, and there are weeks with no card.
+MAX_STALE_DAYS_UNRECORDED = 15
+# One of the smaller sources may be down for a few days without anyone having to do something about it.
+MAX_FAILING_DAYS = 7
+# One failed request or one odd browser is not an alert. Counts are of the last day, or since the API last started.
+MIN_SERVER_ERRORS = 5
+MAX_SERVER_ERROR_SHARE = 0.02
+MAX_CLIENT_ERRORS = 20
 ATTEMPTS = 3
 TIMEOUT_SECONDS = 30
 RETRY_DELAY_SECONDS = 10
@@ -99,12 +109,32 @@ def check_site(base: str = DEFAULT_BASE, today: date | None = None, get=None) ->
     if status != 200:
         problems.append(f"/api/data-info answered {status or 'nothing'} (expected 200).")
     else:
-        last_updated = _json(body).get("last_updated")
+        info = _json(body)
+        refresh = info.get("refresh") or []
+        last_updated = info.get("last_updated")
         age = days_since(last_updated, today)
         if age is None:
             problems.append(f"/api/data-info has no usable last_updated date ({last_updated!r}).")
-        elif age > MAX_STALE_DAYS:
+        elif age > (MAX_STALE_DAYS if refresh else MAX_STALE_DAYS_UNRECORDED):
             problems.append(f"The data was last refreshed {age} days ago ({last_updated}); the daily update may be failing.")
+        for entry in refresh:
+            failing = days_since(entry.get("failing_since"), today)
+            if failing is not None and failing > MAX_FAILING_DAYS:
+                problems.append(f"The source {entry.get('source')} has been failing for {failing} days (last worked: {entry.get('last_success') or 'never'}).")
+
+    # An API from before this endpoint answers 404; whether the API is up at all was asked above.
+    status, body = get(f"{base}/api/monitor")
+    seen = _json(body) if status == 200 else {}
+    failed, total = seen.get("server_errors") or 0, seen.get("requests") or 0
+    if failed >= MIN_SERVER_ERRORS and failed > total * MAX_SERVER_ERROR_SHARE:
+        worst = max(seen.get("routes") or [{}], key=lambda row: row.get("server_errors", 0)).get("route", "unknown")
+        problems.append(f"{failed} of {total} API requests failed since {seen.get('since')} (most on {worst}). See the API host's log: 'request failed'.")
+    broken = seen.get("client_errors") or 0
+    if broken >= MAX_CLIENT_ERRORS:
+        problems.append(
+            f"Pages broke {broken} times in visitors' browsers since {seen.get('since')} "
+            f"({seen.get('distinct_client_errors')} different errors). See the API host's log: 'client error'."
+        )
 
     status, body = get(f"{base}/sitemap.xml")
     if status != 200 or "<urlset" not in body:

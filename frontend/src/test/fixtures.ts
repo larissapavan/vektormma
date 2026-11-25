@@ -353,7 +353,7 @@ export const routes: Record<string, unknown> = {
       calibration: [{ label: '90%-100%', fights: 229, average_confidence: 0.9487, accuracy: 0.7118 }],
     },
   },
-  '/data-info': { last_updated: '2026-10-10', fighters_count: 2, events_count: 2, fights_count: 10, sources: ['ESPN'] },
+  '/data-info': { last_updated: '2026-10-10', latest_fight_date: '2026-10-04', refresh: [{ source: 'espn', last_success: '2026-10-10', failing_since: null }, { source: 'gyms', last_success: '2026-10-02', failing_since: '2026-10-03' }], fighters_count: 2, events_count: 2, fights_count: 10, sources: ['ESPN'] },
   '/fighters': [alpha, beta],
   '/events': [event('UFC 899: Past Card', '2026-09-01', [fight({ event_name: 'UFC 899: Past Card', winner: 'Alpha One', method: 'KO/TKO', round: 2, result: 'KO/TKO' })])],
   '/events/upcoming': [event('UFC 900: Alpha vs. Beta', '2030-01-01', [fight(), fight({ fighter_1: 'Gamma Three', fighter_2: 'Delta Four' })])],
@@ -471,8 +471,21 @@ export const routes: Record<string, unknown> = {
     ],
   },
   '/news': { source_name: 'ESPN', source_url: 'https://www.espn.com/mma/', items: [{ title: 'Alpha One retains the title', summary: null, url: 'https://www.espn.com/ufc/story/1', image_url: null, published: '2026-10-15T10:00:00Z', kind: 'story' }] },
-  '/track-record': { tracking_since: '2026-10-15', logged: 4, resolved: 0, correct: 0, accuracy: null, average_confidence: null, pending: 4, earlier_model_picks: 1, earlier_model_note: '1 of these picks were saved before 2026-10-20, by an earlier version of the model.', model_change_note: '1 of these picks were saved by the pre-fight model, in use since 2026-11-10. Earlier picks came from the model it replaced and are kept exactly as they were shown. The record of each model is counted separately below.', models: [{ model: 'current', label: 'Current model', since: '2026-10-15', logged: 3, resolved: 2, correct: 1, accuracy: 0.5 }, { model: 'prefight', label: 'Pre-fight model', since: '2026-11-10', logged: 1, resolved: 0, correct: 0, accuracy: null }], next_event: { name: 'UFC 900: Alpha vs. Beta', date: '2030-01-01' }, bands: [], recent: [], biggest_misses: [] },
+  '/track-record': { tracking_since: '2026-10-15', logged: 4, resolved: 0, correct: 0, accuracy: null, average_confidence: null, pending: 4, awaiting_result: 0, voided: 2, earlier_model_picks: 1, earlier_model_note: '1 of these picks were saved before 2026-10-20, by an earlier version of the model.', model_change_note: '1 of these picks were saved by the pre-fight model, in use since 2026-11-10. Earlier picks came from the model it replaced and are kept exactly as they were shown. The record of each model is counted separately below.', models: [{ model: 'current', label: 'First model', since: '2026-10-15', logged: 3, resolved: 2, correct: 1, accuracy: 0.5 }, { model: 'prefight', label: 'Pre-fight model', since: '2026-11-10', logged: 1, resolved: 0, correct: 0, accuracy: null }], next_event: { name: 'UFC 900: Alpha vs. Beta', date: '2030-01-01' }, bands: [], recent: [], biggest_misses: [] },
   '/head-to-head': { fighter_a: 'Alpha One', fighter_b: 'Beta Two', fighter_a_wins: 1, fighter_b_wins: 0, no_contests: 0, meetings: [], common_opponents: [], network_path: [], degrees_of_separation: 0 },
+  '/track-record/surprises': {
+    fighters: 316, min_fights: 5, start: '2023-07-08', end: '2026-11-21',
+    underrated: [{ fighter: 'Alpha One', fights: 8, correct: 1, accuracy_low: 0.02, accuracy_high: 0.47, wins: 7, expected_wins: 3.3 }],
+    overrated: [{ fighter: 'Beta Two', fights: 6, correct: 6, accuracy_low: 0.6, accuracy_high: 1, wins: 1, expected_wins: 2.4 }],
+  },
+  '/fighters/Alpha One/model-record': {
+    fighter: 'Alpha One', start: '2023-07-08', end: '2026-11-21',
+    backtest: {
+      fights: 5, correct: 3, accuracy_low: 0.23, accuracy_high: 0.88, wins: 4, expected_wins: 2.6,
+      picks: ['Beta Two', 'Gamma Three', 'Delta Four', 'Omega Nine', 'Epsilon Five'].map((opponent, i) => ({ date: `2026-0${6 - i}-01`, opponent, chance: 0.6, won: i !== 1, correct: i < 3 })),
+    },
+    live: { fights: 1, correct: 1, accuracy_low: 0.2, accuracy_high: 1, wins: 1, expected_wins: 0.7, picks: [{ date: '2026-11-07', opponent: 'Zeta Six', chance: 0.7, won: true, correct: true }] },
+  },
   '/fighters/Alpha One/other-organizations': [
     {
       org_id: 'bellator',
@@ -511,6 +524,7 @@ export const routes: Record<string, unknown> = {
     comparison_stats: { fighter_a_win_rate: 0.857, fighter_b_win_rate: 0.8, reach_difference: 0, age_difference: 0 },
     data_confidence: { level: 'thin', label: 'Thin data', reasons: ['Beta Two has only 2 recorded fights, so their numbers are not settled yet.'] },
     main_factors: [
+      { feature: 'Age difference', impact: 'Alpha One', explanation: 'Younger.', magnitude: 0.15, key: 'age_diff', value_a: 28.3, value_b: 36.2 },
       { feature: 'Striking volume', impact: 'Alpha One', explanation: 'Lands more significant strikes per minute.', magnitude: 0.12 },
       { feature: 'Takedown defense', impact: 'Beta Two', explanation: 'Stops a higher share of takedown attempts.', magnitude: 0.08 },
       { feature: 'Recent form', impact: 'Alpha One', explanation: 'Coming in off consecutive wins.', magnitude: 0.06 },
@@ -532,5 +546,6 @@ export function respond(rawUrl: string): unknown {
   if (url.endsWith('/opponents')) return { fighter: '', opponents: [] }
   if (url.endsWith('/similar')) return []
   if (url.endsWith('/other-organizations')) return []
+  if (url.endsWith('/model-record')) return { fighter: url.split('/')[2], start: null, end: null, backtest: null, live: null }
   throw new Error(`The fake API has no answer for ${url}`)
 }

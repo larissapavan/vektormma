@@ -22,6 +22,7 @@ from backend.app.services.fight_history_service import get_fights_for_fighter, g
 from backend.app.services.org_service import ORGS
 from backend.app.services.prediction_service import EASED_ORIGINS, PredictionService, pretty_feature_name
 from backend.app.services.prefight_service import build_prediction_service
+from src.ufc_predictor.prefight import RESULTS_FACTOR
 
 from .estado import Calibracao, ConfrontoDireto, Encontro, FatorBruto, Luta, LutaRecente, Perfil, Predicao, Resultado
 
@@ -170,7 +171,7 @@ class FontesDoProjeto:
         perfis = (resultado["fighter_a_profile"], resultado["fighter_b_profile"])
         # A tabela de acerto foi medida só com lutas do UFC: não vale para um perfil de outra organização.
         de_fora = any(perfil.get("data_origin") for perfil in perfis)
-        colunas = {pretty_feature_name(coluna): coluna for coluna in self._servico.feature_columns}
+        colunas = {pretty_feature_name(coluna): coluna for coluna in [*self._servico.feature_columns, RESULTS_FACTOR]}
         ausentes = self._colunas_sem_dado(*perfis)
         return Predicao(
             prob_a=resultado["fighter_a_probability"],

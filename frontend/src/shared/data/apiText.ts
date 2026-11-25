@@ -55,10 +55,20 @@ const FIXED: Record<string, Entry> = {
     fr: 'Chaque combat est décrit par ce que l’on savait le matin même : seuls comptent les combats précédents, jamais son propre résultat ni rien de ce qui a suivi.',
     es: 'Cada pelea se describe con lo que se sabía la mañana del evento: solo cuentan las peleas anteriores, nunca su propio resultado ni nada posterior.',
   },
-  'It was tested on the newest fights, all later than every fight it trained on, and its confidence was calibrated on a separate block in between.': {
-    pt: 'Foi testado nas lutas mais recentes, todas posteriores a qualquer luta do treino, e a confiança dele foi calibrada em um bloco separado, no meio do caminho.',
-    fr: 'Il a été testé sur les combats les plus récents, tous postérieurs à ceux de son entraînement, et sa confiance a été calibrée sur un bloc distinct, entre les deux.',
-    es: 'Se probó con las peleas más recientes, todas posteriores a las del entrenamiento, y su confianza se calibró con un bloque aparte, intermedio.',
+  'It averages two models, decision trees (gradient boosting) and a linear one (logistic regression), because they are wrong about different fights.': {
+    pt: 'Ele faz a média de dois modelos, um de árvores de decisão (gradient boosting) e um linear (regressão logística), porque eles erram em lutas diferentes.',
+    fr: 'Il fait la moyenne de deux modèles, l’un d’arbres de décision (gradient boosting), l’autre linéaire (régression logistique), parce qu’ils se trompent sur des combats différents.',
+    es: 'Promedia dos modelos, uno de árboles de decisión (gradient boosting) y otro lineal (regresión logística), porque se equivocan en peleas distintas.',
+  },
+  'It was tested on the newest fights, each predicted by a version that had only seen earlier ones, and its confidence was calibrated on fights before the test.': {
+    pt: 'Foi testado nas lutas mais recentes, cada uma prevista por uma versão que só tinha visto lutas anteriores, e a confiança dele foi calibrada em lutas de antes do teste.',
+    fr: 'Il a été testé sur les combats les plus récents, chacun prédit par une version qui n’avait vu que des combats antérieurs, et sa confiance a été calibrée sur des combats d’avant le test.',
+    es: 'Se probó con las peleas más recientes, cada una pronosticada por una versión que solo había visto peleas anteriores, y su confianza se calibró con peleas previas a la prueba.',
+  },
+  'The test fights were also looked at while earlier versions were being compared, so the live record is the stricter test.': {
+    pt: 'As lutas do teste também foram olhadas na comparação de versões anteriores, então o histórico ao vivo é o teste mais rigoroso.',
+    fr: 'Les combats du test ont aussi servi à comparer des versions antérieures : le bilan en direct est donc le test le plus strict.',
+    es: 'Las peleas de la prueba también se miraron al comparar versiones anteriores, así que el historial en vivo es la prueba más estricta.',
   },
   'Every probability is the average of both fighter orders, so it does not change with who is listed first.': {
     pt: 'Toda probabilidade é a média das duas ordens dos lutadores, então não muda conforme quem aparece primeiro.',
@@ -80,6 +90,15 @@ const FIXED: Record<string, Entry> = {
     fr: 'Les combats sont difficiles à prévoir : un pronostic n’est qu’une estimation, et les surprises sont fréquentes.',
     es: 'Las peleas son difíciles de pronosticar: un pronóstico es una estimación y las sorpresas son comunes.',
   },
+  'Pick the one with more UFC wins': { pt: 'Escolher quem tem mais vitórias no UFC', fr: 'Choisir celui qui a le plus de victoires à l’UFC', es: 'Elegir al que tiene más victorias en la UFC' },
+  'Pick the higher rating (Elo)': { pt: 'Escolher a maior pontuação (Elo)', fr: 'Choisir la meilleure cote (Elo)', es: 'Elegir la puntuación más alta (Elo)' },
+  'Pick the younger one': { pt: 'Escolher quem é mais jovem', fr: 'Choisir le plus jeune', es: 'Elegir al más joven' },
+  'Gradient boosting': { pt: 'Gradient boosting', fr: 'Gradient boosting', es: 'Gradient boosting' },
+  'Both with fight statistics': { pt: 'Os dois com estatísticas de luta', fr: 'Les deux avec des statistiques de combat', es: 'Los dos con estadísticas de pelea' },
+  'At least one without fight statistics': { pt: 'Pelo menos um sem estatísticas (estreantes, por exemplo)', fr: 'Au moins un sans statistiques (débutants, par exemple)', es: 'Al menos uno sin estadísticas (debutantes, por ejemplo)' },
+  Men: { pt: 'Masculino', fr: 'Hommes', es: 'Masculino' },
+  Women: { pt: 'Feminino', fr: 'Femmes', es: 'Femenino' },
+  'Title fights': { pt: 'Lutas por cinturão', fr: 'Combats pour le titre', es: 'Peleas por el título' },
   'Always 50/50': { pt: 'Sempre 50/50', fr: 'Toujours 50/50', es: 'Siempre 50/50' },
   'Logistic regression': { pt: 'Regressão logística', fr: 'Régression logistique', es: 'Regresión logística' },
   'Random forest': { pt: 'Floresta aleatória', fr: 'Forêt aléatoire', es: 'Bosque aleatorio' },
@@ -117,11 +136,11 @@ type Template = {
 
 const TEMPLATES: Template[] = [
   {
-    pattern: /^Measured once on ([\d,]+) fights \((\w+ \d{4}) to (\w+ \d{4})\), all later than the fights it trained on, each fighter described as of the morning of the fight\. It picked the winner ([\d.]+)% of the time; its confidence was calibrated on a separate block of earlier fights\.$/,
+    pattern: /^Measured on ([\d,]+) fights \((\w+ \d{4}) to (\w+ \d{4})\), each predicted by a version trained only on earlier fights, each fighter described as of the morning of the fight\. It picked the winner ([\d.]+)% of the time; its confidence was calibrated on earlier fights\. The version in use was then trained on every fight up to (\w+ \d{4})\.$/,
     text: {
-      pt: (m, l) => `Medido uma única vez em ${number(m[1], l)} lutas (${monthYear(m[2], l)} a ${monthYear(m[3], l)}), todas posteriores às do treino, com cada lutador descrito como estava na manhã da luta. Ele acertou o vencedor em ${decimal(m[4], l)}% das vezes; a confiança dele foi calibrada em um bloco separado de lutas anteriores.`,
-      fr: (m, l) => `Mesuré une seule fois sur ${number(m[1], l)} combats (${monthYear(m[2], l)} à ${monthYear(m[3], l)}), tous postérieurs à ceux de l’entraînement, chaque combattant étant décrit tel qu’il était le matin du combat. Il a trouvé le vainqueur ${decimal(m[4], l)} % du temps ; sa confiance a été calibrée sur un bloc distinct de combats antérieurs.`,
-      es: (m, l) => `Medido una sola vez en ${number(m[1], l)} peleas (${monthYear(m[2], l)} a ${monthYear(m[3], l)}), todas posteriores a las del entrenamiento, con cada peleador descrito como estaba la mañana de la pelea. Acertó el ganador el ${decimal(m[4], l)} % de las veces; su confianza se calibró con un bloque aparte de peleas anteriores.`,
+      pt: (m, l) => `Medido em ${number(m[1], l)} lutas (${monthYear(m[2], l)} a ${monthYear(m[3], l)}), cada uma prevista por uma versão treinada só com lutas anteriores, com cada lutador descrito como estava na manhã da luta. Ele acertou o vencedor em ${decimal(m[4], l)}% das vezes; a confiança dele foi calibrada em lutas anteriores. A versão em uso foi depois treinada com todas as lutas até ${monthYear(m[5], l)}.`,
+      fr: (m, l) => `Mesuré sur ${number(m[1], l)} combats (${monthYear(m[2], l)} à ${monthYear(m[3], l)}), chacun prédit par une version entraînée seulement sur des combats antérieurs, chaque combattant étant décrit tel qu’il était le matin du combat. Il a trouvé le vainqueur ${decimal(m[4], l)} % du temps ; sa confiance a été calibrée sur des combats antérieurs. La version utilisée a ensuite été entraînée sur tous les combats jusqu’à ${monthYear(m[5], l)}.`,
+      es: (m, l) => `Medido en ${number(m[1], l)} peleas (${monthYear(m[2], l)} a ${monthYear(m[3], l)}), cada una pronosticada por una versión entrenada solo con peleas anteriores, con cada peleador descrito como estaba la mañana de la pelea. Acertó el ganador el ${decimal(m[4], l)} % de las veces; su confianza se calibró con peleas anteriores. La versión en uso se entrenó después con todas las peleas hasta ${monthYear(m[5], l)}.`,
     },
   },
   {
@@ -169,7 +188,8 @@ const TEMPLATES: Template[] = [
 /** The model names the API puts in a sentence (lower case, as in "saved by the pre-fight model"). */
 const MODEL_NAMES: Record<string, { pt: string; fr: string; es: string }> = {
   'pre-fight model': { pt: 'modelo pré-luta', fr: 'modèle pré-combat', es: 'modelo previo a la pelea' },
-  'current model': { pt: 'modelo atual', fr: 'modèle actuel', es: 'modelo actual' },
+  'combined pre-fight model': { pt: 'modelo pré-luta combinado', fr: 'modèle pré-combat combiné', es: 'modelo combinado previo a la pelea' },
+  'first model': { pt: 'primeiro modelo', fr: 'premier modèle', es: 'primer modelo' },
 }
 
 /** An English sentence from the API, in the language on screen. */

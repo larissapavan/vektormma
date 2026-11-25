@@ -5,12 +5,22 @@ import pytest
 from scripts import update_all
 
 
+@pytest.fixture
+def statuses():
+    """What each run recorded as refreshed (data/raw/refresh_status.json)."""
+    return []
+
+
 @pytest.fixture(autouse=True)
-def generated_pages(monkeypatch):
+def generated_pages(monkeypatch, statuses):
     """The two generators at the end of the update write tracked files (frontend/src/seo/athletes.json and the share images
     under frontend/public/og), and they have no skip flag, so every full run reaches them: no test of the update may run them
     for real. What they were asked to do is recorded here, apart from `calls`, whose exact contents the other tests assert."""
     log: list[str] = []
+    # The validation reads the real files, the quarantine restores them and the status is a tracked file: not in a test.
+    monkeypatch.setattr(update_all, "require_valid", lambda: None)
+    monkeypatch.setattr(update_all, "quarantine_broken_sources", dict)
+    monkeypatch.setattr(update_all.refresh_status, "update_status", lambda results: statuses.append(results) or results)
     monkeypatch.setattr(update_all.build_seo_athletes, "main", lambda: log.append("seo") or True)
     monkeypatch.setattr(update_all.build_og_images, "main", lambda: log.append("og") or True)
     return log
@@ -212,3 +222,43 @@ def test_a_sherdog_careers_run_that_links_nobody_fails_the_run(monkeypatch, call
 def test_a_dry_run_skips_the_sherdog_careers(calls):
     update_all.main(["--dry-run"])
     assert "careers" not in [name for name, _ in calls]
+
+
+def test_the_run_records_which_sources_were_refreshed_and_leaves_out_the_skipped_ones(monkeypatch, calls, statuses):
+    monkeypatch.setattr(update_all.scrape_gyms, "main", lambda argv=None: 1)
+    update_all.main(["--skip-pfl"])
+    [status] = statuses
+    assert status["espn"] is True and status["gyms"] is False and "pfl" not in status
+
+
+def test_a_dry_run_records_nothing(calls, statuses):
+    update_all.main(["--dry-run"])
+    assert statuses == []
+
+
+def test_a_source_that_came_out_broken_is_put_back_and_the_run_goes_on_but_fails(monkeypatch, calls, statuses, generated_pages):
+    monkeypatch.setattr(update_all, "quarantine_broken_sources", lambda: {"gyms": ["gyms.csv: rows dropped"], "ksw": ["ksw/fights.csv: rows dropped"]})
+    assert update_all.main([]) == 1
+    [status] = statuses
+    assert status["gyms"] is False and status["sherdog_orgs"] is False and status["espn"] is True
+    assert generated_pages == ["seo", "og"]
+    assert [name for name, _ in calls].count("log") == 1
+
+
+def test_the_picks_are_saved_again_when_the_results_they_went_with_are_put_back(monkeypatch, calls):
+    monkeypatch.setattr(update_all, "quarantine_broken_sources", lambda: {update_all.quarantine.ESPN: ["fights.csv: rows dropped"]})
+    update_all.main([])
+    assert [name for name, _ in calls].count("log") == 2
+
+
+def test_every_step_with_a_status_is_a_step_of_the_update(calls, capsys):
+    update_all.main([])
+    summary = capsys.readouterr().out.split("=== Summary ===")[1]
+    assert all(f"  {step}: " in summary for step in update_all.SOURCES)
+
+
+def test_nothing_is_put_back_outside_github(monkeypatch):
+    monkeypatch.undo()  # the real function, not the one the fixture put in its place
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.setattr(update_all.quarantine, "quarantine", lambda *args: pytest.fail("would restore files"))
+    assert update_all.quarantine_broken_sources() == {}

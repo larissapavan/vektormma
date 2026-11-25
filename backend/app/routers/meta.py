@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException, Response
 
 from backend.app.dependencies import PredictionServiceGetter, get_prediction_service
-from backend.app.schemas.data_info import DataInfoResponse
+from backend.app.schemas.data_info import SiteDataInfoResponse
 from backend.app.schemas.fighters import PhotoCredits
 from backend.app.schemas.model_info import HealthResponse, ModelInfoResponse
 from backend.app.services.catalog_service import (
@@ -40,6 +40,7 @@ def build_meta_router(
             "predict": "/predict",
             "model_info": "/model-info",
             "data_info": "/data-info",
+            "monitor": "/monitor",
         }
 
     @router.get("/health", response_model=HealthResponse)
@@ -69,8 +70,8 @@ def build_meta_router(
         response.headers["Cache-Control"] = "public, max-age=3600"
         return PhotoCredits(credits=photo_credits())
 
-    @router.get("/data-info", response_model=DataInfoResponse)
-    def data_info() -> DataInfoResponse:
-        return DataInfoResponse(**get_data_info())
+    @router.get("/data-info", response_model=SiteDataInfoResponse)
+    def data_info() -> SiteDataInfoResponse:
+        return SiteDataInfoResponse(**get_data_info())
 
     return router

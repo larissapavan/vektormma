@@ -16,6 +16,7 @@ import { formatProbability, localizePredictionMessage } from '../../shared/data/
 import { DataConfidenceNote } from '../../shared/components/DataConfidenceNote'
 import { localizeFeature } from '../../shared/utils/localizeFeature'
 import { usePrediction } from '../../shared/hooks/usePrediction'
+import { factorSentence } from '../../shared/data/explainMatchup'
 import { Eyebrow } from '../../shared/components/ui/Eyebrow'
 import { PageHeader } from '../../shared/components/ui/PageHeader'
 import type { FighterProfile, MainFactor, OrgFighter, PredictionResponse } from '../../shared/types/api'
@@ -193,7 +194,7 @@ export function OrgPredictor() {
         <div className="space-y-6">
           <div className="grid gap-6 xl:grid-cols-2">
             <OrgScorecard prediction={prediction} />
-            {prediction.main_factors?.length ? <OrgDrivers factors={prediction.main_factors} redName={prediction.fighter_a_profile.name} /> : null}
+            {prediction.main_factors?.length && Math.abs(prediction.fighter_a_probability - 0.5) > 1e-9 ? <OrgDrivers factors={prediction.main_factors} names={{ a: prediction.fighter_a_profile.name, b: prediction.fighter_b_profile.name }} /> : null}
           </div>
           <OrgTaleOfTheTape fighterA={prediction.fighter_a_profile} fighterB={prediction.fighter_b_profile} />
         </div>
@@ -468,7 +469,7 @@ function OrgTaleOfTheTape({ fighterA, fighterB }: { fighterA: TapeFighter; fight
 }
 
 /** The factors behind the estimate; each bar takes the colour of the corner it favours. */
-function OrgDrivers({ factors, redName }: { factors: MainFactor[]; redName: string }) {
+function OrgDrivers({ factors, names }: { factors: MainFactor[]; names: { a: string; b: string } }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
   const rows = factors.slice(0, 6)
@@ -493,8 +494,9 @@ function OrgDrivers({ factors, redName }: { factors: MainFactor[]; redName: stri
               </span>
             </div>
             <div className="mt-1 h-2 overflow-hidden rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]">
-              <div className={`h-full ${factor.impact === redName ? 'bg-[var(--red)]' : 'bg-[var(--blue)]'}`} style={{ width: `${Math.min(100, Math.max(15, factor.magnitude * 250))}%` }} />
+              <div className={`h-full ${factor.impact === names.a ? 'bg-[var(--red)]' : 'bg-[var(--blue)]'}`} style={{ width: `${Math.min(100, Math.max(15, factor.magnitude * 250))}%` }} />
             </div>
+            {factor.key ? <p className="mt-1.5 text-sm leading-6 text-[var(--text-secondary)]">{factorSentence(factor, names, lang)}</p> : null}
           </div>
         ))}
       </div>

@@ -14,6 +14,7 @@ class HealthResponse(BaseModel):
 class BaselineRule(BaseModel):
     label: str
     accuracy: float
+    log_loss: float | None = None
 
 
 class CalibrationBin(BaseModel):
@@ -21,6 +22,23 @@ class CalibrationBin(BaseModel):
     fights: int
     average_confidence: float
     accuracy: float
+
+
+class EvaluationSegment(BaseModel):
+    """One kind of fight inside the test (women's fights, fights without statistics...)."""
+
+    label: str
+    fights: int
+    accuracy: float
+    average_confidence: float
+    log_loss: float | None = None
+
+
+class FactorImportance(BaseModel):
+    """How much worse the test predictions get without one factor (extra log loss when it is shuffled among the fights)."""
+
+    label: str
+    extra_log_loss: float
 
 
 class RecentEvaluation(BaseModel):
@@ -39,6 +57,8 @@ class RecentEvaluation(BaseModel):
     confident_hit_rate: float | None = None
     baselines: list[BaselineRule] = []
     calibration: list[CalibrationBin] = []
+    segments: list[EvaluationSegment] = []
+    importance: list[FactorImportance] = []
 
 
 class ModelInfoResponse(BaseModel):

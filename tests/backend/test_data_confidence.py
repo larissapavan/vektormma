@@ -69,7 +69,7 @@ def test_no_sentence_denies_what_the_served_model_does():
     """The pre-fight model weighs time off and fills gaps with medians, so the note may claim neither the opposite nor averages."""
     bundle = joblib.load(PREFIGHT_MODEL_PATH)
     assert "days_off_diff" in bundle["feature_columns"]
-    assert bundle["model"].named_steps["imputer"].strategy == "median"
+    assert all(member.named_steps["imputer"].strategy == "median" for member in bundle["members"])
     for reason in every_reason():
         assert not re.search(r"ring rust|average", reason), reason
 

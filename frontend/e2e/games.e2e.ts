@@ -85,6 +85,7 @@ for (const theme of ['dark', 'light'] as const) {
     }
 
     test('every screen of a challenge, with the focus on the new screen each time', async ({ page }) => {
+      test.slow() // a dozen accessibility scans: 15 s alone, over the 30 s limit with the other tests running beside it
       await prepare(page, theme)
       await page.goto(challengeLink(3))
       await page.getByLabel('Your name').fill('Ana Lima')

@@ -8,6 +8,7 @@ import { SectionHeading } from '../shared/components/SectionHeading'
 import { baselineName, localizeApiText } from '../shared/data/apiText'
 import { shownMetrics } from '../shared/data/modelAccuracy'
 import { useModelInfo } from '../shared/hooks/useModelInfo'
+import { localizeFeature } from '../shared/utils/localizeFeature'
 
 export function Model() {
   const { t, i18n } = useTranslation()
@@ -23,11 +24,11 @@ export function Model() {
           rocAuc: Number(value.roc_auc.toFixed(3)),
         }))
 
-  const featurePreview =
-    modelInfo?.features.slice(0, 10).map((feature, index) => ({
-      feature,
-      score: 10 - index,
-    })) ?? []
+  // How much worse the test predictions get without each factor. Nothing is drawn when it was not measured.
+  const importance = (modelInfo?.recent_evaluation?.importance ?? [])
+    .filter((row) => row.extra_log_loss > 0.0005)
+    .slice(0, 10)
+    .map((row) => ({ feature: localizeFeature(row.label, i18n.language), score: row.extra_log_loss }))
 
   return (
     <div className="space-y-3 sm:space-y-4">
@@ -63,7 +64,7 @@ export function Model() {
               <SectionHeading
                 eyebrow={L(i18n.language, 'Comparação com referências', 'Baseline comparison', 'Comparaison aux références', 'Comparación con referencias')}
                 title={t('model.baselines')}
-                description={L(i18n.language, 'Testado contra modelos lineares simples para garantir que a abordagem traz ganho preditivo real.', "As reported in the model's file, it was tested against simpler models, and gradient boosting had the best accuracy and log loss.", 'Comme indiqué dans le fichier du modèle, il a été comparé à des modèles plus simples, et le gradient boosting obtenait la meilleure précision et la plus faible perte logarithmique.', 'Según consta en el archivo del modelo, se probó contra modelos más simples, y el gradient boosting obtuvo la mejor precisión y la menor pérdida logarítmica.')}
+                description={L(i18n.language, 'Métodos mais simples medidos nas mesmas lutas do teste.', 'Simpler methods measured on the same test fights.', 'Des méthodes plus simples mesurées sur les mêmes combats du test.', 'Métodos más simples medidos en las mismas peleas de la prueba.')}
               />
               <div className="mt-3 h-[210px] min-w-0 sm:h-[250px]">
                 {/* initialDimension is only what the first render uses before the container is measured; without it Recharts warns "width(-1) and height(-1)" */}
@@ -87,31 +88,25 @@ export function Model() {
               </div>
             </article>
 
-            <article className="border-t-[3px] border-[var(--ink)] pt-5">
-              <SectionHeading
-                eyebrow={L(i18n.language, 'Engenharia de variáveis', 'Feature design', 'Conception des variables', 'Diseño de variables')}
-                title={t('model.featureImportance')}
-                description={L(i18n.language, 'Diferenças de idade, envergadura, histórico e taxas de golpes e quedas.', 'Mostly the difference between the two fighters: age, reach, record, striking and takedown accuracy.', 'Surtout l’écart entre les deux combattants : âge, allonge, palmarès, précision des coups et des amenées au sol.', 'Sobre todo la diferencia entre los dos peleadores: edad, alcance, récord, precisión de golpes y de derribos.')}
-              />
-              <div className="mt-3 h-[210px] min-w-0 sm:h-[250px]">
-                <ResponsiveContainer width="100%" height="100%" minWidth={280} initialDimension={{ width: 320, height: 210 }}>
-                  <BarChart data={featurePreview} layout="vertical">
-                    <CartesianGrid stroke="rgba(255,255,255,0.06)" horizontal={false} />
-                    <XAxis type="number" hide />
-                    <YAxis dataKey="feature" type="category" tick={{ fill: 'var(--muted)', fontSize: 13 }} axisLine={false} tickLine={false} width={110} />
-                    <Tooltip
-                      contentStyle={{
-                        background: 'var(--panel)',
-                        border: '1.5px solid var(--ink)',
-                        borderRadius: '4px',
-                        color: 'var(--ink)',
-                      }}
-                    />
-                    <Bar dataKey="score" fill="var(--ink)" radius={[0, 2, 2, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </article>
+            {importance.length ? (
+              <article className="border-t-[3px] border-[var(--ink)] pt-5">
+                <SectionHeading
+                  eyebrow={L(i18n.language, 'Medido no teste', 'Measured on the test', 'Mesuré sur le test', 'Medido en la prueba')}
+                  title={t('model.featureImportance')}
+                  description={L(i18n.language, 'Quanto as previsões pioram quando cada informação é embaralhada entre as lutas.', 'How much worse the predictions get when each piece of information is shuffled among the fights.', 'À quel point les prévisions se dégradent quand chaque information est mélangée entre les combats.', 'Cuánto empeoran los pronósticos cuando cada dato se mezcla entre las peleas.')}
+                />
+                <ul className="mt-3 grid gap-2.5">
+                  {importance.map((row) => (
+                    <li key={row.feature}>
+                      <p className="text-base">{row.feature}</p>
+                      <div className="mt-1 h-3 bg-[var(--track)]">
+                        <div className="h-full bg-[var(--ink)]" style={{ width: `${Math.max((row.score / importance[0].score) * 100, 1)}%` }} />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            ) : null}
           </section>
 
           <section className="grid gap-3 xl:grid-cols-[0.95fr_1.05fr]">

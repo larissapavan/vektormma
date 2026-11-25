@@ -53,10 +53,11 @@ import { useChampions } from '../shared/hooks/useChampions'
 import { useRankings } from '../shared/hooks/useRankings'
 import { getFighterImageUrl, useFighterImages, type FighterImageRecord } from '../shared/hooks/useFighterImages'
 import { photoRightsText, usePhotoCredit } from '../shared/hooks/usePhotoCredit'
+import { useClearUrlParams, useUrlParam } from '../shared/hooks/useUrlParam'
+import { STYLE_TRAITS, TRAIT_MIN, stylePools, styleOf, traitLabel, type StyleKey } from '../shared/data/style'
 import type { FighterProfile } from '../shared/types/api'
 
 type UfcStatus = 'active' | 'former' | 'never'
-type ActiveFilter = 'all' | Exclude<UfcStatus, 'never'>
 
 type DivisionGroup = {
   key: string
@@ -157,6 +158,24 @@ function stanceLabel(stance: string, language: string | boolean | null | undefin
   return STANCE_NAMES[uiLang(language)]?.[stance] ?? stance
 }
 
+/** Age ranges, both ends included, by their value in the address. */
+const AGE_RANGES: Record<string, [number, number]> = { 'up-to-25': [0, 25], '26-30': [26, 30], '31-35': [31, 35], '36-plus': [36, 200] }
+const MOMENTS = ['booked', 'newcomer', 'away'] as const
+const YEAR_MS = 365.25 * 24 * 3600 * 1000
+const EXTRA_FILTERS = ['stance', 'badge', 'country', 'age', 'style', 'moment'] as const
+
+/** Whether a fighter is in the moment asked for: a fight booked, in the UFC for under a year, or a year without fighting. */
+function inMoment(fighter: FighterProfile, moment: string, today: number): boolean {
+  if (moment === 'booked') return Boolean(fighter.next_fight)
+  const since = (day: string | null | undefined) => (day ? today - new Date(`${day}T00:00:00`).getTime() : null)
+  if (moment === 'newcomer') {
+    const debut = since(fighter.ufc_debut)
+    return debut != null && debut >= 0 && debut < YEAR_MS
+  }
+  const last = since(fighter.ufc_last_fight)
+  return fighter.ufc_status === 'active' && last != null && last > YEAR_MS
+}
+
 /** Cards rendered per page in a division; the biggest divisions hold several hundred fighters. A phone gets fewer: each card is tall. */
 const PAGE_SIZE = typeof window !== 'undefined' && window.matchMedia('(max-width: 639px)').matches ? 12 : 24
 
@@ -176,13 +195,18 @@ export function Fighters() {
     },
     [history],
   )
-  const [query, setQuery] = useState('')
-  const [stanceFilter, setStanceFilter] = useState('All stances')
-  const [badgeFilter, setBadgeFilter] = useState('')
-  const [countryFilter, setCountryFilter] = useState('')
-  const [activeFilter, setActiveFilter] = useState<ActiveFilter>('all')
+  // Every filter lives in the address, so a filtered list can be shared and the back button returns to it.
+  const [query, setQuery] = useUrlParam('q')
+  const [stanceFilter, setStanceFilter] = useUrlParam('stance', 'All stances')
+  const [badgeFilter, setBadgeFilter] = useUrlParam('badge')
+  const [countryFilter, setCountryFilter] = useUrlParam('country')
+  const [ageFilter, setAgeFilter] = useUrlParam('age', '', Object.keys(AGE_RANGES))
+  const [styleFilter, setStyleFilter] = useUrlParam('style', '', STYLE_TRAITS)
+  const [momentFilter, setMomentFilter] = useUrlParam('moment', '', MOMENTS)
+  const [activeFilter, setActiveFilter] = useUrlParam('status', 'all', ['all', 'active', 'former'])
+  const [activeDivision, setActiveDivision] = useUrlParam('division', 'lightweight', [ALL_DIVISIONS, ...divisionGroups.map((group) => group.key)])
+  const clearFilters = useClearUrlParams(EXTRA_FILTERS)
   const [filtersOpen, setFiltersOpen] = useState(false)
-  const [activeDivision, setActiveDivision] = useState('lightweight')
   const [searchParams, setSearchParams] = useSearchParams()
   // Deep link from other pages (e.g. Champions): /fighters?fighter=<name> opens that profile.
   const [selectedFighter, setSelectedFighter] = useState<string | null>(() => searchParams.get('fighter'))
@@ -220,8 +244,12 @@ export function Fighters() {
       .sort((a, b) => a.name.localeCompare(b.name, localeTag(i18n.language)))
   }, [fighters, i18n.language])
 
+  const pools = useMemo(() => stylePools(fighters), [fighters])
+  const [today] = useState(() => Date.now())
+
   const visibleFighters = useMemo(() => {
     const term = foldText(query.trim())
+    const ages = AGE_RANGES[ageFilter]
     return fighters.filter((fighter) => {
       const matchesName =
         !term ||
@@ -231,9 +259,12 @@ export function Fighters() {
       const matchesBadge = !badgeFilter || (fighter.badges ?? []).includes(badgeFilter)
       const matchesStatus = activeFilter === 'all' || statusOf(fighter) === activeFilter
       const matchesCountry = !countryFilter || nationalitiesOf(fighter).some((nation) => nation.code === countryFilter)
-      return matchesName && matchesStance && matchesBadge && matchesStatus && matchesCountry
+      if (!(matchesName && matchesStance && matchesBadge && matchesStatus && matchesCountry)) return false
+      if (ages && (fighter.age == null || Math.floor(fighter.age) < ages[0] || Math.floor(fighter.age) > ages[1])) return false
+      if (momentFilter && !inMoment(fighter, momentFilter, today)) return false
+      return !styleFilter || (styleOf(fighter, pools)[styleFilter as StyleKey].percentile ?? 0) >= TRAIT_MIN
     })
-  }, [fighters, query, stanceFilter, badgeFilter, countryFilter, activeFilter, statusOf])
+  }, [fighters, query, stanceFilter, badgeFilter, countryFilter, ageFilter, styleFilter, momentFilter, activeFilter, statusOf, pools, today])
 
   const groupedFighters = useMemo(() => {
     const groups = new Map<string, FighterProfile[]>()
@@ -250,7 +281,8 @@ export function Fighters() {
   }, [visibleFighters, ranks, statusOf, historyFor])
 
   const hasAnyResults = visibleFighters.length > 0
-  const isSearching = query.trim() !== '' || stanceFilter !== 'All stances' || badgeFilter !== '' || countryFilter !== ''
+  const extraCount = [stanceFilter !== 'All stances', badgeFilter, countryFilter, ageFilter, styleFilter, momentFilter].filter(Boolean).length
+  const isSearching = query.trim() !== '' || extraCount > 0
   // Searching must show what it found: when the chosen division has no match, open the first one that does.
   const showAll = activeDivision === ALL_DIVISIONS
   const shownDivision =
@@ -270,8 +302,8 @@ export function Fighters() {
           { label: t('fighters.division'), value: `${divisionGroups.length}` },
         ]}
       >
-        <div className="grid gap-2.5 md:grid-cols-3 xl:grid-cols-[1fr_200px_220px_220px]">
-          <div className="flex gap-2 md:col-span-3 xl:col-span-1">
+        <div className="grid gap-2.5">
+          <div className="flex gap-2">
             <div className="soft-input flex min-w-0 flex-1 items-center gap-2.5 rounded-sm px-3 py-2.5">
               <Search className="h-4 w-4 shrink-0 text-[var(--text-red)]" />
               <input
@@ -291,14 +323,12 @@ export function Fighters() {
             >
               <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
               {L(i18n.language, 'Filtros', 'Filters', 'Filtres', 'Filtros')}
-              {stanceFilter !== 'All stances' || badgeFilter !== '' || countryFilter !== '' ? (
-                <span className="grid h-5 min-w-5 place-items-center rounded-sm bg-[var(--ink)] px-1 text-label text-[var(--on-ink)]">
-                  {(stanceFilter !== 'All stances' ? 1 : 0) + (badgeFilter !== '' ? 1 : 0) + (countryFilter !== '' ? 1 : 0)}
-                </span>
+              {extraCount ? (
+                <span className="grid h-5 min-w-5 place-items-center rounded-sm bg-[var(--ink)] px-1 text-label text-[var(--on-ink)]">{extraCount}</span>
               ) : null}
             </button>
           </div>
-          <div id="fighter-extra-filters" className={`${filtersOpen ? 'grid' : 'hidden'} gap-2.5 md:contents`}>
+          <div id="fighter-extra-filters" className={`${filtersOpen ? 'grid' : 'hidden'} gap-2.5 md:grid md:grid-cols-3 xl:grid-cols-6`}>
           <select
             value={stanceFilter}
             onChange={(event) => setStanceFilter(event.target.value)}
@@ -337,6 +367,43 @@ export function Fighters() {
               </option>
             ))}
           </select>
+          <select
+            value={ageFilter}
+            onChange={(event) => setAgeFilter(event.target.value)}
+            aria-label={L(i18n.language, 'Filtrar por idade', 'Filter by age', 'Filtrer par âge', 'Filtrar por edad')}
+            className="soft-input rounded-sm px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
+          >
+            <option value="">{L(i18n.language, 'Todas as idades', 'All ages', 'Tous les âges', 'Todas las edades')}</option>
+            <option value="up-to-25">{L(i18n.language, 'Até 25 anos', 'Up to 25', 'Jusqu’à 25 ans', 'Hasta 25 años')}</option>
+            <option value="26-30">{L(i18n.language, '26 a 30 anos', '26 to 30', '26 à 30 ans', '26 a 30 años')}</option>
+            <option value="31-35">{L(i18n.language, '31 a 35 anos', '31 to 35', '31 à 35 ans', '31 a 35 años')}</option>
+            <option value="36-plus">{L(i18n.language, '36 anos ou mais', '36 or older', '36 ans ou plus', '36 años o más')}</option>
+          </select>
+          <select
+            value={styleFilter}
+            onChange={(event) => setStyleFilter(event.target.value)}
+            aria-label={L(i18n.language, 'Filtrar por estilo', 'Filter by style', 'Filtrer par style', 'Filtrar por estilo')}
+            title={L(i18n.language, 'Os 25% com os maiores números da divisão', 'The top 25% of the division', 'Les 25 % les plus élevés de la catégorie', 'El 25 % con los números más altos de la división')}
+            className="soft-input rounded-sm px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
+          >
+            <option value="">{L(i18n.language, 'Todos os estilos', 'All styles', 'Tous les styles', 'Todos los estilos')}</option>
+            {STYLE_TRAITS.map((key) => (
+              <option key={key} value={key}>
+                {traitLabel(key, i18n.language)}
+              </option>
+            ))}
+          </select>
+          <select
+            value={momentFilter}
+            onChange={(event) => setMomentFilter(event.target.value)}
+            aria-label={L(i18n.language, 'Filtrar por momento', 'Filter by moment', 'Filtrer par moment', 'Filtrar por momento')}
+            className="soft-input rounded-sm px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none"
+          >
+            <option value="">{L(i18n.language, 'Qualquer momento', 'Any moment', 'Tous les moments', 'Cualquier momento')}</option>
+            <option value="booked">{L(i18n.language, 'Com luta marcada', 'Fight booked', 'Combat programmé', 'Con pelea programada')}</option>
+            <option value="newcomer">{L(i18n.language, 'Estreou há menos de 1 ano', 'In the UFC under a year', 'À l’UFC depuis moins d’un an', 'Debutó hace menos de 1 año')}</option>
+            <option value="away">{L(i18n.language, 'Há mais de 1 ano sem lutar', 'Over a year without a fight', 'Plus d’un an sans combattre', 'Más de 1 año sin pelear')}</option>
+          </select>
           </div>
         </div>
 
@@ -352,6 +419,11 @@ export function Fighters() {
               {t('fighters.former')}
             </ActiveTabButton>
           </div>
+          {extraCount ? (
+            <button type="button" onClick={clearFilters} className="ghost-action inline-flex min-h-11 cursor-pointer items-center px-4 text-sm">
+              {L(i18n.language, 'Limpar filtros', 'Clear filters', 'Effacer les filtres', 'Quitar filtros')}
+            </button>
+          ) : null}
           <p className="text-sm text-[var(--text-muted)]">
             <span className="font-semibold tabular-nums text-[var(--text-primary)]">{visibleFighters.length.toLocaleString(localeTag(i18n.language))}</span> {L(i18n.language, 'exibidos', 'shown', 'affichés', 'mostrados')}
           </p>
@@ -433,7 +505,10 @@ export function Fighters() {
           name={selectedFighter}
           onClose={() => {
             setSelectedFighter(null)
-            if (searchParams.has('fighter')) setSearchParams({}, { replace: true })
+            if (!searchParams.has('fighter')) return
+            const rest = new URLSearchParams(searchParams)
+            rest.delete('fighter')
+            setSearchParams(rest, { replace: true })
           }}
           onSelectFighter={setSelectedFighter}
         />

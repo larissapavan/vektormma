@@ -86,6 +86,9 @@ def pretty_feature_name(feature_name: str) -> str:
         "womens": "Women's division",
         "age_sum": "Combined age",
         "fights_sum": "Combined UFC experience",
+        "reach_diff": "Reach difference",
+        "height_diff": "Height difference",
+        "ufc_results": "UFC results and level of opposition",
     }
     if feature_name in labels:
         return labels[feature_name]
@@ -284,6 +287,7 @@ class PredictionService:
         probability = max(fighter_a_probability, fighter_b_probability)
 
         main_factors = self._build_main_factors(x_ab, x_ba, fighter_a["name"], fighter_b["name"])
+        self._add_factor_values(main_factors, fighter_a, fighter_b)
 
         return {
             "predicted_winner": predicted_winner,
@@ -330,6 +334,13 @@ class PredictionService:
         values = self.shap_explainer(imputed).values
         return 0.5 * (values[0] - values[1][self._counterpart_index])
 
+    def _add_factor_values(self, factors: list[dict], fighter_a: dict, fighter_b: dict) -> None:
+        """Writes into each factor what the model read for each fighter, for a model that can say it."""
+
+    def _factor(self, column: str) -> str:
+        """The factor a column is explained under: its own name, unless the model reads several columns as one thing."""
+        return column
+
     def _build_main_factors(
         self, x_ab: pd.DataFrame, x_ba: pd.DataFrame, fighter_a_name: str, fighter_b_name: str
     ) -> list[dict]:
@@ -338,8 +349,11 @@ class PredictionService:
         if combined is None:
             return []
 
-        contributions = pd.DataFrame({"feature": self.feature_columns, "shap_value": combined})
-        contributions["feature"] = contributions["feature"].map(pretty_feature_name)
+        # SHAP values add up, so the push of a factor made of several columns is the sum of theirs.
+        contributions = pd.DataFrame({"feature": [self._factor(column) for column in self.feature_columns], "shap_value": combined})
+        contributions = contributions.groupby("feature", as_index=False, sort=False)["shap_value"].sum()
+        contributions = contributions.rename(columns={"feature": "key"})
+        contributions["feature"] = contributions["key"].map(pretty_feature_name)
         top_contributions = contributions.reindex(
             contributions["shap_value"].abs().sort_values(ascending=False).index
         ).head(6)
@@ -349,6 +363,7 @@ class PredictionService:
             toward = fighter_a_name if row["shap_value"] >= 0 else fighter_b_name
             factors.append(
                 {
+                    "key": row["key"],
                     "feature": row["feature"],
                     "impact": toward,
                     "explanation": f"{row['feature']} pushed the prediction toward {toward}.",

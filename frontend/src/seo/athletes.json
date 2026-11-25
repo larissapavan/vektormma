@@ -9653,7 +9653,7 @@
    },
    "pick": {
     "winner": "Shara Magomedov",
-    "probability": 0.5349,
+    "probability": 0.5132,
     "winnerIsA": false
    }
   },
@@ -9694,7 +9694,7 @@
    },
    "pick": {
     "winner": "Ian Machado Garry",
-    "probability": 0.598,
+    "probability": 0.585,
     "winnerIsA": true
    }
   },
@@ -9735,7 +9735,7 @@
    },
    "pick": {
     "winner": "Mario Pinto",
-    "probability": 0.7838,
+    "probability": 0.777,
     "winnerIsA": false
    }
   },
@@ -9776,7 +9776,7 @@
    },
    "pick": {
     "winner": "Luke Riley",
-    "probability": 0.6236,
+    "probability": 0.6122,
     "winnerIsA": true
    }
   },
@@ -9817,7 +9817,7 @@
    },
    "pick": {
     "winner": "Mairon Santos",
-    "probability": 0.7238,
+    "probability": 0.7184,
     "winnerIsA": true
    }
   },
@@ -9858,7 +9858,7 @@
    },
    "pick": {
     "winner": "Magomed Tuchalov",
-    "probability": 0.7565,
+    "probability": 0.6564,
     "winnerIsA": true
    }
   },
@@ -9899,7 +9899,7 @@
    },
    "pick": {
     "winner": "Jafel Filho",
-    "probability": 0.665,
+    "probability": 0.5959,
     "winnerIsA": false
    }
   },
@@ -9940,7 +9940,7 @@
    },
    "pick": {
     "winner": "Uran Satybaldiev",
-    "probability": 0.6236,
+    "probability": 0.5453,
     "winnerIsA": true
    }
   },
@@ -9981,7 +9981,7 @@
    },
    "pick": {
     "winner": "Marco Tulio",
-    "probability": 0.6318,
+    "probability": 0.5716,
     "winnerIsA": true
    }
   },
@@ -10022,7 +10022,7 @@
    },
    "pick": {
     "winner": "Pavel Andrusca",
-    "probability": 0.5702,
+    "probability": 0.6316,
     "winnerIsA": true
    }
   },
@@ -10063,7 +10063,7 @@
    },
    "pick": {
     "winner": "Matthieu Duclos",
-    "probability": 0.674,
+    "probability": 0.5939,
     "winnerIsA": false
    }
   },
@@ -10103,9 +10103,9 @@
     "photo": "hecher-sosa.webp"
    },
    "pick": {
-    "winner": "Hecher Sosa",
-    "probability": 0.5095,
-    "winnerIsA": false
+    "winner": "Abdul Hussein",
+    "probability": 0.5566,
+    "winnerIsA": true
    }
   },
   {
@@ -10144,9 +10144,9 @@
     "photo": "islam-dulatov.webp"
    },
    "pick": {
-    "winner": "Levan Chokheli",
-    "probability": 0.5576,
-    "winnerIsA": true
+    "winner": "Islam Dulatov",
+    "probability": 0.5163,
+    "winnerIsA": false
    }
   },
   {
@@ -10188,7 +10188,7 @@
    },
    "pick": {
     "winner": "Charles Oliveira",
-    "probability": 0.5732,
+    "probability": 0.5764,
     "winnerIsA": true
    }
   },
@@ -10229,7 +10229,7 @@
    },
    "pick": {
     "winner": "Shanelle Dyer",
-    "probability": 0.7076,
+    "probability": 0.7456,
     "winnerIsA": false
    }
   },
@@ -10270,7 +10270,7 @@
    },
    "pick": {
     "winner": "Sergei Pavlovich",
-    "probability": 0.5559,
+    "probability": 0.5081,
     "winnerIsA": true
    }
   },
@@ -10311,7 +10311,7 @@
    },
    "pick": {
     "winner": "Brandon Moreno",
-    "probability": 0.6835,
+    "probability": 0.6513,
     "winnerIsA": true
    }
   },
@@ -10352,7 +10352,7 @@
    },
    "pick": {
     "winner": "Baisangur Susurkaev",
-    "probability": 0.5853,
+    "probability": 0.5943,
     "winnerIsA": false
    }
   },
@@ -10392,9 +10392,9 @@
     "photo": "ethyn-ewing.webp"
    },
    "pick": {
-    "winner": "Kyler Phillips",
-    "probability": 0.5132,
-    "winnerIsA": true
+    "winner": "Ethyn Ewing",
+    "probability": 0.5238,
+    "winnerIsA": false
    }
   },
   {
@@ -10434,7 +10434,7 @@
    },
    "pick": {
     "winner": "Quentin Pasley",
-    "probability": 0.5749,
+    "probability": 0.6412,
     "winnerIsA": true
    }
   },
@@ -10475,7 +10475,7 @@
    },
    "pick": {
     "winner": "Maycee Barber",
-    "probability": 0.6006,
+    "probability": 0.5423,
     "winnerIsA": true
    }
   },
@@ -10516,7 +10516,7 @@
    },
    "pick": {
     "winner": "Chris Padilla",
-    "probability": 0.5122,
+    "probability": 0.5301,
     "winnerIsA": false
    }
   },
@@ -10557,7 +10557,7 @@
    },
    "pick": {
     "winner": "Ronald Humphrey",
-    "probability": 0.5586,
+    "probability": 0.5595,
     "winnerIsA": true
    }
   },
@@ -10598,7 +10598,7 @@
    },
    "pick": {
     "winner": "Roque Conceicao",
-    "probability": 0.5449,
+    "probability": 0.5803,
     "winnerIsA": true
    }
   },
@@ -10639,7 +10639,7 @@
    },
    "pick": {
     "winner": "Steve Garcia",
-    "probability": 0.667,
+    "probability": 0.5694,
     "winnerIsA": false
    }
   },
@@ -10680,7 +10680,7 @@
    },
    "pick": {
     "winner": "Roberto Soldic",
-    "probability": 0.6885,
+    "probability": 0.6643,
     "winnerIsA": false
    }
   },
@@ -10721,7 +10721,7 @@
    },
    "pick": {
     "winner": "Ignacio Bahamondes",
-    "probability": 0.6285,
+    "probability": 0.6039,
     "winnerIsA": true
    }
   },
@@ -10762,7 +10762,7 @@
    },
    "pick": {
     "winner": "Geoff Neal",
-    "probability": 0.6779,
+    "probability": 0.6634,
     "winnerIsA": true
    }
   },
@@ -10803,7 +10803,7 @@
    },
    "pick": {
     "winner": "Louie Sutherland",
-    "probability": 0.7151,
+    "probability": 0.668,
     "winnerIsA": false
    }
   },
@@ -10844,7 +10844,7 @@
    },
    "pick": {
     "winner": "Kennedy Nzechukwu",
-    "probability": 0.6041,
+    "probability": 0.7001,
     "winnerIsA": true
    }
   },
@@ -10885,7 +10885,7 @@
    },
    "pick": {
     "winner": "Gilbert Urbina",
-    "probability": 0.5332,
+    "probability": 0.6038,
     "winnerIsA": true
    }
   },
@@ -10926,7 +10926,7 @@
    },
    "pick": {
     "winner": "Alden Coria",
-    "probability": 0.6493,
+    "probability": 0.6414,
     "winnerIsA": true
    }
   },
@@ -10967,7 +10967,7 @@
    },
    "pick": {
     "winner": "MarQuel Mederos",
-    "probability": 0.6282,
+    "probability": 0.6218,
     "winnerIsA": false
    }
   },
@@ -11007,9 +11007,9 @@
     "photo": "piero-guaylupo.webp"
    },
    "pick": {
-    "winner": "Magomed Zaynukov",
-    "probability": 0.5238,
-    "winnerIsA": true
+    "winner": "Piero Guaylupo",
+    "probability": 0.5537,
+    "winnerIsA": false
    }
   },
   {
@@ -11049,7 +11049,7 @@
    },
    "pick": {
     "winner": "John Garza",
-    "probability": 0.6765,
+    "probability": 0.7274,
     "winnerIsA": true
    }
   },
@@ -11090,7 +11090,7 @@
    },
    "pick": {
     "winner": "Steven Asplund",
-    "probability": 0.6774,
+    "probability": 0.6905,
     "winnerIsA": true
    }
   },
@@ -11131,7 +11131,7 @@
    },
    "pick": {
     "winner": "Sam Hughes",
-    "probability": 0.6164,
+    "probability": 0.6805,
     "winnerIsA": true
    }
   },
@@ -11172,7 +11172,7 @@
    },
    "pick": {
     "winner": "Sean Brady",
-    "probability": 0.5553,
+    "probability": 0.5246,
     "winnerIsA": false
    }
   },
@@ -11215,7 +11215,7 @@
    },
    "pick": {
     "winner": "Joshua Van",
-    "probability": 0.6606,
+    "probability": 0.6836,
     "winnerIsA": true
    }
   },
@@ -11256,7 +11256,7 @@
    },
    "pick": {
     "winner": "Michael Morales",
-    "probability": 0.6576,
+    "probability": 0.6753,
     "winnerIsA": false
    }
   },
@@ -11297,7 +11297,7 @@
    },
    "pick": {
     "winner": "Lance Gibson Jr.",
-    "probability": 0.6118,
+    "probability": 0.6192,
     "winnerIsA": true
    }
   },
@@ -11338,7 +11338,7 @@
    },
    "pick": {
     "winner": "Serhiy Sidey",
-    "probability": 0.6026,
+    "probability": 0.5635,
     "winnerIsA": true
    }
   },
@@ -11379,7 +11379,7 @@
    },
    "pick": {
     "winner": "Cam Nelson",
-    "probability": 0.5817,
+    "probability": 0.5148,
     "winnerIsA": true
    }
   },
@@ -11420,7 +11420,7 @@
    },
    "pick": {
     "winner": "Quillan Salkilld",
-    "probability": 0.6315,
+    "probability": 0.6497,
     "winnerIsA": true
    }
   },
@@ -11461,7 +11461,7 @@
    },
    "pick": {
     "winner": "Robert Whittaker",
-    "probability": 0.5072,
+    "probability": 0.5781,
     "winnerIsA": false
    }
   },
@@ -11502,7 +11502,7 @@
    },
    "pick": {
     "winner": "Marwan Rahiki",
-    "probability": 0.6612,
+    "probability": 0.7043,
     "winnerIsA": true
    }
   },
@@ -11543,7 +11543,7 @@
    },
    "pick": {
     "winner": "Joanderson Brito",
-    "probability": 0.6642,
+    "probability": 0.706,
     "winnerIsA": false
    }
   },
@@ -11584,7 +11584,7 @@
    },
    "pick": {
     "winner": "George Mangos",
-    "probability": 0.5582,
+    "probability": 0.5431,
     "winnerIsA": true
    }
   },
@@ -11625,7 +11625,7 @@
    },
    "pick": {
     "winner": "Ryo Tajima",
-    "probability": 0.5001,
+    "probability": 0.5038,
     "winnerIsA": false
    }
   },
@@ -11666,7 +11666,7 @@
    },
    "pick": {
     "winner": "Takaya Suzuki",
-    "probability": 0.5582,
+    "probability": 0.544,
     "winnerIsA": false
    }
   },
@@ -11707,7 +11707,7 @@
    },
    "pick": {
     "winner": "Bo Hyun Park",
-    "probability": 0.5623,
+    "probability": 0.5385,
     "winnerIsA": false
    }
   },
@@ -11748,7 +11748,7 @@
    },
    "pick": {
     "winner": "Sam Patterson",
-    "probability": 0.5367,
+    "probability": 0.5441,
     "winnerIsA": false
    }
   },
@@ -11789,7 +11789,7 @@
    },
    "pick": {
     "winner": "Bo Nickal",
-    "probability": 0.5544,
+    "probability": 0.5286,
     "winnerIsA": false
    }
   }

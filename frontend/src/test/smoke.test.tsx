@@ -95,16 +95,29 @@ describe('the pages that depend on the API', () => {
   it('the track record counts each model apart once a newer one has made picks', async () => {
     renderAt('/track-record')
     expect(await screen.findByText('Live picks by model', undefined, { timeout: 10000 })).toBeInTheDocument()
-    expect(screen.getByText('Current model')).toBeInTheDocument()
+    expect(screen.getByText('First model')).toBeInTheDocument()
     expect(screen.getByText('1 of 2 right (50%), 1 still to be settled.')).toBeInTheDocument()
     expect(screen.getByText('Pre-fight model')).toBeInTheDocument()
     expect(screen.getByText('1 picks saved, none settled yet.')).toBeInTheDocument()
     expect(screen.getByText(/saved by the pre-fight model, in use since 2026-11-10/)).toBeInTheDocument()
   })
 
+  it('the track record says how many saved picks do not count, and offers no way to change it', async () => {
+    renderAt('/track-record')
+    expect(await screen.findByText(/^2 saved picks do not count/, undefined, { timeout: 10000 })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /sync/i })).not.toBeInTheDocument()
+  })
+
+  it('the data page dates each source and says which one is failing', async () => {
+    renderAt('/data')
+    expect(await screen.findByText('Gyms (FightHub)', undefined, { timeout: 10000 })).toBeInTheDocument()
+    expect(screen.getByText('Updates failing since October 3, 2026')).toBeInTheDocument()
+    expect(screen.getByText(/newest UFC fight with a result is from October 4, 2026/)).toBeInTheDocument()
+  })
+
   it('the track record compares the model with simple rules and shows its back-tested calibration', async () => {
     renderAt('/track-record')
-    expect(await screen.findByText('Does it beat simple rules?', undefined, { timeout: 10000 })).toBeInTheDocument()
+    expect(await screen.findByText('The model and simpler methods', undefined, { timeout: 10000 })).toBeInTheDocument()
     expect(screen.getByText('Pick at random')).toBeInTheDocument()
     expect(screen.getByText(/Back-test: when the model says X%/)).toBeInTheDocument()
   })
@@ -114,6 +127,34 @@ describe('the pages that depend on the API', () => {
     const note = await screen.findByLabelText('Data behind this prediction', undefined, { timeout: 10000 })
     expect(note).toHaveTextContent(/thin data/i)
     expect(note).toHaveTextContent(/Beta Two has only 2 recorded fights/)
+  })
+
+  it('the upcoming fights can be filtered by the favorite’s chance, from the address or from the page', async () => {
+    renderAt('/events?chance=clear')
+    expect(await screen.findByText('1 fight found', undefined, { timeout: 10000 })).toBeInTheDocument()
+    expect(screen.getByText('Gamma Three')).toBeInTheDocument() // 72%
+    expect(screen.queryByText('Beta Two')).not.toBeInTheDocument() // the other fight of the card has no pick
+
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: /favorite.s chance/i }), 'even')
+    expect(await screen.findByText('0 fights found')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Clear filters' }))
+    expect(screen.queryByText(/fights? found/)).not.toBeInTheDocument()
+  })
+
+  it('a shared matchup shows the result before the corners, and says in words what weighed', async () => {
+    renderAt('/matchup-intelligence?a=Alpha%20One&b=Beta%20Two')
+    const words = await screen.findByRole('heading', { name: 'In words' }, { timeout: 10000 })
+    expect(screen.getByText(/What weighs most for Alpha One: age difference\. Alpha One is 28; Beta Two is 36\./)).toBeInTheDocument()
+    expect(screen.getAllByText('Alpha One is 28; Beta Two is 36.')).toHaveLength(1)
+    const corner = screen.getAllByText('Red corner')[0]
+    expect(words.compareDocumentPosition(corner) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('with no fight chosen the corners come first', async () => {
+    renderAt('/predictor')
+    const corner = (await screen.findAllByText('Red corner', undefined, { timeout: 10000 }))[0]
+    const result = screen.getByRole('heading', { name: 'Chance of winning' })
+    expect(corner.compareDocumentPosition(result) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('a division can be run as a round robin, with the full grid under the standings', async () => {

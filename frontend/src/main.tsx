@@ -7,6 +7,9 @@ import './index.css'
 import i18n from './i18n'
 import { LANG_PREFIX, langPath, localeTag, splitLangPath, uiLang } from './i18n/lang'
 import App from './App.tsx'
+import { installErrorReporting } from './shared/services/errorReporter'
+
+installErrorReporting()
 
 /** The address of the page the visitor is on, written in the given language: /fighters?x=1#a -> /en/fighters?x=1#a. */
 function addressIn(lang: ReturnType<typeof uiLang>): string {

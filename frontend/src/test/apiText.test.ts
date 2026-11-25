@@ -21,8 +21,8 @@ describe('pre-fight model texts', () => {
 
   it('keeps the note with its numbers in each language', () => {
     const note =
-      'Measured once on 1,755 fights (June 2023 to October 2026), all later than the fights it trained on, each fighter described as of the morning of the fight. ' +
-      'It picked the winner 62.7% of the time; its confidence was calibrated on a separate block of earlier fights.'
+      'Measured on 1,755 fights (June 2023 to October 2026), each predicted by a version trained only on earlier fights, each fighter described as of the morning of the fight. ' +
+      'It picked the winner 62.7% of the time; its confidence was calibrated on earlier fights. The version in use was then trained on every fight up to November 2026.'
     expect(localizeApiText(note, 'en-US')).toBe(note)
     expect(localizeApiText(note, 'pt-BR')).toContain('1.755 lutas')
     expect(localizeApiText(note, 'pt-BR')).toContain('62,7%')

@@ -23,6 +23,9 @@ ufc.com page as the rankings, and fighters created from ESPN need their headshot
    14. SEO       scripts.build_seo_athletes          the data of the static athlete and fight pages (frontend/src/seo/athletes.json)
        OG images scripts.build_og_images             the share image of each of those pages (frontend/public/og/), only new or changed ones
 
+Before 14, and only inside GitHub Actions, a source whose files fail validation is put back as it was (scripts.quarantine), and
+what was refreshed when is written to data/raw/refresh_status.json (scripts.refresh_status).
+
 Usage (from the repo root):
     python -m scripts.update_all --dry-run      # ESPN preview only; rankings and photos write files, so they are skipped
     python -m scripts.update_all
@@ -46,7 +49,7 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from scripts import (
-    build_og_images, build_seo_athletes, download_fighter_photos, log_predictions, scrape_espn, scrape_espn_org, scrape_fight_stats, scrape_fighter_origins, scrape_gyms, scrape_oktagon,
+    build_og_images, build_seo_athletes, download_fighter_photos, log_predictions, quarantine, refresh_status, scrape_espn, scrape_espn_org, scrape_fight_stats, scrape_fighter_origins, scrape_gyms, scrape_oktagon,
     scrape_one, scrape_pfl, scrape_rankings, scrape_roster_watch, scrape_sherdog_careers, scrape_sherdog_org, scrape_stat_leaders,
     scrape_ufc_career_stats, validate_data,
 )
@@ -57,6 +60,46 @@ ORIGINS_DAILY_LIMIT = 300
 FIGHT_STATS_DAYS = 30
 # Whole careers from Sherdog: the fighters of the cards of the last days (their newest bout), and active fighters not linked yet.
 SHERDOG_CAREERS_DAYS = 10
+
+
+# The steps whose freshness the site reports: step name in the Summary -> (source name, the quarantine groups it writes).
+SOURCES: dict[str, tuple[str, list[str]]] = {
+    "ESPN (events, results, fighters)": ("espn", [quarantine.ESPN]),
+    "Fight statistics (ESPN)": ("fight_stats", ["fight_stats"]),
+    "UFC rankings": ("rankings", ["rankings"]),
+    "Photos (champions, new fighters)": ("photos", ["photos"]),
+    "Fighter origins": ("origins", []),
+    "Former roster": ("roster", []),
+    "Record book": ("record_book", []),
+    "UFC career stats": ("career_stats", [quarantine.ESPN]),
+    "Sherdog careers": ("careers", []),
+    "PFL (pflmma.com)": ("pfl", ["pfl"]),
+    "ONE (onefc.com)": ("one", ["one"]),
+    "ESPN leagues (LFA, Cage Warriors)": ("espn_orgs", ["lfa", "cage-warriors"]),
+    "OKTAGON (oktagonmma.com)": ("oktagon", ["oktagon"]),
+    "Sherdog (Jungle Fight, Invicta, KSW, RIZIN, LFA)": ("sherdog_orgs", ["jungle-fight", "invicta", "ksw", "rizin", "lfa"]),
+    "Gyms (FightHub)": ("gyms", ["gyms"]),
+}
+
+
+def quarantine_broken_sources() -> dict[str, list[str]]:
+    """Puts back what a source broke. Only inside GitHub Actions: elsewhere it would throw away work that is not committed."""
+    if not quarantine.in_github_actions():
+        return {}
+    restored = quarantine.quarantine(validate_data.validate)
+    for group, problems in restored.items():
+        print(f"[quarantine] {group}: put back as it was: {problems[0]}")
+        FAILURES[f"Quarantine: {group}"] = "put back as it was: " + "; ".join(problems[:3])
+    return restored
+
+
+def source_results(results: dict[str, bool | None], restored: dict[str, list[str]]) -> dict[str, bool | None]:
+    """Each source's outcome: a step that ran and whose files were put back did not refresh anything."""
+    return {
+        source: results[step] and not any(group in restored for group in groups)
+        for step, (source, groups) in SOURCES.items()
+        if results.get(step) is not None
+    }
 
 
 def require_valid() -> None:
@@ -260,6 +303,14 @@ def main(argv: list[str] | None = None) -> int:
             None if args.skip_sherdog else run_step("Sherdog (Jungle Fight, Invicta, KSW, RIZIN, LFA)", lambda: run_sherdog(dry_run=False))
         )
         results["Gyms (FightHub)"] = None if args.skip_gyms else run_step("Gyms (FightHub)", lambda: run_gyms(dry_run=False))
+        restored: dict[str, list[str]] = {}
+        checked = run_step("Put back the sources that came out broken", lambda: restored.update(quarantine_broken_sources()))
+        if restored or not checked:
+            results["Quarantine"] = False
+        if quarantine.ESPN in restored and track:
+            # The picks saved at the start went back with the results: save them again, from the cards as they are now.
+            run_step("Log predictions again", lambda: print(f"[info] predictions logged: {log_predictions.log_upcoming()}"))
+        results["Refresh status"] = run_step("Refresh status", lambda: print(len(refresh_status.update_status(source_results(results, restored))), "sources"))
         # The static pages and their share images: the roster, the records and the announced fights as of this refresh.
         results["SEO pages data"] = run_step("SEO pages data (athletes and fights)", build_seo_athletes.main)
         results["OG images"] = run_step("OG images (athletes and fights)", build_og_images.main)

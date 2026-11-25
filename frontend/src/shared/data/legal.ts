@@ -39,10 +39,10 @@ export const INFO_PATHS: Record<InfoPageId, string> = {
 }
 
 const UPDATED_LABEL: ByLang = {
-  pt: 'Última atualização: 6 de novembro de 2026',
-  en: 'Last updated: November 6, 2026',
-  fr: 'Dernière mise à jour : 6 novembre 2026',
-  es: 'Última actualización: 6 de noviembre de 2026',
+  pt: 'Última atualização: 25 de novembro de 2026',
+  en: 'Last updated: November 25, 2026',
+  fr: 'Dernière mise à jour : 25 novembre 2026',
+  es: 'Última actualización: 25 de noviembre de 2026',
 }
 
 /** The public address of the site; VITE_CONTACT_EMAIL (set on Vercel) overrides it at build time. */
@@ -99,6 +99,7 @@ const PRIVACY: ByLang<InfoPage> = {
           'O site não tem cadastro, login, comentários nem formulários. Eu não peço nome, e-mail, telefone ou qualquer dado pessoal, e não os guardo.',
           'Ao usar o simulador, os nomes dos dois lutadores escolhidos são enviados à API para calcular a previsão. Esses nomes não ficam ligados a você.',
           'Como em qualquer site, os servidores de hospedagem (Vercel, para as páginas, e Railway, para a API) registram dados técnicos de cada acesso, como endereço IP, data e hora, página pedida e navegador. Esses registros servem para segurança, para limitar abusos e para manter o serviço no ar.',
+          'Quando uma página quebra, o site avisa a API para que o problema possa ser corrigido. O aviso leva a mensagem técnica do erro, o endereço da página (sem o que vem depois de “?”), a versão do site e o idioma. Não leva nome, conta nem nada que você tenha digitado em um formulário, e fica só no registro técnico do servidor.',
         ],
       },
       {
@@ -162,6 +163,7 @@ const PRIVACY: ByLang<InfoPage> = {
           'The site has no sign-up, login, comments or forms. I do not ask for your name, email, phone number or any other personal data, and I do not keep any.',
           'When you use the predictor, the names of the two fighters you picked are sent to the API to work out the prediction. Those names are not linked to you.',
           'As with any website, the hosting servers (Vercel for the pages, Railway for the API) record technical details of each visit, such as IP address, date and time, the page requested and the browser. These logs are used for security, to limit abuse and to keep the service running.',
+          'When a page breaks, the site tells the API so that the problem can be fixed. The report carries the technical error message, the address of the page (without what comes after “?”), the version of the site and the language. It carries no name, no account and nothing you typed into a form, and it stays only in the server’s technical log.',
         ],
       },
       {
@@ -225,6 +227,7 @@ const PRIVACY: ByLang<InfoPage> = {
           'Le site n’a ni inscription, ni connexion, ni commentaires, ni formulaires. Je ne demande ni nom, ni e-mail, ni téléphone, ni aucune autre donnée personnelle, et je n’en conserve aucune.',
           'Lorsque vous utilisez le simulateur, les noms des deux combattants choisis sont envoyés à l’API pour calculer la prévision. Ces noms ne sont pas liés à vous.',
           'Comme tout site, les serveurs d’hébergement (Vercel pour les pages, Railway pour l’API) enregistrent des informations techniques sur chaque visite : adresse IP, date et heure, page demandée et navigateur. Ces journaux servent à la sécurité, à limiter les abus et à maintenir le service en ligne.',
+          'Quand une page plante, le site prévient l’API pour que le problème puisse être corrigé. Le signalement contient le message technique de l’erreur, l’adresse de la page (sans ce qui suit « ? »), la version du site et la langue. Il ne contient ni nom, ni compte, ni rien de ce que vous avez saisi dans un formulaire, et reste uniquement dans le journal technique du serveur.',
         ],
       },
       {
@@ -288,6 +291,7 @@ const PRIVACY: ByLang<InfoPage> = {
           'El sitio no tiene registro, inicio de sesión, comentarios ni formularios. No pido nombre, correo, teléfono ni ningún otro dato personal, y no guardo ninguno.',
           'Cuando usas el simulador, los nombres de los dos peleadores que elegiste se envían a la API para calcular el pronóstico. Esos nombres no quedan ligados a ti.',
           'Como en cualquier sitio, los servidores de alojamiento (Vercel para las páginas y Railway para la API) registran datos técnicos de cada visita, como la dirección IP, la fecha y la hora, la página solicitada y el navegador. Esos registros sirven para la seguridad, para limitar abusos y para mantener el servicio en línea.',
+          'Cuando una página falla, el sitio avisa a la API para que el problema se pueda corregir. El aviso lleva el mensaje técnico del error, la dirección de la página (sin lo que viene después de “?”), la versión del sitio y el idioma. No lleva nombre, cuenta ni nada que hayas escrito en un formulario, y queda solo en el registro técnico del servidor.',
         ],
       },
       {

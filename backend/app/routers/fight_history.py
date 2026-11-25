@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Query, Request, Response
 
 from backend.app.rate_limit import limiter
 from backend.app.schemas.fight_history import FighterPerformance, HeadToHeadResponse, OpponentsResponse, OtherOrganization
+from backend.app.schemas.model_record import ModelRecordResponse, SurprisesResponse
 from backend.app.services.catalog_service import get_fighter_profile
 from backend.app.services.crossorg_service import other_organizations
 from backend.app.services.fight_history_service import (
@@ -9,6 +10,7 @@ from backend.app.services.fight_history_service import (
     get_head_to_head,
     get_opponents,
 )
+from backend.app.services.model_record_service import get_model_record, get_surprises
 
 router = APIRouter(tags=["fight-history"])
 
@@ -69,3 +71,23 @@ def fighter_other_organizations(request: Request, response: Response, name: str)
 
     response.headers["Cache-Control"] = "public, max-age=300"
     return [OtherOrganization(**found) for found in other_organizations(profile["name"])]
+
+
+@router.get("/fighters/{name}/model-record", response_model=ModelRecordResponse)
+@limiter.limit("60/minute")
+def fighter_model_record(request: Request, response: Response, name: str) -> ModelRecordResponse:
+    """How the model has done on this fighter's fights, in the back-test and live."""
+    try:
+        name = get_fighter_profile(name)["name"]
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+    response.headers["Cache-Control"] = "public, max-age=600"
+    return ModelRecordResponse(**get_model_record(name))
+
+
+@router.get("/track-record/surprises", response_model=SurprisesResponse)
+@limiter.limit("60/minute")
+def track_record_surprises(request: Request, response: Response) -> SurprisesResponse:
+    response.headers["Cache-Control"] = "public, max-age=600"
+    return SurprisesResponse(**get_surprises())

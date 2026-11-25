@@ -67,6 +67,11 @@ FIGHTER_FEATURES = [
 DIFF_FEATURES = [f"{name}_diff" for name in FIGHTER_FEATURES]
 CONTEXT_FEATURES = ["same_stance", "scheduled_rounds", "title_fight", "weight_lbs", "womens", "age_sum", "fights_sum"]
 FEATURE_COLUMNS = DIFF_FEATURES + CONTEXT_FEATURES
+# What a fighter has done in the UFC and against whom. These columns say the same thing from several sides: a high rating with
+# few wins is a hard schedule, so a model weighs them against each other and the weight of one alone (more wins counting
+# against a fighter) means nothing. They are explained, and their importance measured, as one.
+RESULT_COLUMNS = ["elo_diff", "ufc_wins_diff", "ufc_losses_diff", "ufc_fights_diff", "form_diff", "streak_diff"]
+RESULTS_FACTOR = "ufc_results"
 
 
 # --------------------------------------------------------------------------- names and static attributes

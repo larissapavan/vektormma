@@ -256,6 +256,25 @@ def gym_problems() -> list[str]:
     return problems
 
 
+PICK_FIELDS = ["event_date", "fighter_1", "fighter_2", "prob_fighter_1", "predicted_winner", "confidence", "logged_at", "model"]
+
+
+def prediction_log_problems(today: date | None = None, committed: str | None = None) -> list[str]:
+    """The track record promises that a pick is saved before its fight and never touched afterwards."""
+    now = (today or date.today()).isoformat()
+    rows = {row["fight_key"]: row for row in read_dicts(RAW_DIR / "prediction_log.csv")}
+    late = [key for key, row in rows.items() if row["logged_at"] >= row["event_date"]]
+    problems = [f"prediction_log.csv: {len(late)} picks were saved on the day of the fight or later (first: {late[0]})"] if late else []
+    text = committed_text(RAW_DIR / "prediction_log.csv") if committed is None else committed
+    for old in csv.DictReader(io.StringIO(text or "")):
+        key, new = old["fight_key"], rows.get(old["fight_key"])
+        if new is None:
+            problems.append(f"prediction_log.csv: the saved pick {key} is gone")
+        elif (old["correct"] in {"True", "False"} or old["event_date"] <= now) and any(old.get(f) != new.get(f) for f in PICK_FIELDS):
+            problems.append(f"prediction_log.csv: the saved pick {key} was changed after its fight")
+    return problems[:20]
+
+
 CANCELLED_REASONS = {"injury", "missed_weight", "travel_restrictions", "event_cancelled", "other"}
 
 
@@ -305,6 +324,7 @@ def structure_problems() -> list[str]:
         + fight_stats_problems()
         + gym_problems()
         + cancelled_fight_problems()
+        + prediction_log_problems()
     )
 
 

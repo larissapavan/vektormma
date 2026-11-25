@@ -231,6 +231,17 @@ def test_the_split_is_by_date_and_never_cuts_an_event_in_two():
         assert not set(block_a["date"]) & set(block_b["date"])
 
 
+def test_every_block_is_predicted_from_the_fights_before_it_and_none_is_left_out():
+    days = pd.date_range("2015-01-01", "2020-12-31", freq="10D")
+    data = pd.DataFrame({"date": days})
+    start, end = pd.Timestamp("2018-03-01"), pd.Timestamp("2020-12-31")
+    cut = train_prefight.blocks(data, start, end, 12)
+    for before, block in cut:
+        assert before["date"].max() < block["date"].min()
+    covered = pd.concat([block for _, block in cut])["date"]
+    assert covered.tolist() == days[(days >= start) & (days < end)].tolist()
+
+
 def test_calibration_keeps_the_answer_symmetric_and_fixes_under_confidence():
     p = np.array([0.1, 0.3, 0.5, 0.7, 0.9])
     assert np.allclose(train_prefight.calibrate(p, 1.0), p)

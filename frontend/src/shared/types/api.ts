@@ -1,5 +1,7 @@
 export interface FighterProfile {
   name: string
+  /** The organization whose own files the profile comes from; absent for a UFC fighter. */
+  data_origin?: string | null
   nickname: string | null
   age: number | null
   height_cm: number | null
@@ -62,12 +64,32 @@ export interface UpcomingBout {
   event_url?: string | null
 }
 
+/** When one source of the daily refresh last worked (days in UTC). */
+export interface SourceRefresh {
+  source: string
+  last_success: string | null
+  failing_since: string | null
+}
+
 export interface DataInfo {
   last_updated: string | null
+  /** The newest fight with a result. */
+  latest_fight_date?: string | null
+  /** Empty or absent until a refresh has recorded its date. */
+  refresh?: SourceRefresh[]
   fighters_count: number
   events_count: number
   fights_count: number
   sources: string[]
+}
+
+export interface UfcResults {
+  fights: number
+  wins: number
+  losses: number
+  /** Wins in a row, or losses in a row when negative. */
+  streak: number
+  elo: number
 }
 
 export interface MainFactor {
@@ -75,6 +97,13 @@ export interface MainFactor {
   impact: string
   explanation: string
   magnitude: number
+  /** The model's name for it ("age_diff", "ufc_results"). Absent when the API cannot say what it read. */
+  key?: string | null
+  /** What the model read for each fighter; null when it had nothing and used a typical value. */
+  value_a?: number | null
+  value_b?: number | null
+  results_a?: UfcResults | null
+  results_b?: UfcResults | null
 }
 
 export interface PredictionResponse {
@@ -127,9 +156,24 @@ export interface RecentEvaluation {
   confident_fights?: number | null
   confident_hit_rate?: number | null
   /** What simple rules get right on the same fights. */
-  baselines?: { label: string; accuracy: number }[]
+  baselines?: { label: string; accuracy: number; log_loss?: number | null }[]
   /** How often a pick was right at each confidence level, on the same fights. */
   calibration?: ConfidenceBand[]
+  /** The same test, by kind of fight. */
+  segments?: { label: string; fights: number; accuracy: number; average_confidence: number; log_loss?: number | null }[]
+  /** How much worse the predictions get without each factor (extra log loss), the most needed first. */
+  importance?: { label: string; extra_log_loss: number }[]
+}
+
+/** How good a set of settled picks was. */
+export interface Scores {
+  accuracy: number | null
+  /** 95% interval of the hit rate. */
+  accuracy_low?: number | null
+  accuracy_high?: number | null
+  average_confidence?: number | null
+  /** Saying 50% every time scores 0.25; lower is better. */
+  brier?: number | null
 }
 
 export interface ModelInfo {
@@ -510,26 +554,35 @@ export interface ConfidenceBand {
   fights: number
   average_confidence: number
   accuracy: number
+  /** 95% interval of the hit rate (live picks only). */
+  accuracy_low?: number | null
+  accuracy_high?: number | null
 }
 
-export interface ModelRecord {
-  model: 'current' | 'prefight' | string
+export interface ModelRecord extends Scores {
+  model: 'current' | 'prefight' | 'prefight2' | string
   label: string
   since: string
   logged: number
   resolved: number
+  /** Saved picks still without a result. */
+  pending?: number
   correct: number
-  accuracy: number | null
 }
 
-export interface TrackRecord {
+export interface TrackRecord extends Scores {
   tracking_since: string | null
   logged: number
   resolved: number
   correct: number
-  accuracy: number | null
-  average_confidence: number | null
+  /** Each card with a result, newest first. */
+  events?: { name: string; date: string; fights: number; correct: number }[]
+  /** Fights still to come. */
   pending: number
+  /** The day of the fight has passed and its result is not in the data yet. */
+  awaiting_result?: number
+  /** Picks that count for neither side: the fight never took place, moved, or already had a saved pick. */
+  voided?: number
   /** Picks saved by the first version of the model, before the two corners were averaged. */
   earlier_model_picks?: number
   earlier_model_note?: string | null
@@ -541,6 +594,53 @@ export interface TrackRecord {
   bands: ConfidenceBand[]
   recent: TrackedFight[]
   biggest_misses: TrackedFight[]
+}
+
+/** What the model said about one past fight of a fighter. */
+export interface FighterPick {
+  date: string
+  opponent: string
+  /** The chance the model gave this fighter. */
+  chance: number
+  won: boolean
+  correct: boolean
+}
+
+export interface ModelRecordSummary {
+  fights: number
+  correct: number
+  /** 95% interval of the hit rate. */
+  accuracy_low: number | null
+  accuracy_high: number | null
+  wins: number
+  /** The sum of the chances the model gave. */
+  expected_wins: number
+}
+
+export interface FighterRecord extends ModelRecordSummary {
+  picks: FighterPick[]
+}
+
+/** The model on one fighter's fights: the back-test and the live picks, never added together. */
+export interface FighterModelRecord {
+  fighter: string
+  start: string | null
+  end: string | null
+  backtest: FighterRecord | null
+  live: FighterRecord | null
+}
+
+export interface SurpriseRow extends ModelRecordSummary {
+  fighter: string
+}
+
+export interface Surprises {
+  fighters: number
+  min_fights: number
+  start: string | null
+  end: string | null
+  underrated: SurpriseRow[]
+  overrated: SurpriseRow[]
 }
 
 export interface UpcomingPick {
@@ -556,6 +656,8 @@ export interface UpcomingPick {
   interim_title?: boolean
   /** Place on its card: 1 is the main event, 2 the co-main, then card order. Absent for organizations whose card order is unknown. */
   card_position?: number | null
+  /** How much the pick has to go on. */
+  data_level?: 'solid' | 'some_gaps' | 'thin' | null
 }
 
 /** Organizations served by the generic /orgs/{id} endpoints (everything except the UFC). */
@@ -697,17 +799,6 @@ export interface DivisionMatrix {
   skipped: string[]
 }
 
-
-export interface SyncTrackRecordResponse {
-  status: string
-  settled_count: number
-  new_logged_count: number
-  total_resolved: number
-  total_correct: number
-  accuracy: number | null
-  pending: number
-  message: string
-}
 
 export interface ResultPick {
   predicted_winner: string

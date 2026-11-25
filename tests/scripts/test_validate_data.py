@@ -1,3 +1,5 @@
+from datetime import date
+
 from PIL import Image
 
 from scripts import validate_data
@@ -239,3 +241,32 @@ def test_any_other_header_change_is_still_flagged(tmp_path, monkeypatch):
     assert org_header_problems(tmp_path, monkeypatch, "a,b", "discipline,a,b")  # the column is allowed only at the end
     assert org_header_problems(tmp_path, monkeypatch, "a,b", "a,b,discipline", name="fighters.csv")  # and only in the ONE fights file
     assert org_header_problems(tmp_path, monkeypatch, "a,b", "a,b,other")
+
+
+LOG_HEADER = "fight_key,event_name,event_date,fighter_1,fighter_2,prob_fighter_1,predicted_winner,confidence,logged_at,winner,correct,resolved_at,model\n"
+
+
+def pick(key, day, logged_at="2026-11-01", predicted="A", correct=""):
+    return f"{key},UFC,{day},A,B,0.6,{predicted},0.6,{logged_at},,{correct},,prefight\n"
+
+
+def test_a_pick_saved_on_the_day_of_the_fight_or_later_is_flagged(tmp_path, monkeypatch):
+    monkeypatch.setattr(validate_data, "RAW_DIR", tmp_path)
+    write(tmp_path / "prediction_log.csv", LOG_HEADER + pick("ok", "2026-11-07") + pick("late", "2026-11-07", logged_at="2026-11-07"))
+    [problem] = validate_data.prediction_log_problems(committed="")
+    assert "1 picks were saved on the day of the fight or later (first: late)" in problem
+
+
+def test_a_saved_pick_may_not_disappear_or_change_after_its_fight(tmp_path, monkeypatch):
+    monkeypatch.setattr(validate_data, "RAW_DIR", tmp_path)
+    before = LOG_HEADER + pick("gone", "2026-11-07") + pick("over", "2026-11-07") + pick("to-come", "2026-12-07") + pick("settled", "2026-11-07")
+    write(
+        tmp_path / "prediction_log.csv",
+        LOG_HEADER + pick("over", "2026-11-07", predicted="B") + pick("to-come", "2026-12-07", predicted="B") + pick("settled", "2026-11-07", correct="True"),
+    )
+    problems = validate_data.prediction_log_problems(today=date(2026, 11, 20), committed=before)
+    assert [problem.split("the saved pick ")[1] for problem in problems] == ["gone is gone", "over was changed after its fight"]
+
+
+def test_the_track_record_of_the_repository_keeps_its_promise():
+    assert validate_data.prediction_log_problems() == []

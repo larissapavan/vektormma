@@ -1,5 +1,4 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { CalendarClock, CalendarDays, ChevronDown, Gamepad2, Hash, MapPin, Search, Swords } from 'lucide-react'
 
@@ -17,6 +16,8 @@ import { Section } from '../shared/components/ui/Section'
 import { useEvents } from '../shared/hooks/useEvents'
 import { useUpcomingEvents } from '../shared/hooks/useUpcomingEvents'
 import { useUpcomingPicks } from '../shared/hooks/useUpcomingPicks'
+import { useClearUrlParams, useUrlParam } from '../shared/hooks/useUrlParam'
+import { getDivisionName } from '../shared/data/divisions'
 import type { EventSummary, FightResult, UpcomingPick } from '../shared/types/api'
 
 const NUMBERED_EVENT_PATTERN = /^UFC \d+/
@@ -34,10 +35,9 @@ export function Events() {
   const { events, loading, error } = useEvents()
   const upcoming = useUpcomingEvents()
   const pickFor = useUpcomingPicks()
-  const [searchParams] = useSearchParams()
-  const [query, setQuery] = useState(() => searchParams.get('q') ?? '')
-  const [yearFilter, setYearFilter] = useState('ALL')
-  const [monthFilter, setMonthFilter] = useState('ALL')
+  const [query, setQuery] = useUrlParam('q')
+  const [yearFilter, setYearFilter] = useUrlParam('year', 'ALL')
+  const [monthFilter, setMonthFilter] = useUrlParam('month', 'ALL', ['ALL', ...MONTH_KEYS])
   const [openEvents, setOpenEvents] = useState<Set<string>>(new Set())
   const [openGroups, setOpenGroups] = useState<Set<string>>(new Set())
   const [profileName, setProfileName] = useState<string | null>(null)
@@ -253,6 +253,10 @@ export function Events() {
   )
 }
 
+/** How big the favourite's chance is, by its value in the address: from (included) and to (not included). */
+const CHANCES: Record<string, [number, number]> = { even: [0, 0.55], slight: [0.55, 0.65], clear: [0.65, 1.01] }
+const UPCOMING_FILTERS = ['chance', 'class', 'fights'] as const
+
 function UpcomingEventsSection({
   events,
   loading,
@@ -268,8 +272,37 @@ function UpcomingEventsSection({
   onToggle: (key: string) => void
   onSimulate?: (event: EventSummary) => void
 }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const lang = i18n.language
   const pickFor = useUpcomingPicks()
+  const [chance, setChance] = useUrlParam('chance', '', Object.keys(CHANCES))
+  const [weightClass, setWeightClass] = useUrlParam('class')
+  const [kind, setKind] = useUrlParam('fights', '', ['title', 'known'])
+  const clear = useClearUrlParams(UPCOMING_FILTERS)
+  const filtering = Boolean(chance || weightClass || kind)
+
+  const classes = useMemo(
+    () => [...new Set(events.flatMap((event) => event.fights.map((fight) => fight.weight_class)).filter((name): name is string => Boolean(name)))].sort((x, y) => getDivisionName(x, lang).localeCompare(getDivisionName(y, lang), localeTag(lang))),
+    [events, lang],
+  )
+  // With a filter on, each card keeps only the fights that match, and a card without one leaves the list.
+  const shown = useMemo(() => {
+    if (!filtering) return events
+    const range = CHANCES[chance]
+    return events
+      .map((event) => {
+        const fights = event.fights.filter((fight) => {
+          const pick = pickFor(event.name, fight.fighter_1, fight.fighter_2)
+          if (range && !(pick && pick.probability >= range[0] && pick.probability < range[1])) return false
+          if (weightClass && fight.weight_class !== weightClass) return false
+          if (kind === 'title') return Boolean(fight.title_fight ?? pick?.title_fight)
+          return kind !== 'known' || Boolean(pick && pick.data_level !== 'thin')
+        })
+        return { ...event, fights, fight_count: fights.length }
+      })
+      .filter((event) => event.fights.length > 0)
+  }, [events, filtering, chance, weightClass, kind, pickFor])
+  const fightCount = shown.reduce((sum, event) => sum + event.fights.length, 0)
 
   if (loading) {
     return <LoadingSkeleton className="h-[80px]" />
@@ -279,19 +312,53 @@ function UpcomingEventsSection({
     return null
   }
 
+  const select = 'soft-input min-w-0 rounded-sm px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none'
   return (
-    <Section rows icon={CalendarClock} title={`${t('events.upcomingSection')} (${events.length})`}>
+    <Section rows icon={CalendarClock} title={`${t('events.upcomingSection')} (${shown.length})`}>
+      <div role="group" aria-label={L(lang, 'Filtrar os próximos combates', 'Filter the upcoming fights', 'Filtrer les prochains combats', 'Filtrar las próximas peleas')} className="grid gap-2.5 py-4 sm:grid-cols-3">
+        <select value={chance} onChange={(event) => setChance(event.target.value)} aria-label={L(lang, 'Filtrar por chance do favorito', 'Filter by the favorite’s chance', 'Filtrer par chance du favori', 'Filtrar por probabilidad del favorito')} className={select}>
+          <option value="">{L(lang, 'Qualquer chance do favorito', 'Any chance for the favorite', 'Toutes les chances du favori', 'Cualquier probabilidad del favorito')}</option>
+          <option value="even">{L(lang, 'Lutas parelhas (até 55%)', 'Toss-ups (up to 55%)', 'Combats équilibrés (jusqu’à 55 %)', 'Peleas parejas (hasta 55 %)')}</option>
+          <option value="slight">{L(lang, 'Leve vantagem (55% a 65%)', 'Slight edge (55% to 65%)', 'Léger avantage (55 % à 65 %)', 'Ligera ventaja (55 % a 65 %)')}</option>
+          <option value="clear">{L(lang, 'Vantagem clara (65% ou mais)', 'Clear edge (65% or more)', 'Avantage net (65 % ou plus)', 'Ventaja clara (65 % o más)')}</option>
+        </select>
+        <select value={weightClass} onChange={(event) => setWeightClass(event.target.value)} aria-label={L(lang, 'Filtrar por categoria', 'Filter by weight class', 'Filtrer par catégorie', 'Filtrar por división')} className={select}>
+          <option value="">{L(lang, 'Todas as categorias', 'All weight classes', 'Toutes les catégories', 'Todas las divisiones')}</option>
+          {classes.map((name) => (
+            <option key={name} value={name}>
+              {getDivisionName(name, lang)}
+            </option>
+          ))}
+        </select>
+        <select value={kind} onChange={(event) => setKind(event.target.value)} aria-label={L(lang, 'Filtrar por tipo de luta', 'Filter by kind of fight', 'Filtrer par type de combat', 'Filtrar por tipo de pelea')} className={select}>
+          <option value="">{L(lang, 'Todas as lutas', 'All fights', 'Tous les combats', 'Todas las peleas')}</option>
+          <option value="title">{L(lang, 'Só lutas por cinturão', 'Title fights only', 'Combats pour le titre seulement', 'Solo peleas por el título')}</option>
+          <option value="known">{L(lang, 'Sem previsões com poucos dados', 'Without picks on thin data', 'Sans les pronostics aux données limitées', 'Sin pronósticos con pocos datos')}</option>
+        </select>
+      </div>
+      {filtering ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-4">
+          <p className="text-base" role="status">
+            {fightCount === 1 ? L(lang, '1 luta encontrada', '1 fight found', '1 combat trouvé', '1 pelea encontrada') : L(lang, `${fightCount} lutas encontradas`, `${fightCount} fights found`, `${fightCount} combats trouvés`, `${fightCount} peleas encontradas`)}
+          </p>
+          <button type="button" onClick={clear} className="ghost-action inline-flex min-h-11 cursor-pointer items-center px-4 text-sm">
+            {L(lang, 'Limpar filtros', 'Clear filters', 'Effacer les filtres', 'Quitar filtros')}
+          </button>
+        </div>
+      ) : null}
       <ul>
-        {events.map((event) => {
+        {shown.map((event) => {
           const key = event.event_url ?? event.name
           return (
             <EventCard
               key={key}
               event={event}
-              isOpen={openEvents.has(key)}
+              isOpen={filtering || openEvents.has(key)}
               onToggle={() => onToggle(key)}
               pickFor={pickFor}
-              onSimulate={onSimulate}
+              // The picks game and the written read of a card are about the whole card, not the part a filter left.
+              onSimulate={filtering ? undefined : onSimulate}
+              partial={filtering}
             />
           )
         })}
@@ -364,16 +431,19 @@ function EventCard({
   onToggle,
   pickFor,
   onSimulate,
+  partial = false,
 }: {
   event: EventSummary
   isOpen: boolean
   onToggle: () => void
   pickFor?: (event: string, fighterA: string, fighterB: string) => UpcomingPick | undefined
   onSimulate?: (event: EventSummary) => void
+  /** Only some of the card's fights are listed (a filter is on). */
+  partial?: boolean
 }) {
   const { t, i18n } = useTranslation()
   // A short written read of the card: only for one that has not happened yet, and only once its fights are listed.
-  const upcoming = event.fights.length > 0 && event.fights.every((fight) => !fight.winner)
+  const upcoming = !partial && event.fights.length > 0 && event.fights.every((fight) => !fight.winner)
   const preview = upcoming
     ? eventPreview(
         i18n.language,
@@ -408,7 +478,7 @@ function EventCard({
             </span>
             <span className="inline-flex items-center gap-1">
               <Swords className="h-3.5 w-3.5" />
-              {event.fight_count} {t('events.fights')}
+              {event.fight_count === 1 ? L(i18n.language, '1 luta', '1 fight', '1 combat', '1 pelea') : `${event.fight_count} ${t('events.fights')}`}
             </span>
           </div>
         </div>

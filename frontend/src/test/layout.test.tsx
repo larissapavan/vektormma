@@ -168,6 +168,31 @@ describe('the fighters page', () => {
     expect(screen.getByText('Alpha One')).toBeInTheDocument()
   })
 
+  it('reads its filters from the address, and clears them without touching the rest of it', async () => {
+    api.extraFighters = 40
+    renderAt('/fighters?country=us&division=all')
+    expect(await screen.findByText('Runner 01', undefined, { timeout: 10000 })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /all divisions/i })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.queryByText('Alpha One')).not.toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Clear filters' }))
+    expect(await screen.findByText('Alpha One')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /all divisions/i })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.queryByRole('button', { name: 'Clear filters' })).not.toBeInTheDocument()
+  })
+
+  it('filters by age, and ignores a value the address should not have', async () => {
+    api.extraFighters = 0
+    renderAt('/fighters?age=nonsense')
+    expect(await screen.findByText('Alpha One', undefined, { timeout: 10000 })).toBeInTheDocument()
+    const select = screen.getByRole('combobox', { name: /filter by age/i })
+    expect(select).toHaveValue('')
+    await userEvent.selectOptions(select, '31-35') // both fighters are 30
+    expect(await screen.findByText('No fighters found')).toBeInTheDocument()
+    await userEvent.selectOptions(select, '26-30')
+    expect(await screen.findByText('Alpha One')).toBeInTheDocument()
+  })
+
   it('keeps the stance and badge filters behind a toggle on small screens', async () => {
     api.extraFighters = 0
     renderAt('/fighters')

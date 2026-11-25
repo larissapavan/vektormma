@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from datetime import date
+import json
 
 from backend.app.services.catalog_service import (
-    HISTORICAL_PHOTOS_SOURCE_PATH,
     get_fighter_catalog,
+    get_latest_fight_date,
     get_total_fights_tracked,
 )
 from backend.app.services.events_service import get_events
@@ -24,26 +24,35 @@ DATA_SOURCES = [
     "fighthub.net",
 ]
 
-# Every raw dataset this app is built from — used only to find the most recent
-# scrape/update timestamp, not to read their contents here.
-TRACKED_SOURCE_FILES = [
-    RAW_DATA_DIR / "fighters.csv",
-    RAW_DATA_DIR / "fights.csv",
-    RAW_DATA_DIR / "event_cards.csv",
-    RAW_DATA_DIR / "fighter_career_stats.csv",
-    RAW_DATA_DIR / "rankings.csv",
-    RAW_DATA_DIR / "upcoming_events.csv",
-    *(org.data_dir / name for org in ORGS.values() for name in ("fighters.csv", "fights.csv")),
-    HISTORICAL_PHOTOS_SOURCE_PATH,
-]
+# Written by the daily refresh (scripts/refresh_status.py). The date of a file cannot say how fresh the data is: in the
+# deployed image every file carries the date of the build.
+REFRESH_STATUS_PATH = RAW_DATA_DIR / "refresh_status.json"
+MAIN_SOURCE = "espn"  # events, results and cards: what "the data goes up to" means
+
+
+def get_refresh_status() -> list[dict]:
+    """When each source was last refreshed, the one the site rests on first. Empty until a refresh has written the file."""
+    try:
+        status = json.loads(REFRESH_STATUS_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+
+    def day(value: str | None) -> str | None:
+        return value[:10] if value else None
+
+    return [
+        {"source": source, "last_success": day(entry.get("last_success")), "failing_since": day(entry.get("failing_since"))}
+        for source, entry in sorted(status.items(), key=lambda item: (item[0] != MAIN_SOURCE, item[0]))
+    ]
 
 
 def get_data_info() -> dict:
     catalog = get_fighter_catalog()
     events = get_events()
 
-    timestamps = [path.stat().st_mtime for path in TRACKED_SOURCE_FILES if path.exists()]
-    last_updated = date.fromtimestamp(max(timestamps)).isoformat() if timestamps else None
+    refresh = get_refresh_status()
+    latest_fight_date = get_latest_fight_date()
+    main = next((entry["last_success"] for entry in refresh if entry["source"] == MAIN_SOURCE), None)
 
     total_fights = get_total_fights_tracked()
     total_fighters = len(catalog)
@@ -61,7 +70,10 @@ def get_data_info() -> dict:
             pass
 
     return {
-        "last_updated": last_updated,
+        # Without a recorded refresh the newest fight is all that can be said for sure.
+        "last_updated": main or latest_fight_date,
+        "latest_fight_date": latest_fight_date,
+        "refresh": refresh,
         "fighters_count": total_fighters,
         "events_count": total_events,
         "fights_count": total_fights,

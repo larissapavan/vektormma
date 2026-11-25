@@ -8,11 +8,27 @@ class PredictionRequest(BaseModel):
     fighter_b: str = Field(..., min_length=1, max_length=80)
 
 
+class UfcResults(BaseModel):
+    """What the model knows of a fighter's UFC results: the numbers behind the factor that sums them up."""
+
+    fights: int
+    wins: int
+    losses: int
+    streak: int  # wins in a row, or losses in a row when negative
+    elo: int
+
+
 class MainFactor(BaseModel):
     feature: str
     impact: str
     explanation: str
     magnitude: float
+    # What the model read for each fighter, so that the site can say the factor in words (None: it had nothing).
+    key: str | None = None  # "age_diff", "ufc_results"...
+    value_a: float | None = None
+    value_b: float | None = None
+    results_a: UfcResults | None = None
+    results_b: UfcResults | None = None
 
 
 class DataConfidence(BaseModel):
@@ -49,6 +65,8 @@ class UpcomingPick(BaseModel):
     interim_title: bool = False
     # Place of the fight on its card: 1 is the main event, 2 the co-main, then the rest in card order. None when unknown.
     card_position: int | None = None
+    # How much the pick has to go on (data_confidence.assess): "solid" | "some_gaps" | "thin".
+    data_level: str | None = None
 
 
 class RoundRobinRow(BaseModel):

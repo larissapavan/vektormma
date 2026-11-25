@@ -59,7 +59,29 @@ def test_data_info_reports_real_counts_and_sources(client):
 
     import datetime
 
-    assert datetime.date.fromisoformat(body["last_updated"]) <= datetime.date.today()
+    # A day in UTC can be one ahead of the local one.
+    assert datetime.date.fromisoformat(body["last_updated"]) <= datetime.date.today() + datetime.timedelta(days=1)
+
+
+def test_data_info_dates_the_data_by_its_refresh_and_not_by_the_files(client, tmp_path, monkeypatch):
+    from backend.app.services import data_info_service
+
+    status = tmp_path / "refresh_status.json"
+    monkeypatch.setattr(data_info_service, "REFRESH_STATUS_PATH", status)
+    body = client.get("/data-info").json()
+    assert body["refresh"] == [] and body["last_updated"] == body["latest_fight_date"]  # nothing recorded: the newest fight
+
+    status.write_text(
+        '{"gyms": {"last_success": null, "failing_since": "2026-11-20T07:00:00+00:00"},'
+        ' "espn": {"last_success": "2026-11-24T07:00:00+00:00", "failing_since": null}}',
+        encoding="utf-8",
+    )
+    body = client.get("/data-info").json()
+    assert body["last_updated"] == "2026-11-24"
+    assert body["refresh"] == [
+        {"source": "espn", "last_success": "2026-11-24", "failing_since": None},
+        {"source": "gyms", "last_success": None, "failing_since": "2026-11-20"},
+    ]
 
 
 @pytest.fixture(scope="module")

@@ -5,12 +5,14 @@ import { useTranslation } from 'react-i18next'
 
 import { L, localeTag } from '../../../i18n/lang'
 import { getDivisionName } from '../../data/divisions'
+import { factorSentence } from '../../data/explainMatchup'
 import { localizeFeature } from '../../utils/localizeFeature'
 import { getFighterImageUrl, useFighterImages } from '../../hooks/useFighterImages'
 import { useFighters } from '../../hooks/useFighters'
 import { usePrediction } from '../../hooks/usePrediction'
 import { DataConfidenceNote } from '../DataConfidenceNote'
 import { FighterAvatar } from '../FighterAvatar'
+import { StyleComparison } from '../StyleComparison'
 import { CornerSplit, cornerPhotoClass } from '../ui/CornerSplit'
 import { predictionSentence, ProbabilityBand } from '../ui/ProbabilityBand'
 import { sectionActionClass } from '../ui/Section'
@@ -108,6 +110,11 @@ export function EditorialHeadToHeadSimulator({
       )}
 
       <SideBySide profileA={profileA} profileB={profileB} />
+      {profileA && profileB ? (
+        <div className="pt-16">
+          <StyleComparison fighterA={profileA} fighterB={profileB} />
+        </div>
+      ) : null}
 
       <section className="grid gap-x-[72px] gap-y-12 pt-16 lg:grid-cols-2">
         <div>
@@ -119,9 +126,12 @@ export function EditorialHeadToHeadSimulator({
           {current && current.main_factors.length ? (
             <ul className="mt-3 border-t-[3px] border-[var(--ink)]">
               {current.main_factors.slice(0, 4).map((factor) => (
-                <li key={factor.feature} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-[var(--rule)] py-3.5">
+                <li key={factor.feature} className="border-b border-[var(--rule)] py-3.5">
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
                   <span className="text-base font-semibold">{localizeFeature(factor.feature, lang)}</span>
                   <span className="text-[15px] text-[var(--muted)]">{L(lang, `a favor de ${factor.impact}`, `in favour of ${factor.impact}`, `en faveur de ${factor.impact}`, `a favor de ${factor.impact}`)}</span>
+                  </div>
+                  {factor.key ? <p className="mt-1 text-[15px] leading-6">{factorSentence(factor, { a: current.fighter_a_profile.name, b: current.fighter_b_profile.name }, lang)}</p> : null}
                 </li>
               ))}
             </ul>

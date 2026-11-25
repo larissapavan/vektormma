@@ -30,6 +30,7 @@ ROTULOS = {
     "finish_rate_diff": "diferença na taxa de vitórias antes do limite",
     "ko_losses_diff": "diferença de derrotas por nocaute",
     "elo_diff": "diferença de pontuação (Elo)",
+    "ufc_results": "histórico no UFC e nível dos adversários",
     "form_diff": "diferença de fase recente",
     "sig_acc_diff": "diferença na precisão de golpes",
     "sig_str_acc_diff": "diferença na precisão de golpes",

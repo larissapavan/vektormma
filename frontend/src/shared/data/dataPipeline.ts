@@ -176,11 +176,49 @@ export function dataSteps(lang: string, { fights, fighters, featureCount, prefig
       title: L(lang, 'Previsão', 'Prediction', 'Pronostic', 'Pronóstico'),
       text: L(
         lang,
-        'Um modelo de árvores de decisão (gradient boosting) estima a chance de vitória de cada lutador. Em cada luta, o site mostra quais números mais puxaram a chance para um lado (valores SHAP).',
-        'A decision-tree model (gradient boosting) estimates each fighter’s win chance. For every fight, the site shows which numbers pulled the chance most to one side (SHAP values).',
-        'Un modèle d’arbres de décision (gradient boosting) estime la chance de victoire de chaque combattant. Pour chaque combat, le site montre les chiffres qui ont le plus tiré la chance d’un côté (valeurs SHAP).',
-        'Un modelo de árboles de decisión (gradient boosting) estima la probabilidad de victoria de cada peleador. En cada pelea, el sitio muestra qué números inclinaron más la balanza (valores SHAP).',
+        'A média de um modelo de árvores de decisão (gradient boosting) e de um modelo linear (regressão logística) estima a chance de vitória de cada lutador. Em cada luta, o site mostra quais números mais puxaram a chance para um lado (valores SHAP).',
+        'The average of a decision-tree model (gradient boosting) and a linear one (logistic regression) estimates each fighter’s win chance. For every fight, the site shows which numbers pulled the chance most to one side (SHAP values).',
+        'La moyenne d’un modèle d’arbres de décision (gradient boosting) et d’un modèle linéaire (régression logistique) estime la chance de victoire de chaque combattant. Pour chaque combat, le site montre les chiffres qui ont le plus tiré la chance d’un côté (valeurs SHAP).',
+        'El promedio de un modelo de árboles de decisión (gradient boosting) y uno lineal (regresión logística) estima la probabilidad de victoria de cada peleador. En cada pelea, el sitio muestra qué números inclinaron más la balanza (valores SHAP).',
       ),
     },
   ]
+}
+
+/** What a source of the daily refresh brings, by the key the API gives it. An unknown key is shown as it is. */
+export function refreshSourceLabel(source: string, lang: string): string {
+  switch (source) {
+    case 'espn':
+      return L(lang, 'UFC: eventos, resultados e cards (ESPN)', 'UFC: events, results and cards (ESPN)', 'UFC : événements, résultats et cartes (ESPN)', 'UFC: eventos, resultados y carteleras (ESPN)')
+    case 'fight_stats':
+      return L(lang, 'UFC: estatísticas por luta (ESPN)', 'UFC: fight statistics (ESPN)', 'UFC : statistiques par combat (ESPN)', 'UFC: estadísticas por pelea (ESPN)')
+    case 'rankings':
+      return L(lang, 'UFC: rankings (ufc.com)', 'UFC: rankings (ufc.com)', 'UFC : classements (ufc.com)', 'UFC: rankings (ufc.com)')
+    case 'photos':
+      return L(lang, 'UFC: fotos', 'UFC: photos', 'UFC : photos', 'UFC: fotos')
+    case 'origins':
+      return L(lang, 'UFC: origem dos lutadores', 'UFC: where fighters come from', 'UFC : origine des combattants', 'UFC: origen de los peleadores')
+    case 'roster':
+      return L(lang, 'UFC: plantel (roster.watch)', 'UFC: roster (roster.watch)', 'UFC : effectif (roster.watch)', 'UFC: plantel (roster.watch)')
+    case 'record_book':
+      return L(lang, 'UFC: livro de recordes', 'UFC: record book', 'UFC : livre des records', 'UFC: libro de récords')
+    case 'career_stats':
+      return L(lang, 'UFC: números de carreira (ufc.com)', 'UFC: career numbers (ufc.com)', 'UFC : chiffres de carrière (ufc.com)', 'UFC: números de carrera (ufc.com)')
+    case 'careers':
+      return L(lang, 'Carreiras completas (Sherdog)', 'Whole careers (Sherdog)', 'Carrières complètes (Sherdog)', 'Carreras completas (Sherdog)')
+    case 'pfl':
+      return 'PFL (pflmma.com)'
+    case 'one':
+      return 'ONE Championship (onefc.com)'
+    case 'espn_orgs':
+      return 'LFA · Cage Warriors (ESPN)'
+    case 'oktagon':
+      return 'OKTAGON (oktagonmma.com)'
+    case 'sherdog_orgs':
+      return 'Jungle Fight · Invicta FC · KSW · RIZIN · LFA (Sherdog)'
+    case 'gyms':
+      return L(lang, 'Academias (FightHub)', 'Gyms (FightHub)', 'Salles (FightHub)', 'Academias (FightHub)')
+    default:
+      return source
+  }
 }

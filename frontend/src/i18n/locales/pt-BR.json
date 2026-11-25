@@ -173,9 +173,7 @@
     "howMeasured": "Como funciona",
     "recentResults": "Resultados recentes",
     "biggestMisses": "Maiores erros",
-    "biggestMissesNote": "Palpites de maior confiança que erraram.",
-    "syncButton": "Sincronizar resultados",
-    "syncing": "Sincronizando..."
+    "biggestMissesNote": "Palpites de maior confiança que erraram."
   },
   "headToHead": {
     "title": "Histórico de confrontos diretos",
