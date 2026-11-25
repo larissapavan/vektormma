@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 import json
+import logging
 
 from backend.app.services.catalog_service import (
     get_fighter_catalog,
     get_latest_fight_date,
     get_total_fights_tracked,
 )
-from backend.app.services.events_service import get_events
-from backend.app.services.org_service import ORGS
+from backend.app.services.events_service import get_event_count
+from backend.app.services.org_service import ORGS, get_org_counts
 from src.ufc_predictor.config import RAW_DATA_DIR
+
+logger = logging.getLogger(__name__)
 
 DATA_SOURCES = [
     "ufcstats.com",
@@ -48,7 +51,6 @@ def get_refresh_status() -> list[dict]:
 
 def get_data_info() -> dict:
     catalog = get_fighter_catalog()
-    events = get_events()
 
     refresh = get_refresh_status()
     latest_fight_date = get_latest_fight_date()
@@ -56,18 +58,17 @@ def get_data_info() -> dict:
 
     total_fights = get_total_fights_tracked()
     total_fighters = len(catalog)
-    total_events = len(events)
+    total_events = get_event_count()
 
     for org_id in ORGS:
         try:
-            from backend.app.services.org_service import get_org_fighters, get_org_events
-            f_list = get_org_fighters(org_id)
-            e_list = get_org_events(org_id)
-            total_fighters += len(f_list)
-            total_events += len(e_list)
-            total_fights += sum(len(e.get("fights", [])) for e in e_list)
+            counts = get_org_counts(org_id)
         except Exception:
-            pass
+            logger.exception("Could not count what the site has of %s.", org_id)
+            continue
+        total_fighters += counts["fighters"]
+        total_events += counts["events"]
+        total_fights += counts["fights"]
 
     return {
         # Without a recorded refresh the newest fight is all that can be said for sure.

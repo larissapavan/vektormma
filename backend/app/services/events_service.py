@@ -115,6 +115,16 @@ def get_events() -> list[dict]:
     return _events_cache["data"]
 
 
+def get_event_count() -> int:
+    """How many past events there are, without building the card of each one (seconds of work on the first request)."""
+    if _events_cache["signature"] is not None and _events_cache["signature"] == _source_signature(EVENT_CARDS_SOURCE_PATH):
+        return len(_events_cache["data"])
+    if not EVENT_CARDS_SOURCE_PATH.exists():
+        return 0
+    cards = pd.read_csv(EVENT_CARDS_SOURCE_PATH, usecols=["event_url", "event_name"])
+    return int(cards["event_url"].fillna(cards["event_name"]).nunique())
+
+
 def get_upcoming_events() -> list[dict]:
     """Return scheduled-but-not-yet-fought events, soonest first.
 

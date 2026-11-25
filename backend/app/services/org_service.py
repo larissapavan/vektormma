@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import csv
 import re
+import threading
 import unicodedata
 from dataclasses import dataclass
 from datetime import date
@@ -124,6 +125,7 @@ DIVISION_ORDER = [
 ]
 
 _cache: dict[str, dict] = {}
+_build_lock = threading.RLock()
 _ufc_career_stats: dict[str, dict] | None = None
 
 
@@ -202,9 +204,15 @@ def _data(org_id: str) -> dict:
     org = get_org(org_id)
     signature = _signature(org)
     cached = _cache.get(org.id)
-    if cached is None or cached["signature"] != signature:
-        _cache[org.id] = {"signature": signature, **_build(org)}
-    return _cache[org.id]
+    if cached is not None and cached["signature"] == signature:
+        return cached
+    # One build at a time: two visitors arriving after a start would otherwise each do the same seconds of work. A single lock,
+    # which the same thread may take again, because building an organization can look into another.
+    with _build_lock:
+        cached = _cache.get(org.id)
+        if cached is None or cached["signature"] != signature:
+            cached = _cache[org.id] = {"signature": signature, **_build(org)}
+        return cached
 
 
 # --------------------------------------------------------------------------- building
@@ -562,6 +570,22 @@ def _build(org: Org) -> dict:
 
 
 # --------------------------------------------------------------------------- public API
+
+
+def get_org_counts(org_id: str) -> dict[str, int]:
+    """How many fighters, events and fights an organization has, without building the profiles of every fighter."""
+    org = get_org(org_id)
+    cached = _cache.get(org.id)
+    if cached and cached["signature"] == _signature(org):
+        return {"fighters": len(cached["fighters"]), "events": len(cached["events"]), "fights": cached["fights_count"]}
+    today = date.today().isoformat()
+    past = [event for event in _build_events(_read_rows(org.data_dir / "fights.csv")) if (event["date"] or "") < today]
+    return {
+        # A person with two profile pages is one fighter, as in the list (see _build_fighters).
+        "fighters": len({_name_key(row.get("name")) for row in _read_rows(org.data_dir / "fighters.csv")}),
+        "events": len(past),
+        "fights": sum(event["fight_count"] for event in past),
+    }
 
 
 def get_org_fighters(org_id: str) -> list[dict]:
