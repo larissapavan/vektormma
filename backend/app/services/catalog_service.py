@@ -589,7 +589,8 @@ def get_fighter_profile(name: str) -> dict:
                     losses = int(found.get("losses") or 0)
                     draws = int(found.get("draws") or 0)
                     total = wins + losses + draws
-                    win_rate = wins / total if total > 0 else 0.5
+                    # No record in the file: no win rate either (a made-up half was shown as if it had been counted).
+                    win_rate = round(wins / total, 3) if total > 0 else None
                     return {
                         "name": found["name"],
                         "is_active": bool(found.get("is_active", False)),
@@ -604,7 +605,7 @@ def get_fighter_profile(name: str) -> dict:
                         "losses": losses,
                         "draws": draws,
                         "total_fights": total,
-                        "win_rate": _to_float(found.get("win_rate")) or round(win_rate, 3),
+                        "win_rate": _to_float(found.get("win_rate")) or win_rate,
                         "sig_str_acc": _to_float(found.get("sig_str_acc")),
                         "takedown_acc": _to_float(found.get("takedown_acc")),
                         "stance": found.get("stance") or "Orthodox",

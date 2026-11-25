@@ -620,6 +620,7 @@ def get_org_upcoming_predictions(org_id: str, service: Any) -> list[dict[str, An
     sport, and not one whose sport is not named (unless the organization holds nothing but MMA, see MMA_ONLY_ORGS)."""
     if service is None:
         return []
+    from backend.app.services.prediction_service import is_tie  # imported here: prediction_service reads the profiles of this module
 
     events = get_org_upcoming_events(org_id)
     mma_only = org_id.lower() in MMA_ONLY_ORGS
@@ -636,6 +637,9 @@ def get_org_upcoming_predictions(org_id: str, service: Any) -> list[dict[str, An
             try:
                 result = service.predict_pick(fighter_1, fighter_2)
             except Exception:
+                continue
+            # Exactly 50%: the model has nothing that tells the two apart (no age, height or reach on file), so there is no pick.
+            if is_tie(result["fighter_a_probability"]):
                 continue
             picks.append(
                 {

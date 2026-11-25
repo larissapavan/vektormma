@@ -117,8 +117,8 @@ export interface PredictionResponse {
   comparison_stats: {
     fighter_a_win_rate: number | null
     fighter_b_win_rate: number | null
-    reach_difference: number
-    age_difference: number
+    reach_difference: number | null
+    age_difference: number | null
   }
   main_factors: MainFactor[]
   data_confidence?: DataConfidence | null

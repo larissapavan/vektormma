@@ -152,6 +152,14 @@ def _record(fighter: dict) -> str | None:
     return f"{wins}-{losses}-{_int(fighter.get('draws')) or 0}"
 
 
+def _busiest(pool: list[dict]) -> list[dict]:
+    """The fighters with the most fights first. Where most of them have no career record on file (ONE, Jungle Fight, Invicta FC),
+    the bouts in the organization are counted instead: the record of a few would go first and the rest would be alphabetical."""
+    unknown = sum(fighter.get("wins") is None for fighter in pool)
+    field = "org_fights" if unknown * 2 > len(pool) else "total_fights"
+    return sorted(pool, key=lambda fighter: (-(_int(fighter.get(field)) or 0), fighter["name"]))
+
+
 def _org(org_id: str, today: str) -> dict:
     fighters = get_org_fighters(org_id)
     champions = [
@@ -161,7 +169,7 @@ def _org(org_id: str, today: str) -> dict:
     ]
     # The roster page lists the busiest active fighters (or, for an archive with nobody active, the busiest of all).
     pool = [f for f in fighters if f.get("is_active")] or fighters
-    roster = sorted(pool, key=lambda f: (-(_int(f.get("total_fights")) or 0), f["name"]))[:ROSTER_SIZE]
+    roster = _busiest(pool)[:ROSTER_SIZE]
     past = sorted((event for event in get_org_events(org_id) if str(event.get("date") or "") < today), key=lambda event: str(event["date"]), reverse=True)
     upcoming = sorted((event for event in get_org_upcoming_events(org_id) if str(event.get("date") or "") >= today), key=lambda event: str(event["date"]))
     try:

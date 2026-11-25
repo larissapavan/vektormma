@@ -29,6 +29,22 @@ export function edgeLabel(favorite: number, language: string | boolean = false):
   )
 }
 
+/** Exactly 50%: the model has nothing that tells the two fighters apart, so neither of them is a favorite. */
+export function isEvenProbability(value: number): boolean {
+  return Math.abs(value - 0.5) < EPSILON
+}
+
+/** What to say in place of a favorite when the probability is exactly 50%. */
+export function noFavoriteText(language: string | boolean = false): string {
+  return L(
+    language,
+    'O modelo não tem dados que diferenciem os dois lutadores. Os 50% mostram que faltam dados, não que a luta seja parelha.',
+    'The model has no data that sets these two fighters apart. The 50% means data is missing, not that the fight is even.',
+    'Le modèle n’a aucune donnée qui départage les deux combattants. Les 50 % indiquent un manque de données, pas un combat équilibré.',
+    'El modelo no tiene datos que diferencien a los dos peleadores. El 50 % indica que faltan datos, no que la pelea sea pareja.',
+  )
+}
+
 type Confidence = 'strong' | 'moderate' | 'competitive'
 
 const PREDICTION_MESSAGES: Record<UiLang, Record<Confidence, (name: string) => string> | null> = {
@@ -53,6 +69,7 @@ const PREDICTION_MESSAGES: Record<UiLang, Record<Confidence, (name: string) => s
 /** Localizes the backend prediction message ("The model gives X a [confidence] edge in this matchup."). */
 export function localizePredictionMessage(message: string | null | undefined, winner: string, language: string | boolean = false): string {
   if (!message) return ''
+  if (message.startsWith('The model has no data')) return noFavoriteText(language)
   const messages = PREDICTION_MESSAGES[uiLang(language)]
   if (!messages) return message
   if (message.includes('a strong edge')) return messages.strong(winner)

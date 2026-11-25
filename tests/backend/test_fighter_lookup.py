@@ -57,6 +57,14 @@ def test_a_fighter_only_in_another_organization_still_resolves(monkeypatch, type
     assert profile["wins"] == 99
 
 
+def test_a_profile_without_a_career_record_has_no_win_rate(monkeypatch):
+    """ONE's files have no career record for most fighters: that is not half wins and half losses."""
+    monkeypatch.setattr(org_service, "get_org_fighters", lambda org: [{"name": "Zeferino Qwerty", "wins": None, "losses": None, "draws": None, "win_rate": None}] if org == "one" else [])
+    profile = get_fighter_profile("Zeferino Qwerty")
+    assert profile["data_origin"] == "one"
+    assert profile["win_rate"] is None
+
+
 def test_spaces_still_tell_two_people_apart():
     # ONE's flyweight Dawoon Jung is not the UFC light heavyweight Da Woon Jung.
     assert get_fighter_profile("Dawoon Jung")["data_origin"] == "one"

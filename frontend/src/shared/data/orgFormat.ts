@@ -95,6 +95,11 @@ export function formatDate(date: string | null, withYear = true, language: strin
   return parsed.toLocaleDateString(localeTag(language), { year: withYear ? 'numeric' : undefined, month: 'short', day: 'numeric' })
 }
 
+/** True when most of the file has no age or height (ONE, whose profiles were never collected): the pages then must not promise them. */
+export function mostlyUnmeasured(fighters: Pick<OrgFighter, 'age' | 'height_cm'>[]) {
+  return fighters.length > 0 && fighters.filter((fighter) => fighter.age != null && fighter.height_cm != null).length * 2 < fighters.length
+}
+
 export function formatRecord(fighter: Pick<OrgFighter, 'wins' | 'losses' | 'draws' | 'no_contests'>) {
   if (fighter.wins == null || fighter.losses == null) return null
   const base = `${fighter.wins}-${fighter.losses}-${fighter.draws ?? 0}`

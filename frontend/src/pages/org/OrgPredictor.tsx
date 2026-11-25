@@ -7,12 +7,13 @@ import { L, formatDecimal, localeTag } from '../../i18n/lang'
 import { orgEs, orgFr, orgPt, type OrgConfig } from '../../shared/data/orgs'
 import { translateHometown } from '../../shared/data/fightLabels'
 import { getDivisionName } from '../../shared/data/divisions'
+import { mostlyUnmeasured } from '../../shared/data/orgFormat'
 import { ChampionBelt } from '../../shared/components/ChampionBelt'
 import { FighterAvatar } from '../../shared/components/FighterAvatar'
 import { OrgFighterModal } from '../../shared/components/OrgFighterModal'
 import { useOrg } from '../../shared/hooks/useOrg'
 import { useOrgFighters } from '../../shared/hooks/useOrgData'
-import { formatProbability, localizePredictionMessage } from '../../shared/data/probability'
+import { formatProbability, isEvenProbability, localizePredictionMessage, noFavoriteText } from '../../shared/data/probability'
 import { DataConfidenceNote } from '../../shared/components/DataConfidenceNote'
 import { localizeFeature } from '../../shared/utils/localizeFeature'
 import { usePrediction } from '../../shared/hooks/usePrediction'
@@ -144,7 +145,7 @@ export function OrgPredictor() {
         <p role="alert" className="error-note">{problem}</p>
       ) : null}
 
-      <OutsideUfcNotice org={org} />
+      <OutsideUfcNotice org={org} unmeasured={fighters.length ? mostlyUnmeasured(fighters) : null} />
 
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         <CornerCard
@@ -213,8 +214,9 @@ export function OrgPredictor() {
   )
 }
 
-/** Says, before anyone reads a percentage, that the model comes from UFC fights and what this organization's data lacks. */
-function OutsideUfcNotice({ org }: { org: OrgConfig }) {
+/** Says, before anyone reads a percentage, that the model comes from UFC fights and what this organization's data lacks
+ *  (the second part once the fighters are loaded: `unmeasured` is null until then). */
+function OutsideUfcNotice({ org, unmeasured }: { org: OrgConfig; unmeasured: boolean | null }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
   return (
@@ -226,11 +228,28 @@ function OutsideUfcNotice({ org }: { org: OrgConfig }) {
       <p className="text-sm leading-6 text-[var(--text-secondary)]">
         {L(
           lang,
-          `O modelo foi treinado com lutas do UFC e só foi validado nelas. Os dados ${orgPt(org, 'de')} trazem cartel, idade e medidas, mas não a precisão de golpes nem de quedas: nesses pontos o modelo usa valores típicos.`,
-          `The model is trained on UFC fights and has only been validated on them. The ${org.shortName} data has record, age and measurements, but no striking or takedown accuracy, so the model uses typical values for those.`,
-          `Le modèle est entraîné sur des combats UFC et n’a été validé que sur eux. Les données ${org.shortName} donnent le bilan, l’âge et les mensurations, mais pas la précision en frappe ni aux takedowns : le modèle utilise des valeurs typiques.`,
-          `El modelo se entrena con peleas de la UFC y solo se validó con ellas. Los datos de ${orgEs(org)} traen récord, edad y medidas, pero no la precisión de golpes ni de derribos: en esos puntos el modelo usa valores típicos.`,
+          'O modelo foi treinado com lutas do UFC e só foi validado nelas.',
+          'The model is trained on UFC fights and has only been validated on them.',
+          'Le modèle est entraîné sur des combats UFC et n’a été validé que sur eux.',
+          'El modelo se entrena con peleas de la UFC y solo se validó con ellas.',
         )}
+        {unmeasured === null
+          ? null
+          : unmeasured
+            ? ` ${L(
+                lang,
+                `Para a maioria dos atletas ${orgPt(org, 'de')} não temos cartel, idade nem medidas. Quando faltam dados dos dois lados, o resultado costuma ser 50% e não há favorito.`,
+                `For most ${org.shortName} fighters we have no record, age or measurements. When data is missing on both sides, the result is usually 50% and there is no favorite.`,
+                `Pour la plupart des combattants ${orgFr(org, 'de')}, nous n’avons ni palmarès, ni âge, ni mensurations. Quand les données manquent des deux côtés, le résultat est généralement de 50 % et il n’y a pas de favori.`,
+                `De la mayoría de los peleadores de ${orgEs(org)} no tenemos récord, edad ni medidas. Cuando faltan datos de ambos lados, el resultado suele ser 50 % y no hay favorito.`,
+              )}`
+            : ` ${L(
+                lang,
+                `Os dados ${orgPt(org, 'de')} trazem cartel, idade e medidas, mas não a precisão de golpes nem de quedas: nesses pontos o modelo usa valores típicos.`,
+                `The ${org.shortName} data has record, age and measurements, but no striking or takedown accuracy, so the model uses typical values for those.`,
+                `Les données ${org.shortName} donnent le bilan, l’âge et les mensurations, mais pas la précision en frappe ni aux takedowns : le modèle utilise des valeurs typiques.`,
+                `Los datos de ${orgEs(org)} traen récord, edad y medidas, pero no la precisión de golpes ni de derribos: en esos puntos el modelo usa valores típicos.`,
+              )}`}
         {org.probabilitiesEased
           ? ` ${L(
               lang,
@@ -339,9 +358,11 @@ function CornerCard({
                   <button type="button" onClick={() => onOpenProfile(fighter.name)} className="cursor-pointer text-left transition hover:text-[var(--text-red)]">
                     {fighter.name}
                   </button>
-                  <span className="text-xs font-bold text-[var(--text-muted)]">
-                    ({fighter.wins ?? 0}-{fighter.losses ?? 0}{fighter.draws ? `-${fighter.draws}` : ''})
-                  </span>
+                  {fighter.wins != null && fighter.losses != null ? (
+                    <span className="text-xs font-bold text-[var(--text-muted)]">
+                      ({fighter.wins}-{fighter.losses}{fighter.draws ? `-${fighter.draws}` : ''})
+                    </span>
+                  ) : null}
                   {fighter.belt ? <ChampionBelt /> : null}
                 </h3>
                 {fighter.nickname ? <p className="mt-1 truncate text-xs font-semibold text-[var(--text-red)]">“{fighter.nickname}”</p> : null}
@@ -383,6 +404,7 @@ function CornerCard({
 function OrgScorecard({ prediction }: { prediction: PredictionResponse }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
+  const even = isEvenProbability(prediction.fighter_a_probability)
   const rows = [
     { name: prediction.fighter_a_profile.name, value: prediction.fighter_a_probability, color: 'bg-[var(--red-deep)]' },
     { name: prediction.fighter_b_profile.name, value: prediction.fighter_b_probability, color: 'bg-[var(--blue-deep)]' },
@@ -398,8 +420,8 @@ function OrgScorecard({ prediction }: { prediction: PredictionResponse }) {
       <div className="space-y-4 p-4 sm:p-5">
         <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">
           <div className="min-w-0">
-            <p className="text-label font-bold text-[var(--text-red)]">{L(lang, 'Favorito previsto', 'Projected winner', 'Vainqueur prévu', 'Ganador proyectado')}</p>
-            <p className="poster-display mt-1 break-words text-2xl leading-none text-[var(--text-primary)] sm:text-3xl">{prediction.predicted_winner}</p>
+            <p className="text-label font-bold text-[var(--text-red)]">{even ? L(lang, 'Sem favorito', 'No favorite', 'Pas de favori', 'Sin favorito') : L(lang, 'Favorito previsto', 'Projected winner', 'Vainqueur prévu', 'Ganador proyectado')}</p>
+            <p className="poster-display mt-1 break-words text-2xl leading-none text-[var(--text-primary)] sm:text-3xl">{even ? L(lang, 'Faltam dados', 'Not enough data', 'Données insuffisantes', 'Faltan datos') : prediction.predicted_winner}</p>
           </div>
           <p className="poster-display text-4xl leading-none text-[var(--text-red)] sm:text-5xl">{formatProbability(prediction.probability)}</p>
         </div>
@@ -418,7 +440,7 @@ function OrgScorecard({ prediction }: { prediction: PredictionResponse }) {
           ))}
         </div>
 
-        <p className="text-sm font-medium leading-6 text-[var(--text-secondary)]">{localizePredictionMessage(prediction.message, prediction.predicted_winner, lang)}</p>
+        <p className="text-sm font-medium leading-6 text-[var(--text-secondary)]">{even ? noFavoriteText(lang) : localizePredictionMessage(prediction.message, prediction.predicted_winner, lang)}</p>
 
         {prediction.data_confidence ? <DataConfidenceNote confidence={prediction.data_confidence} /> : null}
       </div>
@@ -432,12 +454,15 @@ function OrgTaleOfTheTape({ fighterA, fighterB }: { fighterA: TapeFighter; fight
   const { i18n } = useTranslation()
   const lang = i18n.language
   const cm = (value: number | null | undefined) => (value ? `${Math.round(value)} cm` : '—')
+  // A profile with no fights at all comes from a file without career records, not from a 0-0 fighter.
+  const record = (fighter: TapeFighter) =>
+    fighter && (fighter.wins || fighter.losses || fighter.draws) ? `${fighter.wins ?? 0}-${fighter.losses ?? 0}${fighter.draws ? `-${fighter.draws}` : ''}` : '—'
   const pct = (value: number | null | undefined) => (value ? `${Math.round(value * 100)}%` : '—')
   const rows = [
     { label: L(lang, 'Idade', 'Age', 'Âge', 'Edad'), a: fighterA?.age ? `${Math.round(fighterA.age)}` : '—', b: fighterB?.age ? `${Math.round(fighterB.age)}` : '—' },
     { label: L(lang, 'Altura', 'Height', 'Taille', 'Estatura'), a: cm(fighterA?.height_cm), b: cm(fighterB?.height_cm) },
     { label: L(lang, 'Envergadura', 'Reach', 'Allonge', 'Alcance'), a: cm(fighterA?.reach_cm), b: cm(fighterB?.reach_cm) },
-    { label: L(lang, 'Cartel', 'Record', 'Palmarès', 'Récord'), a: `${fighterA?.wins ?? 0}-${fighterA?.losses ?? 0}`, b: `${fighterB?.wins ?? 0}-${fighterB?.losses ?? 0}` },
+    { label: L(lang, 'Cartel', 'Record', 'Palmarès', 'Récord'), a: record(fighterA), b: record(fighterB) },
     { label: L(lang, 'Precisão de golpes', 'Striking accuracy', 'Précision des coups', 'Precisión de golpes'), a: pct(fighterA?.sig_str_acc), b: pct(fighterB?.sig_str_acc) },
     { label: L(lang, 'Precisão de quedas', 'Takedown accuracy', 'Précision des amenées', 'Precisión de derribos'), a: pct(fighterA?.takedown_acc), b: pct(fighterB?.takedown_acc) },
     { label: L(lang, 'Taxa de vitória', 'Win rate', 'Taux de victoire', 'Porcentaje de victorias'), a: pct(fighterA?.win_rate), b: pct(fighterB?.win_rate) },

@@ -31,6 +31,12 @@ def test_a_single_fight_reads_in_the_singular():
     assert "Debut has only 1 recorded fight," in result["reasons"][0]
 
 
+def test_a_file_without_career_records_is_not_read_as_a_fighter_with_no_fights():
+    result = assess({**fighter("Ayaka", fights=0, last=None), "data_origin": "one"}, fighter("B"), today=TODAY)
+    assert result["reasons"][0] == "Ayaka has no career record on file."
+    assert not any("only 0" in reason for reason in result["reasons"])
+
+
 def test_a_long_layoff_is_called_out_and_a_short_one_is_not():
     away = assess(fighter("Away", last="2024-08-01"), fighter("B"), today=TODAY)
     assert away["level"] == "some_gaps"
@@ -62,7 +68,8 @@ def every_reason() -> list[str]:
     ]
     reasons = [assess(one, other, today=TODAY)["reasons"] for one in fighters]
     assert all(len(found) == 1 for found in reasons)
-    return [found[0] for found in reasons]
+    no_record = assess({**fighter("A", fights=0), "data_origin": "one"}, other, today=TODAY)["reasons"]
+    return [*(found[0] for found in reasons), no_record[0]]
 
 
 def test_no_sentence_denies_what_the_served_model_does():
@@ -78,6 +85,6 @@ def test_the_site_can_translate_every_sentence():
     """confidenceText.ts finds a sentence by its exact English wording; one it does not know would stay in English."""
     source = (Path(__file__).parents[2] / "frontend/src/shared/data/confidenceText.ts").read_text(encoding="utf-8")
     patterns = [re.compile(found) for found in re.findall(r"^    /(\^.+\$)/,$", source, flags=re.MULTILINE)]
-    assert len(patterns) == 5
+    assert len(patterns) == 6
     for reason in every_reason():
         assert sum(bool(pattern.match(reason)) for pattern in patterns) == 1, reason

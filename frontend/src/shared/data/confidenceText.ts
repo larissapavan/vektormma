@@ -36,6 +36,17 @@ function duration(lang: string, amount: string, unit: string) {
  */
 const REASONS: [RegExp, Translator][] = [
   [
+    /^(.+) has no career record on file\.$/,
+    (lang, [, name]) =>
+      L(
+        lang,
+        `Não temos o cartel de ${name}.`,
+        `${name} has no career record on file.`,
+        `Nous n’avons pas le palmarès de ${name}.`,
+        `No tenemos el récord de ${name}.`,
+      ),
+  ],
+  [
     /^(.+) has only (\d+) recorded fights?, so their numbers are not settled yet\.$/,
     (lang, [, name, n]) =>
       L(

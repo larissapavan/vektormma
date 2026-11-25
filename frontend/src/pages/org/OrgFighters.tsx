@@ -30,7 +30,7 @@ import { PageHeader } from '../../shared/components/ui/PageHeader'
 import { L, localeTag } from '../../i18n/lang'
 import { orgEs, orgFr, orgPt } from '../../shared/data/orgs'
 import { getDivisionName } from '../../shared/data/divisions'
-import { compareDivisions, formatHeight, formatReach, formatRecord } from '../../shared/data/orgFormat'
+import { compareDivisions, formatHeight, formatReach, formatRecord, mostlyUnmeasured } from '../../shared/data/orgFormat'
 import { normalizeFighterName } from '../../shared/hooks/useFighterImages'
 import { useOrg } from '../../shared/hooks/useOrg'
 import { useOrgFighters } from '../../shared/hooks/useOrgData'
@@ -137,6 +137,14 @@ export function OrgFighters() {
                     `Historical archive of every fighter who stepped into the ${org.shortName} cage (2009–2023), with record, camp and bout history.`,
                     `Archives complètes de tous les combattants ayant combattu ${orgFr(org, 'à')} (2009–2023), avec palmarès, salle et combats.`,
                     `Archivo histórico completo de los peleadores que pelearon en ${orgEs(org)} (2009–2023), con récord, alcance, gimnasio e historial detallado.`,
+                  )
+                : mostlyUnmeasured(fighters)
+                ? L(
+                    i18n.language,
+                    `Todos os atletas cadastrados ${orgPt(org, 'de')}, com os dados que temos de cada um. Lutadores ativos em destaque.`,
+                    `Every fighter on the ${org.shortName} roster, with the data we have on each one. Active fighters first.`,
+                    `Tous les combattants répertoriés ${orgFr(org, 'à')}, avec les données dont nous disposons sur chacun. Combattants actifs en tête.`,
+                    `Todos los peleadores registrados de ${orgEs(org)}, con los datos que tenemos de cada uno. Primero los peleadores activos.`,
                   )
                 : L(
                     i18n.language,

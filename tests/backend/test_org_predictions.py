@@ -98,6 +98,25 @@ def test_a_bout_that_names_another_sport_gets_no_pick_anywhere(monkeypatch):
     assert len(picks_for(monkeypatch, "one", "MMA")) == 1
 
 
+def test_a_bout_the_model_cannot_tell_apart_gets_no_pick(monkeypatch):
+    """Two profiles with no age, height or reach come out at exactly 50%: the alphabet would choose the "pick"."""
+    tie = {"predicted_winner": "Cris", "probability": 0.5, "fighter_a_probability": 0.5}
+    monkeypatch.setattr(FakeService, "predict_pick", lambda self, a, b: tie)
+    assert picks_for(monkeypatch, "one", "MMA") == []
+
+
+def test_a_missing_measurement_is_not_a_difference_from_zero():
+    assert prediction_service._difference(185.0, None) is None
+    assert prediction_service._difference(float("nan"), 30.0) is None
+    assert prediction_service._difference(185.0, 180.5) == 4.5
+
+
+def test_an_exact_tie_names_no_favorite():
+    message = prediction_service.PredictionService._build_message(None, "Cris", 0.5)
+    assert "Cris" not in message and "edge" not in message
+    assert "Cris" in prediction_service.PredictionService._build_message(None, "Cris", 0.51)
+
+
 def test_an_organization_that_does_not_name_the_sport_and_is_not_mma_only_gets_no_pick(monkeypatch):
     assert picks_for(monkeypatch, "one", None) == []
     assert picks_for(monkeypatch, "rizin", None) == []

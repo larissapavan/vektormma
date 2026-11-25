@@ -482,7 +482,7 @@ describe('the organization switcher', () => {
     renderAt(path)
     const notice = await screen.findByRole('complementary', { name: 'About these predictions' }, WAIT)
     expect(within(notice).getByText(/trained on UFC fights and has only been validated on them/)).toBeInTheDocument()
-    expect(within(notice).getByText(new RegExp(`The ${short} data has record, age and measurements, but no striking or takedown accuracy`))).toBeInTheDocument()
+    expect(await within(notice).findByText(new RegExp(`The ${short} data has record, age and measurements, but no striking or takedown accuracy`), undefined, WAIT)).toBeInTheDocument()
     expect(/halfway between the model's output and 50%/.test(notice.textContent ?? '')).toBe(eased)
     expect(/every matchup here is hypothetical/.test(notice.textContent ?? '')).toBe(archive)
   })
