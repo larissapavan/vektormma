@@ -150,7 +150,7 @@
       },
       "/one/fighters": {
         "title": "Lutadores do ONE Championship",
-        "description": "Perfis de atletas do ONE Championship: cartel, medidas, equipes e lutas."
+        "description": "Atletas do ONE Championship: categorias, lutas e resultados na organização."
       },
       "/one/events": {
         "title": "Eventos do ONE Championship",
@@ -420,7 +420,7 @@
       },
       "/one/fighters": {
         "title": "ONE Championship fighters",
-        "description": "ONE Championship fighter profiles: records, builds, camps and every bout."
+        "description": "ONE Championship fighters: divisions, bouts and results in the organization."
       },
       "/one/events": {
         "title": "ONE Championship events",
@@ -690,7 +690,7 @@
       },
       "/one/fighters": {
         "title": "Combattants ONE Championship",
-        "description": "Profils des combattants ONE Championship : palmarès, mensurations, salles et combats."
+        "description": "Combattants ONE Championship : catégories, combats et résultats dans l’organisation."
       },
       "/one/events": {
         "title": "Événements ONE Championship",
@@ -960,7 +960,7 @@
       },
       "/one/fighters": {
         "title": "Peleadores de ONE Championship",
-        "description": "Perfiles de peleadores de ONE Championship: récords, medidas, campamentos y cada combate."
+        "description": "Peleadores de ONE Championship: categorías, peleas y resultados en la organización."
       },
       "/one/events": {
         "title": "Eventos de ONE Championship",
