@@ -29,7 +29,10 @@ import { useRankings } from '../shared/hooks/useRankings'
 import { useUpcomingPicks } from '../shared/hooks/useUpcomingPicks'
 import { useUpcomingEvents } from '../shared/hooks/useUpcomingEvents'
 import { getFighterPerformance } from '../shared/services/api'
-import type { DataConfidence, EventSummary, FighterPerformance, FightResult } from '../shared/types/api'
+import type { DataConfidence, EventSummary, FighterPerformance, FightResult, MainFactor, UpcomingPick } from '../shared/types/api'
+import { HeroFactors } from './home/HeroFactors'
+import { HomeChampions } from './home/HomeChampions'
+import { ModelHighlights } from './home/ModelHighlights'
 
 type Trend = { streak: number; finishRate: number | null }
 
@@ -41,6 +44,7 @@ export function Home() {
   const { events, loading: eventsLoading, error: eventsError } = useUpcomingEvents()
   const { rankings, loading: rankingsLoading, error: rankingsError } = useRankings()
   const { prediction, loading: predicting, runPrediction } = usePrediction()
+  const pickFor = useUpcomingPicks()
   const [trends, setTrends] = useState<Record<string, Trend>>({})
   // A fighter chosen in the Trending or Pound-for-pound cards opens in place, so closing it leaves you where you were.
   const [profileName, setProfileName] = useState<string | null>(null)
@@ -94,8 +98,13 @@ export function Home() {
         probabilityA={prediction?.fighter_a_probability ?? null}
         probability={prediction?.probability ?? null}
         confidence={prediction?.data_confidence}
+        factors={prediction?.main_factors ?? []}
         predicting={predicting}
       />
+
+      <ModelHighlights event={nextEvent} pickFor={pickFor} />
+
+      <FullCardSection nextEvent={nextEvent} pickFor={pickFor} />
 
       <StatsStrip
         fightsAnalyzed={health?.fights_tracked ?? null}
@@ -112,7 +121,7 @@ export function Home() {
         <RankingsCard category={p4pRankings} loading={rankingsLoading} error={rankingsError} onOpenProfile={setProfileName} />
       </div>
 
-      <FullCardSection nextEvent={nextEvent} />
+      <HomeChampions onOpenProfile={setProfileName} />
 
       <LatestNewsCard quiet />
 
@@ -164,6 +173,7 @@ function NextFightHero({
   probabilityA,
   probability,
   confidence,
+  factors,
   predicting,
 }: {
   loading: boolean
@@ -174,6 +184,7 @@ function NextFightHero({
   probabilityA: number | null
   probability: number | null
   confidence: DataConfidence | null | undefined
+  factors: MainFactor[]
   predicting: boolean
 }) {
   const { t, i18n } = useTranslation()
@@ -248,6 +259,7 @@ function NextFightHero({
                   <DataConfidenceNote confidence={confidence} />
                 </div>
               ) : null}
+              <HeroFactors factors={factors} red={fight.fighter_1} blue={fight.fighter_2} />
             </>
           ) : null}
         </div>
@@ -256,9 +268,14 @@ function NextFightHero({
   )
 }
 
-function FullCardSection({ nextEvent }: { nextEvent: EventSummary | null }) {
+function FullCardSection({
+  nextEvent,
+  pickFor,
+}: {
+  nextEvent: EventSummary | null
+  pickFor: (event: string, fighterA: string, fighterB: string) => UpcomingPick | undefined
+}) {
   const { t, i18n } = useTranslation()
-  const pickFor = useUpcomingPicks()
   if (!nextEvent || nextEvent.fights.length <= 1) return null
 
   const restOfCard = nextEvent.fights.slice(1)

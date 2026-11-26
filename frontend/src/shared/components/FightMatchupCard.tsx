@@ -27,7 +27,7 @@ function isTbdName(name: string | null | undefined) {
 }
 
 /** The red corner's chance, whichever order the pick lists the two fighters in. */
-function redCornerProbability(fight: FightResult, pick: UpcomingPick) {
+export function redCornerProbability(fight: Pick<FightResult, 'fighter_1'>, pick: UpcomingPick) {
   const sameOrder = normalizeFighterName(pick.fighter_1) === normalizeFighterName(fight.fighter_1)
   return sameOrder ? pick.fighter_1_probability : 1 - pick.fighter_1_probability
 }
