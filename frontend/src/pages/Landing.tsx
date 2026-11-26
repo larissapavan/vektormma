@@ -7,8 +7,22 @@ import { sectionActionClass } from '../shared/components/ui/Section'
 import { LandingHero } from './landing/LandingHero'
 import { OrganizationsSection } from './landing/OrganizationsSection'
 
-/** The page column: the same width and side padding as the header. */
+/** The page column: the same width and side padding as the header (and the footer rule lines up with it). */
 const COLUMN = 'mx-auto w-full max-w-[1376px] px-4 sm:px-6 lg:px-12'
+
+/**
+ * The vertical rhythm between the page's sections, set here and nowhere else: the sections themselves carry no outer margin
+ * or padding, so each gap is exactly one of these values (Tailwind's 4 px scale).
+ * - `afterHero`: hero to the directory.
+ * - `section`: directory to "About the project", measured from the last directory row (28–32 px phone, 44 px desktop).
+ * - `footer`: the links to the footer rule. The links are 44 px touch targets with about 10 px of air under the text, so
+ *   16 / 24 px of margin reads as about 26 / 34 px from the text.
+ */
+const GAP = {
+  afterHero: 'mt-12 sm:mt-16',
+  section: 'mt-8 lg:mt-11',
+  footer: 'mt-4 lg:mt-6',
+}
 
 /**
  * The way into Vektor MMA: what it is, the organization directory and a short word on the project. Nothing on it waits for
@@ -25,16 +39,17 @@ export function Landing() {
         <LandingHero />
       </div>
 
-      <div className={`${COLUMN} pt-12 sm:pt-16`}>
+      <div className={`${COLUMN} ${GAP.afterHero}`}>
         <OrganizationsSection />
       </div>
 
-      <section aria-labelledby="project-title" className={`${COLUMN} pt-14 sm:pt-20`}>
-        <div className="max-w-[68ch]">
+      <section aria-labelledby="project-title" className={`${COLUMN} ${GAP.section}`}>
+        {/* About 65 characters a line on a desktop; the links sit side by side and wrap on a narrow screen. */}
+        <div className="max-w-[65ch]">
           <h2 id="project-title" className="text-[28px] leading-[1.05] sm:text-[34px]">
             {L(lang, 'Sobre o projeto', 'About the project', 'À propos du projet', 'Sobre el proyecto')}
           </h2>
-          <p className="mt-3 text-base leading-7 sm:text-lg">
+          <p className="mt-2 text-base leading-7 sm:text-lg">
             {L(
               lang,
               'O Vektor MMA é um projeto independente que organiza dados públicos de eventos e lutadores. No UFC, na PFL e na ONE, um modelo estatístico estima a chance de vitória de cada lado antes da luta, e cada previsão fica registrada para ser conferida depois do evento.',
@@ -43,7 +58,7 @@ export function Landing() {
               'Vektor MMA es un proyecto independiente que organiza datos públicos de eventos y peleadores. En la UFC, la PFL y ONE, un modelo estadístico estima la probabilidad de victoria de cada lado antes de la pelea, y cada pronóstico queda registrado para comprobarlo después del evento.',
             )}
           </p>
-          <div className="mt-2 flex flex-wrap gap-x-7">
+          <div className="mt-2 flex flex-wrap gap-x-7 gap-y-1">
             <Link to="/model" className={sectionActionClass}>
               {L(lang, 'Como o modelo funciona', 'How the model works', 'Comment marche le modèle', 'Cómo funciona el modelo')}
             </Link>
@@ -54,7 +69,7 @@ export function Landing() {
         </div>
       </section>
 
-      <div className={`${COLUMN} mt-12 sm:mt-16`}>
+      <div className={`${COLUMN} ${GAP.footer}`}>
         <SiteFooter />
       </div>
     </div>

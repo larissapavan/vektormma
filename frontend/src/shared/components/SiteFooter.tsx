@@ -28,7 +28,9 @@ export function SiteFooter({ dataDate, className = '' }: { dataDate?: string | n
   ]
 
   return (
-    <footer className={`border-t-[3px] border-[var(--ink)] pb-6 pt-4 ${className}`}>
+    // Four groups (brand, navigation, disclaimer, channels) 12–16 px apart (gap-3). The links and icons are 44 px touch targets, so
+    // their rows pull in the air around the text (-my-2.5) and the gap is measured between what can be seen.
+    <footer className={`flex flex-col gap-3 border-t-[3px] border-[var(--ink)] pb-6 pt-4 ${className}`}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
         <p className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
           <span className="font-display text-[22px] leading-none text-[var(--ink)]">
@@ -39,7 +41,7 @@ export function SiteFooter({ dataDate, className = '' }: { dataDate?: string | n
         </p>
       </div>
 
-      <div className="mt-2 flex flex-wrap gap-x-10 gap-y-1">
+      <div className="-my-2.5 flex flex-wrap gap-x-10">
         <nav aria-label={L(lang, 'O projeto', 'The project', 'Le projet', 'El proyecto')}>
           <ul className="flex flex-wrap gap-x-6 text-[15px] font-semibold text-[var(--ink)]">
             {project.map((item) => (
@@ -64,7 +66,8 @@ export function SiteFooter({ dataDate, className = '' }: { dataDate?: string | n
         </nav>
       </div>
 
-      <div className="mt-1 flex flex-wrap items-center justify-between gap-x-8 gap-y-1">
+      {/* Disclaimer on the left and channels on the right while both fit; on a phone the channels drop under it. */}
+      <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-1">
         <p className="max-w-[84ch] text-sm leading-6 text-[var(--muted)]">
           {L(
             lang,
@@ -74,7 +77,7 @@ export function SiteFooter({ dataDate, className = '' }: { dataDate?: string | n
             'Proyecto analítico independiente. No afiliado a la UFC, la PFL, Bellator, ONE Championship, RIZIN, KSW, la LFA, Cage Warriors, OKTAGON, Jungle Fight ni Invicta FC.',
           )}
         </p>
-        <div className="flex items-center gap-2">
+        <div className="-my-1.5 flex items-center gap-2">
           <span className="text-sm text-[var(--muted)]">{L(lang, 'Canais oficiais:', 'Official channels:', 'Canaux officiels :', 'Canales oficiales:')}</span>
           <SocialLinks withGithub />
         </div>
