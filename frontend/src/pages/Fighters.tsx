@@ -13,6 +13,7 @@ import {
   HandFist,
   Hammer,
   LayoutGrid,
+  List,
   Medal,
   Radio,
   Search,
@@ -205,6 +206,8 @@ export function Fighters() {
   const [momentFilter, setMomentFilter] = useUrlParam('moment', '', MOMENTS)
   const [activeFilter, setActiveFilter] = useUrlParam('status', 'all', ['all', 'active', 'former'])
   const [activeDivision, setActiveDivision] = useUrlParam('division', 'lightweight', [ALL_DIVISIONS, ...divisionGroups.map((group) => group.key)])
+  // Photos in a grid by default; the list stays one tap away for comparing numbers.
+  const [view, setView] = useUrlParam('view', 'grid', ['grid', 'list'])
   const clearFilters = useClearUrlParams(EXTRA_FILTERS)
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [searchParams, setSearchParams] = useSearchParams()
@@ -424,9 +427,15 @@ export function Fighters() {
               {L(i18n.language, 'Limpar filtros', 'Clear filters', 'Effacer les filtres', 'Quitar filtros')}
             </button>
           ) : null}
-          <p className="text-sm text-[var(--text-muted)]">
-            <span className="font-semibold tabular-nums text-[var(--text-primary)]">{visibleFighters.length.toLocaleString(localeTag(i18n.language))}</span> {L(i18n.language, 'exibidos', 'shown', 'affichés', 'mostrados')}
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-sm text-[var(--text-muted)]">
+              <span className="font-semibold tabular-nums text-[var(--text-primary)]">{visibleFighters.length.toLocaleString(localeTag(i18n.language))}</span> {L(i18n.language, 'exibidos', 'shown', 'affichés', 'mostrados')}
+            </p>
+            <div role="group" aria-label={L(i18n.language, 'Modo de exibição', 'Display mode', 'Mode d’affichage', 'Modo de visualización')} className="inline-flex border border-[var(--rule)]">
+              <ViewButton active={view === 'grid'} onClick={() => setView('grid')} icon={LayoutGrid} label={L(i18n.language, 'Grade com fotos', 'Photo grid', 'Grille de photos', 'Cuadrícula con fotos')} />
+              <ViewButton active={view === 'list'} onClick={() => setView('list')} icon={List} label={L(i18n.language, 'Lista', 'List', 'Liste', 'Lista')} />
+            </div>
+          </div>
         </div>
       </PageHeader>
 
@@ -463,6 +472,7 @@ export function Fighters() {
                       pastOf={historyFor(group)}
                       imageByName={imageByName}
                       onSelectFighter={setSelectedFighter}
+                      view={view}
                       inFullList
                     />
                   ))}
@@ -477,6 +487,7 @@ export function Fighters() {
                   pastOf={historyFor(featuredGroup)}
                   imageByName={imageByName}
                   onSelectFighter={setSelectedFighter}
+                  view={view}
                 />
               </AnimatePresence>
             )}
@@ -670,6 +681,7 @@ function DivisionPanel({
   pastOf,
   imageByName,
   onSelectFighter,
+  view = 'grid',
   inFullList = false,
 }: {
   group: DivisionGroup
@@ -678,6 +690,7 @@ function DivisionPanel({
   pastOf: (fighter: FighterProfile) => HistoryEntry | null
   imageByName: Map<string, FighterImageRecord>
   onSelectFighter: (name: string) => void
+  view?: string
   /** One of every division on one page: no "selected division" line above the name. */
   inFullList?: boolean
 }) {
@@ -711,7 +724,21 @@ function DivisionPanel({
       </div>
 
       <div>
-        {fighters.length ? (
+        {fighters.length && view === 'grid' ? (
+          <ul className="grid grid-cols-2 gap-3 border-t-[3px] border-[var(--ink)] pt-4 sm:grid-cols-3 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5">
+            {shown.map((fighter) => (
+              <FighterTile
+                key={fighter.name}
+                fighter={fighter}
+                rank={rankLabel(fighter, ranks)}
+                past={pastOf(fighter)}
+                womens={group.label.startsWith("Women's")}
+                imageUrl={getFighterImageUrl(fighter.name, imageByName, fighter.image_url)}
+                onSelect={() => onSelectFighter(fighter.name)}
+              />
+            ))}
+          </ul>
+        ) : fighters.length ? (
           <ul className="grid border-t-[3px] border-[var(--ink)] md:grid-cols-2 md:gap-x-8 xl:grid-cols-3">
             {shown.map((fighter) => (
               <FighterDivisionCard
@@ -933,6 +960,111 @@ function FighterDivisionCard({
           </a>
         ) : null}
       </div>
+    </li>
+  )
+}
+
+function ViewButton({ active, onClick, icon: Icon, label }: { active: boolean; onClick: () => void; icon: LucideIcon; label: string }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      aria-label={label}
+      title={label}
+      className={`grid h-11 w-11 place-items-center ${active ? 'bg-[var(--ink)] text-[var(--on-ink)]' : 'text-[var(--muted)] hover:bg-[var(--panel)] hover:text-[var(--ink)]'}`}
+    >
+      <Icon className="h-4 w-4" aria-hidden="true" />
+    </button>
+  )
+}
+
+/** One fighter in the photo grid: a tall portrait with the rank on it, then name, record and division facts. */
+function FighterTile({
+  fighter,
+  rank,
+  past,
+  womens,
+  imageUrl,
+  onSelect,
+}: {
+  fighter: FighterProfile
+  rank: string | null
+  past: HistoryEntry | null
+  womens: boolean
+  imageUrl?: string | null
+  onSelect: () => void
+}) {
+  const { i18n } = useTranslation()
+  const lang = i18n.language
+  const credit = usePhotoCredit(imageUrl ?? undefined)
+  const [failedUrl, setFailedUrl] = useState<string | null>(null)
+  const showImage = Boolean(imageUrl) && failedUrl !== imageUrl
+  const initials = fighter.name
+    .split(' ')
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
+  const facts = [
+    formatRecord(fighter, lang),
+    fighter.age ? `${Math.floor(fighter.age)} ${L(lang, 'anos', 'yrs', 'ans', 'años')}` : null,
+  ].filter(Boolean)
+
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={onSelect}
+        aria-label={L(lang, `${fighter.name}. Ver perfil`, `${fighter.name}. View profile`, `${fighter.name}. Voir le profil`, `${fighter.name}. Ver perfil`)}
+        className="group flex h-full w-full cursor-pointer flex-col bg-[var(--panel)] text-left hover:bg-[var(--panel-hover)]"
+      >
+        <span
+          title={credit && showImage ? photoRightsText(credit, lang) : undefined}
+          className="relative block aspect-[4/5] w-full overflow-hidden bg-[var(--track)]"
+        >
+          {showImage ? (
+            <img
+              src={imageUrl ?? undefined}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              referrerPolicy="no-referrer"
+              onError={() => setFailedUrl(imageUrl ?? null)}
+              className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-200 group-hover:scale-[1.03]"
+            />
+          ) : (
+            <span className="absolute inset-0 grid place-items-center font-display text-4xl font-black text-[var(--muted)]">{initials}</span>
+          )}
+          {rank ? (
+            <span
+              className="absolute left-0 top-0 min-w-9 bg-[var(--ink)] px-2 py-1 text-center font-display text-lg font-black tabular-nums leading-none text-[var(--on-ink)]"
+              title={rank === 'C' ? L(lang, 'Campeão', 'Champion', 'Champion', 'Campeón') : undefined}
+            >
+              {rank}
+            </span>
+          ) : null}
+          {fighter.belt ? (
+            <span className="absolute right-1.5 top-1.5">
+              <ChampionBelt />
+            </span>
+          ) : null}
+        </span>
+        <span className="flex min-w-0 flex-1 flex-col gap-1 p-3">
+          <span className="flex min-w-0 items-start gap-1.5">
+            <FlagList fighter={fighter} />
+            <span className="min-w-0 break-words font-display text-lg font-black leading-[1.05] [hyphens:auto]">{fighter.name}</span>
+          </span>
+          <span className="text-sm tabular-nums text-[var(--muted)]">{facts.join(' · ')}</span>
+          {past && !rank ? <HistoryNote past={past} womens={womens} /> : null}
+          {fighter.next_fight ? (
+            <span title={`${fighter.next_fight.event_name}: vs ${fighter.next_fight.opponent}`} className="inline-flex items-center gap-1 text-[13px] font-bold">
+              <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
+              {L(lang, 'Luta marcada', 'Fight booked', 'Combat prévu', 'Pelea confirmada')}
+            </span>
+          ) : null}
+        </span>
+      </button>
     </li>
   )
 }

@@ -55,7 +55,9 @@ describe('every page opens and shows its data', () => {
 describe('the pages that depend on the API', () => {
   it('the home page shows the model pick next to the upcoming fights', async () => {
     renderAt('/home')
-    expect(await screen.findByText(/Model: Gamma Three 72%/i, undefined, { timeout: 10000 })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('img', { name: /The model gives Gamma Three a 72% chance of winning/i }, { timeout: 10000 }),
+    ).toBeInTheDocument()
   })
 
   it('latest news links out to the original story', async () => {
