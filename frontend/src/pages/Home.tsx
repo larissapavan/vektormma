@@ -33,6 +33,7 @@ import type { DataConfidence, EventSummary, FighterPerformance, FightResult, Mai
 import { HeroFactors } from './home/HeroFactors'
 import { HomeChampions } from './home/HomeChampions'
 import { ModelHighlights } from './home/ModelHighlights'
+import { OrgSwitchLink } from '../shared/components/OrgSwitchLink'
 
 type Trend = { streak: number; finishRate: number | null }
 
@@ -88,6 +89,8 @@ export function Home() {
           {systemError}
         </p>
       ) : null}
+
+      <OrgSwitchLink />
 
       <NextFightHero
         loading={eventsLoading}

@@ -22,40 +22,16 @@ describe('headToHeadPath', () => {
 })
 
 describe('Landing', () => {
-  it('features the next fight with the model odds and a link to compare the two fighters', async () => {
+  it('opens with what Vektor MMA is and a way down to the organizations, not with a fight', async () => {
     render(
       <MemoryRouter initialEntries={['/']}>
         <App />
       </MemoryRouter>,
     )
 
-    const card = await screen.findByTestId('featured-matchup')
-    expect(card).toHaveTextContent('Gamma Three')
-    expect(card).toHaveTextContent('Delta Four')
-    expect(card).toHaveTextContent('72%')
-    expect(card).toHaveTextContent('The model gives Gamma Three a 72% chance of winning.')
-    expect(card).not.toHaveTextContent(/clear edge/i)
-    // Both headliners face to face: a photo each, or their initials when there is none.
-    const faceOff = within(card).getByTestId('featured-faceoff')
-    expect(faceOff).toHaveTextContent('GT')
-    expect(faceOff).toHaveTextContent('DF')
-    // Where the fight sits on the card, and the day of the event.
-    expect(card).toHaveTextContent('Co-main event')
-    expect(card).toHaveTextContent('UFC 900: Alpha vs. Beta · Jan 1, 2030')
-    const hrefs = Array.from(card.querySelectorAll('a')).map((link) => link.getAttribute('href'))
-    expect(hrefs).toContain('/head-to-head?a=Gamma+Three&b=Delta+Four')
-    // The factors behind the pick: the fight's own page, which shows the SHAP bars.
-    expect(hrefs).toContain('/fight/gamma-three-vs-delta-four')
-  })
-
-  it('has a primary call to compare fighters', async () => {
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <App />
-      </MemoryRouter>,
-    )
-    const links = await screen.findAllByRole('link', { name: /compare fighters/i })
-    expect(links.some((l) => l.getAttribute('href') === '/head-to-head')).toBe(true)
+    expect(await screen.findByRole('heading', { level: 1, name: 'Explore MMA. Understand the matchups.' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Explore organizations' })).toHaveAttribute('href', '#organizations-grid')
+    expect(screen.queryByTestId('featured-matchup')).toBeNull()
   })
 
   it('shows the counts the API reports', async () => {
@@ -79,8 +55,7 @@ describe('Landing', () => {
       </MemoryRouter>,
     )
     // The org cards show rounded-down snapshots with a plus, in the same grouping as the exact figures in the strip.
-    await screen.findByTestId('featured-matchup')
-    const ufc = screen.getByRole('link', { name: /open ultimate fighting championship/i })
+    const ufc = await screen.findByRole('link', { name: /follow ultimate fighting championship/i })
     expect(ufc).toHaveTextContent('8,900+')
     expect(ufc).not.toHaveTextContent('8.9k+')
     // The site's first two figures (fights, fighters) are exact totals from the API: no plus.
@@ -101,51 +76,50 @@ describe('the organizations section', () => {
   }
   const hrefs = (root: Element) => Array.from(root.querySelectorAll('a')).map((link) => link.getAttribute('href'))
 
-  it('links every organization once, in three levels', async () => {
+  it('links every organization once, as cards of the same kind', async () => {
     const root = await section()
 
     expect(hrefs(root)).toEqual(['/home', '/pfl', '/one', '/bellator', '/rizin', '/ksw', '/lfa', '/cage-warriors', '/oktagon', '/jungle-fight', '/invicta'])
+    // No card is picked or set apart for the visitor: every card has the same classes.
+    const classes = new Set(Array.from(root.querySelectorAll('li > a')).map((link) => link.className))
+    expect(classes.size).toBe(1)
   })
 
-  it('gives the UFC a row of its own, with the badge, the description and three counts', async () => {
+  it('shows each next event as the API has it, and says so when there is none', async () => {
     const root = await section()
-    const ufc = within(root).getByRole('link', { name: /open ultimate fighting championship/i })
+    const ufc = within(root).getByRole('link', { name: /follow ultimate fighting championship/i })
+    const pfl = within(root).getByRole('link', { name: /follow professional fighters league/i })
+    const bellator = within(root).getByRole('link', { name: /follow bellator mma/i })
 
-    expect(ufc).toHaveAttribute('href', '/home')
-    expect(ufc).toHaveTextContent('Predictions')
-    expect(ufc).toHaveTextContent('The model’s estimated win chance for every fight')
-    // 797 events, 2796 fighters and 8985 bouts, rounded down.
-    expect(ufc).toHaveTextContent('790+')
-    expect(ufc).toHaveTextContent('2,700+')
-    expect(ufc).toHaveTextContent('8,900+')
-    expect(within(ufc).queryByText(/simulate/i)).toBeNull()
+    await waitFor(() => expect(ufc).toHaveTextContent('UFC 900: Alpha vs. Beta'))
+    expect(ufc).toHaveTextContent('2 fights')
+    expect(ufc).toHaveTextContent('Events and predictions')
+    await waitFor(() => expect(pfl).toHaveTextContent('PFL Future'))
+    expect(pfl).toHaveTextContent('1 fight')
+    // Bellator is an archive: no event is made up for it.
+    expect(bellator).toHaveTextContent('Historical archive')
+    expect(bellator).toHaveTextContent('No future events')
   })
 
-  it('shows PFL, ONE and Bellator as rows with their badge and a single number, the fights', async () => {
+  it('tells an organization without a confirmed card apart from one still loading', async () => {
     const root = await section()
+    const invicta = within(root).getByRole('link', { name: /follow invicta fighting championships/i })
 
-    // PFL 1380, ONE 4817 and Bellator 3004 bouts, rounded down.
-    for (const [name, badge, bouts] of [
-      [/open professional fighters league/i, 'Predictions', '1,300+'],
-      [/open one championship/i, 'Predictions', '4,800+'],
-      [/open bellator mma/i, 'Historical archive', '3,000+'],
-    ] as const) {
-      const card = within(root).getByRole('link', { name })
-      expect(card).toHaveTextContent(badge)
-      expect(card).toHaveTextContent(bouts)
-      expect(card).toHaveTextContent(/fights/i)
-      expect(card).not.toHaveTextContent(/events/i)
-    }
+    await waitFor(() => expect(invicta).toHaveTextContent('No event confirmed right now.'))
+    expect(invicta).toHaveTextContent('Events and results')
   })
+})
 
-  it('lists the other seven as one chip each under "Other leagues", with only the name: no badge, glove or counts', async () => {
-    const root = await section()
-    const list = within(root).getByRole('heading', { name: /other leagues/i }).parentElement!.querySelector('ul')!
+describe('switching organization', () => {
+  it('every organization page links back to the picker', async () => {
+    render(
+      <MemoryRouter initialEntries={['/pfl']}>
+        <App />
+      </MemoryRouter>,
+    )
 
-    expect(list.querySelectorAll('li')).toHaveLength(7)
-    expect(list).toHaveTextContent('RIZIN')
-    expect(list.querySelector('img')).toBeNull()
-    expect(list.textContent).not.toMatch(/\d/)
-    expect(list).not.toHaveTextContent(/events|fighters|fights/i)
+    const back = await screen.findByRole('link', { name: 'Switch organization' })
+    expect(back).toHaveAttribute('href', '/#organizations-grid')
+    expect(back.parentElement).toHaveTextContent('You are following PFL')
   })
 })

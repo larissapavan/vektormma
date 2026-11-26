@@ -100,10 +100,11 @@ export function useOrgEvents(org: string) {
   return { events: data, loading, error }
 }
 
-export function useOrgUpcomingEvents(org: string) {
+/** Pass null to skip the request (the landing asks the UFC's own endpoint instead). */
+export function useOrgUpcomingEvents(org: string | null) {
   const { data, loading, error } = useOrgResource(
-    `${org}:upcoming`,
-    () => getOrgUpcomingEvents(org),
+    org && `${org}:upcoming`,
+    () => getOrgUpcomingEvents(org as string),
     L(i18n.language, 'Não foi possível carregar os próximos eventos da API.', 'Unable to load upcoming events from the API.', 'Impossible de charger les prochains événements depuis l’API.', 'No se pudieron cargar los próximos eventos desde la API.'),
     NO_EVENTS,
   )

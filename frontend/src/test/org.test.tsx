@@ -115,11 +115,11 @@ describe('the page that chooses an organization', () => {
     const section = chooser()
     const links = within(section).getAllByRole('link')
     expect(links.map((link) => link.getAttribute('href'))).toEqual(['/home', '/pfl', '/one', '/bellator', '/rizin', '/ksw', '/lfa', '/cage-warriors', '/oktagon', '/jungle-fight', '/invicta'])
-    expect(within(section).getAllByText('Predictions')).toHaveLength(3)  // the UFC, the PFL and ONE
+    expect(within(section).getAllByText('Events and predictions')).toHaveLength(3)  // the UFC, the PFL and ONE
     expect(within(section).getByText('Historical archive')).toBeInTheDocument()  // Bellator
-    // The other seven (fighters and events only) are one line each under a single caption, not a badge apiece.
-    expect(within(section).getByText('Events, results and fighters of each league.')).toBeInTheDocument()
-    expect(within(section).queryByText('Events & Results')).not.toBeInTheDocument()
+    // The other seven have fighters, events and results, with the same card as the rest.
+    expect(within(section).getAllByText('Events and results')).toHaveLength(7)
+    expect(within(section).getByText(/The model's predictions cover UFC, PFL, and ONE\./)).toBeInTheDocument()
   })
 
   it('has no switcher, section menu or fighter search until an organization is chosen', async () => {
@@ -137,12 +137,14 @@ describe('the page that chooses an organization', () => {
 
   it('choosing one opens its home page, where the switcher and the logo lead back', async () => {
     renderAt('/')
-    await userEvent.click(await screen.findByRole('link', { name: 'Open Professional Fighters League' }, WAIT))
+    await userEvent.click(await screen.findByRole('link', { name: 'Follow Professional Fighters League' }, WAIT))
     // The PFL has predictions now, so its home is the same page as the UFC's and ONE's: the next card first.
     expect(await screen.findByRole('heading', { name: 'PFL Future' }, WAIT)).toBeInTheDocument()
     expect(document.documentElement.dataset.org).toBe('pfl')
     expect(screen.getByRole('group', { name: 'Organization' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Vektor MMA home' })).toHaveAttribute('href', '/')
+    // And a plain link back to the picker, naming the organization being followed.
+    expect(screen.getByRole('link', { name: 'Switch organization' })).toHaveAttribute('href', '/#organizations-grid')
   })
 
   it('the UFC home page is still reachable and its other pages keep their addresses', async () => {

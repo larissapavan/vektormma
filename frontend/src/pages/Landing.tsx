@@ -7,10 +7,10 @@ import { historyDecades, historyRange } from '../shared/data/history'
 import { shownMetrics } from '../shared/data/modelAccuracy'
 import { SocialLinks } from '../shared/components/SocialLinks'
 import { SiteLinks } from '../shared/components/SiteLinks'
-import { FeaturedMatchup } from '../shared/components/FeaturedMatchup'
 import { sectionActionClass } from '../shared/components/ui/Section'
 import { useDataInfo } from '../shared/hooks/useDataInfo'
 import { useModelInfo } from '../shared/hooks/useModelInfo'
+import { LandingHero } from './landing/LandingHero'
 import { OrganizationsSection } from './landing/OrganizationsSection'
 
 // Shown until the API answers (or if it never does): the last figures checked by hand.
@@ -37,30 +37,18 @@ export function Landing() {
 
   return (
     <div className="flex w-full flex-col bg-[var(--mat)] text-[var(--ink)]">
-      {/* 1. The promise, the main action and the featured fight. */}
-      <section className={`${COLUMN} pt-8 sm:pt-10`}>
-        <div className="flex flex-wrap items-center justify-between gap-x-10 gap-y-5">
-          <h1 className="max-w-[760px] text-[36px] leading-[1.02] sm:text-[44px]">
-            {L(
-              lang,
-              'Compare lutadores e veja a chance de vitória estimada pelo modelo em cada luta',
-              'Compare fighters and see the model’s estimated win chance for every fight',
-              'Comparez les combattants et voyez la chance de victoire estimée par le modèle pour chaque combat',
-              'Compara peleadores y mira la probabilidad de victoria estimada por el modelo en cada pelea',
-            )}
-          </h1>
-          <Link to="/head-to-head" className="primary-action inline-flex min-h-[52px] items-center px-7 !text-[17px] max-xs:w-full max-xs:justify-center">
-            {L(lang, 'Comparar lutadores', 'Compare fighters', 'Comparer les combattants', 'Comparar peleadores')}
-          </Link>
-        </div>
-
-        <div className="mt-6">
-          <FeaturedMatchup />
-        </div>
+      {/* 1. What Vektor MMA is, and the way down to the organizations. */}
+      <section className={`${COLUMN} pt-8 sm:pt-12`}>
+        <LandingHero />
       </section>
 
-      {/* 2. What the site holds, and how often the model has been right. */}
-      <section className={`${COLUMN} grid gap-x-[72px] gap-y-10 pt-10 sm:pt-12 lg:grid-cols-2`}>
+      {/* 2. The organizations, each card with the same weight: the visitor picks one. */}
+      <div className={`${COLUMN} pt-12 sm:pt-16`}>
+        <OrganizationsSection />
+      </div>
+
+      {/* 3. What the site holds, and how often the model has been right. */}
+      <section className={`${COLUMN} grid gap-x-[72px] gap-y-10 pt-14 sm:pt-20 lg:grid-cols-2`}>
         <div>
           <h2 className="text-[32px] leading-[1.05] sm:text-[40px]">{L(lang, 'O que está por trás das previsões', 'What the predictions draw on', 'Sur quoi reposent les pronostics', 'En qué se basan los pronósticos')}</h2>
           <dl className="mt-5 border-t-[3px] border-[var(--ink)]">
@@ -105,11 +93,6 @@ export function Landing() {
           </div>
         </div>
       </section>
-
-      {/* 3. The organizations, as rows. */}
-      <div className={`${COLUMN} pt-12 sm:pt-14`}>
-        <OrganizationsSection />
-      </div>
 
       {/* 4. Footer. */}
       <footer className="mt-10 border-t-[3px] border-[var(--ink)] sm:mt-12">

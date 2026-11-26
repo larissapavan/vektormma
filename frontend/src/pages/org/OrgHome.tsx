@@ -18,6 +18,7 @@ import { compareDivisions, formatDate, formatRecord } from '../../shared/data/or
 import { orgEs, orgPath, orgPt, type OrgConfig } from '../../shared/data/orgs'
 import { translateHometown } from '../../shared/data/fightLabels'
 import { useGyms } from '../../shared/hooks/useGyms'
+import { OrgSwitchLink } from '../../shared/components/OrgSwitchLink'
 import { useOrg } from '../../shared/hooks/useOrg'
 import { useOrgDataInfo, useOrgEvents, useOrgFighters, useOrgRankings, useOrgUpcomingEvents } from '../../shared/hooks/useOrgData'
 import { useUpcomingPicks } from '../../shared/hooks/useUpcomingPicks'
@@ -107,6 +108,8 @@ export function OrgHome() {
 
   return (
     <div className="space-y-6 sm:space-y-8">
+      <OrgSwitchLink />
+
       {featured ? (
         <FeaturedHero org={org} loading={upcoming.loading} event={nextEvent} pickFor={pickFor} onOpenFighter={setProfileName} />
       ) : (
@@ -222,6 +225,18 @@ export function OrgHome() {
             ) : null}
           </div>
         </section>
+      ) : null}
+
+      {!isArchived && !featured && !nextEvent && !upcoming.loading ? (
+        <p className="bg-[var(--panel)] px-5 py-4 text-base text-[var(--muted)]">
+          {L(
+            i18n.language,
+            `Nenhum evento ${orgPt(org, 'de')} confirmado no momento. O modelo não faz previsões para esta organização; os eventos passados e os lutadores seguem disponíveis.`,
+            `No ${org.shortName} event is confirmed right now. The model does not predict this organization's fights; past events and fighters are still here.`,
+            `Aucun événement ${org.shortName} n’est confirmé pour le moment. Le modèle ne pronostique pas les combats de cette organisation ; les événements passés et les combattants restent consultables.`,
+            `Ningún evento de ${orgEs(org)} confirmado por ahora. El modelo no pronostica las peleas de esta organización; los eventos pasados y los peleadores siguen disponibles.`,
+          )}
+        </p>
       ) : null}
 
       {!isArchived && !featured && nextEvent ? (
