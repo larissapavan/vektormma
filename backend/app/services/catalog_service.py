@@ -29,6 +29,7 @@ HOMETOWN_OVERRIDES_PATH = RAW_DATA_DIR / "hometown_overrides.csv"
 NAME_ALIASES_PATH = RAW_DATA_DIR / "name_aliases.csv"
 STATUS_OVERRIDES_PATH = RAW_DATA_DIR / "status_overrides.csv"
 ROSTER_SOURCE_PATH = RAW_DATA_DIR / "roster_watch.csv"
+RANKINGS_SOURCE_PATH = RAW_DATA_DIR / "rankings.csv"
 ORIGIN_COLUMNS = ["hometown", "country", "country_code"]
 PHOTO_KIND_PRIORITY = {"espn": 1, "champion": 2}
 
@@ -84,7 +85,6 @@ def _build_catalog() -> pd.DataFrame:
     catalog["win_rate"] = catalog["wins"] / decided.where(decided > 0)
     catalog["rank_signal"] = catalog["belt"].map(lambda value: "Champion" if value else "Contender")
 
-    catalog["ranking"] = pd.NA
     catalog = catalog.merge(_load_roster(), on="fighter_url", how="left")
     # No UFC fight on record (debutants): the division roster.watch lists, with the profile weight to pick between two.
     debut_division = pd.Series(
@@ -95,6 +95,7 @@ def _build_catalog() -> pd.DataFrame:
         index=catalog.index,
     )
     catalog["division"] = catalog["division"].combine_first(debut_division)
+    catalog["ranking"] = _official_ranks(catalog)
     on_roster = catalog["roster_status"].notna()
     # roster.watch is the authority for who is on the UFC roster; our own signals only cover fighters it does not list.
     catalog["is_active"] = (catalog["roster_status"].eq("active")) | (~on_roster & _flag_active(catalog))
@@ -122,6 +123,29 @@ def _build_catalog() -> pd.DataFrame:
 
 
 ACTIVE_WINDOW_DAYS = 730
+
+
+def _official_ranks(catalog: pd.DataFrame) -> pd.Series:
+    """Each fighter's place in the official UFC rankings ("#3"), in the division the fighter is listed in when ranked in more
+    than one. The champions (rank 0) are told by the belt, and the pound-for-pound lists are not a division's rank."""
+    if not RANKINGS_SOURCE_PATH.exists():
+        return pd.Series(pd.NA, index=catalog.index, dtype="object")
+    rankings = pd.read_csv(RANKINGS_SOURCE_PATH, keep_default_na=False)
+    rankings = rankings[~rankings["is_p4p"].astype(str).str.lower().isin({"true", "1"})]
+    places: dict[str, dict[str, int]] = {}
+    for row in rankings.itertuples(index=False):
+        rank = pd.to_numeric(row.rank, errors="coerce")
+        if pd.notna(rank) and int(rank) >= 1:
+            places.setdefault(_normalize_name(str(row.fighter)), {})[str(row.category)] = int(rank)
+
+    def place(key: str, division) -> object:
+        found = places.get(key)
+        if not found:
+            return pd.NA
+        rank = found.get(str(division), next(iter(found.values())))
+        return f"#{rank}"
+
+    return pd.Series([place(key, division) for key, division in zip(catalog["profile_key"], catalog["division"])], index=catalog.index, dtype="object")
 
 
 def _names_in_csv(path, columns: list[str]) -> set[str]:
@@ -418,6 +442,7 @@ def _source_signature() -> tuple:
         STATUS_OVERRIDES_PATH,
         ROSTER_SOURCE_PATH,
         BMF_FIGHTS_SOURCE_PATH,
+        RANKINGS_SOURCE_PATH,
     ]
     return tuple(path.stat().st_mtime_ns if path.exists() else None for path in paths)
 
@@ -866,10 +891,17 @@ def _to_float(value) -> float | None:
     return number
 
 
+# Letters that do not come apart into a base letter and an accent.
+_PLAIN_LETTERS = str.maketrans({"ł": "l", "Ł": "L", "đ": "d", "Đ": "D", "ø": "o", "Ø": "O", "ß": "ss", "æ": "ae", "Æ": "AE", "œ": "oe", "Œ": "OE"})
+
+
 def _normalize_name(value: str | None) -> str:
+    """A name as a key: lower case, accents dropped ("Jiří Procházka" is "jiri prochazka", as the UFC's own data writes it)."""
     if not value:
         return ""
-    normalized = re.sub(r"[^a-z0-9]+", " ", str(value).lower()).strip()
+    folded = unicodedata.normalize("NFKD", str(value).translate(_PLAIN_LETTERS))
+    folded = "".join(char for char in folded if not unicodedata.combining(char))
+    normalized = re.sub(r"[^a-z0-9]+", " ", folded.lower()).strip()
     return re.sub(r"\s+", " ", normalized)
 
 

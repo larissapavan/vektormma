@@ -178,3 +178,30 @@ def test_debut_division_uses_the_roster_class_and_never_gives_a_woman_a_men_s_di
     assert _debut_division("middleweight, welterweight", 170.0, False) == "Welterweight"
     assert _debut_division("middleweight, welterweight", 200.0, False) == "Middleweight"
     assert _debut_division("openweight", 170.0, False) == "Welterweight"
+
+
+def test_names_with_accents_become_the_same_key_as_without():
+    from backend.app.services.catalog_service import _normalize_name
+
+    assert _normalize_name("Jiří Procházka") == _normalize_name("Jiri Prochazka") == "jiri prochazka"
+    assert _normalize_name("Benoît Saint-Denis") == "benoit saint denis"
+    assert _normalize_name("Mateusz Gamrot") == _normalize_name("Mateusz Gamrót")
+    assert _normalize_name("Łukasz Brzeski") == "lukasz brzeski"
+
+
+def test_every_fighter_of_the_official_rankings_carries_the_rank_and_the_champions_the_belt():
+    import pandas as pd
+
+    from backend.app.services.catalog_service import RANKINGS_SOURCE_PATH, _normalize_name, get_fighter_catalog
+
+    catalog = get_fighter_catalog().set_index("profile_key")
+    rankings = pd.read_csv(RANKINGS_SOURCE_PATH)
+    divisions = rankings[~rankings["is_p4p"]]
+    for row in divisions.itertuples():
+        key = _normalize_name(row.fighter)
+        assert key in catalog.index, row.fighter
+        if row.rank >= 1 and catalog.at[key, "division"] == row.category:
+            assert catalog.at[key, "ranking"] == f"#{row.rank}", row.fighter
+    # A champion is shown by the belt, not by a number; nobody outside the rankings has one.
+    assert catalog.loc[catalog["ranking"].notna(), "ufc_status"].eq("active").all()
+    assert catalog["ranking"].notna().sum() == (divisions["rank"] >= 1).sum()
