@@ -116,7 +116,7 @@ describe('the page that chooses an organization', () => {
     const links = within(section).getAllByRole('link')
     expect(links.map((link) => link.getAttribute('href'))).toEqual(['/home', '/pfl', '/one', '/bellator', '/rizin', '/ksw', '/lfa', '/cage-warriors', '/oktagon', '/jungle-fight', '/invicta'])
     expect(within(section).getAllByText('Events and predictions')).toHaveLength(3)  // the UFC, the PFL and ONE
-    expect(within(section).getByText(/^Bellator archive/)).toHaveTextContent('2009–2023')
+    expect(within(section).getByText(/^Historical archive/)).toHaveTextContent('2009–2023')
     expect(within(section).getAllByText('Events and results')).toHaveLength(7)
     expect(within(section).getByText(/UFC, PFL, and ONE have the model’s predictions/)).toBeInTheDocument()
   })

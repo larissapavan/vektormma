@@ -25,7 +25,7 @@ function renderAt(path: string) {
 
 /** Page, a route that exercises it, and text only that page shows once its data has loaded. */
 const pages: [string, string, string | RegExp][] = [
-  ['Landing', '/', /choose an organization/i],
+  ['Landing', '/', /explore organizations/i],
   ['UFC home', '/home', 'Alpha One'],
   ['Fighters', '/fighters', /weight classes/i],
   ['Events', '/events', 'UFC fight cards'],

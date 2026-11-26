@@ -30,7 +30,7 @@ export function SiteFooter({ dataDate, className = '' }: { dataDate?: string | n
   return (
     // Four groups (brand, navigation, disclaimer, channels) 12–16 px apart (gap-3). The links and icons are 44 px touch targets, so
     // their rows pull in the air around the text (-my-2.5) and the gap is measured between what can be seen.
-    <footer className={`flex flex-col gap-3 border-t-[3px] border-[var(--ink)] pb-6 pt-4 ${className}`}>
+    <footer className={`flex flex-col gap-3 border-t border-[var(--rule)] pb-6 pt-4 ${className}`}>
       <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2">
         <p className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
           <span className="font-display text-[22px] leading-none text-[var(--ink)]">
