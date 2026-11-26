@@ -9,7 +9,7 @@ import { LoadingSkeleton } from '../../shared/components/LoadingSkeleton'
 import { planNudge, titleShotAvailable, type Career, type Plan, type PlayerStats } from '../../shared/game/career'
 import { isDealId } from '../../shared/game/events'
 import { DEAL_TEXT } from '../../shared/game/eventsText'
-import { BAND_LABELS, chanceBand } from '../../shared/game/labels'
+import { BAND_LABELS, byGender, chanceBand, championWord } from '../../shared/game/labels'
 import { getMatchmaking } from '../../shared/services/api'
 import type { GameOpponent, MatchmakingResponse } from '../../shared/types/api'
 import { HeadToHead } from './HeadToHead'
@@ -27,16 +27,19 @@ function fighterPayload(career: Career) {
 }
 
 async function loadOffers(career: Career, seed: number): Promise<Offers> {
-  const base = { fighter: fighterPayload(career), division: career.division, seed }
+  const base = { fighter: fighterPayload(career), division: career.division, seed, champion: career.champion }
   const [regular, title, rival] = await Promise.all([
-    getMatchmaking({ ...base, exclude: career.fought }),
+    // The API takes the last 60 opponents: anyone fought longer ago may come back.
+    getMatchmaking({ ...base, exclude: career.fought.slice(-60) }),
     titleShotAvailable(career) ? getMatchmaking({ ...base, title: true }) : null,
     career.rival ? getMatchmaking({ ...base, names: [career.rival] }) : null,
   ])
   let opponents = regular.opponents
   // Everyone in the division has been fought: start the list again rather than leave the player with nothing.
   if (!opponents.length) opponents = (await getMatchmaking(base)).opponents
-  const rivalOffer = rival?.opponents[0] ?? null
+  const found = rival?.opponents[0] ?? null
+  // A rival who holds the belt is a title fight: offered only once the title shot is earned, and then it is the title shot itself.
+  const rivalOffer = found && !found.champion && found.name !== title?.opponents[0]?.name ? found : null
   return {
     player: regular.player,
     opponents: opponents.filter((offer) => offer.name !== rivalOffer?.name),
@@ -65,7 +68,7 @@ function Gauge({ chance }: { chance: number }) {
   )
 }
 
-function OfferCard({ offer, selected, onChoose, heading }: { offer: GameOpponent; selected: boolean; onChoose: () => void; heading?: ReactNode }) {
+function OfferCard({ offer, division, selected, onChoose, heading }: { offer: GameOpponent; division: string; selected: boolean; onChoose: () => void; heading?: ReactNode }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
   return (
@@ -84,7 +87,7 @@ function OfferCard({ offer, selected, onChoose, heading }: { offer: GameOpponent
           {offer.age ? <Chip>{L(lang, `${Math.floor(offer.age)} anos`, `age ${Math.floor(offer.age)}`, `${Math.floor(offer.age)} ans`, `${Math.floor(offer.age)} años`)}</Chip> : null}
           {offer.reach_cm ? <Chip>{L(lang, 'Alcance', 'Reach', 'Allonge', 'Alcance')} {Math.round(offer.reach_cm)} cm</Chip> : null}
           {offer.ranking ? <Chip tone="gold">{L(lang, 'Ranqueado', 'Ranked', 'Classé', 'En el ranking')} #{offer.ranking}</Chip> : null}
-          {offer.champion ? <Chip tone="gold">{L(lang, 'Campeão', 'Champion', 'Champion', 'Campeón')}</Chip> : null}
+          {offer.champion ? <Chip tone="gold">{championWord(lang, division)}</Chip> : null}
         </span>
         <Gauge chance={offer.win_probability} />
       </span>
@@ -103,6 +106,7 @@ function dealChip(lang: string, id: string) {
 export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { career: Career; seed: number; onFight: (offer: GameOpponent, plan: Plan, player: PlayerStats, quick?: boolean) => void; onRetire: () => void; canRetire: boolean }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
+  const g = (masculine: string, feminine: string) => byGender(career.division, masculine, feminine)
   const [offers, setOffers] = useState<Offers | null>(null)
   const [error, setError] = useState(false)
   const [attempt, setAttempt] = useState(0)
@@ -137,8 +141,8 @@ export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { car
         <p className="text-xs font-bold text-[var(--ink)]">{L(lang, 'Matchmaking', 'Matchmaking', 'Matchmaking', 'Matchmaking')}</p>
         <h2 ref={heading} tabIndex={-1} className="game-title mt-1 text-xl focus:outline-none sm:text-3xl">
           {career.champion
-            ? L(lang, 'Defesa de cinturão: escolha o desafiante', 'Title defense: choose the challenger', 'Défense de ceinture : choisissez le challenger', 'Defensa del cinturón: elige al retador')
-            : L(lang, 'Escolha seu próximo adversário', 'Choose your next opponent', 'Choisissez votre prochain adversaire', 'Elige a tu próximo rival')}
+            ? L(lang, `Defesa de cinturão: escolha ${g('o desafiante', 'a desafiante')}`, 'Title defense: choose the challenger', `Défense de ceinture : choisissez ${g('le challenger', 'la challengeuse')}`, `Defensa del cinturón: elige ${g('al retador', 'a la retadora')}`)
+            : L(lang, `Escolha ${g('seu próximo adversário', 'sua próxima adversária')}`, 'Choose your next opponent', `Choisissez ${g('votre prochain adversaire', 'votre prochaine adversaire')}`, `Elige a ${g('tu próximo rival', 'tu próxima rival')}`)}
         </h2>
         {career.pact ? (
           <div className="mt-2">
@@ -175,6 +179,7 @@ export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { car
           {offers.title ? (
             <OfferCard
               offer={offers.title}
+              division={career.division}
               selected={chosen?.name === offers.title.name}
               onChoose={() => setChosen(offers.title)}
               heading={
@@ -185,9 +190,9 @@ export function OffersStep({ career, seed, onFight, onRetire, canRetire }: { car
               }
             />
           ) : null}
-          {offers.rival ? <OfferCard offer={offers.rival} selected={chosen?.name === offers.rival.name} onChoose={() => setChosen(offers.rival)} heading={<Chip tone="red">{L(lang, 'Revanche', 'Rematch', 'Revanche', 'Revancha')}</Chip>} /> : null}
+          {offers.rival ? <OfferCard offer={offers.rival} division={career.division} selected={chosen?.name === offers.rival.name} onChoose={() => setChosen(offers.rival)} heading={<Chip tone="red">{L(lang, 'Revanche', 'Rematch', 'Revanche', 'Revancha')}</Chip>} /> : null}
           {offers.opponents.map((offer) => (
-            <OfferCard key={offer.name} offer={offer} selected={chosen?.name === offer.name} onChoose={() => setChosen(offer)} />
+            <OfferCard key={offer.name} offer={offer} division={career.division} selected={chosen?.name === offer.name} onChoose={() => setChosen(offer)} />
           ))}
         </div>
       )}

@@ -146,7 +146,7 @@ describe('a challenge in a save', () => {
 describe('the save in the browser', () => {
   it('is stored, read back and cleared', () => {
     expect(loadSave()).toBeNull()
-    storeSave({ career: veteran(), stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 5, note: null, challenge: null, card: null })
+    storeSave({ career: veteran(), stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 5, note: null, challenge: null, card: null, fight: null })
     expect(loadSave()).toMatchObject({ stage: 'camp', seed: 5, career: { name: 'Maria Silva', ufcFights: 4 } })
     expect(window.localStorage.getItem(SAVE_KEY)).toContain('Maria Silva')
     clearSave()
@@ -164,7 +164,7 @@ describe('the save in the browser', () => {
       throw new Error('blocked')
     })
     expect(loadSave()).toBeNull()
-    expect(() => storeSave({ career: createCareer(build), stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 1, note: null, challenge: null, card: null })).not.toThrow()
+    expect(() => storeSave({ career: createCareer(build), stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 1, note: null, challenge: null, card: null, fight: null })).not.toThrow()
     expect(() => clearSave()).not.toThrow()
   })
 })
@@ -213,7 +213,32 @@ describe('the pact and the card in a save', () => {
   })
 
   it('stores and loads the card with the rest', () => {
-    storeSave({ career, stage: 'offers', coaches: ['striker', 'wrestler', 'allround'], seed: 5, note: null, challenge: null, card: { kind: 'fix' } })
+    storeSave({ career, stage: 'offers', coaches: ['striker', 'wrestler', 'allround'], seed: 5, note: null, challenge: null, card: { kind: 'fix' }, fight: null })
     expect(loadSave()?.card).toEqual({ kind: 'fix' })
+  })
+})
+
+describe('a fight in a save', () => {
+  const opponent = { label: 'even', name: 'Rival One', image_url: 'https://a.espncdn.com/x.png', country_code: 'BR', record: '10-2-0', age: 29, reach_cm: 180, stance: 'Orthodox', ranking: '7', champion: false, sig_str_acc: 0.45, takedown_acc: 0.38, win_probability: 0.5 }
+  const fightSave = (extra: Record<string, unknown> = {}) => save(createCareer(build), { stage: 'fight', fight: { offer: opponent, plan: 'striking', player, seed: 42, tactics: ['attack', 'steady'], ...extra } })
+
+  it('keeps who, the plan, the dice and the tactics so far', () => {
+    expect(readSave(fightSave())?.fight).toEqual({ offer: opponent, plan: 'striking', player, seed: 42, tactics: ['attack', 'steady'] })
+  })
+
+  it.each([
+    ['a photo from an insecure address', { offer: { ...opponent, image_url: 'javascript:alert(1)' } }],
+    ['a tactic that does not exist', { tactics: ['bite'] }],
+    ['more rounds than a fight has', { tactics: ['steady', 'steady', 'steady', 'steady', 'steady', 'steady'] }],
+    ['an ordinary fight without its own dice', { seed: null }],
+    ['a chance above 100%', { offer: { ...opponent, win_probability: 2 } }],
+  ])('refuses %s', (_label, extra) => {
+    expect(readSave(fightSave(extra))).toBeNull()
+  })
+
+  it('refuses a fight stage without a fight, and a fight outside the fight stage', () => {
+    expect(readSave(save(createCareer(build), { stage: 'fight', fight: null }))).toBeNull()
+    expect(readSave(fightSave())?.fight).not.toBeNull()
+    expect(readSave(save(createCareer(build), { stage: 'camp', fight: JSON.parse(fightSave()).fight }))?.fight).toBeNull()
   })
 })

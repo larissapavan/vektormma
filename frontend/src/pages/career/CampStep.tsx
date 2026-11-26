@@ -4,6 +4,7 @@ import { ArrowRight, HeartPulse } from 'lucide-react'
 import { L, formatDecimal, pick } from '../../i18n/lang'
 import { canRetire, COACHES, previewCamp, type Career, type CoachId } from '../../shared/game/career'
 import { COACH_TEXT } from '../../shared/game/coaches'
+import { byGender } from '../../shared/game/labels'
 import { Chip, Emblem, GhostButton, useFocusOnMount } from './ui'
 
 export interface CampNote {
@@ -18,6 +19,8 @@ function CoachCard({ coachId, career, onTrain }: { coachId: CoachId; career: Car
   const text = COACH_TEXT[coachId]
   const preview = previewCamp(career, COACHES[coachId])
   const injury = Math.round(preview.injury * 100)
+  // 0.3 or 0.18 of a year, with the decimal sign of the language.
+  const years = formatDecimal(preview.age, Number.isInteger(preview.age * 10) ? 1 : 2, lang)
   return (
     <article aria-label={text.name} className="flex w-full flex-col gap-3 border-2 border-[var(--rule)] bg-[var(--bg-surface)] p-4 text-left">
       <span className="flex items-center gap-3">
@@ -32,7 +35,7 @@ function CoachCard({ coachId, career, onTrain }: { coachId: CoachId; career: Car
         <Chip tone={preview.striking >= 2 ? 'green' : 'neutral'}>{L(lang, 'Golpes', 'Striking', 'Frappe', 'Golpeo')} +{formatDecimal(preview.striking, 1, lang)}</Chip>
         <Chip tone={preview.takedowns >= 2 ? 'green' : 'neutral'}>{L(lang, 'Quedas', 'Takedowns', 'Amenées', 'Derribos')} +{formatDecimal(preview.takedowns, 1, lang)}</Chip>
         <Chip tone={injury >= 14 ? 'red' : injury <= 5 ? 'green' : 'neutral'}>{L(lang, `Lesão ${injury}%`, `Injury ${injury}%`, `Blessure ${injury} %`, `Lesión ${injury} %`)}</Chip>
-        <Chip>{L(lang, `+${preview.age} ano`, `+${preview.age} yr`, `+${preview.age} an`, `+${preview.age} año`)}</Chip>
+        <Chip>{L(lang, `+${years} ano`, `+${years} yr`, `+${years} an`, `+${years} año`)}</Chip>
         {preview.scout > 0 ? <Chip tone="gold">{L(lang, 'Vantagem na próxima luta', 'Edge in the next fight', 'Avantage au prochain combat', 'Ventaja en la próxima pelea')}</Chip> : null}
       </span>
       <button
@@ -69,7 +72,7 @@ export function CampStep({ career, coaches, note, onTrain, onRetire, retirable =
       {note?.injured ? (
         <p role="status" className="flex items-start gap-2 rounded-sm border border-[var(--rule)] bg-[var(--panel)] px-4 py-3 text-sm font-semibold text-[var(--text-main)]">
           <HeartPulse className="mt-0.5 h-4 w-4 shrink-0 text-[var(--text-red)]" aria-hidden="true" />
-          {L(lang, 'Você se machucou no camp anterior e perdeu tempo e um pouco de rendimento.', 'You got hurt in the last camp and lost time and some sharpness.', 'Vous vous êtes blessé lors de la dernière préparation et avez perdu du temps et un peu de rendement.', 'Te lesionaste en el campamento anterior y perdiste tiempo y algo de nivel.')}
+          {L(lang, 'Você se machucou no camp anterior e perdeu tempo e um pouco de rendimento.', 'You got hurt in the last camp and lost time and some sharpness.', `Vous vous êtes ${byGender(career.division, 'blessé', 'blessée')} lors de la dernière préparation et avez perdu du temps et un peu de rendement.`, 'Te lesionaste en el campamento anterior y perdiste tiempo y algo de nivel.')}
         </p>
       ) : null}
       {note?.declined ? (
@@ -77,7 +80,7 @@ export function CampStep({ career, coaches, note, onTrain, onRetire, retirable =
       ) : null}
       {career.rival ? (
         <p className="rounded-sm bg-[var(--bg-surface-subtle)] px-4 py-3 text-sm text-[var(--text-secondary)]">
-          {L(lang, `Seu rival: ${career.rival}. Ele pode aparecer como revanche.`, `Your rival: ${career.rival}. A rematch may be on offer.`, `Votre rival : ${career.rival}. Une revanche peut vous être proposée.`, `Tu rival: ${career.rival}. Puede ofrecerse una revancha.`)}
+          {L(lang, `${byGender(career.division, 'Seu rival', 'Sua rival')}: ${career.rival}. A revanche pode ser oferecida.`, `Your rival: ${career.rival}. A rematch may be on offer.`, `${byGender(career.division, 'Votre rival', 'Votre rivale')} : ${career.rival}. Une revanche peut vous être proposée.`, `Tu rival: ${career.rival}. Puede ofrecerse una revancha.`)}
         </p>
       ) : null}
 

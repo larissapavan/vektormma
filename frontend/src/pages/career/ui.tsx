@@ -12,7 +12,16 @@ import { Check } from 'lucide-react'
 export function useFocusOnMount<T extends HTMLElement>(): React.RefObject<T | null> {
   const ref = useRef<T>(null)
   useEffect(() => {
-    ref.current?.focus({ preventScroll: true })
+    const element = ref.current
+    if (!element) return
+    element.focus({ preventScroll: true })
+    // On a phone the new screen opens below the fighter's card, out of sight: bring its top up unless it is already in view.
+    const box = element.closest('section') ?? element
+    const top = box.getBoundingClientRect().top
+    if (top < 0 || top > window.innerHeight * 0.6) {
+      const still = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+      window.scrollTo({ top: window.scrollY + top - 80, behavior: still ? 'auto' : 'smooth' })
+    }
   }, [])
   return ref
 }

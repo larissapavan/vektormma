@@ -586,6 +586,32 @@ describe('the saved career', () => {
     expect(screen.queryByRole('region', { name: /saved career/i })).toBeNull()
   })
 
+  it('keeps a fight under way: a reload brings back the same rounds, and the rest is played with the same dice', async () => {
+    const first = await startCareer('Maria Silva')
+    await train()
+    await userEvent.click(await findButton(/Easy Eddie/))
+    await click(/^fight easy eddie/i)
+    await click(/^cover up/i) // a finish is unlikely in a round spent covering, but the dice may still end it
+    const told = () => [...(screen.getAllByRole('list').find((list) => list.getAttribute('aria-live') === 'polite')?.querySelectorAll('li') ?? [])].map((item) => item.textContent)
+    const before = told()
+    const saved = JSON.parse(window.localStorage.getItem(SAVE_KEY) ?? 'null')
+    expect(saved).toMatchObject({ stage: 'fight', fight: { offer: { name: 'Easy Eddie' }, tactics: ['cover'] } })
+    const toTheEnd = async () => {
+      if (!screen.queryByTestId('fight-result')) await click(/skip to the result/i)
+    }
+    await toTheEnd()
+    const ending = [told(), screen.getByTestId('fight-result').textContent]
+    first.unmount()
+
+    // The same save, taken up again: the round already fought is the same, and so is the end.
+    window.localStorage.setItem(SAVE_KEY, JSON.stringify(saved))
+    renderAt('/career')
+    await userEvent.click(await findButton(/resume the career/i))
+    expect(told()).toEqual(before)
+    await toTheEnd()
+    expect([told(), screen.getByTestId('fight-result').textContent]).toEqual(ending)
+  })
+
   it('can be set aside, and the creation screen stays', async () => {
     window.localStorage.setItem(SAVE_KEY, JSON.stringify({ career: createCareer({ name: 'Old Save', division: 'Lightweight', stance: 'Orthodox', striking: 50, takedowns: 50, reach: 50 }), stage: 'camp', coaches: ['striker', 'wrestler', 'allround'], seed: 1, note: null, savedAt: 1 }))
     renderAt('/career')

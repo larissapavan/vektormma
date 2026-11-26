@@ -66,7 +66,7 @@ export function CreateStep({ onStart }: { onStart: (build: Build) => void }) {
                 key={archetype.id}
                 type="button"
                 onClick={() => setBuild((current) => ({ ...current, ...archetype.skills }))}
-                className="min-h-10 border-2 border-[var(--rule)] px-4 text-xs font-bold text-[var(--text-secondary)] transition hover:border-[var(--ink)] hover:text-[var(--text-main)]"
+                className="min-h-11 border-2 border-[var(--rule)] px-4 text-xs font-bold text-[var(--text-secondary)] transition hover:border-[var(--ink)] hover:text-[var(--text-main)]"
               >
                 {archetypeName[archetype.id]}
               </button>
@@ -121,7 +121,7 @@ export function CreateStep({ onStart }: { onStart: (build: Build) => void }) {
                 max={SKILL_MAX}
                 value={build[key]}
                 onChange={(event) => setSkill(key, Number(event.target.value))}
-                className="mt-1 block h-8 w-full cursor-pointer accent-[var(--ink)]"
+                className="mt-1 block h-11 w-full cursor-pointer accent-[var(--ink)]"
               />
               <p className="text-xs text-[var(--text-muted)]">{hint}</p>
             </div>

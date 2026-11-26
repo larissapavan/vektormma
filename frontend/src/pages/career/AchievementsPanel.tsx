@@ -37,7 +37,7 @@ export function AchievementsPanel() {
   const have = ACHIEVEMENT_IDS.filter((id) => trophies[id] !== undefined).length
   return (
     <details className="surface-card rounded-sm group p-4 sm:p-5">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-xs font-bold text-[var(--ink)]">
+      <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 text-xs font-bold text-[var(--ink)]">
         <span className="flex items-center gap-2">
           <Medal className="h-4 w-4" aria-hidden="true" />
           {L(lang, 'Conquistas', 'Achievements', 'Succès', 'Logros')}

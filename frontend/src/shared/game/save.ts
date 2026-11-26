@@ -1,19 +1,33 @@
 import { isAchievementId } from './achievements'
 import { CHALLENGE_MAX_FIGHTS, CHALLENGE_MIN_FIGHTS, readResult, SEED_MAX, type Challenge } from './challenge'
-import { cleanName, GAME_DIVISIONS, type Career, type CoachId, type FightLog, type GoalState, type Method, type Pact, type Stance } from './career'
+import { cleanName, GAME_DIVISIONS, TACTICS, type Career, type CoachId, type FightLog, type GoalState, type Method, type Pact, type Plan, type PlayerStats, type Stance, type Tactic } from './career'
+import type { GameOpponent } from '../types/api'
 import { isCard, isDealId, type Card } from './events'
 import { isGoalId } from './goals'
 
 /**
- * The career in progress, kept in this browser's local storage so a closed tab or a reload does not lose it. It is written
- * between fights (at the camp and at the matchmaking), never in the middle of one, and it never leaves the browser.
+ * The career in progress, kept in this browser's local storage so a closed tab or a reload does not lose it. It is written at
+ * the camp, at the matchmaking and during a fight (the fight as its dice and the tactics chosen so far, so a reload replays the
+ * same rounds instead of drawing new ones), and it never leaves the browser.
  * What comes back from storage is checked field by field: anyone can edit it, and a damaged save must be ignored, not trusted.
  */
 export const SAVE_KEY = 'vektor:career:v1'
 
+/**
+ * A fight under way: who, with what plan, the dice (a seed; a challenge's fights use the challenge's own stream, so null) and the
+ * tactic of every round fought so far. Played again from these, the fight comes out exactly as it was.
+ */
+export interface SavedFight {
+  offer: GameOpponent
+  plan: Plan
+  player: PlayerStats
+  seed: number | null
+  tactics: Tactic[]
+}
+
 export interface SavedGame {
   career: Career
-  stage: 'camp' | 'offers'
+  stage: 'camp' | 'offers' | 'fight'
   coaches: CoachId[]
   seed: number
   note: { injured: boolean; declined: boolean } | null
@@ -21,6 +35,8 @@ export interface SavedGame {
   challenge: Challenge | null
   /** The card waiting for an answer before the matchmaking (see events.ts), or null. */
   card: Card | null
+  /** The fight on screen when the game was saved (stage 'fight'), or null. */
+  fight: SavedFight | null
   savedAt: number
 }
 
@@ -160,6 +176,61 @@ export function readCareer(raw: unknown): Career | null {
   }
 }
 
+const PLANS: Plan[] = ['striking', 'grappling', 'balanced']
+const LABELS: GameOpponent['label'][] = ['safe', 'even', 'risk', 'champion', 'rematch']
+const short = (value: unknown, max: number): string | null => (typeof value === 'string' && value.length <= max ? value : null)
+const maybe = <T,>(value: unknown, read: (value: unknown) => T | null): T | null | undefined => (value === null || value === undefined ? null : (read(value) ?? undefined))
+
+function readOffer(raw: unknown): GameOpponent | null {
+  if (typeof raw !== 'object' || raw === null) return null
+  const o = raw as Record<string, unknown>
+  const name = typeof o.name === 'string' ? cleanName(o.name, 60) : ''
+  const label = LABELS.includes(o.label as GameOpponent['label']) ? (o.label as GameOpponent['label']) : null
+  const record = short(o.record, 20)
+  const probability = number(o.win_probability, 0, 1)
+  // The photo is drawn as an image: only an address of the site or of a secure server.
+  const image = maybe(o.image_url, (value) => (typeof value === 'string' && value.length <= 500 && /^(https:\/\/|\/)/.test(value) ? value : null))
+  const country = maybe(o.country_code, (value) => short(value, 3))
+  const age = maybe(o.age, (value) => number(value, 15, 60))
+  const reach = maybe(o.reach_cm, (value) => number(value, 100, 250))
+  const stance = maybe(o.stance, (value) => short(value, 20))
+  const ranking = maybe(o.ranking, (value) => short(value, 5))
+  const strike = maybe(o.sig_str_acc, (value) => number(value, 0, 1))
+  const takedown = maybe(o.takedown_acc, (value) => number(value, 0, 1))
+  if (!name || label === null || record === null || probability === null || typeof o.champion !== 'boolean') return null
+  if ([image, country, age, reach, stance, ranking, strike, takedown].some((value) => value === undefined)) return null
+  return {
+    label,
+    name,
+    record,
+    win_probability: probability,
+    champion: o.champion,
+    image_url: image ?? null,
+    country_code: country ?? null,
+    age: age ?? null,
+    reach_cm: reach ?? null,
+    stance: stance ?? null,
+    ranking: ranking ?? null,
+    sig_str_acc: strike ?? null,
+    takedown_acc: takedown ?? null,
+  }
+}
+
+function readFight(raw: unknown, challenge: boolean): SavedFight | null {
+  if (typeof raw !== 'object' || raw === null) return null
+  const f = raw as Record<string, unknown>
+  const offer = readOffer(f.offer)
+  const player = f.player as Record<string, unknown> | null
+  const strike = player ? number(player.sig_str_acc, 0, 1) : null
+  const takedown = player ? number(player.takedown_acc, 0, 1) : null
+  const seed = f.seed === null ? null : count(f.seed, 2 ** 31)
+  if (!offer || strike === null || takedown === null || !PLANS.includes(f.plan as Plan)) return null
+  // A challenge's fight is played with the challenge's dice; any other with its own seed.
+  if (challenge !== (seed === null)) return null
+  if (!Array.isArray(f.tactics) || f.tactics.length > 5 || !f.tactics.every((tactic) => TACTICS.includes(tactic as Tactic))) return null
+  return { offer, plan: f.plan as Plan, player: { sig_str_acc: strike, takedown_acc: takedown }, seed, tactics: f.tactics as Tactic[] }
+}
+
 function readChallenge(raw: unknown): Challenge | null | undefined {
   if (raw === undefined || raw === null) return null // an ordinary career, or a save from before challenges existed
   if (typeof raw !== 'object') return undefined
@@ -179,7 +250,7 @@ export function readSave(raw: string | null): SavedGame | null {
     const career = readCareer(data.career)
     const seed = count(data.seed, 2 ** 31)
     const savedAt = number(data.savedAt, 0, 8.64e15)
-    if (!career || seed === null || savedAt === null || (data.stage !== 'camp' && data.stage !== 'offers')) return null
+    if (!career || seed === null || savedAt === null || (data.stage !== 'camp' && data.stage !== 'offers' && data.stage !== 'fight')) return null
     if (!Array.isArray(data.coaches) || data.coaches.length !== 3 || !data.coaches.every((id) => COACH_IDS.includes(id as CoachId))) return null
     let note: SavedGame['note'] = null
     if (data.note !== null) {
@@ -192,7 +263,10 @@ export function readSave(raw: string | null): SavedGame | null {
     // A card is only waiting at the matchmaking, and only for a career that has not already agreed to something.
     if (data.card !== undefined && data.card !== null && (!isCard(data.card) || data.stage !== 'offers' || career.pact)) return null
     const card = data.card && isCard(data.card) ? data.card : null
-    return { career, stage: data.stage, coaches: data.coaches as CoachId[], seed, note, challenge, card, savedAt }
+    // A fight is saved only while it is on screen, and always then.
+    const fight = data.stage === 'fight' ? readFight(data.fight, challenge !== null) : null
+    if ((data.stage === 'fight') !== (fight !== null)) return null
+    return { career, stage: data.stage, coaches: data.coaches as CoachId[], seed, note, challenge, card, fight, savedAt }
   } catch {
     return null
   }

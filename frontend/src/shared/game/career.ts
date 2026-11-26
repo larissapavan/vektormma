@@ -617,6 +617,8 @@ export function settleFight(career: Career, offer: Offer, state: FightState, tit
     next.rival = offer.name
   }
   next.points = Math.max(0, next.points + pointsGained)
+  // What the screen shows is what changed: a loss with no points left costs nothing.
+  pointsGained = next.points - career.points
   next.history.push({ opponent: offer.name, won, method, round: finishRound, title: titleFight, chance })
   if (next.lossStreak >= RELEASE_AFTER_LOSSES) next.ended = 'released'
 

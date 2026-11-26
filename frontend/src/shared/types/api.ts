@@ -503,6 +503,7 @@ export interface MatchmakingRequest {
   exclude?: string[]
   names?: string[]
   seed?: number
+  champion?: boolean
 }
 
 export interface RecordBookResponse {

@@ -14,10 +14,10 @@ export const DEAL_TEXT: Record<DealId, { sponsor: string; ask: ByLang }> = {
   underdog: {
     sponsor: 'Energético Faísca',
     ask: {
-      pt: 'Vença a próxima luta sendo azarão (chance abaixo de 45%).',
+      pt: 'Vença a próxima luta sem o favoritismo (chance abaixo de 45%).',
       en: 'Win the next fight as an underdog (chance below 45%).',
       fr: 'Gagnez le prochain combat en étant outsider (probabilité sous 45 %).',
-      es: 'Gana la próxima pelea siendo desfavorito (probabilidad por debajo del 45 %).',
+      es: 'Gana la próxima pelea sin el favoritismo (probabilidad por debajo del 45 %).',
     },
   },
 }

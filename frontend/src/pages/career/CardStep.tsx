@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { L, pick } from '../../i18n/lang'
 import { DEALS, FIX_CAUGHT_CHANCE, FIX_REWARD, type Card } from '../../shared/game/events'
+import { byGender } from '../../shared/game/labels'
 import { DEAL_TEXT } from '../../shared/game/eventsText'
 import { Chip, GhostButton, PrimaryButton, useFocusOnMount } from './ui'
 
@@ -11,9 +12,10 @@ import { Chip, GhostButton, PrimaryButton, useFocusOnMount } from './ui'
  * the fights are shown. The arranged fight is written as what it is (cheating, against the rules, and risky), and the safe answer
  * is the first button.
  */
-export function CardStep({ card, onAnswer }: { card: Card; onAnswer: (accepted: boolean) => void }) {
+export function CardStep({ card, division, onAnswer }: { card: Card; division: string; onAnswer: (accepted: boolean) => void }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
+  const g = (masculine: string, feminine: string) => byGender(division, masculine, feminine)
   const heading = useFocusOnMount<HTMLHeadingElement>()
 
   if (card.kind === 'sponsor') {
@@ -75,7 +77,7 @@ export function CardStep({ card, onAnswer }: { card: Card; onAnswer: (accepted: 
           <Chip tone="red">{L(lang, 'A derrota entra no seu cartel', 'The loss goes on your record', 'La défaite compte dans votre bilan', 'La derrota entra en tu récord')}</Chip>
         </li>
         <li>
-          <Chip tone="red">{L(lang, `${caught}% de chance de ser descoberto e banido para sempre`, `${caught}% chance of being found out and banned for life`, `${caught} % de risque d’être démasqué et banni à vie`, `${caught} % de probabilidad de ser descubierto y vetado de por vida`)}</Chip>
+          <Chip tone="red">{L(lang, `${caught}% de chance de ser ${g('descoberto e banido', 'descoberta e banida')} para sempre`, `${caught}% chance of being found out and banned for life`, `${caught} % de risque d’être ${g('démasqué et banni', 'démasquée et bannie')} à vie`, `${caught} % de probabilidad de ser ${g('descubierto y vetado', 'descubierta y vetada')} de por vida`)}</Chip>
         </li>
       </ul>
       <div className="flex flex-wrap gap-3">

@@ -58,7 +58,7 @@ def test_better_skills_raise_the_chance_against_the_same_opponent(client):
         body = {"fighter": fighter, "division": "Lightweight", "names": [name]}
         return client.post("/game/matchmaking", json=body).json()["opponents"][0]["win_probability"]
 
-    assert chance(strong) > chance(weak) + 0.05
+    assert chance(strong) > chance(weak) + 0.1  # the model and the skill edge together
 
 
 def test_skills_become_the_numbers_the_model_reads():
@@ -83,3 +83,31 @@ def test_skills_become_the_numbers_the_model_reads():
 def test_nonsense_is_refused(client, change):
     body = {"fighter": FIGHTER, "division": "Lightweight", **change}
     assert client.post("/game/matchmaking", json=body).status_code == 422
+
+
+def test_the_skill_edge_is_a_capped_share_of_the_average_gap():
+    from backend.app.services.game_service import SKILL_EDGE_MAX, skill_edge
+
+    even = {"striking": 50, "takedowns": 50, "reach": 50}
+    assert skill_edge({**FIGHTER, **even}, even) == 0
+    assert skill_edge({**FIGHTER, "striking": 80, "takedowns": 80, "reach": 80}, even) == pytest.approx(0.075)
+    assert skill_edge({**FIGHTER, "striking": 100, "takedowns": 100, "reach": 100}, {"striking": 0, "takedowns": 0, "reach": 0}) == SKILL_EDGE_MAX
+    assert skill_edge({**FIGHTER, "striking": 0, "takedowns": 0, "reach": 0}, {"striking": 100, "takedowns": 100, "reach": 100}) == -SKILL_EDGE_MAX
+
+
+def test_an_opponent_is_placed_on_the_character_s_scale_and_unknown_numbers_sit_in_the_middle():
+    from backend.app.services.game_service import opponent_skills
+
+    best = opponent_skills({"sig_str_acc": 0.99, "takedown_acc": 0.99, "reach_cm": 230}, "Lightweight")
+    worst = opponent_skills({"sig_str_acc": 0.01, "takedown_acc": 0.0, "reach_cm": 120}, "Lightweight")
+    assert all(value > 95 for value in best.values()) and all(value < 15 for value in worst.values())
+    assert opponent_skills({"sig_str_acc": None, "reach_cm": float("nan")}, "Lightweight") == {"striking": 50.0, "takedowns": 50.0, "reach": 50.0}
+
+
+def test_ranked_opponents_carry_their_rank_from_the_official_rankings(client):
+    from backend.app.services.rankings_service import get_rankings
+
+    division = next(category for category in get_rankings() if category["category"] == "Lightweight")
+    ranked = next(entry for entry in division["entries"] if entry["rank"] >= 1)
+    offer = ask(client, names=[ranked["fighter"]]).json()["opponents"]
+    assert offer and offer[0]["ranking"] == str(ranked["rank"])

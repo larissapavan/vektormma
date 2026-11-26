@@ -3,6 +3,26 @@ import { getDivisionName } from '../data/divisions'
 import { type Retrospect, type Standing } from './career'
 import type { CardLabels } from './shareImage'
 
+/** The women's divisions: the game speaks of the player (and of the opponents, from the same division) in the feminine there. */
+export const isWomen = (division: string) => division.startsWith("Women's")
+
+/** The masculine or the feminine form, by the division. */
+export function byGender(division: string, masculine: string, feminine: string) {
+  return isWomen(division) ? feminine : masculine
+}
+
+const CHAMPION_F: ByLang = { pt: 'Campeã', en: 'Champion', fr: 'Championne', es: 'Campeona' }
+
+/** Where the player stands, in the words of the division (Campeão / Campeã). */
+export function standingLabel(language: string, where: Standing, division: string) {
+  return pick(language, where === 'champion' && isWomen(division) ? CHAMPION_F : STANDING_LABELS[where])
+}
+
+/** "Champion" on an opponent's card. */
+export function championWord(language: string, division: string) {
+  return pick(language, isWomen(division) ? CHAMPION_F : STANDING_LABELS.champion)
+}
+
 export const STANDING_LABELS: Record<Standing, ByLang> = {
   prospect: { pt: 'Promessa', en: 'Prospect', fr: 'Espoir', es: 'Promesa' },
   rising: { pt: 'Em ascensão', en: 'Rising', fr: 'En progression', es: 'En ascenso' },
@@ -13,23 +33,24 @@ export const STANDING_LABELS: Record<Standing, ByLang> = {
 }
 
 /** How a career ended, as one sentence ("Retired at 34 after 17 UFC fights."). */
-export function endingText(language: string, card: Pick<Retrospect, 'e' | 'a' | 'f'>): string {
+export function endingText(language: string, card: Pick<Retrospect, 'e' | 'a' | 'f'> & { d?: string }): string {
+  const g = (masculine: string, feminine: string) => byGender(card.d ?? '', masculine, feminine)
   if (card.e === 'banned') {
     return L(
       language,
-      `Banido do UFC aos ${card.a} anos, depois de combinar o resultado de uma luta.`,
+      `${g('Banido', 'Banida')} do UFC aos ${card.a} anos, depois de combinar o resultado de uma luta.`,
       `Banned from the UFC at ${card.a} after fixing a fight.`,
-      `Banni de l’UFC à ${card.a} ans après avoir truqué un combat.`,
-      `Vetado de la UFC a los ${card.a} años, tras arreglar una pelea.`,
+      `${g('Banni', 'Bannie')} de l’UFC à ${card.a} ans après avoir truqué un combat.`,
+      `${g('Vetado', 'Vetada')} de la UFC a los ${card.a} años, tras arreglar una pelea.`,
     )
   }
   if (card.e === 'released') {
     return L(
       language,
-      `Dispensado do UFC aos ${card.a} anos, depois de três derrotas seguidas.`,
+      `${g('Dispensado', 'Dispensada')} do UFC aos ${card.a} anos, depois de três derrotas seguidas.`,
       `Released by the UFC at ${card.a} after three straight losses.`,
-      `Libéré par l’UFC à ${card.a} ans après trois défaites de suite.`,
-      `Liberado por la UFC a los ${card.a} años, tras tres derrotas seguidas.`,
+      `${g('Libéré', 'Libérée')} par l’UFC à ${card.a} ans après trois défaites de suite.`,
+      `${g('Liberado', 'Liberada')} por la UFC a los ${card.a} años, tras tres derrotas seguidas.`,
     )
   }
   if (card.e === 'age') {
@@ -62,10 +83,10 @@ export function cardLabels(language: string, card: Retrospect, site = 'vektormma
       label: L(language, 'Cinturão', 'Title', 'Ceinture', 'Cinturón'),
       value: L(
         language,
-        `${card.c}x campeão, ${card.df} ${card.df === 1 ? 'defesa' : 'defesas'}`,
+        `${card.c}x ${byGender(card.d, 'campeão', 'campeã')}, ${card.df} ${card.df === 1 ? 'defesa' : 'defesas'}`,
         `${card.c}x champion, ${card.df} ${card.df === 1 ? 'defense' : 'defenses'}`,
-        `${card.c}x champion, ${card.df} ${card.df > 1 ? 'défenses' : 'défense'}`,
-        `${card.c}x campeón, ${card.df} ${card.df === 1 ? 'defensa' : 'defensas'}`,
+        `${card.c}x ${byGender(card.d, 'champion', 'championne')}, ${card.df} ${card.df > 1 ? 'défenses' : 'défense'}`,
+        `${card.c}x ${byGender(card.d, 'campeón', 'campeona')}, ${card.df} ${card.df === 1 ? 'defensa' : 'defensas'}`,
       ),
     })
   }
@@ -76,7 +97,7 @@ export function cardLabels(language: string, card: Retrospect, site = 'vektormma
     brand: 'VEKTOR MMA',
     heading: L(language, 'Retrospecto da carreira', 'Career retrospect', 'Bilan de carrière', 'Balance de carrera'),
     division: getDivisionName(card.d, language),
-    standing: pick(language, STANDING_LABELS[card.s]),
+    standing: standingLabel(language, card.s, card.d),
     recordLabel: L(language, 'Cartel', 'Record', 'Bilan', 'Récord'),
     record: recordOf(card),
     stats: [
@@ -100,8 +121,8 @@ export function chanceBand(chance: number): 'favorite' | 'even' | 'underdog' | '
 }
 
 export const BAND_LABELS: Record<ReturnType<typeof chanceBand>, ByLang> = {
-  favorite: { pt: 'Você é o favorito', en: 'You are the favorite', fr: 'Vous êtes favori', es: 'Eres el favorito' },
+  favorite: { pt: 'O favoritismo é seu', en: 'You are the favorite', fr: 'L’avantage est à vous', es: 'El favoritismo es tuyo' },
   even: { pt: 'Luta parelha', en: 'A toss-up', fr: 'Combat équilibré', es: 'Pelea pareja' },
-  underdog: { pt: 'Você é o azarão', en: 'You are the underdog', fr: 'Vous êtes l’outsider', es: 'Eres el desfavorito' },
-  longshot: { pt: 'Grande azarão', en: 'A long shot', fr: 'Très gros outsider', es: 'Gran desfavorito' },
+  underdog: { pt: 'O favoritismo é do outro lado', en: 'You are the underdog', fr: 'L’avantage est en face', es: 'El favoritismo es del otro lado' },
+  longshot: { pt: 'Missão muito difícil', en: 'A long shot', fr: 'Mission très difficile', es: 'Misión muy difícil' },
 }

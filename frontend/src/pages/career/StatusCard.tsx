@@ -1,10 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { Flame, Trophy } from 'lucide-react'
 
-import { L, pick } from '../../i18n/lang'
+import { L } from '../../i18n/lang'
 import { getDivisionName } from '../../shared/data/divisions'
 import { recordText, standing, TITLE_SHOT_POINTS, type Career } from '../../shared/game/career'
-import { STANDING_LABELS } from '../../shared/game/labels'
+import { standingLabel } from '../../shared/game/labels'
 import { Chip, Emblem, SkillMeter } from './ui'
 
 const SHORT_METHOD = { ko: 'KO', sub: 'SUB', dec: 'DEC' } as const
@@ -29,7 +29,7 @@ export function StatusCard({ career }: { career: Career }) {
           <div className="mt-2 flex flex-wrap gap-2">
             <Chip tone={career.champion ? 'gold' : 'red'}>
               {career.champion ? <Trophy className="h-3 w-3" aria-hidden="true" /> : null}
-              <span data-testid="standing">{pick(lang, STANDING_LABELS[where])}</span>
+              <span data-testid="standing">{standingLabel(lang, where, career.division)}</span>
             </Chip>
             {career.winStreak >= 2 ? (
               <Chip tone="green">

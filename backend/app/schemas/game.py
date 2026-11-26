@@ -38,6 +38,8 @@ class MatchmakingRequest(BaseModel):
     title: bool = False
     # Opponents to leave out (the ones already fought) or, in `names`, the only ones to score (a rematch).
     exclude: list[str] = Field(default_factory=list, max_length=60)
+    # The character holds the belt: every fight is five rounds.
+    champion: bool = False
     names: list[str] = Field(default_factory=list, max_length=3)
     seed: int = Field(0, ge=0, le=2**31 - 1)
 

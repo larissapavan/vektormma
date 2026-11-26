@@ -14,6 +14,7 @@ import {
   createCareer,
   decodeRetrospect,
   offerCoaches,
+  playRound,
   playToTheEnd,
   retire,
   seededRng,
@@ -58,8 +59,11 @@ interface Game {
   card: Card | null
   /** The challenge being played (same fighter, same dice for everyone), or null for an ordinary career. */
   challenge: Challenge | null
-  /** The fight on screen, with the dice it is played with (the career's own stream, or the challenge's for this fight). */
-  fight: { offer: GameOpponent; state: FightState; dice: Rng } | null
+  /**
+   * The fight on screen: the dice it is played with (its own seed, or the challenge's stream for this fight) and what it needs
+   * to be played again the same way after a reload.
+   */
+  fight: { offer: GameOpponent; state: FightState; dice: Rng; plan: Plan; player: PlayerStats; seed: number | null } | null
 }
 
 /** The career game: build a fighter, train, take fights, and end with a picture of the retrospect. */
@@ -86,11 +90,15 @@ export function Career() {
   const steps = [L(lang, 'Criar', 'Create', 'Créer', 'Crear'), L(lang, 'Camp', 'Camp', 'Préparation', 'Campamento'), L(lang, 'Luta', 'Fight', 'Combat', 'Pelea'), L(lang, 'Retrospecto', 'Retrospect', 'Bilan', 'Balance')]
   const stepIndex = !game ? 0 : game.stage === 'camp' ? 1 : game.stage === 'end' ? 3 : 2
 
-  // Saved between fights only (at the camp and at the matchmaking), and forgotten when the career ends.
+  // Saved at every step (a fight with the tactics chosen so far, so a reload plays it out the same), forgotten when the career ends.
   useEffect(() => {
     if (!game) return
-    if (game.stage === 'camp' || game.stage === 'offers') storeSave({ career: game.career, stage: game.stage, coaches: game.coaches, seed: game.seed, note: game.note, challenge: game.challenge, card: game.card })
-    else if (game.stage === 'end') clearSave()
+    const base = { career: game.career, coaches: game.coaches, seed: game.seed, note: game.note, challenge: game.challenge, card: game.card }
+    if (game.stage === 'camp' || game.stage === 'offers') storeSave({ ...base, stage: game.stage, fight: null })
+    else if (game.stage === 'fight' && game.fight) {
+      const { offer, plan, player, seed, state } = game.fight
+      storeSave({ ...base, card: null, stage: 'fight', fight: { offer, plan, player, seed, tactics: state.stories.map((story) => story.tactic ?? 'steady') } })
+    } else if (game.stage === 'end') clearSave()
   }, [game])
 
   const start = (build: Build) => {
@@ -111,7 +119,16 @@ export function Career() {
   const resume = (save: SavedGame) => {
     setSaved(null)
     setLinkUsed(true)
-    setGame({ career: save.career, stage: save.stage, note: save.note, seed: save.seed, fight: null, coaches: save.coaches, card: save.card, challenge: save.challenge })
+    let fight: Game['fight'] = null
+    if (save.stage === 'fight' && save.fight) {
+      // The fight is played again from its first bell with the same dice and the same tactics: it reaches the same round.
+      const { offer, plan, player, seed, tactics } = save.fight
+      const dice = save.challenge ? challengeStreams(save.challenge.seed).fight(save.career.ufcFights) : seededRng(seed ?? 0)
+      const first = startFight(save.career, offer, plan, player, dice)
+      const state = save.career.pact?.kind === 'fix' ? throwFight(first) : tactics.reduce((current, tactic) => playRound(current, tactic, dice), first)
+      fight = { offer, state, dice, plan, player, seed }
+    }
+    setGame({ career: save.career, stage: fight ? 'fight' : save.stage === 'fight' ? 'offers' : save.stage, note: save.note, seed: save.seed, fight, coaches: save.coaches, card: save.card, challenge: save.challenge })
   }
 
   const discard = () => {
@@ -137,11 +154,18 @@ export function Career() {
 
   const takeFight = (offer: GameOpponent, plan: Plan, player: PlayerStats, quick = false) => {
     if (!game) return
-    const dice = game.challenge ? challengeStreams(game.challenge.seed).fight(game.career.ufcFights) : random
+    // Each fight has its own dice, so that it can be played again the same way after a reload (a challenge's are its stream).
+    const seed = game.challenge ? null : Math.floor(random() * 2 ** 31)
+    const dice = game.challenge ? challengeStreams(game.challenge.seed).fight(game.career.ufcFights) : seededRng(seed ?? 0)
     const first = startFight(game.career, offer, plan, player, dice)
     // An arranged fight is lost without rolling a round; "fight and skip to the result" plays every round with the plan unchanged, the same function the fight screen's own skip uses.
     const state = game.career.pact?.kind === 'fix' ? throwFight(first) : quick ? playToTheEnd(first, dice) : first
-    setGame({ ...game, stage: 'fight', fight: { offer, state, dice } })
+    setGame({ ...game, stage: 'fight', fight: { offer, state, dice, plan, player, seed } })
+  }
+
+  // Each round played is kept, for the save.
+  const progress = (state: FightState) => {
+    setGame((current) => (current?.fight ? { ...current, fight: { ...current.fight, state } } : current))
   }
 
   const continueCareer = (result: FightResult) => {
@@ -178,7 +202,7 @@ export function Career() {
           </div>
         ) : null}
         <details className="mt-4 text-xs leading-5 text-[var(--text-muted)]">
-          <summary className="cursor-pointer font-bold text-[var(--text-secondary)]">{L(lang, 'Como funciona', 'How it works', 'Comment ça marche', 'Cómo funciona')}</summary>
+          <summary className="inline-flex min-h-11 cursor-pointer items-center font-bold text-[var(--text-secondary)]">{L(lang, 'Como funciona', 'How it works', 'Comment ça marche', 'Cómo funciona')}</summary>
           <ul className="mt-2 list-disc space-y-1 pl-5">
             {careerRules(lang).map((rule) => (
               <li key={rule}>{rule}</li>
@@ -218,9 +242,9 @@ export function Career() {
           {game.stage !== 'end' ? <StatusCard career={game.career} /> : null}
           {game.stage === 'camp' || game.stage === 'offers' ? <GoalsCard career={game.career} /> : null}
           {game.stage === 'camp' ? <CampStep key={game.career.ufcFights} career={game.career} coaches={game.coaches} note={game.note} onTrain={train} onRetire={() => stop()} retirable={!game.challenge} /> : null}
-          {game.stage === 'offers' && game.card ? <CardStep key={game.card.kind} card={game.card} onAnswer={answerCard} /> : null}
+          {game.stage === 'offers' && game.card ? <CardStep key={game.card.kind} card={game.card} division={game.career.division} onAnswer={answerCard} /> : null}
           {game.stage === 'offers' && !game.card ? <OffersStep key={game.seed} career={game.career} seed={game.seed} onFight={takeFight} onRetire={() => stop()} canRetire={!game.challenge && canRetire(game.career)} /> : null}
-          {game.stage === 'fight' && game.fight ? <FightStep key={game.career.ufcFights} career={game.career} offer={game.fight.offer} start={game.fight.state} random={game.fight.dice} onContinue={continueCareer} onRetire={stop} retirable={!game.challenge} endsCareer={Boolean(game.challenge && game.career.ufcFights + 1 >= game.challenge.fights)} /> : null}
+          {game.stage === 'fight' && game.fight ? <FightStep key={game.career.ufcFights} career={game.career} offer={game.fight.offer} start={game.fight.state} random={game.fight.dice} onProgress={progress} onContinue={continueCareer} onRetire={stop} retirable={!game.challenge} endsCareer={Boolean(game.challenge && game.career.ufcFights + 1 >= game.challenge.fights)} /> : null}
           {game.stage === 'end' ? <EndStep career={game.career} challenge={game.challenge} onRestart={() => setGame(null)} /> : null}
         </>
       )}
