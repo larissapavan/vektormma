@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -6,13 +6,22 @@ import App from '../App'
 import { headToHeadPath } from '../shared/components/FeaturedMatchup'
 import { respond } from './fixtures'
 
+const get = vi.fn(async (url: string) => ({ data: respond(url) }))
+
 vi.mock('axios', () => {
   const instance = {
-    get: async (url: string) => ({ data: respond(url) }),
+    get: (url: string) => get(url),
     post: async () => ({ data: respond('/predict') }),
   }
   return { default: { create: () => instance }, create: () => instance }
 })
+
+const renderAt = (path: string) =>
+  render(
+    <MemoryRouter initialEntries={[path]}>
+      <App />
+    </MemoryRouter>,
+  )
 
 describe('headToHeadPath', () => {
   it('encodes both names for the head-to-head page', () => {
@@ -22,104 +31,64 @@ describe('headToHeadPath', () => {
 })
 
 describe('Landing', () => {
-  it('opens with what Vektor MMA is and a way down to the organizations, not with a fight', async () => {
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <App />
-      </MemoryRouter>,
-    )
+  it('opens with what Vektor MMA does and one way to the organization directory, not with a fight', async () => {
+    renderAt('/')
 
-    expect(await screen.findByRole('heading', { level: 1, name: 'Explore MMA. Understand the matchups.' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Explore organizations' })).toHaveAttribute('href', '#organizations-grid')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Explore MMA through the data' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Choose an organization' })).toHaveAttribute('href', '/#organizations-grid')
     expect(screen.queryByTestId('featured-matchup')).toBeNull()
   })
 
-  it('shows the counts the API reports', async () => {
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <App />
-      </MemoryRouter>,
-    )
-    // fights_count 10 and fighters_count 2 in the fake API; the counting text is hidden, the real figure is for readers.
-    await waitFor(() => {
-      const texts = Array.from(document.querySelectorAll('.sr-only')).map((n) => n.textContent)
-      expect(texts).toContain('10')
-      expect(texts).toContain('2')
-    })
-  })
+  it('closes with the project and the links to the model and its record, without the detailed figures', async () => {
+    renderAt('/')
+    const project = (await screen.findByRole('heading', { name: 'About the project' })).closest('section')!
 
-  it('writes the counts with the grouping of the language and no plus on an exact total', async () => {
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <App />
-      </MemoryRouter>,
-    )
-    // The org cards show rounded-down snapshots with a plus, in the same grouping as the exact figures in the strip.
-    const ufc = await screen.findByRole('link', { name: /follow ultimate fighting championship/i })
-    expect(ufc).toHaveTextContent('8,900+')
-    expect(ufc).not.toHaveTextContent('8.9k+')
-    // The site's first two figures (fights, fighters) are exact totals from the API: no plus.
-    const metrics = Array.from(document.querySelectorAll('main dl > div dd'))
-    expect(metrics[0]?.textContent).not.toContain('+')
-    expect(metrics[1]?.textContent).not.toContain('+')
+    expect(within(project).getByRole('link', { name: 'How the model works' })).toHaveAttribute('href', '/model')
+    expect(within(project).getByRole('link', { name: 'Prediction record' })).toHaveAttribute('href', '/track-record')
+    expect(project.textContent).not.toMatch(/\d+%/)
   })
 })
 
-describe('the organizations section', () => {
-  const section = async () => {
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <App />
-      </MemoryRouter>,
-    )
-    return (await screen.findByRole('heading', { name: /choose an organization/i })).closest('section')!
-  }
-  const hrefs = (root: Element) => Array.from(root.querySelectorAll('a')).map((link) => link.getAttribute('href'))
+describe('the organization directory', () => {
+  const directory = async () => (await screen.findByRole('heading', { name: 'Organizations', level: 2 })).closest('section')!
+  const hrefs = (root: Element) => Array.from(root.querySelectorAll('li > a')).map((link) => link.getAttribute('href'))
 
-  it('links every organization once, as cards of the same kind', async () => {
-    const root = await section()
+  it('lists the eleven organizations once, the three with predictions first, all of the same kind', async () => {
+    renderAt('/')
+    const root = await directory()
 
     expect(hrefs(root)).toEqual(['/home', '/pfl', '/one', '/bellator', '/rizin', '/ksw', '/lfa', '/cage-warriors', '/oktagon', '/jungle-fight', '/invicta'])
-    // No card is picked or set apart for the visitor: every card has the same classes.
     const classes = new Set(Array.from(root.querySelectorAll('li > a')).map((link) => link.className))
     expect(classes.size).toBe(1)
   })
 
-  it('shows each next event as the API has it, and says so when there is none', async () => {
-    const root = await section()
-    const ufc = within(root).getByRole('link', { name: /follow ultimate fighting championship/i })
-    const pfl = within(root).getByRole('link', { name: /follow professional fighters league/i })
-    const bellator = within(root).getByRole('link', { name: /follow bellator mma/i })
+  it('names the real coverage of each one', async () => {
+    renderAt('/')
+    const root = await directory()
+    const item = (href: string) => root.querySelector(`li > a[href="${href}"]`)!
 
-    await waitFor(() => expect(ufc).toHaveTextContent('UFC 900: Alpha vs. Beta'))
-    expect(ufc).toHaveTextContent('2 fights')
-    expect(ufc).toHaveTextContent('Events and predictions')
-    await waitFor(() => expect(pfl).toHaveTextContent('PFL Future'))
-    expect(pfl).toHaveTextContent('1 fight')
-    // Bellator is an archive: no event is made up for it.
-    expect(bellator).toHaveTextContent('Historical archive')
-    expect(bellator).toHaveTextContent('No future events')
+    expect(item('/home')).toHaveTextContent('Events and predictions')
+    expect(item('/one')).toHaveTextContent('Events and predictions')
+    expect(item('/invicta')).toHaveTextContent('Events and results')
+    expect(item('/bellator')).toHaveTextContent(/Bellator archive\s·\s2009–2023/)
   })
 
-  it('tells an organization without a confirmed card apart from one still loading', async () => {
-    const root = await section()
-    const invicta = within(root).getByRole('link', { name: /follow invicta fighting championships/i })
+  it('is built without asking the API for schedules or counts', async () => {
+    get.mockClear()
+    renderAt('/')
+    await directory()
 
-    await waitFor(() => expect(invicta).toHaveTextContent('No event confirmed right now.'))
-    expect(invicta).toHaveTextContent('Events and results')
+    const asked = get.mock.calls.map(([url]) => url)
+    expect(asked.some((url) => /upcoming|events|data-info/.test(url))).toBe(false)
   })
 })
 
 describe('switching organization', () => {
-  it('every organization page links back to the picker', async () => {
-    render(
-      <MemoryRouter initialEntries={['/pfl']}>
-        <App />
-      </MemoryRouter>,
-    )
+  it('every organization page names the organization in the header and leads back to the directory', async () => {
+    renderAt('/pfl')
 
-    const back = await screen.findByRole('link', { name: 'Switch organization' })
-    expect(back).toHaveAttribute('href', '/#organizations-grid')
-    expect(back.parentElement).toHaveTextContent('You are following PFL')
+    const switcher = await screen.findByRole('group', { name: 'Organization' })
+    expect(within(switcher).getByRole('button')).toHaveTextContent('PFL')
+    expect(within(switcher).getByRole('link', { name: 'See all in the directory' })).toHaveAttribute('href', '/#organizations-grid')
   })
 })

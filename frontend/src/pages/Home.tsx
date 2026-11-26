@@ -33,7 +33,6 @@ import type { DataConfidence, EventSummary, FighterPerformance, FightResult, Mai
 import { HeroFactors } from './home/HeroFactors'
 import { HomeChampions } from './home/HomeChampions'
 import { ModelHighlights } from './home/ModelHighlights'
-import { OrgSwitchLink } from '../shared/components/OrgSwitchLink'
 
 type Trend = { streak: number; finishRate: number | null }
 
@@ -89,8 +88,6 @@ export function Home() {
           {systemError}
         </p>
       ) : null}
-
-      <OrgSwitchLink />
 
       <NextFightHero
         loading={eventsLoading}
@@ -217,16 +214,26 @@ function NextFightHero({
         </div>
         <div className="flex flex-wrap gap-3 max-xs:w-full">
           {fight && nextEvent ? (
-            <Link
-              to={`/predictor?a=${encodeURIComponent(fight.fighter_1)}&b=${encodeURIComponent(fight.fighter_2)}&event=${encodeURIComponent(nextEvent.name)}`}
-              className="primary-action inline-flex min-h-[52px] items-center justify-center px-7 !text-[17px] max-xs:w-full"
-            >
-              {L(lang, 'Ver a análise da luta', 'See the fight analysis', 'Voir l’analyse du combat', 'Ver el análisis de la pelea')}
+            <>
+              <Link
+                to={`/events?q=${encodeURIComponent(nextEvent.name)}`}
+                className="primary-action inline-flex min-h-[52px] items-center justify-center px-7 !text-[17px] max-xs:w-full"
+              >
+                {L(lang, 'Ver card completo', 'See the full card', 'Voir la carte complète', 'Ver la cartelera completa')}
+              </Link>
+              <Link
+                to={`/predictor?a=${encodeURIComponent(fight.fighter_1)}&b=${encodeURIComponent(fight.fighter_2)}&event=${encodeURIComponent(nextEvent.name)}`}
+                className="ghost-action inline-flex min-h-[52px] items-center justify-center px-7 !text-[17px] max-xs:w-full"
+              >
+                {L(lang, 'Previsão da luta principal', 'Main event prediction', 'Pronostic du combat principal', 'Pronóstico de la pelea estelar')}
+              </Link>
+            </>
+          ) : (
+            // No card booked: the latest results are the most useful next step.
+            <Link to="/results" className="primary-action inline-flex min-h-[52px] items-center justify-center px-7 !text-[17px] max-xs:w-full">
+              {L(lang, 'Ver últimos resultados', 'See the latest results', 'Voir les derniers résultats', 'Ver los últimos resultados')}
             </Link>
-          ) : null}
-          <Link to="/predictor" className={`${fight ? 'ghost-action' : 'primary-action'} inline-flex min-h-[52px] items-center justify-center px-7 !text-[17px] max-xs:w-full`}>
-            {L(lang, 'Simular uma luta', 'Predict a fight', 'Pronostiquer un combat', 'Pronosticar una pelea')}
-          </Link>
+          )}
         </div>
       </div>
 

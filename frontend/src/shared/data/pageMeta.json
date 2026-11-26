@@ -41,7 +41,7 @@
         "description": "O próximo card do UFC com os palpites do modelo, quem está em sequência de vitórias e as últimas notícias."
       },
       "/predictor": {
-        "title": "Simulação de luta",
+        "title": "Previsões",
         "description": "Escolha dois lutadores do UFC e veja a chance de vitória estimada pelo modelo, com os números que mais pesaram."
       },
       "/head-to-head": {
@@ -165,11 +165,11 @@
         "description": "Rankings oficiais do ONE Championship por categoria e peso por peso."
       },
       "/one/predictor": {
-        "title": "Simulação de luta do ONE Championship",
+        "title": "Previsões do ONE Championship",
         "description": "Escolha dois atletas do ONE Championship e veja a chance de vitória estimada pelo modelo, com os números que mais pesaram."
       },
       "/pfl/predictor": {
-        "title": "Simulação de luta da PFL",
+        "title": "Previsões da PFL",
         "description": "Escolha dois atletas da PFL e veja a chance de vitória estimada pelo modelo, que é treinado com lutas do UFC."
       },
       "/one/champions": {

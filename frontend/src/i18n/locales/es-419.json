@@ -1,7 +1,7 @@
 {
   "nav": {
-    "predict": "Pronóstico",
-    "compare": "Comparar",
+    "predict": "Pronósticos",
+    "compare": "Comparador",
     "fighters": "Peleadores",
     "events": "Eventos",
     "results": "Resultados",
@@ -52,8 +52,7 @@
   },
   "footer": {
     "tagline": "Estadísticas y pronósticos de deportes de combate.",
-    "dataUpTo": "Datos hasta el {{date}}",
-    "disclaimer": "Proyecto personal independiente, sin afiliación con {{org}}"
+    "dataUpTo": "Datos hasta el {{date}}"
   },
   "common": {
     "pageLoading": "Cargando datos...",
@@ -87,9 +86,9 @@
     "redCorner": "Esquina roja",
     "blueCorner": "Esquina azul",
     "searchPlaceholder": "Buscar peleador por nombre...",
-    "predictMatchup": "Pronosticar la pelea",
+    "predictMatchup": "Ver el pronóstico",
     "predicting": "Pronosticando...",
-    "pickTwoPrompt": "Elige a dos peleadores para pronosticar la pelea.",
+    "pickTwoPrompt": "Elige a los dos peleadores para ver el pronóstico.",
     "selectTwoDifferent": "Selecciona a dos peleadores distintos"
   },
   "fighters": {

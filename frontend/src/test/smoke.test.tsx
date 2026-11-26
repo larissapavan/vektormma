@@ -149,14 +149,15 @@ describe('the pages that depend on the API', () => {
     const words = await screen.findByRole('heading', { name: 'In words' }, { timeout: 10000 })
     expect(screen.getByText(/What weighs most for Alpha One: age difference\. Alpha One is 28; Beta Two is 36\./)).toBeInTheDocument()
     expect(screen.getAllByText('Alpha One is 28; Beta Two is 36.')).toHaveLength(1)
-    const corner = screen.getAllByText('Red corner')[0]
+    // The result names the corners too; the corner pickers are the last "Red corner" on the page.
+    const corner = screen.getAllByText('Red corner').at(-1)!
     expect(words.compareDocumentPosition(corner) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('with no fight chosen the corners come first', async () => {
     renderAt('/predictor')
     const corner = (await screen.findAllByText('Red corner', undefined, { timeout: 10000 }))[0]
-    const result = screen.getByRole('heading', { name: 'Chance of winning' })
+    const result = screen.getByRole('heading', { name: 'Estimated win chance' })
     expect(corner.compareDocumentPosition(result) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 

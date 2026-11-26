@@ -1,18 +1,15 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { motion } from 'framer-motion'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
-import { L } from '../i18n/lang'
 import { Header } from '../shared/components/Header'
 import { MobileTabBar } from '../shared/components/MobileTabBar'
 import { ScrollToTop } from '../shared/components/ScrollToTop'
 import { PageMeta } from '../shared/components/PageMeta'
-import { SocialLinks } from '../shared/components/SocialLinks'
-import { isLandingPath, orgEs } from '../shared/data/orgs'
+import { isLandingPath } from '../shared/data/orgs'
 import { isStaticPath } from '../shared/data/staticPages'
 import { hasSectionNav } from '../shared/data/navItems'
-import { SiteLinks } from '../shared/components/SiteLinks'
+import { SiteFooter } from '../shared/components/SiteFooter'
 import { useOrg } from '../shared/hooks/useOrg'
 import { ServerLoadingState } from '../shared/components/ServerLoadingState'
 import { getOrgDataInfo, waitForHealth } from '../shared/services/api'
@@ -73,7 +70,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
     <div
       className={`dashboard-shell w-full max-w-full min-h-screen transition-colors duration-200 bg-[var(--bg-app)] text-[var(--text-primary)] flex flex-col overflow-x-hidden ${
         // Room for the bottom bar a phone shows on section pages.
-        hasSectionNav(pathname) ? 'max-md:pb-[calc(4rem+env(safe-area-inset-bottom))]' : ''
+        hasSectionNav(pathname) ? 'max-lg:pb-[calc(4rem+env(safe-area-inset-bottom))]' : ''
       }`}
     >
       <a
@@ -82,7 +79,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
       >
         {t('common.skipToContent', 'Skip to content')}
       </a>
-      {/* Pinned Sticky Header: Seamless Glassmorphism Navigation Bar */}
+      {/* The header stays pinned to the top of the screen. */}
       <div className="sticky top-0 z-50 w-full border-b border-[var(--rule)] bg-[var(--mat)]">
         <div className="mx-auto w-full max-w-[1376px] px-4 sm:px-6 lg:px-12">
           <Header />
@@ -97,63 +94,22 @@ export function MainLayout({ children }: { children: ReactNode }) {
         <ScrollToTop />
         <PageMeta />
         {apiState === 'down' && !opensAtOnce ? (
-          <p role="status" className="mt-3 border border-[var(--border-subtle)] bg-[var(--ink)] px-3 py-2 text-sm font-semibold text-white rounded-sm">
+          <p role="alert" className="error-note mt-3">
             {t('common.serverDown', 'The server is not answering right now. Give it a minute and reload the page.')}
           </p>
         ) : null}
-        <motion.main
+        <main
           id="main-content"
           className={
             landing
               ? 'flex-1 flex flex-col w-full max-w-full my-0'
               : 'flex-1 pt-3 sm:pt-4 w-full max-w-full min-w-0'
           }
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
         >
           {/* The chooser needs no data, so it opens at once while the API answers in the background. */}
           {showLoading ? <ServerLoadingState /> : children}
-        </motion.main>
-        {landing ? null : (
-          <footer className="mt-10 border-t-[3px] border-[var(--ink)] pb-5 pt-3 sm:mt-12">
-            <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-1">
-              <p className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
-                <span className="font-display text-[22px] leading-none text-[var(--ink)]">
-                  <span className="font-black">Vektor</span> <span className="font-medium">MMA</span>
-                </span>
-                <span className="text-sm text-[var(--muted)]">{t('footer.tagline', 'Combat sports analytics and predictions.')}</span>
-                {footerDate ? (
-                  <span className="text-sm text-[var(--muted)]">{t('footer.dataUpTo', { date: footerDate, defaultValue: `Data up to ${footerDate}` })}</span>
-                ) : null}
-              </p>
-              <SiteLinks className="text-[15px] font-semibold" />
-            </div>
-
-            <div className="flex flex-wrap items-center justify-between gap-x-8">
-              <p className="max-w-[84ch] text-sm leading-6 text-[var(--muted)]">
-                <Link to="/about" className="underline decoration-1 underline-offset-4 hover:decoration-2">
-                  {t('footer.disclaimer', {
-                    org: L(
-                      i18n.language,
-                      org.id === 'pfl' ? `a ${org.shortName}` : `o ${org.shortName}`,
-                      `the ${org.shortName}`,
-                      org.id === 'ufc' ? `l’${org.shortName}` : org.id === 'pfl' ? `la ${org.shortName}` : `le ${org.shortName}`,
-                      orgEs(org),
-                    ),
-                    defaultValue: `Independent personal project, not affiliated with the ${org.shortName}`,
-                  })}
-                </Link>
-              </p>
-              <div className="flex items-center gap-2">
-                <span className="hidden text-sm text-[var(--muted)] md:inline">
-                  {L(i18n.language, 'Canais oficiais:', 'Official channels:', 'Canaux officiels :', 'Canales oficiales:')}
-                </span>
-                <SocialLinks />
-              </div>
-            </div>
-          </footer>
-        )}
+        </main>
+        {landing ? null : <SiteFooter dataDate={footerDate} className="mt-10 sm:mt-12" />}
       </div>
       <MobileTabBar />
     </div>

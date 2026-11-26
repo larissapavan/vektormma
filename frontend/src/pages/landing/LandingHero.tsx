@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 
 import { L } from '../../i18n/lang'
-import { ORGS } from '../../shared/data/orgs'
+import { DIRECTORY_HASH, DIRECTORY_ORDER } from '../../shared/data/orgs'
 
 /**
  * Two fighters squaring off under the arena light, drawn in flat shapes (no glow, no gradient): a cone of light, the cage
@@ -54,48 +54,35 @@ function ArenaIllustration() {
   )
 }
 
-/** The opening: what Vektor MMA is, the promise in one line, and the way down to the organizations. */
+/** The opening: the promise in one line and the way to the organization directory. The picture is static. */
 export function LandingHero() {
   const { i18n } = useTranslation()
   const lang = i18n.language
-  const orgCount = Object.keys(ORGS).length
-
-  const goToOrganizations = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    const target = document.getElementById('organizations-grid')
-    if (!target) return
-    event.preventDefault()
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    window.history.replaceState(null, '', '#organizations-grid')
-  }
 
   return (
-    <section className="grid items-center gap-x-12 gap-y-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+    <section aria-labelledby="landing-title" className="grid items-center gap-x-12 gap-y-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
       <div className="min-w-0">
-        <p className="font-display text-2xl leading-none">
-          <span className="font-black">Vektor</span> <span className="font-medium">MMA</span>
-        </p>
-        <h1 className="mt-4 text-[44px] leading-[0.98] sm:text-[60px] lg:text-[68px]">
-          {L(lang, 'Explore o MMA. Entenda os confrontos.', 'Explore MMA. Understand the matchups.', 'Explorez le MMA. Comprenez les affrontements.', 'Explora el MMA. Entiende los enfrentamientos.')}
+        <h1 id="landing-title" className="text-[44px] leading-[0.98] sm:text-[60px] lg:text-[68px]">
+          {L(lang, 'Explore o MMA pelos dados', 'Explore MMA through the data', 'Explorez le MMA par les données', 'Explora el MMA con datos')}
         </h1>
         <p className="mt-5 max-w-[52ch] text-lg leading-relaxed text-[var(--muted)]">
           {L(
             lang,
-            `Eventos, lutadores e resultados de ${orgCount} organizações, com a chance de vitória estimada pelo modelo em cada luta onde há dados para isso.`,
-            `Events, fighters and results from ${orgCount} organizations, with the model’s estimated win chance for every fight it has the data for.`,
-            `Événements, combattants et résultats de ${orgCount} organisations, avec la chance de victoire estimée par le modèle pour chaque combat où les données le permettent.`,
-            `Eventos, peleadores y resultados de ${orgCount} organizaciones, con la probabilidad de victoria estimada por el modelo en cada pelea donde hay datos para ello.`,
+            `Eventos, lutadores e resultados de ${DIRECTORY_ORDER.length} organizações, com a chance de vitória estimada por um modelo estatístico onde há dados para isso.`,
+            `Events, fighters and results from ${DIRECTORY_ORDER.length} organizations, with a statistical model’s estimated win chance wherever the data allows.`,
+            `Événements, combattants et résultats de ${DIRECTORY_ORDER.length} organisations, avec la chance de victoire estimée par un modèle statistique quand les données le permettent.`,
+            `Eventos, peleadores y resultados de ${DIRECTORY_ORDER.length} organizaciones, con la probabilidad de victoria estimada por un modelo estadístico donde hay datos para ello.`,
           )}
         </p>
-        <div className="mt-7 flex flex-wrap gap-3">
-          <a href="#organizations-grid" onClick={goToOrganizations} className="primary-action inline-flex min-h-[52px] items-center justify-center px-7 !text-[17px] max-xs:w-full">
-            {L(lang, 'Explorar organizações', 'Explore organizations', 'Explorer les organisations', 'Explorar organizaciones')}
-          </a>
-          <Link to="/model" className="ghost-action inline-flex min-h-[52px] items-center justify-center px-7 !text-[17px] max-xs:w-full">
-            {L(lang, 'Como o modelo funciona', 'How the model works', 'Comment marche le modèle', 'Cómo funciona el modelo')}
-          </Link>
-        </div>
+        <Link
+          to={{ hash: DIRECTORY_HASH }}
+          className="primary-action mt-7 inline-flex min-h-[52px] items-center justify-center px-7 !text-[17px] max-xs:w-full"
+        >
+          {L(lang, 'Escolher organização', 'Choose an organization', 'Choisir une organisation', 'Elegir organización')}
+        </Link>
       </div>
-      <div className="mx-auto w-full max-w-[280px] sm:max-w-[420px] lg:max-w-none">
+      {/* Fixed proportions (the SVG viewBox), so nothing below moves while the page settles. */}
+      <div className="mx-auto w-full max-w-[300px] sm:max-w-[420px] lg:max-w-none">
         <ArenaIllustration />
       </div>
     </section>

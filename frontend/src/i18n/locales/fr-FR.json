@@ -1,7 +1,7 @@
 {
   "nav": {
     "predict": "Pronostics",
-    "compare": "Comparer",
+    "compare": "Comparateur",
     "fighters": "Combattants",
     "events": "Événements",
     "results": "Résultats",
@@ -52,8 +52,7 @@
   },
   "footer": {
     "tagline": "Statistiques et pronostics de sports de combat.",
-    "dataUpTo": "Données jusqu’au {{date}}",
-    "disclaimer": "Projet personnel indépendant, sans affiliation avec {{org}}"
+    "dataUpTo": "Données jusqu’au {{date}}"
   },
   "common": {
     "pageLoading": "Chargement des données...",
@@ -87,9 +86,9 @@
     "redCorner": "Coin rouge",
     "blueCorner": "Coin bleu",
     "searchPlaceholder": "Rechercher un combattant...",
-    "predictMatchup": "Prédire le combat",
+    "predictMatchup": "Voir le pronostic",
     "predicting": "Prédiction en cours...",
-    "pickTwoPrompt": "Choisissez deux combattants pour simuler le combat.",
+    "pickTwoPrompt": "Choisissez les deux combattants pour voir le pronostic.",
     "selectTwoDifferent": "Sélectionnez deux combattants différents"
   },
   "fighters": {

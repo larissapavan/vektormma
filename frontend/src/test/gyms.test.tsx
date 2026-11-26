@@ -77,9 +77,10 @@ describe('the gyms section', () => {
     expect(await screen.findByRole('dialog', { name: /Dax Moore/ }, WAIT)).toBeInTheDocument()
   })
 
-  it('the menu links to the gyms of the organization on screen', async () => {
+  it('the menu links to the gyms of the organization on screen, under "More"', async () => {
     renderAt('/pfl/events')
     await screen.findByRole('heading', { name: 'PFL fight cards' }, WAIT)
+    await userEvent.click(screen.getAllByRole('button', { name: 'More' })[0])
     expect(screen.getAllByRole('link', { name: 'Gyms' }).map((link) => link.getAttribute('href'))).toContain('/pfl/gyms')
   })
 

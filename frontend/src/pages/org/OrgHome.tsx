@@ -15,10 +15,9 @@ import { L, localeTag } from '../../i18n/lang'
 import { getDivisionName } from '../../shared/data/divisions'
 import { buildDivisionReigns } from '../../shared/data/orgChampions'
 import { compareDivisions, formatDate, formatRecord } from '../../shared/data/orgFormat'
-import { orgEs, orgPath, orgPt, type OrgConfig } from '../../shared/data/orgs'
+import { orgCoverageLabel, orgEs, orgPath, orgPt, type OrgConfig } from '../../shared/data/orgs'
 import { translateHometown } from '../../shared/data/fightLabels'
 import { useGyms } from '../../shared/hooks/useGyms'
-import { OrgSwitchLink } from '../../shared/components/OrgSwitchLink'
 import { useOrg } from '../../shared/hooks/useOrg'
 import { useOrgDataInfo, useOrgEvents, useOrgFighters, useOrgRankings, useOrgUpcomingEvents } from '../../shared/hooks/useOrgData'
 import { useUpcomingPicks } from '../../shared/hooks/useUpcomingPicks'
@@ -108,8 +107,6 @@ export function OrgHome() {
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      <OrgSwitchLink />
-
       {featured ? (
         <FeaturedHero org={org} loading={upcoming.loading} event={nextEvent} pickFor={pickFor} onOpenFighter={setProfileName} />
       ) : (
@@ -118,7 +115,7 @@ export function OrgHome() {
           <div>
             <SectionHeading
               level={1}
-              title={L(i18n.language, `${org.shortName} • Vektor MMA`, `${org.shortName} Vektor MMA`, `${org.shortName} • Vektor MMA`, `${org.shortName} • Vektor MMA`)}
+              title={isArchived ? orgCoverageLabel(org, i18n.language) : org.name}
               description={t(`landing.taglines.${org.id}`, { defaultValue: org.tagline })}
             />
             <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -194,15 +191,29 @@ export function OrgHome() {
       ) : null}
 
       {isArchived ? (
-        <p role="note" className="rounded-sm border border-[var(--border-subtle)] border-l-4 border-l-[var(--accent-gold)] bg-[var(--bg-surface)] px-4 py-3 text-sm leading-6 text-[var(--text-primary)]">
-          {L(
-            i18n.language,
-            'O Bellator realizou seu último evento em 2023 e foi absorvido pela PFL, portanto este é um arquivo histórico: os dados aqui não são mais atualizados.',
-            org.archived ?? 'Archive 2009–2023. Bellator held its last event in 2023.',
-            "Le Bellator a organisé son dernier événement en 2023 avant d’être absorbé par la PFL : il s’agit donc d’archives historiques qui ne sont plus mises à jour.",
-            'Bellator realizó su último evento en 2023 y fue absorbido por la PFL, así que este es un archivo histórico: los datos ya no se actualizan.',
-          )}
-        </p>
+        <div role="note" className="max-w-[78ch] border-l-4 border-[var(--ink)] bg-[var(--panel)] px-4 py-3 text-base leading-7">
+          <p>
+            {L(
+              i18n.language,
+              'O acervo vai do Bellator 1, em abril de 2009, ao último evento da organização, em novembro de 2023. Depois disso o Bellator foi comprado pela PFL, e estes dados não são mais atualizados.',
+              'The archive runs from Bellator 1, in April 2009, to the organization’s last event, in November 2023. Bellator was then bought by the PFL, and this data is no longer updated.',
+              'Les archives vont du Bellator 1, en avril 2009, au dernier événement de l’organisation, en novembre 2023. Le Bellator a ensuite été racheté par la PFL, et ces données ne sont plus mises à jour.',
+              'El archivo va de Bellator 1, en abril de 2009, al último evento de la organización, en noviembre de 2023. Después Bellator fue comprado por la PFL, y estos datos ya no se actualizan.',
+            )}
+          </p>
+          <p className="mt-2">
+            {L(
+              i18n.language,
+              'Os eventos da Bellator Champions Series realizados pela PFL em 2024 (BCS 1 a BCS 5) estão no acervo da PFL.',
+              'The Bellator Champions Series events the PFL held in 2024 (BCS 1 to BCS 5) are in the PFL’s records.',
+              'Les événements de la Bellator Champions Series organisés par la PFL en 2024 (BCS 1 à BCS 5) figurent dans les données de la PFL.',
+              'Los eventos de la Bellator Champions Series que la PFL realizó en 2024 (BCS 1 a BCS 5) están en el archivo de la PFL.',
+            )}{' '}
+            <Link to="/pfl/events?q=BCS" className="font-semibold underline decoration-2 underline-offset-4">
+              {L(i18n.language, 'Ver os eventos BCS na PFL', 'See the BCS events under the PFL', 'Voir les événements BCS à la PFL', 'Ver los eventos BCS en la PFL')}
+            </Link>
+          </p>
+        </div>
       ) : null}
 
       {isArchived ? (

@@ -81,22 +81,27 @@ export function FeaturedHero({
           </p>
 
           <div className="mt-5 flex flex-wrap items-center gap-2.5">
+            {event ? (
+              <Link
+                to={`${orgPath(org, 'events')}?q=${encodeURIComponent(event.name)}`}
+                className="primary-action inline-flex min-h-11 items-center justify-center gap-2 px-5 max-xs:w-full"
+              >
+                {L(lang, 'Ver card completo', 'See the full card', 'Voir la carte complète', 'Ver la cartelera completa')}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            ) : null}
             {main ? (
               <Link
                 to={`${orgPath(org, 'predictor')}?a=${encodeURIComponent(main.fighter_1)}&b=${encodeURIComponent(main.fighter_2)}`}
-                className="primary-action inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-5 text-xs max-xs:w-full"
+                className="ghost-action inline-flex min-h-11 items-center justify-center gap-2 px-5 max-xs:w-full"
               >
-                {L(lang, 'Analisar combate completo', 'Analyze matchup', 'Analyser le combat', 'Analizar la pelea completa')}
-                <ArrowRight className="h-4 w-4" />
+                {L(lang, 'Previsão da luta principal', 'Main event prediction', 'Pronostic du combat principal', 'Pronóstico de la pelea estelar')}
               </Link>
-            ) : null}
-            <Link
-              to={orgPath(org, 'predictor')}
-              className={`${main ? 'ghost-action' : 'primary-action'} inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-5 text-xs max-xs:w-full`}
-            >
-              {L(lang, 'Simular uma luta', 'Predict a fight', 'Pronostiquer un combat', 'Pronosticar una pelea')}
-              {main ? null : <ArrowRight className="h-4 w-4" />}
-            </Link>
+            ) : (
+              <Link to={orgPath(org, 'events')} className={`${event ? 'ghost-action' : 'primary-action'} inline-flex min-h-11 items-center justify-center gap-2 px-5 max-xs:w-full`}>
+                {L(lang, 'Ver eventos', 'See events', 'Voir les événements', 'Ver eventos')}
+              </Link>
+            )}
           </div>
         </div>
 

@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { LoadingSkeleton } from '../../shared/components/LoadingSkeleton'
 import { OrgFightRow } from '../../shared/components/OrgFightRow'
 import { OrgFighterModal } from '../../shared/components/OrgFighterModal'
+import { MobileFilters } from '../../shared/components/ui/MobileFilters'
 import { PageHeader } from '../../shared/components/ui/PageHeader'
 import { Section } from '../../shared/components/ui/Section'
 import { L, localeTag } from '../../i18n/lang'
@@ -115,6 +116,7 @@ export function OrgEvents() {
               className="w-full min-w-0 bg-transparent text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)]"
             />
           </div>
+          <MobileFilters active={yearFilter === 'ALL' ? 0 : 1}>
           <select
             value={yearFilter}
             onChange={(event) => setYearFilter(event.target.value)}
@@ -128,6 +130,7 @@ export function OrgEvents() {
               </option>
             ))}
           </select>
+          </MobileFilters>
         </div>
       </PageHeader>
 
@@ -146,7 +149,7 @@ export function OrgEvents() {
                   key={key}
                   org={org.id}
                   event={event}
-                  isOpen={openEvents.has(key) !== (index === 0 && !isSearching)}
+                  isOpen={openEvents.has(key) !== ((index === 0 && !isSearching) || query.trim() === event.name)}
                   onToggle={() => setOpenEvents((current) => toggle(current, key))}
                   onOpenFighter={setProfileName}
                   pickFor={pickFor}
@@ -155,6 +158,22 @@ export function OrgEvents() {
             })}
           </div>
         </Section>
+      ) : upcoming.error ? (
+        <p role="alert" className="error-note">
+          {L(i18n.language, 'Não foi possível carregar a agenda agora. Os resultados abaixo continuam disponíveis.', 'The schedule could not be loaded right now. The results below are still here.', 'Le calendrier n’a pas pu être chargé. Les résultats ci-dessous restent consultables.', 'No se pudo cargar la agenda ahora. Los resultados de abajo siguen disponibles.')}
+        </p>
+      ) : !isSearching ? (
+        <p className="border-l-4 border-[var(--rule)] bg-[var(--panel)] px-4 py-3 text-base text-[var(--muted)]">
+          {org.archived
+            ? L(i18n.language, 'Arquivo histórico: não há eventos futuros.', 'Historical archive: there are no future events.', 'Archives historiques : aucun événement à venir.', 'Archivo histórico: no hay eventos futuros.')
+            : L(i18n.language, 'Nenhum evento futuro confirmado no momento.', 'No future event is confirmed right now.', 'Aucun événement à venir confirmé pour le moment.', 'Ningún evento futuro confirmado por ahora.')}
+        </p>
+      ) : null}
+
+      {!loading && byYear.length ? (
+        <h2 className="font-display text-[28px] font-extrabold leading-none sm:text-[32px]">
+          {L(i18n.language, 'Resultados', 'Results', 'Résultats', 'Resultados')}
+        </h2>
       ) : null}
 
       {error ? <p role="alert" className="error-note">{error}</p> : null}
@@ -193,7 +212,7 @@ export function OrgEvents() {
                           key={key}
                           org={org.id}
                           event={event}
-                          isOpen={openEvents.has(key)}
+                          isOpen={openEvents.has(key) !== (query.trim() === event.name)}
                           onToggle={() => setOpenEvents((current) => toggle(current, key))}
                           onOpenFighter={setProfileName}
                         />

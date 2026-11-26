@@ -1,4 +1,6 @@
-export type OrgId = 'ufc' | 'pfl' | 'one' | 'bellator' | 'rizin' | 'ksw' | 'lfa' | 'cage-warriors' | 'oktagon' | 'jungle-fight' | 'invicta'
+import { L } from '../../i18n/lang'
+
+export type OrgId ='ufc' | 'pfl' | 'one' | 'bellator' | 'rizin' | 'ksw' | 'lfa' | 'cage-warriors' | 'oktagon' | 'jungle-fight' | 'invicta'
 
 export type OrgSection = 'fighters' | 'events' | 'rankings' | 'gyms' | 'champions' | 'predictor'
 
@@ -258,6 +260,42 @@ export function orgFr(org: OrgName, form: 'le' | 'Le' | 'à' | 'de'): string {
   if (!article) return /^[AEIOUH]/i.test(name) ? `d’${name}` : `de ${name}`
   return article === 'l’' ? `de l’${name}` : article === 'la' ? `de la ${name}` : `du ${name}`
 }
+
+/** What an organization's pages offer: model predictions, events and results only, or a closed archive. */
+export type OrgCoverage = 'predictions' | 'results' | 'archive'
+
+export function orgCoverage(org: OrgConfig): OrgCoverage {
+  if (org.archived) return 'archive'
+  return org.hasPredictions ? 'predictions' : 'results'
+}
+
+const NBSP = ' '
+
+/** The years an archive covers, read from its own data (Bellator: first event April 2009, last November 2023). */
+export const ARCHIVE_YEARS: Partial<Record<OrgId, string>> = { bellator: '2009–2023' }
+
+/** How the directory and the switcher name the coverage, in the visitor's language. */
+export function orgCoverageLabel(org: OrgConfig, language: string): string {
+  const coverage = orgCoverage(org)
+  if (coverage === 'archive') {
+    const years = ARCHIVE_YEARS[org.id]
+    const base = L(language, `Arquivo ${orgPt(org, 'de')}`, `${org.shortName} archive`, `Archives ${orgFr(org, 'de')}`, `Archivo de ${orgEs(org)}`)
+    // No-break spaces keep "· 2009–2023" on the line of the name.
+    return years ? `${base}${NBSP}·${NBSP}${years}` : L(language, 'Arquivo histórico', 'Historical archive', 'Archives historiques', 'Archivo histórico')
+  }
+  return coverage === 'predictions'
+    ? L(language, 'Eventos e previsões', 'Events and predictions', 'Événements et pronostics', 'Eventos y pronósticos')
+    : L(language, 'Eventos e resultados', 'Events and results', 'Événements et résultats', 'Eventos y resultados')
+}
+
+/** The directory order: the organizations with predictions first, then the rest as in ORG_LIST. */
+export const DIRECTORY_ORDER: OrgConfig[] = [
+  ...ORG_LIST.filter((org) => orgCoverage(org) === 'predictions'),
+  ...ORG_LIST.filter((org) => orgCoverage(org) !== 'predictions'),
+]
+
+/** The anchor of the organization directory on the home page. */
+export const DIRECTORY_HASH = '#organizations-grid'
 
 /** The landing screen sits at "/", outside the organization hierarchy. */
 export const LANDING_PATH = '/'

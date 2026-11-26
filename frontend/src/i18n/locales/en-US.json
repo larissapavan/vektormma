@@ -1,7 +1,7 @@
 {
   "nav": {
-    "predict": "Predict",
-    "compare": "Compare",
+    "predict": "Predictions",
+    "compare": "Comparison",
     "fighters": "Fighters",
     "events": "Events",
     "results": "Results",
@@ -52,8 +52,7 @@
   },
   "footer": {
     "tagline": "Combat sports stats and predictions.",
-    "dataUpTo": "Data up to {{date}}",
-    "disclaimer": "Independent personal project, not affiliated with {{org}}"
+    "dataUpTo": "Data up to {{date}}"
   },
   "common": {
     "pageLoading": "Loading data...",
@@ -87,9 +86,9 @@
     "redCorner": "Red corner",
     "blueCorner": "Blue corner",
     "searchPlaceholder": "Search fighter by name...",
-    "predictMatchup": "Predict matchup",
+    "predictMatchup": "See the prediction",
     "predicting": "Predicting...",
-    "pickTwoPrompt": "Pick two fighters to predict the fight.",
+    "pickTwoPrompt": "Pick both fighters to see the prediction.",
     "selectTwoDifferent": "Select two different fighters"
   },
   "fighters": {

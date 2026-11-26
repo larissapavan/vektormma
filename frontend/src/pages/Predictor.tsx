@@ -25,7 +25,9 @@ import { localizeFeature } from '../shared/utils/localizeFeature'
 import { shownMetrics } from '../shared/data/modelAccuracy'
 import { useModelInfo } from '../shared/hooks/useModelInfo'
 import { usePrediction } from '../shared/hooks/usePrediction'
+import { BoutMode } from '../shared/components/ui/BoutMode'
 import { PageHeader } from '../shared/components/ui/PageHeader'
+import { useScheduledBout } from '../shared/hooks/useScheduledBout'
 import { predictionSentence, ProbabilityBand } from '../shared/components/ui/ProbabilityBand'
 import { getMatchupTitleFight } from '../shared/data/titleFights'
 import { getFighterPerformance } from '../shared/services/api'
@@ -138,15 +140,15 @@ export function Predictor({ preset }: { preset?: { a: string; b: string } } = {}
   const performanceLoading = Boolean(performanceKey) && performanceReady == null
 
   const activeFighters = useMemo(() => fighters.filter((fighter) => fighter.is_active).length, [fighters])
+  const scheduled = useScheduledBout('ufc', nameA, nameB)
   const shown = shownMetrics(modelInfo, i18n.language)
-  const isOnline = Boolean(health?.model_loaded)
   const problem = error ?? predictionError ?? fightersError
 
   // With a fight to show (a shared link, or after scoring one) the result comes first and the corners below it.
   const showResult = Boolean(prediction) || (predicting && canScore)
   const result = (
     <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
-      <Scorecard prediction={prediction} predicting={predicting} evaluation={modelInfo?.recent_evaluation ?? null} fighterA={fighterA} fighterB={fighterB} />
+      <Scorecard prediction={prediction} predicting={predicting} evaluation={modelInfo?.recent_evaluation ?? null} fighterA={fighterA} fighterB={fighterB} scheduled={scheduled} />
       <Drivers factors={prediction?.main_factors ?? []} names={prediction ? { a: prediction.fighter_a_profile.name, b: prediction.fighter_b_profile.name } : null} />
     </div>
   )
@@ -281,13 +283,6 @@ export function Predictor({ preset }: { preset?: { a: string; b: string } } = {}
             label: t('predictor.modelAccuracy', 'Model accuracy'),
             value: shown.accuracy != null ? formatShare(shown.accuracy, i18n.language) : '—',
             note: shown.caption || undefined,
-          },
-          {
-            label: t('predictor.backend', 'Backend'),
-            value: isOnline ? t('predictor.onAir', 'On air') : t('header.apiOffline', 'Offline'),
-            note: isOnline ? L(i18n.language, 'Modelo carregado', 'Model loaded', 'Modèle chargé', 'Modelo cargado') : L(i18n.language, 'Inacessível', 'Unreachable', 'Injoignable', 'Inaccesible'),
-            alert: !isOnline,
-            onlineDot: isOnline,
           },
         ]}
       />
@@ -440,12 +435,14 @@ function Scorecard({
   evaluation,
   fighterA,
   fighterB,
+  scheduled,
 }: {
   prediction: PredictionResponse | null
   predicting: boolean
   evaluation: RecentEvaluation | null
   fighterA: FighterProfile | null
   fighterB: FighterProfile | null
+  scheduled: { name: string } | null
 }) {
   const { i18n } = useTranslation()
   const titleFightInfo = getMatchupTitleFight(
@@ -457,7 +454,7 @@ function Scorecard({
     <section className="overflow-hidden rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-subtle)] px-4 py-3">
         <div className="flex flex-wrap items-center gap-2">
-          <h2 className="text-2xl leading-none">{L(i18n.language, 'Chance de vitória', 'Chance of winning', 'Chances de victoire', 'Probabilidad de victoria')}</h2>
+          <h2 className="text-2xl leading-none">{L(i18n.language, 'Chance de vitória estimada', 'Estimated win chance', 'Chance de victoire estimée', 'Probabilidad de victoria estimada')}</h2>
           {titleFightInfo?.title_fight ? <TitleFightBadge fight={titleFightInfo} /> : null}
         </div>
       </div>
@@ -465,9 +462,16 @@ function Scorecard({
       <div className="space-y-4 p-4 sm:p-5">
         {prediction ? (
           <>
-            <div className="flex items-end justify-between gap-4 text-base font-bold leading-tight sm:text-lg">
-              <span className="min-w-0">{prediction.fighter_a_profile.name}</span>
-              <span className="min-w-0 text-right">{prediction.fighter_b_profile.name}</span>
+            <BoutMode event={scheduled} />
+            <div className="flex items-end justify-between gap-4 leading-tight">
+              <span className="min-w-0">
+                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--muted)]"><span className="h-2.5 w-2.5 shrink-0 bg-[var(--red)]" aria-hidden="true" />{L(i18n.language, 'Canto vermelho', 'Red corner', 'Coin rouge', 'Esquina roja')}</span>
+                <span className="block text-base font-bold sm:text-lg">{prediction.fighter_a_profile.name}</span>
+              </span>
+              <span className="min-w-0 text-right">
+                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--muted)]"><span className="h-2.5 w-2.5 shrink-0 bg-[var(--blue)]" aria-hidden="true" />{L(i18n.language, 'Canto azul', 'Blue corner', 'Coin bleu', 'Esquina azul')}</span>
+                <span className="block text-base font-bold sm:text-lg">{prediction.fighter_b_profile.name}</span>
+              </span>
             </div>
             <ProbabilityBand nameA={prediction.fighter_a_profile.name} nameB={prediction.fighter_b_profile.name} probabilityA={prediction.fighter_a_probability} />
             <p className="text-base font-semibold">{predictionSentence(i18n.language, prediction.predicted_winner, prediction.probability)}</p>
@@ -481,7 +485,7 @@ function Scorecard({
         ) : (
           <p className="py-6 text-base text-[var(--muted)]">
             {fighterA && fighterB
-              ? L(i18n.language, 'Clique em “Simular combate” para ver a chance de vitória estimada pelo modelo.', 'Press “Predict matchup” to see the model’s estimated chance of winning.', 'Appuyez sur « Prédire le combat » pour voir la probabilité de victoire estimée par le modèle.', 'Pulsa “Pronosticar la pelea” para ver la probabilidad de victoria estimada por el modelo.')
+              ? L(i18n.language, 'Toque em “Ver previsão” para ver a chance de vitória estimada pelo modelo.', 'Press “See the prediction” to see the model’s estimated win chance.', 'Appuyez sur « Voir le pronostic » pour voir la chance de victoire estimée par le modèle.', 'Pulsa “Ver el pronóstico” para ver la probabilidad de victoria estimada por el modelo.')
               : L(i18n.language, 'Escolha os dois lutadores para ver a chance de vitória estimada pelo modelo.', 'Choose both fighters to see the model’s estimated chance of winning.', 'Choisissez les deux combattants pour voir la probabilité de victoire estimée par le modèle.', 'Elige a los dos peleadores para ver la probabilidad de victoria estimada por el modelo.')}
           </p>
         )}
@@ -494,13 +498,14 @@ function Scorecard({
 function Drivers({ factors, names }: { factors: MainFactor[]; names: { a: string; b: string } | null }) {
   const { i18n } = useTranslation()
   const max = Math.max(...factors.map((factor) => factor.magnitude), 0.01)
-  const rows = factors.slice(0, 6)
+  const [showAll, setShowAll] = useState(false)
+  const all = factors.slice(0, 6)
+  const rows = showAll ? all : all.slice(0, 3)
 
   return (
     <section className="overflow-hidden rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
       <div className="flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-4 py-3">
-        <span className="poster-display text-lg text-[var(--text-primary)]">{L(i18n.language, 'Fatores determinantes', 'Why the model leans', 'Pourquoi le modèle penche', 'Por qué se inclina el modelo')}</span>
-        
+        <h2 className="text-2xl leading-none">{L(i18n.language, 'O que mais pesou', 'What weighed most', 'Ce qui a le plus pesé', 'Lo que más pesó')}</h2>
       </div>
 
       <div className="space-y-3 p-4 sm:p-5">
@@ -525,6 +530,19 @@ function Drivers({ factors, names }: { factors: MainFactor[]; names: { a: string
               </p>
             </div>
           )).concat(
+            all.length > 3 ? (
+              <button
+                key="more"
+                type="button"
+                aria-expanded={showAll}
+                onClick={() => setShowAll((current) => !current)}
+                className="inline-flex min-h-11 cursor-pointer items-center text-[15px] font-bold text-[var(--ink)] underline decoration-2 underline-offset-[5px]"
+              >
+                {showAll
+                  ? L(i18n.language, 'Mostrar só os três principais', 'Show only the top three', 'N’afficher que les trois premiers', 'Mostrar solo los tres principales')
+                  : L(i18n.language, `Ver todos os fatores (${all.length})`, `See every factor (${all.length})`, `Voir tous les facteurs (${all.length})`, `Ver todos los factores (${all.length})`)}
+              </button>
+            ) : [],
             rows.some((factor) => factor.key) ? (
               <p key="note" className="border-t border-[var(--border-subtle)] pt-3 text-sm leading-6 text-[var(--text-muted)]">
                 {L(

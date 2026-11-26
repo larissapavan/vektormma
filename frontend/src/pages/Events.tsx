@@ -11,6 +11,8 @@ import { FighterProfileModal } from '../shared/components/FighterProfileModal'
 import { LatestNewsCard } from '../shared/components/LatestNewsCard'
 import { FightMatchupCard } from '../shared/components/FightMatchupCard'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
+import { EventsTabs } from '../shared/components/EventsTabs'
+import { MobileFilters } from '../shared/components/ui/MobileFilters'
 import { PageHeader } from '../shared/components/ui/PageHeader'
 import { Section } from '../shared/components/ui/Section'
 import { useEvents } from '../shared/hooks/useEvents'
@@ -90,6 +92,9 @@ export function Events() {
     [visibleEvents],
   )
 
+  // The card named in the address (?q=UFC 324, from "See the full card") opens by itself; a click closes it like any other.
+  const isEventOpen = useCallback((event: EventSummary) => openEvents.has(event.event_url ?? event.name) !== (query.trim() === event.name), [openEvents, query])
+
   const toggleEvent = (key: string) => {
     setOpenEvents((current) => {
       const next = new Set(current)
@@ -130,7 +135,7 @@ export function Events() {
               events={numberedEvents}
               isOpen={openGroups.has('numbered') || isSearching}
               onToggleGroup={toggleGroup}
-              openEvents={openEvents}
+              isEventOpen={isEventOpen}
               onToggle={toggleEvent}
             />
           )}
@@ -142,12 +147,12 @@ export function Events() {
               events={fightNightEvents}
               isOpen={openGroups.has('fight-night') || isSearching}
               onToggleGroup={toggleGroup}
-              openEvents={openEvents}
+              isEventOpen={isEventOpen}
               onToggle={toggleEvent}
             />
           )}
         </div>
-      ) : (
+      ) : isSearching && visibleUpcoming.length ? null : (
         <div className="px-4 py-12 text-center">
           <p className="type-display text-2xl text-[var(--text-primary)]">
             {t('events.noEventsFound')}
@@ -166,16 +171,17 @@ export function Events() {
   return (
     <OpenProfileContext.Provider value={setProfileName}>
       <div className="space-y-6 sm:space-y-8">
+        <EventsTabs upcomingTo="/events" resultsTo="/results" />
         <PageHeader
           title={t('events.title')}
           description={t('events.description')}
           stats={[
-            { label: t('events.eventsCount'), value: visibleEvents.length.toLocaleString(localeTag(i18n.language)) },
+            { label: t('events.eventsCount'), value: (visibleEvents.length + visibleUpcoming.length).toLocaleString(localeTag(i18n.language)) },
             { label: t('events.fightsTracked'), value: totalFights.toLocaleString(localeTag(i18n.language)) },
           ]}
         >
-          <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-[1fr_180px_180px]">
-            <div className="soft-input col-span-2 flex items-center gap-2.5 rounded-sm px-3 py-2.5 lg:col-span-1">
+          <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-[1fr_180px_180px]">
+            <div className="soft-input flex items-center gap-2.5 rounded-sm px-3 py-2.5 sm:col-span-2 lg:col-span-1">
               <Search className="h-4 w-4 shrink-0 text-[var(--text-red)]" />
               <input
                 value={query}
@@ -185,6 +191,7 @@ export function Events() {
                 className="w-full min-w-0 bg-transparent text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)]"
               />
             </div>
+            <MobileFilters active={[yearFilter, monthFilter].filter((value) => value !== 'ALL').length} className="grid grid-cols-2 gap-2.5 sm:col-span-2 lg:col-span-2 lg:grid-cols-[180px_180px]">
             <select
               value={yearFilter}
               onChange={(event) => setYearFilter(event.target.value)}
@@ -211,20 +218,19 @@ export function Events() {
                 </option>
               ))}
             </select>
+            </MobileFilters>
           </div>
         </PageHeader>
-
-        {isSearching ? <div className="space-y-6">{results}</div> : null}
 
         <UpcomingEventsSection
           events={visibleUpcoming}
           loading={upcoming.loading}
           error={upcoming.error}
-          openEvents={openEvents}
+          isEventOpen={isEventOpen}
           onToggle={toggleEvent}
         />
 
-        {isSearching ? null : results}
+        {results}
 
         {isSearching ? null : <LatestNewsCard quiet />}
 
@@ -249,13 +255,13 @@ function UpcomingEventsSection({
   events,
   loading,
   error,
-  openEvents,
+  isEventOpen,
   onToggle,
 }: {
   events: EventSummary[]
   loading: boolean
   error: string | null
-  openEvents: Set<string>
+  isEventOpen: (event: EventSummary) => boolean
   onToggle: (key: string) => void
 }) {
   const { t, i18n } = useTranslation()
@@ -301,7 +307,8 @@ function UpcomingEventsSection({
   const select = 'soft-input min-w-0 rounded-sm px-3 py-2.5 text-sm text-[var(--text-primary)] outline-none'
   return (
     <Section rows icon={CalendarClock} title={`${t('events.upcomingSection')} (${shown.length})`}>
-      <div role="group" aria-label={L(lang, 'Filtrar os próximos combates', 'Filter the upcoming fights', 'Filtrer les prochains combats', 'Filtrar las próximas peleas')} className="grid gap-2.5 py-4 sm:grid-cols-3">
+      <div role="group" aria-label={L(lang, 'Filtrar os próximos combates', 'Filter the upcoming fights', 'Filtrer les prochains combats', 'Filtrar las próximas peleas')} className="py-4">
+      <MobileFilters label={L(lang, 'Filtrar lutas', 'Filter fights', 'Filtrer les combats', 'Filtrar peleas')} active={[chance, weightClass, kind].filter(Boolean).length} className="grid gap-2.5 max-sm:mt-2.5 sm:grid-cols-3">
         <select value={chance} onChange={(event) => setChance(event.target.value)} aria-label={L(lang, 'Filtrar por chance do favorito', 'Filter by the favorite’s chance', 'Filtrer par chance du favori', 'Filtrar por probabilidad del favorito')} className={select}>
           <option value="">{L(lang, 'Qualquer chance do favorito', 'Any chance for the favorite', 'Toutes les chances du favori', 'Cualquier probabilidad del favorito')}</option>
           <option value="even">{L(lang, 'Lutas parelhas (até 55%)', 'Toss-ups (up to 55%)', 'Combats équilibrés (jusqu’à 55 %)', 'Peleas parejas (hasta 55 %)')}</option>
@@ -321,6 +328,7 @@ function UpcomingEventsSection({
           <option value="title">{L(lang, 'Só lutas por cinturão', 'Title fights only', 'Combats pour le titre seulement', 'Solo peleas por el título')}</option>
           <option value="known">{L(lang, 'Sem previsões com poucos dados', 'Without picks on thin data', 'Sans les pronostics aux données limitées', 'Sin pronósticos con pocos datos')}</option>
         </select>
+      </MobileFilters>
       </div>
       {filtering ? (
         <div className="flex flex-wrap items-center justify-between gap-3 pb-4">
@@ -339,7 +347,7 @@ function UpcomingEventsSection({
             <EventCard
               key={key}
               event={event}
-              isOpen={filtering || openEvents.has(key)}
+              isOpen={filtering || isEventOpen(event)}
               onToggle={() => onToggle(key)}
               pickFor={pickFor}
               partial={filtering}
@@ -358,7 +366,7 @@ function EventGroup({
   events,
   isOpen,
   onToggleGroup,
-  openEvents,
+  isEventOpen,
   onToggle,
 }: {
   groupKey: string
@@ -367,7 +375,7 @@ function EventGroup({
   events: EventSummary[]
   isOpen: boolean
   onToggleGroup: (key: string) => void
-  openEvents: Set<string>
+  isEventOpen: (event: EventSummary) => boolean
   onToggle: (key: string) => void
 }) {
   const { i18n } = useTranslation()
@@ -394,7 +402,7 @@ function EventGroup({
               {events.map((event) => {
                 const key = event.event_url ?? event.name
                 return (
-                  <EventCard key={key} event={event} isOpen={openEvents.has(key)} onToggle={() => onToggle(key)} />
+                  <EventCard key={key} event={event} isOpen={isEventOpen(event)} onToggle={() => onToggle(key)} />
                 )
               })}
             </ul>
@@ -424,6 +432,8 @@ function EventCard({
   partial?: boolean
 }) {
   const { t, i18n } = useTranslation()
+  // The first bout listed is the main event (a filtered card may not list it, so it is not named then).
+  const mainEvent = partial ? null : (event.fights[0] ?? null)
   // A short written read of the card: only for one that has not happened yet, and only once its fights are listed.
   const upcoming = !partial && event.fights.length > 0 && event.fights.every((fight) => !fight.winner)
   const preview = upcoming
@@ -462,6 +472,12 @@ function EventCard({
               <Swords className="h-3.5 w-3.5" />
               {event.fight_count === 1 ? L(i18n.language, '1 luta', '1 fight', '1 combat', '1 pelea') : `${event.fight_count} ${t('events.fights')}`}
             </span>
+            {mainEvent ? (
+              <span className="basis-full text-[var(--ink)]">
+                <span className="text-[var(--muted)]">{L(i18n.language, 'Luta principal: ', 'Main event: ', 'Combat principal : ', 'Pelea estelar: ')}</span>
+                <span className="font-semibold">{mainEvent.fighter_1} vs {mainEvent.fighter_2}</span>
+              </span>
+            ) : null}
           </div>
         </div>
         <ChevronDown className={`h-7 w-7 shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} aria-hidden="true" />

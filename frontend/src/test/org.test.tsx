@@ -107,44 +107,45 @@ describe('one history for a fighter who fought in several organizations', () => 
 })
 
 describe('the page that chooses an organization', () => {
-  const chooser = () => screen.getByRole('heading', { name: /choose an organization/i }).closest('section')!
+  const directory = () => screen.getByRole('heading', { name: 'Organizations', level: 2 }).closest('section')!
 
-  it('lists every organization with a way in, and says which one has predictions', async () => {
+  it('lists every organization with a way in, and says what each one covers', async () => {
     renderAt('/')
-    await screen.findByRole('heading', { name: /choose an organization/i }, WAIT)
-    const section = chooser()
+    await screen.findByRole('heading', { name: 'Organizations', level: 2 }, WAIT)
+    const section = directory()
     const links = within(section).getAllByRole('link')
     expect(links.map((link) => link.getAttribute('href'))).toEqual(['/home', '/pfl', '/one', '/bellator', '/rizin', '/ksw', '/lfa', '/cage-warriors', '/oktagon', '/jungle-fight', '/invicta'])
     expect(within(section).getAllByText('Events and predictions')).toHaveLength(3)  // the UFC, the PFL and ONE
-    expect(within(section).getByText('Historical archive')).toBeInTheDocument()  // Bellator
-    // The other seven have fighters, events and results, with the same card as the rest.
+    expect(within(section).getByText(/^Bellator archive/)).toHaveTextContent('2009–2023')
     expect(within(section).getAllByText('Events and results')).toHaveLength(7)
-    expect(within(section).getByText(/The model's predictions cover UFC, PFL, and ONE\./)).toBeInTheDocument()
+    expect(within(section).getByText(/UFC, PFL, and ONE have the model’s predictions/)).toBeInTheDocument()
   })
 
   it('has no switcher, section menu or fighter search until an organization is chosen', async () => {
     renderAt('/')
-    await screen.findByRole('heading', { name: /choose an organization/i }, WAIT)
+    await screen.findByRole('heading', { name: 'Organizations', level: 2 }, WAIT)
     expect(screen.queryByRole('group', { name: 'Organization' })).not.toBeInTheDocument()
     expect(screen.queryByRole('link', { name: 'Fighters' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /search fighters/i })).not.toBeInTheDocument()
   })
 
   it('opens at once, without waiting for the API', async () => {
     renderAt('/')
-    expect(screen.getByRole('heading', { name: /choose an organization/i })).toBeInTheDocument()  // synchronously: no loading screen first
-    expect(within(chooser()).getAllByRole('link')).toHaveLength(11)
+    expect(screen.getByRole('heading', { name: 'Organizations', level: 2 })).toBeInTheDocument()  // synchronously: no loading screen first
+    expect(within(directory()).getAllByRole('link')).toHaveLength(11)
   })
 
   it('choosing one opens its home page, where the switcher and the logo lead back', async () => {
     renderAt('/')
-    await userEvent.click(await screen.findByRole('link', { name: 'Follow Professional Fighters League' }, WAIT))
-    // The PFL has predictions now, so its home is the same page as the UFC's and ONE's: the next card first.
+    await screen.findByRole('heading', { name: 'Organizations', level: 2 }, WAIT)
+    await userEvent.click(within(directory()).getByRole('link', { name: /^PFL/ }))
+    // The PFL has predictions, so its home is the same page as the UFC's and ONE's: the next card first.
     expect(await screen.findByRole('heading', { name: 'PFL Future' }, WAIT)).toBeInTheDocument()
     expect(document.documentElement.dataset.org).toBe('pfl')
-    expect(screen.getByRole('group', { name: 'Organization' })).toBeInTheDocument()
+    const switcher = screen.getByRole('group', { name: 'Organization' })
+    expect(within(switcher).getByRole('button')).toHaveTextContent('PFL')
     expect(screen.getByRole('link', { name: 'Vektor MMA home' })).toHaveAttribute('href', '/')
-    // And a plain link back to the picker, naming the organization being followed.
-    expect(screen.getByRole('link', { name: 'Switch organization' })).toHaveAttribute('href', '/#organizations-grid')
+    expect(within(switcher).getByRole('link', { name: 'See all in the directory' })).toHaveAttribute('href', '/#organizations-grid')
   })
 
   it('the UFC home page is still reachable and its other pages keep their addresses', async () => {
@@ -322,7 +323,11 @@ describe('the PFL pages', () => {
 describe('the Bellator archive', () => {
   it('says it is an archive instead of announcing a next card and shows archive sections and title history', async () => {
     renderAt('/bellator')
-    expect(await screen.findByRole('note', undefined, WAIT)).toHaveTextContent(/last event in 2023/i)
+    const note = await screen.findByRole('note', undefined, WAIT)
+    expect(note).toHaveTextContent(/last event, in November 2023/i)
+    // The 2024 Bellator Champions Series cards were held by the PFL: the note says where they are.
+    expect(note).toHaveTextContent(/Bellator Champions Series/)
+    expect(within(note).getByRole('link', { name: /BCS events/ })).toHaveAttribute('href', '/pfl/events?q=BCS')
     expect(screen.queryByRole('region', { name: 'Next event' })).not.toBeInTheDocument()
     expect(await screen.findByRole('region', { name: 'Archive sections' }, WAIT)).toBeInTheDocument()
     const history = await screen.findByRole('region', { name: 'Title history' }, WAIT)
@@ -357,7 +362,7 @@ describe('the Bellator archive', () => {
     renderAt('/events')
     await screen.findByRole('heading', { name: 'UFC fight cards' }, WAIT)
     const switcher = screen.getAllByRole('group', { name: 'Organization' })[0]
-    expect(within(switcher).getAllByRole('link').map((link) => link.getAttribute('href'))).toEqual([
+    expect(within(switcher).getAllByRole('link').map((link) => link.getAttribute('href')).filter((href) => href !== '/#organizations-grid')).toEqual([
       '/events', '/pfl/events', '/one/events', '/bellator/events', '/rizin/events', '/ksw/events', '/lfa/events', '/cage-warriors/events',
       '/oktagon/events', '/jungle-fight/events', '/invicta/events',
     ])
@@ -405,6 +410,7 @@ describe.each(FIGHTERS_AND_EVENTS_ORGS)('$short (fighters and events only)', ({ 
   it('has fighters, events and gyms in its menu, and no rankings, champions or predictor', async () => {
     renderAt(`${base}/events`)
     await screen.findByRole('heading', { name: `${ORGS[id].shortName} fight cards` }, WAIT)
+    await userEvent.click(screen.getAllByRole('button', { name: 'More' })[0])
     const links = screen.getAllByRole('link').map((link) => link.getAttribute('href'))
     expect(links).toEqual(expect.arrayContaining([`${base}/fighters`, `${base}/events`, `${base}/gyms`]))
     for (const missing of ['rankings', 'champions', 'predictor']) expect(links).not.toContain(`${base}/${missing}`)
@@ -431,6 +437,7 @@ describe('ONE Championship', () => {
     expect(await screen.findByRole('heading', { name: 'ONE Fight Night 49: Gabriel vs. Magomedov' }, WAIT)).toBeInTheDocument()
     const champions = await screen.findByRole('region', { name: 'Champions' }, WAIT)
     expect(await within(champions).findByRole('button', { name: /Riko Stone/ }, WAIT)).toBeInTheDocument()
+    await userEvent.click(screen.getAllByRole('button', { name: 'More' })[0])
     expect(screen.getAllByRole('link', { name: 'Rankings' })[0]).toHaveAttribute('href', '/one/rankings')
     expect(screen.getAllByRole('link', { name: 'Champions' })[0]).toHaveAttribute('href', '/one/champions')
   })
@@ -468,6 +475,7 @@ describe('the organization switcher', () => {
   it('the PFL menu has only the sections the PFL has', async () => {
     renderAt('/pfl/events')
     await screen.findByRole('heading', { name: 'PFL fight cards' }, WAIT)
+    await userEvent.click(screen.getAllByRole('button', { name: 'More' })[0])
     const links = screen.getAllByRole('link').map((link) => link.getAttribute('href'))
     expect(links).toContain('/pfl/fighters')
     expect(links).toContain('/pfl/rankings')
@@ -534,7 +542,7 @@ describe('the organization switcher', () => {
 
   it('the footer says the data belongs to the organization on screen', async () => {
     renderAt('/pfl/events')
-    expect(await screen.findByText(/not affiliated with the PFL/, undefined, WAIT)).toBeInTheDocument()
+    expect(await screen.findByText(/Not affiliated with UFC, PFL/, undefined, WAIT)).toBeInTheDocument()
     expect(await screen.findByText(/Data up to Oct 17, 2026/, undefined, WAIT)).toBeInTheDocument()
   })
 })

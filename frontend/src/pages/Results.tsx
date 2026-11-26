@@ -5,6 +5,7 @@ import { Check, X } from 'lucide-react'
 
 import { L, localeTag } from '../i18n/lang'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
+import { EventsTabs } from '../shared/components/EventsTabs'
 import { PageHeader } from '../shared/components/ui/PageHeader'
 import { sectionActionClass } from '../shared/components/ui/Section'
 import { getDivisionName } from '../shared/data/divisions'
@@ -51,6 +52,7 @@ export function Results() {
 
   return (
     <div className="space-y-6">
+      <EventsTabs upcomingTo="/events" resultsTo="/results" />
       <PageHeader
         title={L(lang, 'Resultados recentes', 'Recent results', 'Résultats récents', 'Resultados recientes')}
         description={L(

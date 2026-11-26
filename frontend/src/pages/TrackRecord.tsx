@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import { CalendarClock, Check, Scale, Target, X } from 'lucide-react'
 
 import { L, formatDecimal, localeTag, uiLang } from '../i18n/lang'
 import { LoadingSkeleton } from '../shared/components/LoadingSkeleton'
 import { SurprisesCard } from '../shared/components/SurprisesCard'
 import { PageHeader } from '../shared/components/ui/PageHeader'
-import { Stat } from '../shared/components/ui/Stat'
 import { localizeApiText } from '../shared/data/apiText'
 import { shownMetrics } from '../shared/data/modelAccuracy'
 import { useModelInfo } from '../shared/hooks/useModelInfo'
@@ -47,20 +47,45 @@ export function TrackRecord() {
       ) : data ? (
         <>
           <section aria-label={L(i18n.language, 'Resumo de desempenho', 'Summary', 'Résumé', 'Resumen de rendimiento')}>
-            <div className="grid grid-cols-2 gap-x-8 gap-y-6 border-t-[3px] border-[var(--ink)] pt-5 lg:grid-cols-4">
-              <BigStat label={t('trackRecord.liveAccuracy')} value={percent(data.accuracy)} note={data.resolved ? L(i18n.language, `${data.correct} de ${data.resolved}, todos os modelos`, `${data.correct} of ${data.resolved}, every model`, `${data.correct} sur ${data.resolved}, tous modèles`, `${data.correct} de ${data.resolved}, todos los modelos`) : L(i18n.language, 'após o primeiro card', 'after the first card', 'après la première carte', 'después de la primera cartelera')} />
-              <BigStat label={shown.source === 'recent' ? t('trackRecord.recentFights') : t('trackRecord.reported')} value={percent(shown.accuracy)} note={shown.source === 'recent' ? shown.caption : undefined} />
-              <Stat label={t('trackRecord.picksLogged')} value={`${data.logged}`} />
-              <Stat label={t('trackRecord.settled')} value={`${data.resolved}`} note={data.pending ? `${data.pending} ${t('trackRecord.waiting')}` : undefined} />
+            <div className="grid gap-x-12 gap-y-10 border-t-[3px] border-[var(--ink)] pt-5 lg:grid-cols-2">
+              <RecordColumn
+                title={L(i18n.language, 'Previsões registradas antes dos eventos', 'Predictions logged before the events', 'Pronostics enregistrés avant les événements', 'Pronósticos registrados antes de los eventos')}
+                summary={L(i18n.language, 'Cada palpite foi salvo antes do card e conferido com o resultado oficial depois.', 'Each pick was saved before the card and checked against the official result afterwards.', 'Chaque pronostic a été enregistré avant la carte puis comparé au résultat officiel.', 'Cada pronóstico se guardó antes de la cartelera y se comparó después con el resultado oficial.')}
+                from={data.tracking_since}
+                to={data.events?.[0]?.date ?? null}
+                fights={data.resolved}
+                correct={data.correct}
+                accuracy={data.accuracy}
+                extra={[
+                  `${data.logged.toLocaleString(localeTag(i18n.language))} ${t('trackRecord.picksLogged').toLowerCase()}`,
+                  data.pending ? `${data.pending.toLocaleString(localeTag(i18n.language))} ${t('trackRecord.waiting').toLowerCase()}` : null,
+                ]}
+              />
+              {modelInfo?.recent_evaluation ? (
+                <RecordColumn
+                  title={L(i18n.language, 'Teste histórico', 'Historical test', 'Test historique', 'Prueba histórica')}
+                  summary={L(i18n.language, 'O modelo atual aplicado a lutas já realizadas que ele não viu no treino.', 'The current model applied to past fights it did not see in training.', 'Le modèle actuel appliqué à des combats passés qu’il n’a pas vus à l’entraînement.', 'El modelo actual aplicado a peleas ya disputadas que no vio en el entrenamiento.')}
+                  from={modelInfo.recent_evaluation.start}
+                  to={modelInfo.recent_evaluation.end}
+                  fights={modelInfo.recent_evaluation.fights}
+                  correct={Math.round(modelInfo.recent_evaluation.accuracy * modelInfo.recent_evaluation.fights)}
+                  accuracy={modelInfo.recent_evaluation.accuracy}
+                />
+              ) : (
+                <BigStat label={t('trackRecord.reported')} value={percent(shown.accuracy)} note={shown.caption || undefined} />
+              )}
             </div>
-            <p className="mt-5 max-w-[70ch] text-base leading-relaxed sm:text-lg">
+            <p className="mt-6 max-w-[70ch] text-base leading-relaxed sm:text-lg">
               {L(
                 i18n.language,
-                'O acerto ao vivo conta só os palpites salvos antes de cada card, em lutas que aconteceram depois. O acerto nas lutas recentes é um teste em lutas já realizadas que o modelo não viu no treino. O ao vivo é o mais fiel, mas ainda tem poucas lutas.',
-                'Live accuracy counts only the picks saved before each card, on fights that happened afterwards. Recent-fight accuracy is a test on fights already held that the model did not see in training. Live is the truer measure, but it still covers few fights.',
-                'La précision en direct ne compte que les pronostics enregistrés avant chaque carte, sur des combats disputés ensuite. La précision sur les combats récents est un test sur des combats déjà disputés que le modèle n’a pas vus à l’entraînement. La mesure en direct est la plus fidèle, mais porte encore sur peu de combats.',
-                'La precisión en vivo cuenta solo los pronósticos guardados antes de cada cartelera, en peleas que ocurrieron después. La precisión en peleas recientes es una prueba con peleas ya disputadas que el modelo no vio en el entrenamiento. La de en vivo es la medida más fiel, pero aún abarca pocas peleas.',
-              )}
+                'As previsões registradas são a medida mais fiel, porque nenhuma delas conhecia o resultado; ainda são poucas lutas. O teste histórico cobre mais lutas, mas é feito depois, com o modelo de hoje.',
+                'The logged predictions are the truer measure, because none of them knew the result; they still cover few fights. The historical test covers more fights, but it is run afterwards, with today’s model.',
+                'Les pronostics enregistrés sont la mesure la plus fidèle, car aucun ne connaissait le résultat ; ils portent encore sur peu de combats. Le test historique couvre plus de combats, mais il est fait après coup, avec le modèle actuel.',
+                'Los pronósticos registrados son la medida más fiel, porque ninguno conocía el resultado; aún son pocas peleas. La prueba histórica abarca más peleas, pero se hace después, con el modelo actual.',
+              )}{' '}
+              <Link to="/model" className="font-semibold underline decoration-2 underline-offset-4">
+                {L(i18n.language, 'Como o modelo funciona', 'How the model works', 'Comment marche le modèle', 'Cómo funciona el modelo')}
+              </Link>
             </p>
             <LiveScores data={data} />
           </section>
@@ -134,6 +159,56 @@ export function TrackRecord() {
 }
 
 /** One of the two accuracy figures: the number large, so it reads first. */
+/** One way of measuring the model: the period, how many fights, how many it got right and wrong, and the hit rate. */
+function RecordColumn({
+  title,
+  summary,
+  from,
+  to,
+  fights,
+  correct,
+  accuracy,
+  extra = [],
+}: {
+  title: string
+  summary: string
+  from: string | null | undefined
+  to: string | null | undefined
+  fights: number
+  correct: number
+  accuracy: number | null | undefined
+  extra?: (string | null)[]
+}) {
+  const { i18n } = useTranslation()
+  const lang = i18n.language
+  const number = (value: number) => value.toLocaleString(localeTag(lang))
+  const rows = [
+    { label: L(lang, 'Período', 'Period', 'Période', 'Período'), value: from ? `${formatDate(from, lang)} – ${formatDate(to, lang)}` : '—' },
+    { label: L(lang, 'Lutas com resultado', 'Fights with a result', 'Combats avec résultat', 'Peleas con resultado'), value: number(fights) },
+    { label: L(lang, 'Acertos', 'Right', 'Justes', 'Aciertos'), value: number(correct) },
+    { label: L(lang, 'Erros', 'Wrong', 'Faux', 'Errores'), value: number(Math.max(0, fights - correct)) },
+  ]
+  return (
+    <section className="min-w-0">
+      <h2 className="text-[26px] leading-tight sm:text-[30px]">{title}</h2>
+      <p className="mt-1 max-w-[56ch] text-[15px] leading-6 text-[var(--muted)]">{summary}</p>
+      <p className="mt-3 font-display text-[56px] font-black leading-none tabular-nums sm:text-[72px]">
+        {accuracy == null ? '—' : new Intl.NumberFormat(localeTag(lang), { style: 'percent', maximumFractionDigits: 0 }).format(accuracy)}
+      </p>
+      <p className="text-base font-bold">{L(lang, 'de acerto', 'right', 'de réussite', 'de acierto')}</p>
+      <dl className="mt-4 border-t border-[var(--rule)]">
+        {rows.map((row) => (
+          <div key={row.label} className="flex items-baseline justify-between gap-4 border-b border-[var(--rule)] py-2">
+            <dt className="text-[15px] text-[var(--muted)]">{row.label}</dt>
+            <dd className="text-right text-[15px] font-semibold tabular-nums">{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+      {extra.filter(Boolean).length ? <p className="mt-2 text-sm text-[var(--muted)]">{extra.filter(Boolean).join(' · ')}</p> : null}
+    </section>
+  )
+}
+
 function BigStat({ label, value, note }: { label: string; value: string; note?: string }) {
   return (
     <div className="min-w-0">

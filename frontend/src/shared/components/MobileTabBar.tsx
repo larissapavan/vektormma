@@ -1,48 +1,27 @@
-import { BookOpen, CalendarDays, CalendarX, ClipboardList, ClipboardPen, Dumbbell, Ellipsis, Gamepad2, ListOrdered, Scale, Swords, Trophy, Users, type LucideIcon } from 'lucide-react'
+import { CalendarDays, Ellipsis, Swords, Users, type LucideIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 import { L } from '../../i18n/lang'
-import { hasSectionNav, isItemActive, NAV_I18N_KEYS, navItemsFor, type NavItem } from '../data/navItems'
+import { hasSectionNav, isItemActive, NAV_I18N_KEYS, orgNav, type NavItem } from '../data/navItems'
 import { useOrg } from '../hooks/useOrg'
 
 const ICONS: Record<string, LucideIcon> = {
-  Predict: Swords,
-  Compare: Scale,
-  Fighters: Users,
   Events: CalendarDays,
-  Results: ClipboardList,
-  Rankings: ListOrdered,
-  Gyms: Dumbbell,
-  Champions: Trophy,
-  RecordBook: BookOpen,
-  Cancelled: CalendarX,
-  MyCard: ClipboardPen,
-  Game: Gamepad2,
-}
-
-/** What the bar shows first on a phone; anything else goes under "More". */
-const PRIMARY_ORDER = ['Predict', 'Compare', 'Fighters', 'Events', 'Rankings', 'Champions', 'Results', 'MyCard', 'RecordBook', 'Gyms', 'Cancelled', 'Game']
-/** Five slots fit a 320px phone with a readable label under each icon. */
-const SLOTS = 5
-
-function splitItems(items: NavItem[]): { primary: NavItem[]; more: NavItem[] } {
-  if (items.length <= SLOTS) return { primary: items, more: [] }
-  const ranked = [...items].sort((a, b) => PRIMARY_ORDER.indexOf(a.label) - PRIMARY_ORDER.indexOf(b.label))
-  const first = new Set(ranked.slice(0, SLOTS - 1))
-  // Each list keeps the menu's own order.
-  return { primary: items.filter((item) => first.has(item)), more: items.filter((item) => !first.has(item)) }
+  Fighters: Users,
+  Predict: Swords,
 }
 
 const tabClass = (active: boolean) =>
-  `flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-0 text-label font-semibold transition-colors ${
+  `flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 text-[13px] font-semibold ${
     active ? 'text-[var(--ink)] underline decoration-[3px] underline-offset-4' : 'text-[var(--muted)] hover:text-[var(--ink)]'
   }`
 
 /**
- * The section menu on a phone: a bar fixed to the bottom of the screen, within reach of the thumb. It shows on screens
- * narrower than `md`; from there up the header carries the menu.
+ * The main destinations on phones and tablets, fixed to the bottom of the screen within reach of the thumb: Events,
+ * Fighters, Predictions (where the organization has them) and More, in the same order as the desktop header. From `lg` up
+ * the header carries them instead.
  */
 export function MobileTabBar() {
   const { t, i18n } = useTranslation()
@@ -63,13 +42,13 @@ export function MobileTabBar() {
 
   if (!hasSectionNav(pathname)) return null
 
-  const { primary, more } = splitItems(navItemsFor(org))
+  const { primary, more } = orgNav(org)
   const label = (item: NavItem) => t(NAV_I18N_KEYS[item.label] ?? item.label, item.label)
   const moreActive = more.some((item) => isItemActive(item, pathname))
   const moreLabel = L(i18n.language, 'Mais', 'More', 'Plus', 'Más')
 
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       {moreOpen ? (
         <>
           <button
@@ -81,11 +60,13 @@ export function MobileTabBar() {
           />
           <div
             id="mobile-more-menu"
-            className="fixed inset-x-3 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-40 overflow-hidden border-[1.5px] border-[var(--ink)] bg-[var(--panel)]"
+            className="fixed inset-x-3 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-lg overflow-hidden border-[1.5px] border-[var(--ink)] bg-[var(--panel)]"
           >
-            <ul className="divide-y divide-[var(--border-subtle)]">
+            <p className="border-b border-[var(--rule)] px-4 py-2 text-sm font-semibold text-[var(--muted)]">
+              {moreLabel} · {org.shortName}
+            </p>
+            <ul className="divide-y divide-[var(--rule)]">
               {more.map((item) => {
-                const Icon = ICONS[item.label] ?? Ellipsis
                 const active = isItemActive(item, pathname)
                 return (
                   <li key={item.to}>
@@ -93,9 +74,8 @@ export function MobileTabBar() {
                       to={item.to}
                       aria-current={active ? 'page' : undefined}
                       onClick={() => setMoreOpenAt(null)}
-                      className={`flex min-h-12 items-center gap-3 px-4 text-sm font-semibold ${active ? 'underline decoration-[3px] underline-offset-4' : ''} text-[var(--ink)]`}
+                      className={`flex min-h-12 items-center px-4 text-base font-semibold text-[var(--ink)] ${active ? 'underline decoration-[3px] underline-offset-4' : ''}`}
                     >
-                      <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
                       {label(item)}
                     </NavLink>
                   </li>
@@ -107,7 +87,7 @@ export function MobileTabBar() {
       ) : null}
 
       <nav
-        aria-label={L(i18n.language, 'Navegação inferior', 'Bottom navigation', 'Navigation du bas', 'Navegación inferior')}
+        aria-label={L(i18n.language, 'Navegação principal', 'Main navigation', 'Navigation principale', 'Navegación principal')}
         className="fixed inset-x-0 bottom-0 z-40 border-t-[3px] border-[var(--ink)] bg-[var(--mat)] pb-[env(safe-area-inset-bottom)]"
       >
         <div className="mx-auto flex h-16 max-w-lg items-stretch">
@@ -117,7 +97,7 @@ export function MobileTabBar() {
             return (
               <NavLink key={item.to} to={item.to} aria-current={active ? 'page' : undefined} className={tabClass(active)}>
                 <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
-                <span className="max-w-full text-center leading-tight [hyphens:auto]">{label(item)}</span>
+                <span className="max-w-full truncate text-center leading-tight">{label(item)}</span>
               </NavLink>
             )
           })}
@@ -130,7 +110,7 @@ export function MobileTabBar() {
               className={`${tabClass(moreActive || moreOpen)} cursor-pointer`}
             >
               <Ellipsis className="h-5 w-5 shrink-0" aria-hidden="true" />
-              <span className="max-w-full text-center leading-tight [hyphens:auto]">{moreLabel}</span>
+              <span className="max-w-full truncate text-center leading-tight">{moreLabel}</span>
             </button>
           ) : null}
         </div>

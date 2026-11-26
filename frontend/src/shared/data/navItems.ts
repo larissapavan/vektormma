@@ -4,6 +4,9 @@ import { isInfoOnlyPath } from './staticPages'
 /** One entry of the section menu. `group` lists every path the entry stands for; `section` also covers its sub-pages. */
 export type NavItem = { to: string; label: string; group?: string[]; section?: boolean }
 
+/** The menu of an organization: the same main destinations everywhere (Events, Fighters, Predictions), the rest under "More". */
+export type OrgNav = { primary: NavItem[]; more: NavItem[] }
+
 export const NAV_I18N_KEYS: Record<string, string> = {
   Predict: 'nav.predict',
   Compare: 'nav.compare',
@@ -20,38 +23,52 @@ export const NAV_I18N_KEYS: Record<string, string> = {
   MyCard: 'nav.myCard',
 }
 
-// One entry per page: the matchup and champions pages used to sit under a second row of tabs that repeated this menu.
-const ufcNavItems: NavItem[] = [
-  { to: '/predictor', label: 'Predict' },
-  { to: '/head-to-head', label: 'Compare' },
-  { to: '/fighters', label: 'Fighters' },
-  { to: '/events', label: 'Events' },
-  { to: '/results', label: 'Results' },
-  { to: '/my-card', label: 'MyCard' },
-  { to: '/rankings', label: 'Rankings' },
-  { to: '/champions', label: 'Champions' },
-  { to: '/record-book', label: 'RecordBook' },
-  { to: '/gyms', label: 'Gyms', section: true },
-  { to: '/cancelled-fights', label: 'Cancelled' },
-  { to: '/career', label: 'Game' },
-]
+// "Events" also stands for the results page, and "Predictions" for a fight's own page: they live under the same entry.
+const ufcNav: OrgNav = {
+  primary: [
+    { to: '/events', label: 'Events', group: ['/events', '/results'] },
+    { to: '/fighters', label: 'Fighters', group: ['/fighters', '/athlete'], section: true },
+    { to: '/predictor', label: 'Predict', group: ['/predictor', '/fight'], section: true },
+  ],
+  more: [
+    { to: '/rankings', label: 'Rankings' },
+    { to: '/champions', label: 'Champions' },
+    { to: '/gyms', label: 'Gyms', section: true },
+    { to: '/record-book', label: 'RecordBook' },
+    { to: '/head-to-head', label: 'Compare' },
+    { to: '/my-card', label: 'MyCard' },
+    { to: '/cancelled-fights', label: 'Cancelled' },
+    { to: '/career', label: 'Game' },
+  ],
+}
 
+export function orgNav(org: OrgConfig): OrgNav {
+  if (org.id === 'ufc') return ufcNav
+  return {
+    primary: [
+      { to: orgPath(org, 'events'), label: 'Events' },
+      { to: orgPath(org, 'fighters'), label: 'Fighters' },
+      ...(org.hasPredictions ? [{ to: orgPath(org, 'predictor'), label: 'Predict' }] : []),
+    ],
+    more: [
+      ...(org.hasRankings ? [{ to: orgPath(org, 'rankings'), label: 'Rankings' }] : []),
+      ...(org.hasChampions ? [{ to: orgPath(org, 'champions'), label: 'Champions' }] : []),
+      { to: orgPath(org, 'gyms'), label: 'Gyms', section: true },
+    ],
+  }
+}
+
+/** Every entry of the menu, main ones first. */
 export function navItemsFor(org: OrgConfig): NavItem[] {
-  if (org.id === 'ufc') return ufcNavItems
-  return [
-    ...(org.hasPredictions ? [{ to: orgPath(org, 'predictor'), label: 'Predict' }] : []),
-    { to: orgPath(org, 'fighters'), label: 'Fighters' },
-    { to: orgPath(org, 'events'), label: 'Events' },
-    ...(org.hasRankings ? [{ to: orgPath(org, 'rankings'), label: 'Rankings' }] : []),
-    ...(org.hasChampions ? [{ to: orgPath(org, 'champions'), label: 'Champions' }] : []),
-    { to: orgPath(org, 'gyms'), label: 'Gyms', section: true },
-  ]
+  const { primary, more } = orgNav(org)
+  return [...primary, ...more]
 }
 
 export function isItemActive(item: NavItem, pathname: string) {
   const current = pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname
-  if (item.section && current.startsWith(`${item.to}/`)) return true
-  return (item.group ?? [item.to]).includes(current)
+  const paths = item.group ?? [item.to]
+  if (item.section && paths.some((path) => current.startsWith(`${path}/`))) return true
+  return paths.includes(current)
 }
 
 /** The About pages share the bare menu of the text pages, and "About" is their current entry. */

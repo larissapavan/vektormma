@@ -59,16 +59,14 @@ export function LanguageSwitcher({ className = '' }: LanguageSwitcherProps) {
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="inline-flex h-11 items-center gap-1 sm:gap-1.5 rounded-sm border-[1.5px] border-[var(--rule)] bg-transparent px-2 sm:px-2.5 text-label sm:text-xs font-medium transition cursor-pointer text-[var(--text-primary)] hover:border-[var(--border-default)] hover:bg-[var(--bg-surface-hover)] shadow-xs"
+        className="inline-flex h-11 min-w-11 cursor-pointer items-center justify-center gap-1 border-[1.5px] border-[var(--rule)] bg-transparent px-2 text-[15px] text-[var(--ink)] hover:border-[var(--ink)] hover:bg-[var(--panel-hover)] sm:gap-1.5 sm:px-2.5"
         aria-label={t('language.switch', 'Mudar idioma')}
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
-        <Globe className="hidden xs:block h-3 w-3 sm:h-3.5 sm:w-3.5 text-[var(--text-muted)]" />
-        <span className="font-semibold text-label sm:text-xs">{activeItem.code}</span>
-        <ChevronDown
-          className={`h-2.5 w-2.5 sm:h-3 sm:w-3 text-[var(--text-muted)] transition-transform duration-200 ${isOpen && !isJSDOM ? 'rotate-180' : ''}`}
-        />
+        <Globe className="hidden h-4 w-4 sm:block" aria-hidden="true" />
+        <span className="font-bold">{activeItem.code}</span>
+        <ChevronDown aria-hidden="true" className={`h-3.5 w-3.5 transition-transform ${isOpen && !isJSDOM ? 'rotate-180' : ''}`} />
       </button>
 
       {/* Floating Dropdown Menu */}
@@ -76,7 +74,7 @@ export function LanguageSwitcher({ className = '' }: LanguageSwitcherProps) {
         <div
           role="group"
           aria-label={t('language.switch', 'Mudar idioma')}
-          className="surface-card-elevated absolute! right-0 top-full z-50 mt-1.5 w-36 p-1 animate-in fade-in-0 zoom-in-95"
+          className="absolute right-0 top-full z-50 mt-1 w-44 border-[1.5px] border-[var(--ink)] bg-[var(--panel)] py-1"
         >
           <div className="space-y-0.5">
             {LANGUAGES.map((language) => {
@@ -90,14 +88,12 @@ export function LanguageSwitcher({ className = '' }: LanguageSwitcherProps) {
                   onClick={() => changeLanguage(language.id)}
                   aria-pressed={active}
                   title={t(language.titleKey)}
-                  className={`flex w-full items-center justify-between rounded-sm px-2.5 py-1.5 text-xs font-medium transition cursor-pointer ${
-                    active
-                      ? 'bg-[var(--bg-surface-hover)] text-[var(--text-primary)] font-semibold shadow-xs'
-                      : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-hover)]'
+                  className={`flex min-h-11 w-full cursor-pointer items-center justify-between px-4 text-[15px] text-[var(--ink)] hover:bg-[var(--panel-hover)] ${
+                    active ? 'font-bold underline decoration-[3px] underline-offset-[6px]' : 'font-semibold'
                   }`}
                 >
                   <span>{language.label}</span>
-                  <span className="text-label font-bold text-[var(--text-muted)]">
+                  <span className="text-sm text-[var(--muted)]">
                     {language.code}
                   </span>
                 </button>

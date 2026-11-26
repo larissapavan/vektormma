@@ -63,9 +63,19 @@ interface SocialLinksProps {
   className?: string
   iconClassName?: string
   showLabels?: boolean
+  /** Adds the project's GitHub repository after the social channels (the footer carries it). */
+  withGithub?: boolean
 }
 
-export function SocialLinks({ className = 'flex items-center gap-1.5', iconClassName = 'h-4 w-4', showLabels = false }: SocialLinksProps) {
+export function GitHubIcon({ className = 'h-4 w-4', ...props }: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className} {...props}>
+      <path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z" />
+    </svg>
+  )
+}
+
+export function SocialLinks({ className = 'flex items-center gap-1.5', iconClassName = 'h-4 w-4', showLabels = false, withGithub = false }: SocialLinksProps) {
   const items = [
     {
       ...SOCIAL_LINKS.youtube,
@@ -82,6 +92,7 @@ export function SocialLinks({ className = 'flex items-center gap-1.5', iconClass
       icon: TikTokIcon,
       hoverColor: 'hover:text-[var(--ink)] hover:bg-[var(--panel)]',
     },
+    ...(withGithub ? [{ ...SOCIAL_LINKS.github, icon: GitHubIcon, hoverColor: 'hover:text-[var(--ink)] hover:bg-[var(--panel)]' }] : []),
   ]
 
   return (
@@ -96,7 +107,7 @@ export function SocialLinks({ className = 'flex items-center gap-1.5', iconClass
             rel="noreferrer"
             aria-label={`${item.label} (${item.handle})`}
             title={`${item.label}: ${item.handle}`}
-            className={`inline-flex min-h-9 min-w-9 items-center justify-center gap-1.5 rounded-sm p-1.5 text-[var(--text-secondary)] transition-colors duration-150 ${item.hoverColor} focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]`}
+            className={`inline-flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-sm p-1.5 text-[var(--text-secondary)] transition-colors duration-150 ${item.hoverColor} focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]`}
           >
             <Icon className={iconClassName} />
             {showLabels && <span className="text-xs font-semibold">{item.label}</span>}

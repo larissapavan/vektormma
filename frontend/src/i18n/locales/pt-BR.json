@@ -1,7 +1,7 @@
 {
   "nav": {
-    "predict": "Simulação",
-    "compare": "Comparar",
+    "predict": "Previsões",
+    "compare": "Comparador",
     "fighters": "Lutadores",
     "events": "Eventos",
     "results": "Resultados",
@@ -52,8 +52,7 @@
   },
   "footer": {
     "tagline": "Estatísticas e previsões de esportes de combate.",
-    "dataUpTo": "Dados até {{date}}",
-    "disclaimer": "Projeto independente, sem afiliação com {{org}}"
+    "dataUpTo": "Dados até {{date}}"
   },
   "common": {
     "pageLoading": "Carregando dados...",
@@ -87,9 +86,9 @@
     "redCorner": "Canto vermelho",
     "blueCorner": "Canto azul",
     "searchPlaceholder": "Buscar lutador...",
-    "predictMatchup": "Simular combate",
+    "predictMatchup": "Ver previsão",
     "predicting": "Simulando...",
-    "pickTwoPrompt": "Escolha dois lutadores para simular o combate.",
+    "pickTwoPrompt": "Escolha os dois lutadores para ver a previsão.",
     "selectTwoDifferent": "Selecione dois lutadores diferentes"
   },
   "fighters": {

@@ -101,16 +101,16 @@ export function FighterSearch() {
           if (!open) setText('')
           setOpen(!open)
         }}
-        className="inline-flex h-7.5 sm:h-8 items-center justify-center gap-1.5 rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-2 sm:px-2.5 text-xs transition cursor-pointer text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-default)] hover:bg-[var(--bg-surface-hover)]"
+        className="inline-flex h-11 min-w-11 cursor-pointer items-center justify-center gap-2 border-[1.5px] border-[var(--rule)] px-2.5 text-[15px] text-[var(--ink)] hover:border-[var(--ink)] hover:bg-[var(--panel-hover)]"
         aria-label={L(i18n.language, 'Buscar lutadores', 'Search fighters', 'Chercher des combattants', 'Buscar peleadores')}
         aria-expanded={open}
         title={L(i18n.language, 'Buscar lutadores (pressione / ou ⌘K)', 'Search fighters (press / or ⌘K)', 'Chercher des combattants (appuyez sur / ou ⌘K)', 'Buscar peleadores (presiona / o ⌘K)')}
       >
-        <Search className="h-3.5 w-3.5" />
-        <span className="hidden xl:inline text-label font-normal text-[var(--text-muted)]">
+        <Search className="h-5 w-5" aria-hidden="true" />
+        <span className="hidden xl:inline text-[15px] text-[var(--muted)]">
           {L(i18n.language, 'Buscar...', 'Search...', 'Chercher...', 'Buscar...')}
         </span>
-        <kbd className="hidden md:inline-block rounded px-1 py-0.2 text-label bg-[var(--bg-surface-hover)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
+        <kbd className="hidden xl:inline-block border border-[var(--rule)] px-1 text-[13px] text-[var(--muted)]">
           ⌘K
         </kbd>
       </button>

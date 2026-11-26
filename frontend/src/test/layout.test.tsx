@@ -85,7 +85,7 @@ describe('searching fighters by name', () => {
 
 describe('one h1 per page', () => {
   const pages: [string, string, string | RegExp][] = [
-    ['Landing', '/', /choose an organization/i],
+    ['Landing', '/', /explore mma through the data/i],
     ['UFC home', '/home', 'Alpha One'],
     ['Fighters', '/fighters', /weight classes/i],
     ['Events', '/events', 'UFC fight cards'],
@@ -214,7 +214,7 @@ describe('the header search', () => {
     await userEvent.click(await screen.findByRole('button', { name: /search fighters/i }, { timeout: 10000 }))
     await userEvent.type(screen.getByRole('combobox', { name: /find a fighter by name/i }), 'beta')
 
-    const option = await screen.findByRole('button', { name: /Beta Two/ })
+    const option = await screen.findByRole('button', { name: /^Beta Two/ })
     await userEvent.click(option)
 
     expect(await screen.findByRole('button', { name: /close performance profile/i }, { timeout: 10000 })).toBeInTheDocument()
@@ -266,9 +266,9 @@ describe('French localization (fr-FR)', () => {
     const frButtons = screen.getAllByRole('button', { name: 'FR' })
     await userEvent.click(frButtons[0])
 
-    expect(await screen.findByText(/Pronostiquer un combat/i)).toBeInTheDocument()
-    expect(screen.getByText(/Voir la carte complète/i)).toBeInTheDocument()
-    expect(screen.getByText(/Projet personnel indépendant, sans affiliation avec l’UFC/i)).toBeInTheDocument()
+    expect(await screen.findByText(/Pronostic du combat principal/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/Voir la carte complète/i).length).toBeGreaterThan(0)
+    expect(screen.getByText(/Projet analytique indépendant\. Non affilié à l’UFC/i)).toBeInTheDocument()
   })
 })
 
@@ -280,9 +280,9 @@ describe('Spanish localization (es-419)', () => {
     const esButtons = screen.getAllByRole('button', { name: 'ES' })
     await userEvent.click(esButtons[0])
 
-    expect(await screen.findByText(/Pronosticar una pelea/i)).toBeInTheDocument()
-    expect(screen.getByText(/Ver la cartelera completa/i)).toBeInTheDocument()
-    expect(screen.getByText(/Proyecto personal independiente, sin afiliación con la UFC/i)).toBeInTheDocument()
+    expect(await screen.findByText(/Pronóstico de la pelea estelar/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/Ver la cartelera completa/i).length).toBeGreaterThan(0)
+    expect(screen.getByText(/Proyecto analítico independiente\. No afiliado a la UFC/i)).toBeInTheDocument()
     expect(document.documentElement.lang).toBe('es-419')
   })
 

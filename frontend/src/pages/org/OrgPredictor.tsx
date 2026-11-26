@@ -19,7 +19,9 @@ import { localizeFeature } from '../../shared/utils/localizeFeature'
 import { usePrediction } from '../../shared/hooks/usePrediction'
 import { factorSentence } from '../../shared/data/explainMatchup'
 import { Eyebrow } from '../../shared/components/ui/Eyebrow'
+import { BoutMode } from '../../shared/components/ui/BoutMode'
 import { PageHeader } from '../../shared/components/ui/PageHeader'
+import { useScheduledBout } from '../../shared/hooks/useScheduledBout'
 import type { FighterProfile, MainFactor, OrgFighter, PredictionResponse } from '../../shared/types/api'
 
 export function OrgPredictor() {
@@ -87,13 +89,14 @@ export function OrgPredictor() {
   }
 
   const activeFighters = useMemo(() => fighters.filter((f) => f.is_active).length, [fighters])
+  const scheduled = useScheduledBout(org.id, nameA, nameB)
   const problem = error ?? predictionError ?? fightersError
 
-  // Suggested marquee bouts for the organization
+  // Suggested bouts. The model is trained on MMA, so ONE's suggestions are MMA matchups only: Muay Thai and kickboxing
+  // bouts (Rodtang vs Superlek, for one) are not offered.
   const quickBouts = useMemo(() => {
     if (org.id === 'one') {
       return [
-        ['Rodtang Jitmuangnon', 'Superlek Kiatmoo9'],
         ['Christian Lee', 'Saygid Izagakhmaev'],
         ['Demetrious Johnson', 'Adriano Moraes'],
         ['Anatoly Malykhin', 'Oumar Kane'],
@@ -122,7 +125,7 @@ export function OrgPredictor() {
       >
         {quickBouts.length > 0 ? (
           <div className="flex flex-wrap items-center gap-2">
-            <Eyebrow as="span">{L(lang, 'Lutas em destaque', 'Featured matchups', 'Combats à l’affiche', 'Peleas destacadas')}</Eyebrow>
+            <Eyebrow as="span">{L(lang, 'Sugestões de MMA', 'MMA suggestions', 'Suggestions MMA', 'Sugerencias de MMA')}</Eyebrow>
             {quickBouts.map(([a, b]) => (
               <button
                 key={`${a}-${b}`}
@@ -187,14 +190,14 @@ export function OrgPredictor() {
           className="primary-action inline-flex min-h-14 flex-1 cursor-pointer items-center justify-center gap-3 rounded-sm px-6 text-base"
         >
           {predicting ? <LoaderCircle className="h-5 w-5 animate-spin" /> : <Swords className="h-5 w-5" />}
-          {L(lang, 'Simular combate', 'Predict a fight', 'Prédire un combat', 'Pronosticar una pelea')}
+          {L(lang, 'Ver previsão', 'See the prediction', 'Voir le pronostic', 'Ver el pronóstico')}
         </button>
       </div>
 
       {prediction ? (
         <div className="space-y-6">
           <div className="grid gap-6 xl:grid-cols-2">
-            <OrgScorecard prediction={prediction} />
+            <OrgScorecard prediction={prediction} org={org} scheduled={scheduled} />
             {prediction.main_factors?.length && Math.abs(prediction.fighter_a_probability - 0.5) > 1e-9 ? <OrgDrivers factors={prediction.main_factors} names={{ a: prediction.fighter_a_profile.name, b: prediction.fighter_b_profile.name }} /> : null}
           </div>
           <OrgTaleOfTheTape fighterA={prediction.fighter_a_profile} fighterB={prediction.fighter_b_profile} />
@@ -266,7 +269,6 @@ function OutsideUfcNotice({ org, unmeasured }: { org: OrgConfig; unmeasured: boo
 
 const PANEL = 'overflow-hidden rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface)]'
 const PANEL_HEAD = 'flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)] px-4 py-3'
-const PANEL_NOTE = 'text-label font-bold text-[var(--text-muted)]'
 
 function CornerCard({
   side,
@@ -401,23 +403,23 @@ function CornerCard({
   )
 }
 
-function OrgScorecard({ prediction }: { prediction: PredictionResponse }) {
+function OrgScorecard({ prediction, org, scheduled }: { prediction: PredictionResponse; org: OrgConfig; scheduled: { name: string } | null }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
   const even = isEvenProbability(prediction.fighter_a_probability)
   const rows = [
-    { name: prediction.fighter_a_profile.name, value: prediction.fighter_a_probability, color: 'bg-[var(--red-deep)]' },
-    { name: prediction.fighter_b_profile.name, value: prediction.fighter_b_probability, color: 'bg-[var(--blue-deep)]' },
+    { name: prediction.fighter_a_profile.name, value: prediction.fighter_a_probability, color: 'bg-[var(--red-deep)]', corner: L(lang, 'Canto vermelho', 'Red corner', 'Coin rouge', 'Esquina roja') },
+    { name: prediction.fighter_b_profile.name, value: prediction.fighter_b_probability, color: 'bg-[var(--blue-deep)]', corner: L(lang, 'Canto azul', 'Blue corner', 'Coin bleu', 'Esquina azul') },
   ]
 
   return (
     <section className={PANEL}>
       <div className={PANEL_HEAD}>
-        <span className="poster-display text-lg text-[var(--text-primary)]">{L(lang, 'Placar de probabilidades', 'Official scorecard', 'Carte des probabilités', 'Tarjeta oficial')}</span>
-        <span className={PANEL_NOTE}>{L(lang, 'Chance estimada pelo modelo', 'Model’s estimated chance', 'Chance estimée par le modèle', 'Probabilidad estimada por el modelo')}</span>
+        <h2 className="text-2xl leading-none">{L(lang, 'Chance de vitória estimada', 'Estimated win chance', 'Chance de victoire estimée', 'Probabilidad de victoria estimada')}</h2>
       </div>
 
       <div className="space-y-4 p-4 sm:p-5">
+        <BoutMode event={scheduled} />
         <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">
           <div className="min-w-0">
             <p className="text-label font-bold text-[var(--text-red)]">{even ? L(lang, 'Sem favorito', 'No favorite', 'Pas de favori', 'Sin favorito') : L(lang, 'Favorito previsto', 'Projected winner', 'Vainqueur prévu', 'Ganador proyectado')}</p>
@@ -430,7 +432,7 @@ function OrgScorecard({ prediction }: { prediction: PredictionResponse }) {
           {rows.map((row) => (
             <div key={row.name}>
               <div className="flex items-end justify-between gap-3">
-                <span className="min-w-0 truncate text-sm font-bold text-[var(--text-primary)]">{row.name}</span>
+                <span className="min-w-0 truncate text-sm text-[var(--text-primary)]"><span className="text-[var(--muted)]">{row.corner} · </span><span className="font-bold">{row.name}</span></span>
                 <span className="poster-display text-xl text-[var(--text-primary)]">{formatProbability(row.value)}</span>
               </div>
               <div className="mt-1 h-3.5 overflow-hidden rounded-sm border border-[var(--border-subtle)] bg-[var(--bg-surface-subtle)]">
@@ -443,6 +445,16 @@ function OrgScorecard({ prediction }: { prediction: PredictionResponse }) {
         <p className="text-sm font-medium leading-6 text-[var(--text-secondary)]">{even ? noFavoriteText(lang) : localizePredictionMessage(prediction.message, prediction.predicted_winner, lang)}</p>
 
         {prediction.data_confidence ? <DataConfidenceNote confidence={prediction.data_confidence} /> : null}
+
+        <p className="border-t border-[var(--rule)] pt-3 text-sm leading-6 text-[var(--muted)]">
+          {L(
+            lang,
+            `A validação do modelo foi feita com lutas do UFC; ${orgPt(org, 'em')} a estimativa é menos testada.`,
+            `The model was validated on UFC fights; in the ${org.shortName} the estimate is less tested.`,
+            `Le modèle a été validé sur des combats UFC ; ${orgFr(org, 'à')} l’estimation est moins éprouvée.`,
+            `El modelo se validó con peleas de la UFC; en ${orgEs(org)} la estimación está menos probada.`,
+          )}
+        </p>
       </div>
     </section>
   )
@@ -497,13 +509,14 @@ function OrgTaleOfTheTape({ fighterA, fighterB }: { fighterA: TapeFighter; fight
 function OrgDrivers({ factors, names }: { factors: MainFactor[]; names: { a: string; b: string } }) {
   const { i18n } = useTranslation()
   const lang = i18n.language
-  const rows = factors.slice(0, 6)
+  const [showAll, setShowAll] = useState(false)
+  const all = factors.slice(0, 6)
+  const rows = showAll ? all : all.slice(0, 3)
 
   return (
     <section className={PANEL}>
       <div className={PANEL_HEAD}>
-        <span className="poster-display text-lg text-[var(--text-primary)]">{L(lang, 'Fatores determinantes', 'Why the model leans', 'Pourquoi le modèle penche', 'Por qué se inclina el modelo')}</span>
-        
+        <h2 className="text-2xl leading-none">{L(lang, 'O que mais pesou', 'What weighed most', 'Ce qui a le plus pesé', 'Lo que más pesó')}</h2>
       </div>
 
       <div className="space-y-3 p-4 sm:p-5">
@@ -524,6 +537,18 @@ function OrgDrivers({ factors, names }: { factors: MainFactor[]; names: { a: str
             {factor.key ? <p className="mt-1.5 text-sm leading-6 text-[var(--text-secondary)]">{factorSentence(factor, names, lang)}</p> : null}
           </div>
         ))}
+        {all.length > 3 ? (
+          <button
+            type="button"
+            aria-expanded={showAll}
+            onClick={() => setShowAll((current) => !current)}
+            className="inline-flex min-h-11 cursor-pointer items-center text-[15px] font-bold text-[var(--ink)] underline decoration-2 underline-offset-[5px]"
+          >
+            {showAll
+              ? L(lang, 'Mostrar só os três principais', 'Show only the top three', 'N’afficher que les trois premiers', 'Mostrar solo los tres principales')
+              : L(lang, `Ver todos os fatores (${all.length})`, `See every factor (${all.length})`, `Voir tous les facteurs (${all.length})`, `Ver todos los factores (${all.length})`)}
+          </button>
+        ) : null}
       </div>
     </section>
   )
