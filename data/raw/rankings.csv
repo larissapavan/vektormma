@@ -15,8 +15,8 @@ Pound-for-Pound (Men's),True,13,Arman Tsarukyan,,/athlete/arman-tsarukyan
 Pound-for-Pound (Men's),True,14,Alexandre Pantoja,,/athlete/alexandre-pantoja
 Pound-for-Pound (Men's),True,15,Carlos Ulberg,,/athlete/carlos-ulberg
 Flyweight,False,0,Joshua Van,,/athlete/joshua-van
-Flyweight,False,1,Manel Kape,up,/athlete/manel-kape
 Flyweight,False,1,Alexandre Pantoja,,/athlete/alexandre-pantoja
+Flyweight,False,1,Manel Kape,up,/athlete/manel-kape
 Flyweight,False,3,Brandon Royval,,/athlete/brandon-royval
 Flyweight,False,4,Tatsuro Taira,,/athlete/tatsuro-taira
 Flyweight,False,5,Kyoji Horiguchi,,/athlete/kyoji-horiguchi
@@ -42,13 +42,13 @@ Bantamweight,False,8,David Martinez,,/athlete/david-martinez
 Bantamweight,False,9,Aiemann Zahabi,,/athlete/aiemann-zahabi
 Bantamweight,False,10,Raul Rosas Jr.,,/athlete/raul-rosas-jr
 Bantamweight,False,11,Marlon Vera,,/athlete/marlon-vera
-Bantamweight,False,12,Marcus McGhee,up,/athlete/marcus-mcghee
 Bantamweight,False,12,Deiveson Figueiredo,,/athlete/deiveson-figueiredo
+Bantamweight,False,12,Marcus McGhee,up,/athlete/marcus-mcghee
 Bantamweight,False,14,Raoni Barcelos,,/athlete/raoni-barcelos
 Bantamweight,False,15,Bryce Mitchell,,/athlete/bryce-mitchell
 Featherweight,False,0,Alexander Volkanovski,,/athlete/alexander-volkanovski
-Featherweight,False,1,Movsar Evloev,,/athlete/movsar-evloev
 Featherweight,False,1,Diego Lopes,up,/athlete/diego-lopes
+Featherweight,False,1,Movsar Evloev,,/athlete/movsar-evloev
 Featherweight,False,3,Lerone Murphy,,/athlete/lerone-murphy
 Featherweight,False,4,Jean Silva,up,/athlete/jean-silva
 Featherweight,False,5,Kevin Vallejos,up,/athlete/kevin-vallejos

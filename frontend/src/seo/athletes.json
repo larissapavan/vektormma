@@ -10211,6 +10211,11 @@
     "country": "Brazil",
     "countryCode": "br",
     "photo": "elves-brener.webp"
+   },
+   "pick": {
+    "winner": "Mateusz Rebecki",
+    "probability": 0.5176,
+    "winnerIsA": true
    }
   },
   {
@@ -11481,6 +11486,11 @@
     "country": "Canada",
     "countryCode": "ca",
     "photo": "marc-andre-barriault.webp"
+   },
+   "pick": {
+    "winner": "Tresean Gore",
+    "probability": 0.5884,
+    "winnerIsA": true
    }
   },
   {
@@ -11517,6 +11527,11 @@
     "country": "United States",
     "countryCode": "us",
     "photo": "terrance-chatman.webp"
+   },
+   "pick": {
+    "winner": "Gable Steveson",
+    "probability": 0.6065,
+    "winnerIsA": true
    }
   },
   {
@@ -11553,6 +11568,11 @@
     "country": "Brazil",
     "countryCode": "br",
     "photo": "jose-montanha.webp"
+   },
+   "pick": {
+    "winner": "Jose Montanha",
+    "probability": 0.5778,
+    "winnerIsA": false
    }
   },
   {
@@ -11589,6 +11609,11 @@
     "country": "Serbia",
     "countryCode": "rs",
     "photo": "vlasto-cepo.webp"
+   },
+   "pick": {
+    "winner": "Julien Leblanc",
+    "probability": 0.5149,
+    "winnerIsA": true
    }
   },
   {

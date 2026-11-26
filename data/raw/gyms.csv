@@ -2,7 +2,7 @@ slug,name,url,fighters_count,checked
 american-top-team,American Top Team,https://fighthub-app.com/br/gyms/american-top-team/,65,2026-11-24
 kill-cliff-fc,Kill Cliff FC,https://fighthub-app.com/br/gyms/kill-cliff-fc/,44,2026-11-24
 xtreme-couture,Xtreme Couture,https://fighthub-app.com/br/gyms/xtreme-couture/,38,2026-11-24
-syndicate-mma,Syndicate MMA,https://fighthub-app.com/br/gyms/syndicate-mma/,25,2026-11-24
+syndicate-mma,Syndicate MMA,https://fighthub-app.com/br/gyms/syndicate-mma/,24,2026-11-26
 sbg-ireland,SBG Ireland,https://fighthub-app.com/br/gyms/sbg-ireland/,23,2026-10-21
 nova-uniao,Nova Uniao,https://fighthub-app.com/br/gyms/nova-uniao/,20,2026-11-24
 team-alpha-male,Team Alpha Male,https://fighthub-app.com/br/gyms/team-alpha-male/,19,2026-10-21
@@ -107,7 +107,6 @@ gorets-fight-club,Gorets Fight Club,https://fighthub-app.com/en/gyms/gorets-figh
 gracie-tampa-south,Gracie Tampa South,https://fighthub-app.com/en/gyms/gracie-tampa-south/,3,2026-10-21
 gracie-technics,Gracie Technics,https://fighthub-app.com/en/gyms/gracie-technics/,3,2026-10-26
 inside-muay-thai,Inside Muay Thai,https://fighthub-app.com/en/gyms/inside-muay-thai/,3,2026-10-21
-k-dojo-warrior-tribe-2,K Dojo Warrior Tribe,https://fighthub-app.com/en/gyms/k-dojo-warrior-tribe-2/,3,2026-10-21
 khk-mma,KHK MMA,https://fighthub-app.com/en/gyms/khk-mma/,3,2026-10-21
 martinez-bjj,Martinez BJJ,https://fighthub-app.com/en/gyms/martinez-bjj/,3,2026-10-21
 mma-fight-academy,MMA Fight Academy,https://fighthub-app.com/en/gyms/mma-fight-academy/,3,2026-11-24
@@ -188,6 +187,7 @@ ihlas,Ihlas,https://fighthub-app.com/en/gyms/ihlas/,2,2026-11-24
 jackson-wink-mma-2,Jackson Wink MMA,https://fighthub-app.com/en/gyms/jackson-wink-mma-2/,2,2026-10-21
 japan-top-team,Japan Top Team,https://fighthub-app.com/en/gyms/japan-top-team/,2,2026-11-24
 jetsaam-gym-brno,Jetsaam Gym Brno,https://fighthub-app.com/en/gyms/jetsaam-gym-brno/,2,2026-11-24
+k-dojo-warrior-tribe-2,K Dojo Warrior Tribe,https://fighthub-app.com/en/gyms/k-dojo-warrior-tribe-2/,2,2026-11-26
 killer-b-combat-sports-academy,Killer B Combat Sports Academy,https://fighthub-app.com/en/gyms/killer-b-combat-sports-academy/,2,2026-10-26
 ko-squad-mma,KO Squad MMA,https://fighthub-app.com/en/gyms/ko-squad-mma/,2,2026-10-21
 lauzon-mma,Lauzon MMA,https://fighthub-app.com/en/gyms/lauzon-mma/,2,2026-10-21
@@ -894,7 +894,6 @@ talison-soares-team,Talison Soares Team,https://fighthub-app.com/en/gyms/talison
 taurus-martial-arts-triple-3-mma,Taurus Martial Arts / Triple 3 MMA,https://fighthub-app.com/en/gyms/taurus-martial-arts-triple-3-mma/,1,2026-10-21
 team-4-life-mma,Team 4 Life MMA,https://fighthub-app.com/en/gyms/team-4-life-mma/,1,2026-10-21
 team-azaitar,Team Azaitar,https://fighthub-app.com/en/gyms/team-azaitar/,1,2026-10-21
-team-bert,Team Bert,https://fighthub-app.com/en/gyms/team-bert/,1,2026-10-21
 team-big-g,Team Big G,https://fighthub-app.com/en/gyms/team-big-g/,1,2026-10-21
 team-blackxicans,Team Blackxicans,https://fighthub-app.com/en/gyms/team-blackxicans/,1,2026-10-21
 team-borracha,Team Borracha,https://fighthub-app.com/en/gyms/team-borracha/,1,2026-10-21
