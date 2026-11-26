@@ -369,7 +369,7 @@ def _build_fighters(
     from backend.app.services.crossorg_service import catalog_matcher  # imported here: crossorg_service imports this module
 
     ufc_stats = _get_ufc_career_stats()
-    match_catalog = catalog_matcher() if ufc_stats else (lambda name, division: None)
+    match_catalog = catalog_matcher() if ufc_stats else (lambda name, division, profile_url: None)
 
     fighters = []
     for key, row in chosen.items():
@@ -401,8 +401,8 @@ def _build_fighters(
                 break
 
         # Striking & grappling stats: only a fighter who also has UFC career stats has any, and only when the name passes
-        # the same name and division guards as the link to the UFC profile (a namesake in another division is not the same person).
-        catalog_name = match_catalog(row["name"], division)
+        # the same guards as the link to the UFC profile (a namesake in another division, or on another Sherdog page, is another person).
+        catalog_name = match_catalog(row["name"], division, row.get("profile_url"))
         ufc_stat = ufc_stats.get(_name_key(catalog_name)) if catalog_name else None
 
         if ufc_stat:

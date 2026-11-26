@@ -81,7 +81,7 @@ def test_linking_an_organization_to_the_ufc_reads_the_catalog_once(monkeypatch):
     from backend.app.services.org_service import get_org_fighters
 
     for fighter in get_org_fighters("pfl")[:60]:  # the same answer as asking one by one
-        assert links.get(crossorg_service._name_key(fighter["name"])) == crossorg_service.ufc_name_for(fighter["name"], fighter["division"])
+        assert links.get(crossorg_service._name_key(fighter["name"])) == crossorg_service.ufc_name_for(fighter["name"], fighter["division"], fighter["profile_url"])
 
 
 def test_an_empty_list_has_columns_too():

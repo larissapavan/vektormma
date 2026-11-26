@@ -7,6 +7,7 @@ import pandas as pd
 import pytest
 
 from backend.app.services import crossorg_service as crossorg
+from backend.app.services import org_service
 from src.ufc_predictor.config import RAW_DATA_DIR
 
 PICO = "Aaron Pico"  # Bellator champion, a PFL fight, then the UFC
@@ -80,6 +81,37 @@ def test_a_linked_fighter_without_a_photo_of_the_organization_uses_the_ufc_one(c
 )
 def test_the_guards_against_two_people_with_one_name(ufc_division, org_division, linked):
     assert crossorg._linked(("Some Name", ufc_division), org_division) is linked
+
+
+@pytest.mark.parametrize(
+    ("org_url", "linked"),
+    [
+        ("https://www.sherdog.com/fighter/Some-Name-2", False),  # another Sherdog page: another person
+        ("https://www.sherdog.com/fighter/Some-Name-Jr-1", True),  # the same page number, whatever the name in the address
+        ("https://www.espn.com/mma/fighter/_/id/2", True),  # not a Sherdog page: the name and the division decide
+        (None, True),
+    ],
+)
+def test_two_sherdog_pages_are_two_people(org_url, linked):
+    index = {"some name": ("Some Name", "Lightweight")}
+    found = crossorg._find(index, {"some name": "1"}, "Some Name", "Lightweight", org_url)
+    assert found == ("Some Name" if linked else None)
+    assert crossorg._find(index, {}, "Some Name", "Lightweight", org_url) == "Some Name"  # no page known on the UFC side
+
+
+@pytest.mark.parametrize("name", ["Bruno Silva", "Daniel Santos", "Diego Ferreira"])
+def test_the_jungle_fight_namesakes_of_ufc_fighters_stay_apart(client, name):
+    [namesake] = [fighter for fighter in client.get("/orgs/jungle-fight/fighters").json() if fighter["name"] == name]
+    assert namesake["ufc_name"] is None and namesake["image_url"] is None
+    [own] = [fighter for fighter in org_service.get_org_fighters("jungle-fight") if fighter["name"] == name]
+    assert own["sig_str_acc"] is None and own["takedown_acc"] is None  # not the UFC fighter's numbers
+    others = client.get(f"/fighters/{name}/other-organizations").json()
+    assert "jungle-fight" not in {item["org_id"] for item in others}
+
+
+def test_a_fighter_on_the_same_sherdog_page_stays_linked(client):
+    jungle = {fighter["name"]: fighter["ufc_name"] for fighter in client.get("/orgs/jungle-fight/fighters").json()}
+    assert jungle["Renato Carneiro"] == "Renato Moicano"
 
 
 def test_the_prediction_model_never_reads_the_other_organizations():
