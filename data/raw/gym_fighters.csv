@@ -1,4 +1,5 @@
 gym_slug,fighter,fighter_slug,nickname,division,country_code,record
+team-sayah,Anthony Salamone ✓,anthony-salamone,OURS BLANC,Light Heavyweight,fr,8-2-0
 american-top-team,Albert Tumenov,albert-tumenov,Einstein,Middleweight,ru,24-7-0
 american-top-team,Alexandre Pantoja,alexandre-pantoja,The Cannibal,Flyweight,br,30-7-0
 american-top-team,Antonio Carlos Jr.,antonio-carlos-jr,CARA DE SAPATO,Light Heavyweight,br,19-6-0
@@ -529,6 +530,12 @@ american-top-team-atlanta,Corey Jackson,corey-jackson,MAXIMUS,Lightweight,us,6-3
 american-top-team-atlanta,Dhiego Lima,dhiego-lima,,Welterweight,br,17-9-0
 american-top-team-atlanta,Lamar Brown,lamar-brown,,Featherweight,,5-2-0
 american-top-team-atlanta,Mike Bardsley,mike-bardsley,,Featherweight,us,5-2-0
+astra-fight-team,Adolpho Pereira,adolpho-pereira,,Welterweight,,5-2-0
+astra-fight-team,Anderson Goncalves,anderson-goncalves,,Middleweight,br,11-3-0
+astra-fight-team,Darren Till,darren-till,The Gorilla,Middleweight,gb,18-5-1
+astra-fight-team,Junior Albini,junior-albini,Baby,Heavyweight,br,16-8-0
+astra-fight-team,Sarah Frota,sarah-frota,A Treta,Women's Bantamweight,br,11-4-0
+astra-fight-team,Viviane Pereira,viviane-pereira,Sucuri,Women's Bantamweight,br,16-5-0
 brazilian-tko,Brendson Ribeiro,brendson-ribeiro,The Gorilla,Light Heavyweight,br,18-11-0
 brazilian-tko,Brunno Ferreira,brunno-ferreira,The Hulk,Middleweight,br,15-5-0
 brazilian-tko,Francisco Trinaldo,francisco-trinaldo,Massaranduba,Welterweight,br,28-9-0
@@ -574,11 +581,6 @@ ankos-mma-poznan,Ion Surdu,ion-surdu,Dracula,Welterweight,md,17-8-0
 ankos-mma-poznan,Ivan Klevets,ivan-klevets,,Lightweight,,6-3-0
 ankos-mma-poznan,Maciej Kazieczko,maciej-kazieczko,,Lightweight,,10-5-0
 ankos-mma-poznan,Ronald Paradeiser,ronald-paradeiser,Rony,Welterweight,sk,23-11-0
-astra-fight-team,Anderson Goncalves,anderson-goncalves,,Middleweight,br,11-3-0
-astra-fight-team,Darren Till,darren-till,The Gorilla,Middleweight,gb,18-5-1
-astra-fight-team,Junior Albini,junior-albini,Baby,Heavyweight,br,16-8-0
-astra-fight-team,Sarah Frota,sarah-frota,A Treta,Women's Bantamweight,br,11-4-0
-astra-fight-team,Viviane Pereira,viviane-pereira,Sucuri,Women's Bantamweight,br,16-5-0
 black-house,Brian Ortega,brian-ortega,T-City,Featherweight,us,16-5-0
 black-house,Christos Giagos,christos-giagos,The Spartan,Lightweight,us,20-12-0
 black-house,James Moontasri,james-moontasri,Moonwalker,Welterweight,us,9-5-0
@@ -1089,6 +1091,8 @@ renzo-gracie-jiu-jitsu,Erin Blanchfield,erin-blanchfield,Cold Blooded,Women's Fl
 renzo-gracie-jiu-jitsu,Jamie Colleen,jamie-colleen,Bad Mama,Women's Strawweight,us,4-1-0
 resilience-training-centre,Ben Sosoli,ben-sosoli,Combat Wombat,Heavyweight,au,8-3-0
 resilience-training-centre,Sara Collins,sara-collins,,Women's Featherweight,au,6-1-0
+ribas-family,Alexia Thainara,alexia-thainara,Burguesinha,Women's Strawweight,br,15-1-0
+ribas-family,Guilherme Silva,guilherme-silva,Machado,Welterweight,,9-3-0
 ricardo-almeida-jiu-jitsu,Eddie Alvarez,eddie-alvarez,The Underground King,Welterweight,us,30-8-0
 ricardo-almeida-jiu-jitsu,Frankie Edgar,frankie-edgar,The Answer,Bantamweight,us,23-11-1
 ronin-training-center,Dan Spohn,dan-spohn,DRAGON,Light Heavyweight,us,19-9-1
@@ -1217,6 +1221,7 @@ artfight,Szymon Bajor,szymon-bajor,,Heavyweight,pl,26-13-0
 ascension-mixed-martial-arts,Freddy Assuncao,freddy-assuncao,,Featherweight,br,10-2-0
 aspinall-bjj,Tom Aspinall,tom-aspinall,,Heavyweight,gb,15-3-0
 aspire-combat-sports-academy,Haider Khan,haider-khan,,Middleweight,,10-2-0
+astra-fight-team-cacador,Renato Gomes,renato-gomes,Pezinho,Welterweight,,28-18-0
 asylum-vale-tudo,Oscar Ownsworth,oscar-ownsworth,GINGER FURY,Lightweight,gb,10-5-1
 ataman-fc,Azatbek Kochorov,azatbek-kochorov,,Flyweight,,6-1-1
 atherton-submission-wrestling,Mike Wilkinson,mike-wilkinson,The Warrior,Lightweight,gb,9-5-0
@@ -1613,6 +1618,7 @@ nexus,Jake Matthews,jake-matthews,The Celtic Kid,Welterweight,au,23-8-0
 nick-catone-mma,Lance Palmer,lance-palmer,,Featherweight,us,23-8-0
 nksw-holy-team,Lukasz Brzeski,lukasz-brzeski,The Bull,Heavyweight,pl,9-7-1
 no-rules-team,Mario Pinto,mario-pinto,,Heavyweight,it,13-0-0
+nord-fighting-club,Mohamed Sayah,mohamed-sayah,,Lightweight,,7-6-1
 nordeste-fight,Felipe Silva,felipe-silva,Sorriso,Welterweight,br,9-5-0
 nostos-mma,Nathaniel Grimard,nathaniel-grimard,,Featherweight,us,8-7-0
 nottingham-mma,Carl Booth,carl-booth,The Bomber,Welterweight,gb,10-5-0
@@ -1647,6 +1653,7 @@ pedro-bessa-bjj,Mason Jones,mason-jones,The Dragon,Lightweight,gb,18-3-0
 pellegrino-mma,George Sullivan,george-sullivan,The Silencer,Middleweight,us,19-8-0
 peresvet-ft,Alexander Shabliy,alexander-shabliy,PERESVET,Lightweight,ru,25-4-0
 performance-mma,Dean Garnett,dean-garnett,,Bantamweight,gb,15-4-1
+peru-fight-academy,Diego Rojas,diego-rojas,N/A Amateur MMA Record: 0-2-0 (Win-Loss-Draw),Lightweight,,5-1-0
 perun-wroclaw,Jonatan Kujawa,jonatan-kujawa,,Featherweight,pl,5-3-0
 pesfa,Luthando Biko,luthando-biko,Shorty,Flyweight,za,13-6-0
 phalanx-mma-academy,Kevin Holland,kevin-holland,Trailblazer,Welterweight,us,29-15-0
@@ -1701,7 +1708,6 @@ renyi,Theodor Berggren,theodor-berggren,Simba,Welterweight,,8-4-0
 revira-black-team,Modestino Rodrigues,modestino-rodrigues,The Slenderman,Middleweight,,8-1-0
 revolution-dojo,Domingo Pilarte,domingo-pilarte,Son Of Fire,Bantamweight,us,8-3-0
 revolution-mixed-martial-arts,Justin Scoggins,justin-scoggins,Tank,Bantamweight,us,16-7-0
-ribas-family,Alexia Thainara,alexia-thainara,Burguesinha,Women's Strawweight,br,15-1-0
 ring-demon-jiu-jitsu,Trevor Smith,trevor-smith,Hot Sauce,Middleweight,us,15-10-0
 ringer-sportplaza,Gerardo Fanny,gerardo-fanny,,Bantamweight,nl,14-6-0
 rings-gym,Osvald Fedorovic,osvald-fedorovic,,Lightweight,lt,8-5-0
@@ -1833,7 +1839,6 @@ team-renegade-mma,Fabian Edwards,fabian-edwards,THE ASSASSIN,Middleweight,jm,16-
 team-renzo-gracie,Katlyn Cerminara,katlyn-cerminara,Blonde Fighter,Women's Flyweight,us,19-6-0
 team-rules,Norma Dumont,norma-dumont,The Immortal,Women's Bantamweight,br,13-4-0
 team-ryano,Neil Seery,neil-seery,2 Tap,Flyweight,ie,16-13-0
-team-sayah,Anthony Salamone ✓,anthony-salamone,OURS BLANC,Light Heavyweight,fr,8-2-0
 team-schreiber,Denise Kielholtz,denise-kielholtz,MISS DYNAMITE,Flyweight,nl,9-6-0
 team-shikhshabekov,Aliaskhab Khizriev,aliaskhab-khizriev,The Black Wolf,Middleweight,ru,14-0-0
 team-shogun,Anthony Zeidan,anthony-zeidan,The Silent K-9,Lightweight,lb,5-5-0

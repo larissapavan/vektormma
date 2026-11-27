@@ -34,6 +34,7 @@ pitbull-brothers,Pitbull Brothers,https://fighthub-app.com/en/gyms/pitbull-broth
 teixeira-mma-fitness,Teixeira MMA & Fitness,https://fighthub-app.com/br/gyms/teixeira-mma-fitness/,7,2026-11-24
 alliance-mma,Alliance MMA,https://fighthub-app.com/br/gyms/alliance-mma/,6,2026-11-24
 american-top-team-atlanta,American Top Team Atlanta,https://fighthub-app.com/en/gyms/american-top-team-atlanta/,6,2026-10-21
+astra-fight-team,Astra Fight Team,https://fighthub-app.com/en/gyms/astra-fight-team/,6,2026-11-27
 brazilian-tko,Brazilian TKO,https://fighthub-app.com/br/gyms/brazilian-tko/,6,2026-11-24
 fight-ready,Fight Ready,https://fighthub-app.com/br/gyms/fight-ready/,6,2026-10-21
 roufusport,Roufusport,https://fighthub-app.com/en/gyms/roufusport/,6,2026-10-26
@@ -42,7 +43,6 @@ valle-flow-striking,Valle Flow Striking,https://fighthub-app.com/br/gyms/valle-f
 4oz-fight-club,4oz. Fight Club,https://fighthub-app.com/en/gyms/4oz-fight-club/,5,2026-10-26
 akhmat-fight-club,Akhmat Fight Club,https://fighthub-app.com/en/gyms/akhmat-fight-club/,5,2026-11-24
 ankos-mma-poznan,Ankos MMA Poznań,https://fighthub-app.com/en/gyms/ankos-mma-poznan/,5,2026-11-24
-astra-fight-team,Astra Fight Team,https://fighthub-app.com/en/gyms/astra-fight-team/,5,2026-11-24
 black-house,Black House,https://fighthub-app.com/br/gyms/black-house/,5,2026-10-21
 chute-boxe-joao-emilio,Chute Boxe João Emilio,https://fighthub-app.com/en/gyms/chute-boxe-joao-emilio/,5,2026-11-24
 dagfighter,DagFighter,https://fighthub-app.com/en/gyms/dagfighter/,5,2026-10-21
@@ -227,6 +227,7 @@ reinders-mma,Reinders MMA,https://fighthub-app.com/en/gyms/reinders-mma/,2,2026-
 renegade-prague-gym,Renegade Prague Gym,https://fighthub-app.com/en/gyms/renegade-prague-gym/,2,2026-11-24
 renzo-gracie-jiu-jitsu,Renzo Gracie Jiu-Jitsu,https://fighthub-app.com/en/gyms/renzo-gracie-jiu-jitsu/,2,2026-10-21
 resilience-training-centre,Resilience Training Centre,https://fighthub-app.com/en/gyms/resilience-training-centre/,2,2026-10-21
+ribas-family,Ribas Family,https://fighthub-app.com/en/gyms/ribas-family/,2,2026-11-27
 ricardo-almeida-jiu-jitsu,Ricardo Almeida Jiu-Jitsu,https://fighthub-app.com/en/gyms/ricardo-almeida-jiu-jitsu/,2,2026-10-21
 ronin-training-center,Ronin Training Center,https://fighthub-app.com/en/gyms/ronin-training-center/,2,2026-10-21
 rvca,RVCA,https://fighthub-app.com/en/gyms/rvca/,2,2026-10-21
@@ -327,6 +328,7 @@ artfight,Artfight,https://fighthub-app.com/en/gyms/artfight/,1,2026-10-21
 ascension-mixed-martial-arts,Ascension Mixed Martial Arts,https://fighthub-app.com/en/gyms/ascension-mixed-martial-arts/,1,2026-10-21
 aspinall-bjj,Aspinall BJJ,https://fighthub-app.com/en/gyms/aspinall-bjj/,1,2026-10-21
 aspire-combat-sports-academy,Aspire Combat Sports Academy,https://fighthub-app.com/en/gyms/aspire-combat-sports-academy/,1,2026-10-21
+astra-fight-team-cacador,Astra Fight Team Caçador,https://fighthub-app.com/en/gyms/astra-fight-team-cacador/,1,2026-11-27
 asylum-vale-tudo,Asylum Vale Tudo,https://fighthub-app.com/en/gyms/asylum-vale-tudo/,1,2026-10-21
 ataman-fc,Ataman FC,https://fighthub-app.com/en/gyms/ataman-fc/,1,2026-11-24
 atherton-submission-wrestling,Atherton Submission Wrestling,https://fighthub-app.com/en/gyms/atherton-submission-wrestling/,1,2026-10-21
@@ -723,6 +725,7 @@ nexus,Nexus,https://fighthub-app.com/en/gyms/nexus/,1,2026-10-26
 nick-catone-mma,Nick Catone MMA,https://fighthub-app.com/en/gyms/nick-catone-mma/,1,2026-10-21
 nksw-holy-team,NKSW Holy Team,https://fighthub-app.com/en/gyms/nksw-holy-team/,1,2026-10-21
 no-rules-team,No Rules Team,https://fighthub-app.com/en/gyms/no-rules-team/,1,2026-10-21
+nord-fighting-club,Nord Fighting Club,https://fighthub-app.com/en/gyms/nord-fighting-club/,1,2026-11-27
 nordeste-fight,Nordeste Fight,https://fighthub-app.com/en/gyms/nordeste-fight/,1,2026-10-21
 nostos-mma,Nostos MMA,https://fighthub-app.com/en/gyms/nostos-mma/,1,2026-10-21
 nottingham-mma,Nottingham MMA,https://fighthub-app.com/en/gyms/nottingham-mma/,1,2026-10-21
@@ -756,6 +759,7 @@ pedro-bessa-bjj,Pedro Bessa BJJ,https://fighthub-app.com/en/gyms/pedro-bessa-bjj
 pellegrino-mma,Pellegrino MMA,https://fighthub-app.com/en/gyms/pellegrino-mma/,1,2026-10-21
 peresvet-ft,Peresvet FT,https://fighthub-app.com/en/gyms/peresvet-ft/,1,2026-10-21
 performance-mma,Performance MMA,https://fighthub-app.com/en/gyms/performance-mma/,1,2026-10-21
+peru-fight-academy,Peru Fight Academy,https://fighthub-app.com/en/gyms/peru-fight-academy/,1,2026-11-27
 perun-wroclaw,Perun Wrocław,https://fighthub-app.com/en/gyms/perun-wroclaw/,1,2026-10-26
 pesfa,PESFA,https://fighthub-app.com/en/gyms/pesfa/,1,2026-10-21
 phalanx-mma-academy,Phalanx MMA Academy,https://fighthub-app.com/en/gyms/phalanx-mma-academy/,1,2026-10-21
@@ -810,7 +814,6 @@ renyi,Renyi,https://fighthub-app.com/en/gyms/renyi/,1,2026-10-21
 revira-black-team,Revira Black Team,https://fighthub-app.com/en/gyms/revira-black-team/,1,2026-11-24
 revolution-dojo,Revolution Dojo,https://fighthub-app.com/en/gyms/revolution-dojo/,1,2026-10-21
 revolution-mixed-martial-arts,Revolution Mixed Martial Arts,https://fighthub-app.com/en/gyms/revolution-mixed-martial-arts/,1,2026-10-21
-ribas-family,Ribas Family,https://fighthub-app.com/en/gyms/ribas-family/,1,2026-10-21
 ring-demon-jiu-jitsu,Ring Demon Jiu-Jitsu,https://fighthub-app.com/en/gyms/ring-demon-jiu-jitsu/,1,2026-10-21
 ringer-sportplaza,Ringer Sportplaza,https://fighthub-app.com/en/gyms/ringer-sportplaza/,1,2026-10-21
 rings-gym,RINGS Gym,https://fighthub-app.com/en/gyms/rings-gym/,1,2026-10-21
